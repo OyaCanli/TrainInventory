@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">TrainInventory</string>
+    <string name="trains">Trains</string>
+    <string name="brands">Brands</string>
+    <string name="category">Category</string>
+    <string name="new_train">New Train</string>
+    <string name="new_brand">New Brand</string>
+    <string name="new_category">New Category</string>
+    <string name="see_all">SEE ALL:</string>
+    <string name="add">ADD:</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="image_of_the_train">image of the train</string>
+    <string name="no_trains_found">No trains found.</string>
+    <string name="brand">Brand:</string>
+    <string name="reference">Reference</string>
+    <string name="name">Name</string>
+    <string name="quantity">Quantity</string>
+    <string name="add_image">Add image:</string>
+    <string name="save">Save</string>
+    <string name="description">Description:</string>
+    <string name="location">Location:</string>
+    <string name="quantity_should_be_positive">Quantity should be a positive integer</string>
+    <string name="all_trains">All Trains</string>
+    <string name="brand_name">Brand name:</string>
+    <string name="add_logo">Add logo:</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="category_name">Category name</string>
+</resources>

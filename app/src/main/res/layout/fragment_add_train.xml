@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textView10"
+                style="@style/FieldStyle"
+                android:text="@string/category"
+                app:layout_constraintBottom_toBottomOf="@id/categorySpinner"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Spinner
+                android:id="@+id/categorySpinner"
+                style="@style/editTextStyle"
+                android:layout_margin="@dimen/margin_standard"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toStartOf="@+id/addTrain_addCategoryBtn"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/barrier"
+                app:layout_constraintTop_toBottomOf="@id/childFragContainer" />
+
+            <TextView
+                android:id="@+id/textView5"
+                style="@style/FieldStyle"
+                android:text="@string/brand"
+                app:layout_constraintBottom_toBottomOf="@+id/brandSpinner"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Spinner
+                android:id="@+id/brandSpinner"
+                style="@style/editTextStyle"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toStartOf="@+id/addTrain_addBrandBtn"
+                app:layout_constraintStart_toEndOf="@+id/barrier"
+                app:layout_constraintTop_toBottomOf="@+id/categorySpinner" />
+
+            <TextView
+                android:id="@+id/textView2"
+                style="@style/FieldStyle"
+                android:text="@string/reference"
+                app:layout_constraintBaseline_toBaselineOf="@+id/editReference"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <EditText
+                android:id="@+id/editReference"
+                style="@style/editTextStyle"
+                android:layout_marginTop="@dimen/margin_standard"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.466"
+                app:layout_constraintStart_toEndOf="@+id/barrier"
+                app:layout_constraintTop_toBottomOf="@+id/brandSpinner" />
+
+            <TextView
+                android:id="@+id/textView3"
+                style="@style/FieldStyle"
+                android:text="@string/name"
+                app:layout_constraintBaseline_toBaselineOf="@+id/editTrainName"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <EditText
+                android:id="@+id/editTrainName"
+                style="@style/editTextStyle"
+                android:inputType="textCapWords"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/barrier"
+                app:layout_constraintTop_toBottomOf="@+id/editReference" />
+
+            <TextView
+                android:id="@+id/textView4"
+                style="@style/FieldStyle"
+                android:text="@string/quantity"
+                app:layout_constraintBaseline_toBaselineOf="@+id/editQuantity"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <EditText
+                android:id="@+id/editQuantity"
+                style="@style/editTextStyle"
+                android:inputType="number"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/barrier"
+                app:layout_constraintTop_toBottomOf="@+id/editTrainName" />
+
+            <android.support.constraint.Barrier
+                android:id="@+id/barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="right"
+                app:constraint_referenced_ids="textView2,textView3,textView4,textView5"
+                tools:layout_editor_absoluteX="91dp" />
+
+
+            <ImageView
+                android:id="@+id/product_details_gallery_image"
+                android:layout_width="@dimen/edit_train_image_height"
+                android:layout_height="@dimen/edit_train_image_height"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView"
+                app:srcCompat="@drawable/gallery" />
+
+            <TextView
+                android:id="@+id/textView"
+                style="@style/FieldStyle"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/add_image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTrainDescription" />
+
+            <TextView
+                android:id="@+id/textView7"
+                style="@style/FieldStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_standard"
+                android:layout_marginStart="@dimen/margin_standard"
+                android:layout_marginTop="@dimen/margin_standard"
+                android:text="@string/description"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editQuantity" />
+
+            <EditText
+                android:id="@+id/editTrainDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="@dimen/margin_standard"
+                android:ems="10"
+                android:inputType="textMultiLine"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+            <TextView
+                android:id="@+id/textView6"
+                style="@style/FieldStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="@dimen/margin_standard"
+                android:layout_marginStart="@dimen/margin_standard"
+                android:layout_marginTop="16dp"
+                android:text="@string/location"
+                app:layout_constraintBottom_toBottomOf="@+id/editLocationNumber"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/editLocationNumber" />
+
+            <EditText
+                android:id="@+id/editLocationLetter"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:inputType="textCapCharacters"
+                app:layout_constraintStart_toEndOf="@+id/editLocationNumber"
+                app:layout_constraintTop_toBottomOf="@+id/product_details_gallery_image" />
+
+            <Button
+                android:id="@+id/save_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/save"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editLocationLetter" />
+
+            <EditText
+                android:id="@+id/editLocationNumber"
+                android:layout_width="80dp"
+                android:layout_height="0dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:ems="10"
+                android:inputType="number"
+                app:layout_constraintBottom_toBottomOf="@+id/editLocationLetter"
+                app:layout_constraintStart_toEndOf="@+id/textView6"
+                app:layout_constraintTop_toTopOf="@+id/editLocationLetter" />
+
+            <ImageButton
+                android:id="@+id/addTrain_addCategoryBtn"
+                android:layout_width="@dimen/add_brand_imagebtn_height"
+                android:layout_height="@dimen/add_brand_imagebtn_height"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/categorySpinner"
+                app:srcCompat="@drawable/baseline_add_white_24dp" />
+
+            <ImageButton
+                android:id="@+id/addTrain_addBrandBtn"
+                android:layout_width="@dimen/add_brand_imagebtn_height"
+                android:layout_height="@dimen/add_brand_imagebtn_height"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addTrain_addCategoryBtn"
+                app:srcCompat="@drawable/baseline_add_white_24dp" />
+
+            <FrameLayout
+                android:id="@+id/childFragContainer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </FrameLayout>
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+</layout>

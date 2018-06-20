@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item android:id="@+id/see_all"
+        android:title="@string/see_all">
+        <menu>
+            <item
+                android:id="@+id/see_trains"
+                android:title="@string/trains" />
+            <item
+                android:id="@+id/see_brands"
+                android:title="@string/brands" />
+            <item
+                android:id="@+id/see_categories"
+                android:title="@string/category" />
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/add_item"
+        android:title="@string/add">
+        <menu>
+            <item
+                android:id="@+id/add_train"
+                android:title="@string/new_train" />
+            <item
+                android:id="@+id/add_brand"
+                android:title="@string/new_brand" />
+            <item
+                android:id="@+id/add_category"
+                android:title="@string/new_category" />
+        </menu>
+    </item>
+
+</menu>
