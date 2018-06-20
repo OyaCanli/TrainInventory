@@ -65,14 +65,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .commit();
                 break;
             }
-            case R.id.see_brands:{
-
-                break;
-            }
-            case R.id.see_categories:{
-
-                break;
-            }
             case R.id.add_train:{
                 AddTrainFragment addTrainFrag = new AddTrainFragment();
                 getSupportFragmentManager().beginTransaction()
@@ -90,7 +82,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             }
             case R.id.add_category:{
-
+                AddCategoryFragment addCatFrag = new AddCategoryFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, addCatFrag)
+                        .addToBackStack(null)
+                        .commit();
                 break;
             }
         }

@@ -1,7 +1,6 @@
 package com.canli.oya.traininventory.ui;
 
 import android.Manifest;
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
@@ -33,7 +32,6 @@ import com.canli.oya.traininventory.data.TrainEntry;
 import com.canli.oya.traininventory.databinding.FragmentAddTrainBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.BitmapUtils;
-import com.canli.oya.traininventory.utils.CategoryBrandViewModel;
 import com.canli.oya.traininventory.utils.ChosenTrainViewModel;
 import com.canli.oya.traininventory.utils.ChosenTrainViewModelFactory;
 import com.canli.oya.traininventory.utils.Constants;
@@ -59,6 +57,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     private int mUsersChoice;
     private List<String> categoryList;
     private List<String> brandList;
+    int mTrainId;
 
     private final DialogInterface.OnClickListener mDialogClickListener = new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int item) {
@@ -78,10 +77,13 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
 
         Bundle bundle = getArguments();
         if(bundle != null && bundle.containsKey(Constants.TRAIN_ID)){ //This is the "edit" case
-            int mTrainId = bundle.getInt(Constants.TRAIN_ID);
-            //This view model is instantiated only in edit mode.
-            ChosenTrainViewModelFactory factory = new ChosenTrainViewModelFactory(mDb, mTrainId);
-            final ChosenTrainViewModel viewModel = ViewModelProviders.of(this, factory).get(ChosenTrainViewModel.class);
+            mTrainId = bundle.getInt(Constants.TRAIN_ID);
+        }
+
+        ChosenTrainViewModelFactory factory = new ChosenTrainViewModelFactory(mDb, mTrainId);
+        final ChosenTrainViewModel viewModel = ViewModelProviders.of(this, factory).get(ChosenTrainViewModel.class);
+
+        if(mTrainId != 0){
             viewModel.getChosenTrain().observe(this, new Observer<TrainEntry>() {
                 @Override
                 public void onChanged(@Nullable TrainEntry trainEntry) {
@@ -89,16 +91,15 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 }
             });
         }
-
-        CategoryBrandViewModel cbViewModel= ViewModelProviders.of(this).get(CategoryBrandViewModel.class);
+        //CategoryBrandViewModel cbViewModel= ViewModelProviders.of(this).get(CategoryBrandViewModel.class);
 
         //Set category spinner
         categoryList = new ArrayList<>();
-        final ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, categoryList);
+        final ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, categoryList);
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.categorySpinner.setAdapter(categoryAdapter);
         binding.categorySpinner.setOnItemSelectedListener(this);
-        cbViewModel.getCategoryList().observe(this, new Observer<List<String>>() {
+        viewModel.getCategoryList().observe(this, new Observer<List<String>>() {
             @Override
             public void onChanged(@Nullable List<String> strings) {
                 categoryList.clear();
@@ -113,7 +114,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         brandAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.brandSpinner.setAdapter(brandAdapter);
         binding.brandSpinner.setOnItemSelectedListener(this);
-        cbViewModel.getBrandList().observe(this, new Observer<List<String>>() {
+        viewModel.getBrandList().observe(this, new Observer<List<String>>() {
             @Override
             public void onChanged(@Nullable List<String> strings) {
                 brandList.clear();
@@ -157,14 +158,14 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
             }
             case R.id.addTrain_addBrandBtn:{
                 AddBrandFragment addBrandFrag = new AddBrandFragment();
-                getFragmentManager().beginTransaction()
+                getChildFragmentManager().beginTransaction()
                         .add(R.id.childFragContainer, addBrandFrag)
                         .commit();
                 break;
             }
             case R.id.addTrain_addCategoryBtn:{
                 AddCategoryFragment addCatFrag = new AddCategoryFragment();
-                getFragmentManager().beginTransaction()
+                getChildFragmentManager().beginTransaction()
                         .add(R.id.childFragContainer, addCatFrag)
                         .commit();
                 break;

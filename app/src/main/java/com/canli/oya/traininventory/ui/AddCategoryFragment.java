@@ -47,12 +47,13 @@ public class AddCategoryFragment extends Fragment {
                 database.categoryDao().insertCategory(newCategory);
             }
         });
-        //Remove the fragment
-        Fragment frag = getFragmentManager().findFragmentById(R.id.childFragContainer);
-        getFragmentManager().beginTransaction()
-                .remove(frag)
-                .commit();
+        Fragment parentFrag = getParentFragment();
+        if(parentFrag != null){
+            //Remove the fragment
+            Fragment frag = getFragmentManager().findFragmentById(R.id.childFragContainer);
+            getFragmentManager().beginTransaction()
+                    .remove(frag)
+                    .commit();
+        }
     }
-
-
 }
