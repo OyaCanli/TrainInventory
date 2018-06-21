@@ -88,11 +88,14 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
                 mDb.brandDao().insertBrand(newBrand);
             }
         });
-        //Remove the fragment
-        Fragment frag = getFragmentManager().findFragmentById(R.id.childFragContainer);
-        getFragmentManager().beginTransaction()
-                .remove(frag)
-                .commit();
+        Fragment parentFrag = getParentFragment();
+        if(parentFrag != null){
+            //Remove the fragment
+            Fragment frag = getFragmentManager().findFragmentById(R.id.childFragContainer);
+            getFragmentManager().beginTransaction()
+                    .remove(frag)
+                    .commit();
+        }
     }
 
     private void openImageDialog() {

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TrainInventory</string>
+    <string name="app_name">Train Inventory</string>
     <string name="trains">Trains</string>
     <string name="brands">Brands</string>
     <string name="category">Category</string>

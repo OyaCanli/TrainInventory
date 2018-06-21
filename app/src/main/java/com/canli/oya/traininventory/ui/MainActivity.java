@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -12,12 +13,11 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.canli.oya.traininventory.R;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
-        View.OnClickListener{
+        View.OnClickListener, FragmentManager.OnBackStackChangedListener{
 
     private ActionBarDrawerToggle toggle;
     private DrawerLayout drawer;
@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
 
         fab = findViewById(R.id.fab_main);
         fab.setOnClickListener(this);
@@ -103,6 +105,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .addToBackStack(null)
                     .commit();
             fab.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        Fragment frag = getSupportFragmentManager().findFragmentById(R.id.container);
+        if(frag instanceof TrainListFragment){
+            fab.setVisibility(View.VISIBLE);
         }
     }
 }
