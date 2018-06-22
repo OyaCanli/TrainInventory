@@ -34,9 +34,11 @@
             <TextView
                 android:id="@+id/textView5"
                 style="@style/FieldStyle"
+                android:layout_marginTop="8dp"
                 android:text="@string/brand"
                 app:layout_constraintBottom_toBottomOf="@+id/brandSpinner"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/brandSpinner" />
 
             <Spinner
                 android:id="@+id/brandSpinner"
@@ -58,8 +60,8 @@
             <EditText
                 android:id="@+id/editReference"
                 style="@style/editTextStyle"
-                android:inputType="textCapCharacters"
                 android:layout_marginTop="@dimen/margin_standard"
+                android:inputType="textCapCharacters"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.466"
                 app:layout_constraintStart_toEndOf="@+id/barrier"
@@ -171,35 +173,42 @@
                 android:id="@+id/editLocationLetter"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/half_margin"
                 android:layout_marginTop="16dp"
                 android:ems="10"
                 android:inputType="textCapCharacters"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/textView11"
                 app:layout_constraintTop_toBottomOf="@+id/product_details_gallery_image" />
 
             <Button
                 android:id="@+id/save_btn"
-                style = "@style/buttonStyle"
+                style="@style/buttonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
+                android:layout_marginBottom="8dp"
                 android:text="@string/save"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/editLocationLetter"
-                app:layout_constraintBottom_toBottomOf="parent"
-                />
+                app:layout_constraintTop_toBottomOf="@+id/editLocationNumber" />
 
             <EditText
                 android:id="@+id/editLocationNumber"
                 android:layout_width="80dp"
                 android:layout_height="0dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginRight="@dimen/half_margin"
                 android:layout_marginStart="16dp"
                 android:ems="10"
                 android:inputType="number"
                 app:layout_constraintBottom_toBottomOf="@+id/editLocationLetter"
-                app:layout_constraintStart_toEndOf="@+id/textView6"
+                app:layout_constraintEnd_toStartOf="@+id/textView11"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@+id/barrier"
                 app:layout_constraintTop_toTopOf="@+id/editLocationLetter" />
 
             <ImageButton
@@ -219,10 +228,10 @@
                 android:layout_height="@dimen/add_brand_imagebtn_height"
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp"
                 android:background="@color/colorPrimary"
+                app:layout_constraintBottom_toBottomOf="@+id/brandSpinner"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addTrain_addCategoryBtn"
+                app:layout_constraintTop_toTopOf="@+id/brandSpinner"
                 app:srcCompat="@drawable/baseline_add_white_24dp" />
 
             <FrameLayout
@@ -243,10 +252,15 @@
             <TextView
                 android:id="@+id/textView11"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginLeft="@dimen/half_margin"
                 android:text="-"
+                android:textSize="40sp"
+                app:layout_constraintBottom_toBottomOf="@+id/editLocationLetter"
+                app:layout_constraintEnd_toStartOf="@+id/editLocationLetter"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/editLocationNumber"
-                tools:layout_editor_absoluteY="501dp" />
+                app:layout_constraintTop_toTopOf="@+id/editLocationLetter" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

@@ -28,6 +28,7 @@ public class AddCategoryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_category, container, false);
         categoryName_et = rootView.findViewById(R.id.addCategory_editCatName);
+        categoryName_et.requestFocus();
         Button save_category_btn = rootView.findViewById(R.id.addCategory_saveBtn);
         save_category_btn.setOnClickListener(new View.OnClickListener() {
             @Override

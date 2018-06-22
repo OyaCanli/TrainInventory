@@ -33,7 +33,6 @@ public class TrainListFragment extends Fragment implements TrainAdapter.ListItem
     private RecyclerView recycler;
     private TrainAdapter mAdapter;
     private ConstraintLayout empty_screen;
-    private TrainDatabase mDb;
 
     public TrainListFragment() {
     }
@@ -43,6 +42,14 @@ public class TrainListFragment extends Fragment implements TrainAdapter.ListItem
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_list, container, false);
 
+        getActivity().setTitle(getString(R.string.all_trains));
+
+        mAdapter = new TrainAdapter(getActivity(), this);
+        recycler = rootView.findViewById(R.id.list);
+        recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recycler.setItemAnimator(new DefaultItemAnimator());
+        recycler.setAdapter(mAdapter);
+
         TrainListViewModel viewModel = ViewModelProviders.of(this).get(TrainListViewModel.class);
         viewModel.getTrains().observe(this, new Observer<List<TrainMinimal>>() {
             @Override
@@ -51,13 +58,6 @@ public class TrainListFragment extends Fragment implements TrainAdapter.ListItem
             }
         });
 
-        getActivity().setTitle(getString(R.string.all_trains));
-
-        mAdapter = new TrainAdapter(getActivity(), this);
-        recycler = rootView.findViewById(R.id.list);
-        recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recycler.setItemAnimator(new DefaultItemAnimator());
-        recycler.setAdapter(mAdapter);
         empty_screen = rootView.findViewById(R.id.empty_view);
         empty_tv = rootView.findViewById(R.id.empty_text);
 

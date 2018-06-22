@@ -22,13 +22,16 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.canli.oya.traininventory.R;
+import com.canli.oya.traininventory.adapters.CustomSpinAdapter;
 import com.canli.oya.traininventory.data.TrainDatabase;
+import com.canli.oya.traininventory.data.entities.BrandEntry;
 import com.canli.oya.traininventory.data.entities.TrainEntry;
 import com.canli.oya.traininventory.databinding.FragmentAddTrainBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
@@ -57,7 +60,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     private String mImageUri;
     private int mUsersChoice;
     private List<String> categoryList;
-    private List<String> brandList;
+    private List<BrandEntry> brandList;
     int mTrainId;
 
     private final DialogInterface.OnClickListener mDialogClickListener = new DialogInterface.OnClickListener() {
@@ -74,7 +77,11 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_add_train, container, false);
+        getActivity().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
+
+        getActivity().setTitle(getString(R.string.add_train));
 
         Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey(Constants.TRAIN_ID)) { //This is the "edit" case
@@ -82,7 +89,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         }
 
         ChosenTrainViewModelFactory factory = new ChosenTrainViewModelFactory(mDb, mTrainId);
-        final ChosenTrainViewModel viewModel = ViewModelProviders.of(this, factory).get(ChosenTrainViewModel.class);
+        final ChosenTrainViewModel viewModel = ViewModelProviders.of(getActivity(), factory).get(ChosenTrainViewModel.class);
 
         if (mTrainId != 0) {
             viewModel.getChosenTrain().observe(this, new Observer<TrainEntry>() {
@@ -111,15 +118,14 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
 
         //Set brand spinner
         brandList = new ArrayList<>();
-        final ArrayAdapter<String> brandAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, brandList);
-        brandAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        final CustomSpinAdapter brandAdapter = new CustomSpinAdapter(getActivity(), brandList);
         binding.brandSpinner.setAdapter(brandAdapter);
         binding.brandSpinner.setOnItemSelectedListener(this);
-        viewModel.getBrandList().observe(this, new Observer<List<String>>() {
+        viewModel.getBrandList().observe(this, new Observer<List<BrandEntry>>() {
             @Override
-            public void onChanged(@Nullable List<String> strings) {
+            public void onChanged(@Nullable List<BrandEntry> brandEntries) {
                 brandList.clear();
-                brandList.addAll(strings);
+                brandList.addAll(brandEntries);
                 brandAdapter.notifyDataSetChanged();
             }
         });
@@ -354,7 +360,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onItemSelected(AdapterView<?> spinner, View view, int position, long id) {
         if (spinner.getId() == R.id.brandSpinner) {
-            mChosenBrand = brandList.get(position);
+            mChosenBrand = brandList.get(position).getBrandName();
         } else {
             mChosenCategory = categoryList.get(position);
         }

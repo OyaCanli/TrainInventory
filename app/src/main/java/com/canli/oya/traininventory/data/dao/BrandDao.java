@@ -14,7 +14,7 @@ import java.util.List;
 public interface BrandDao {
 
     @Query("SELECT * FROM brands")
-    List<BrandEntry> getAllBrands();
+    LiveData<List<BrandEntry>> getAllBrands();
 
     @Query("SELECT brandName FROM brands")
     LiveData<List<String>> getAllBrandNames();

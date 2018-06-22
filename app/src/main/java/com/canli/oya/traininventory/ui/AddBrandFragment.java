@@ -17,6 +17,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -62,6 +63,7 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
         Button save_btn = rootView.findViewById(R.id.addBrand_saveBtn);
         save_btn.setOnClickListener(this);
         brandName_et = rootView.findViewById(R.id.addBrand_editBrandName);
+        brandName_et.requestFocus();
         addPhoto_iv = rootView.findViewById(R.id.addBrand_image);
         addPhoto_iv.setOnClickListener(this);
         return rootView;

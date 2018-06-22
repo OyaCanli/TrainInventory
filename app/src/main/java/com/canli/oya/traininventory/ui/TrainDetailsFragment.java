@@ -49,7 +49,7 @@ public class TrainDetailsFragment extends Fragment {
         mTrainId = bundle.getInt(Constants.TRAIN_ID);
 
         ChosenTrainViewModelFactory factory = new ChosenTrainViewModelFactory(mDb, mTrainId);
-        final ChosenTrainViewModel viewModel = ViewModelProviders.of(this, factory).get(ChosenTrainViewModel.class);
+        final ChosenTrainViewModel viewModel = ViewModelProviders.of(getActivity(), factory).get(ChosenTrainViewModel.class);
         viewModel.getChosenTrain().observe(this, new Observer<TrainEntry>() {
             @Override
             public void onChanged(@Nullable TrainEntry trainEntry) {
@@ -63,6 +63,7 @@ public class TrainDetailsFragment extends Fragment {
     private void populateUI(TrainEntry chosenTrain) {
         binding.detailsBrand.setText(chosenTrain.getBrandName());
         binding.detailsProductName.setText(chosenTrain.getTrainName());
+        getActivity().setTitle(chosenTrain.getTrainName());
         binding.detailsReference.setText(chosenTrain.getModelReference());
         binding.detailsCategory.setText(chosenTrain.getCategoryName());
         binding.detailsQuantity.setText(String.valueOf(chosenTrain.getQuantity()));

@@ -1,5 +1,6 @@
 package com.canli.oya.traininventory.ui;
 
+import android.content.Context;
 import android.support.transition.Slide;
 import android.support.v4.app.Fragment;
 import android.support.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.canli.oya.traininventory.R;
 
@@ -68,6 +70,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 trainListFrag.setExitTransition(new Slide(Gravity.START));
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.container, trainListFrag)
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            }
+            case R.id.see_brands:{
+                BrandListFragment brandListFrag = new BrandListFragment();
+                brandListFrag.setEnterTransition(new Slide(Gravity.END));
+                brandListFrag.setExitTransition(new Slide(Gravity.START));
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, brandListFrag)
                         .addToBackStack(null)
                         .commit();
                 break;
@@ -126,6 +138,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fab.setVisibility(View.VISIBLE);
         } else{
             fab.setVisibility(View.GONE);
+        }
+        View focusedView = this.getCurrentFocus();
+        if (focusedView != null) {
+            focusedView.clearFocus();
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
         }
     }
 }

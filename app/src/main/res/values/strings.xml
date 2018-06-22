@@ -27,4 +27,9 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="category_name">Category name</string>
+    <string name="all_brands">All Brands</string>
+    <string name="add_brand">Add Brand</string>
+    <string name="add_train">Add Train</string>
+    <string name="brand_deleted">Brand deleted</string>
+    <string name="undo">UNDO</string>
 </resources>
