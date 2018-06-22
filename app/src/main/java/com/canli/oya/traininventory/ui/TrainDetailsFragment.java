@@ -2,12 +2,14 @@ package com.canli.oya.traininventory.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.transition.Slide;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -85,18 +87,7 @@ public class TrainDetailsFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.action_delete:{
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDb.trainDao().deleteTrain(mChosenTrain);
-                        TrainListFragment trainListFrag = new TrainListFragment();
-                        trainListFrag.setEnterTransition(new Slide(Gravity.END));
-                        trainListFrag.setExitTransition(new Slide(Gravity.START));
-                        getFragmentManager().beginTransaction()
-                                .replace(R.id.container, trainListFrag)
-                                .commit();
-                    }
-                });
+                openAlertDialogForDelete();
                 break;
             }
             case R.id.action_edit:{
@@ -113,5 +104,37 @@ public class TrainDetailsFragment extends Fragment {
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openAlertDialogForDelete() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.Theme_AppCompat_DayNight_Dialog);
+        builder.setMessage("Do you want to delete this item from the database?");
+        builder.setPositiveButton("Yes, delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteTrain();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            }
+        });
+        builder.create();
+        builder.show();
+    }
+
+    private void deleteTrain() {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mDb.trainDao().deleteTrain(mChosenTrain);
+                TrainListFragment trainListFrag = new TrainListFragment();
+                trainListFrag.setEnterTransition(new Slide(Gravity.END));
+                trainListFrag.setExitTransition(new Slide(Gravity.START));
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, trainListFrag)
+                        .commit();
+            }
+        });
     }
 }

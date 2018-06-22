@@ -27,6 +27,7 @@ import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModelFactory;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class BrandListFragment extends Fragment{
@@ -34,6 +35,8 @@ public class BrandListFragment extends Fragment{
     private List<BrandEntry> brands;
     private BrandAdapter adapter;
     private boolean undoClicked;
+    private LinkedList<BrandEntry> tempListOfBrandsToErase = new LinkedList<>();
+    private TrainDatabase mDb;
 
     public BrandListFragment() {
     }
@@ -43,7 +46,7 @@ public class BrandListFragment extends Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_list, container, false);
 
-        final TrainDatabase db = TrainDatabase.getInstance(getActivity().getApplicationContext());
+        mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
         adapter = new BrandAdapter(getActivity());
         RecyclerView recycler = rootView.findViewById(R.id.list);
@@ -51,7 +54,7 @@ public class BrandListFragment extends Fragment{
         recycler.setItemAnimator(new DefaultItemAnimator());
         recycler.setAdapter(adapter);
 
-        ChosenTrainViewModelFactory factory = new ChosenTrainViewModelFactory(db, 0);
+        ChosenTrainViewModelFactory factory = new ChosenTrainViewModelFactory(mDb, 0);
         final ChosenTrainViewModel viewModel = ViewModelProviders.of(getActivity(), factory).get(ChosenTrainViewModel.class);
         viewModel.getBrandList().observe(getActivity(), new Observer<List<BrandEntry>>() {
             @Override
@@ -79,38 +82,17 @@ public class BrandListFragment extends Fragment{
                 brands.remove(position);
                 adapter.setBrands(brands);
                 adapter.notifyItemRemoved(position);
-
+                tempListOfBrandsToErase.add(brandToErase);
                 Snackbar snackbar = Snackbar
                         .make(coordinator, R.string.brand_deleted, Snackbar.LENGTH_LONG)
-                        .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                            @Override
-                            public void onDismissed(Snackbar transientBottomBar, int event) {
-                                super.onDismissed(transientBottomBar, event);
-                                /*This method is called when snackbar disappears for whatever reason:
-                                Dismissed by user, by timeout, or by clicking UNDO button.
-                                We want to erase the item from database if snackbar is dismissed by
-                                timeout or by user. But not when user clicked UNDO*/
-                                Log.d("BrandListFragment", "dismiss is called");
-                                if(!undoClicked)
-                                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Log.d("BrandListFragment", "delete is called");
-                                        db.brandDao().deleteBrand(brandToErase);
-                                    }
-                                });
-                                undoClicked = false;
-
-                            }
-                        })
                         .setAction(R.string.undo, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 //If UNDO is clicked add the item back in the adapter
-                                undoClicked = true;
                                 brands.add(position, brandToErase);
                                 adapter.setBrands(brands);
                                 adapter.notifyItemInserted(position);
+                                tempListOfBrandsToErase.removeLast();
                             }
                         });
                 snackbar.show();
@@ -119,4 +101,23 @@ public class BrandListFragment extends Fragment{
 
         return rootView;
     }
+
+    private void deleteFromDatabase(){
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("BrandListFragment", "delete is called");
+                for(BrandEntry brand: tempListOfBrandsToErase){
+                    mDb.brandDao().deleteBrand(brand);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        deleteFromDatabase();
+    }
 }
+
