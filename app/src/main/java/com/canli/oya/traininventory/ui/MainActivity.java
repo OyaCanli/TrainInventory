@@ -1,5 +1,6 @@
 package com.canli.oya.traininventory.ui;
 
+import android.support.transition.Slide;
 import android.support.v4.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -11,6 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if(savedInstanceState == null) {
             TrainListFragment trainListFrag = new TrainListFragment();
+            trainListFrag.setExitTransition(new Slide(Gravity.START));
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, trainListFrag)
                     .addToBackStack(null)
@@ -61,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch(id){
             case R.id.see_trains:{
                 TrainListFragment trainListFrag = new TrainListFragment();
+                trainListFrag.setEnterTransition(new Slide(Gravity.END));
+                trainListFrag.setExitTransition(new Slide(Gravity.START));
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.container, trainListFrag)
                         .addToBackStack(null)
@@ -69,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case R.id.add_train:{
                 AddTrainFragment addTrainFrag = new AddTrainFragment();
+                addTrainFrag.setEnterTransition(new Slide(Gravity.END));
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.container, addTrainFrag)
                         .addToBackStack(null)
@@ -77,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case R.id.add_brand:{
                 AddBrandFragment addBrandFrag = new AddBrandFragment();
+                addBrandFrag.setEnterTransition(new Slide(Gravity.END));
+                addBrandFrag.setExitTransition(new Slide(Gravity.START));
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.container, addBrandFrag)
                         .addToBackStack(null)
@@ -85,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case R.id.add_category:{
                 AddCategoryFragment addCatFrag = new AddCategoryFragment();
+                addCatFrag.setEnterTransition(new Slide(Gravity.END));
+                addCatFrag.setExitTransition(new Slide(Gravity.START));
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.container, addCatFrag)
                         .addToBackStack(null)
@@ -100,11 +110,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onClick(View v) {
         if(v.getId() == R.id.fab_main){
             AddTrainFragment addTrainFrag = new AddTrainFragment();
+            addTrainFrag.setEnterTransition(new Slide(Gravity.END));
+            addTrainFrag.setExitTransition(new Slide(Gravity.START));
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, addTrainFrag)
                     .addToBackStack(null)
                     .commit();
-            fab.setVisibility(View.GONE);
         }
     }
 
@@ -113,6 +124,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Fragment frag = getSupportFragmentManager().findFragmentById(R.id.container);
         if(frag instanceof TrainListFragment){
             fab.setVisibility(View.VISIBLE);
+        } else{
+            fab.setVisibility(View.GONE);
         }
     }
 }

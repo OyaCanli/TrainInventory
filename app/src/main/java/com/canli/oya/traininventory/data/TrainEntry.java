@@ -30,7 +30,7 @@ public class TrainEntry {
         this.location = location;
     }
 
-    public TrainEntry(int trainId, String trainName, String modelReference, String brandName, String categoryName, int quantity, String imageUri, String description, String location) {
+    TrainEntry(int trainId, String trainName, String modelReference, String brandName, String categoryName, int quantity, String imageUri, String description, String location) {
         this.trainId = trainId;
         this.trainName = trainName;
         this.modelReference = modelReference;

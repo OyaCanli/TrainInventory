@@ -22,9 +22,6 @@ public interface CategoryDao {
     @Insert
     void insertCategory(CategoryEntry category);
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updateCategoryInfo(CategoryEntry category);
-
     @Delete
     void deleteCategory(CategoryEntry category);
 

@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
@@ -93,6 +94,7 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
             //Remove the fragment
             Fragment frag = getFragmentManager().findFragmentById(R.id.childFragContainer);
             getFragmentManager().beginTransaction()
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                     .remove(frag)
                     .commit();
         }

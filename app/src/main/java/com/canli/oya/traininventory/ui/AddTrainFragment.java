@@ -12,12 +12,15 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.transition.Slide;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +48,7 @@ import java.util.List;
 import static android.app.Activity.RESULT_OK;
 
 public class AddTrainFragment extends Fragment implements View.OnClickListener,
-        AdapterView.OnItemSelectedListener{
+        AdapterView.OnItemSelectedListener {
 
     private FragmentAddTrainBinding binding;
     private String mChosenCategory;
@@ -53,7 +56,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     private TrainDatabase mDb;
     private AlertDialog pickImageDialog;
     private String mTempPhotoPath;
-    private Uri mImageUri;
+    private String mImageUri;
     private int mUsersChoice;
     private List<String> categoryList;
     private List<String> brandList;
@@ -76,14 +79,14 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
         Bundle bundle = getArguments();
-        if(bundle != null && bundle.containsKey(Constants.TRAIN_ID)){ //This is the "edit" case
+        if (bundle != null && bundle.containsKey(Constants.TRAIN_ID)) { //This is the "edit" case
             mTrainId = bundle.getInt(Constants.TRAIN_ID);
         }
 
         ChosenTrainViewModelFactory factory = new ChosenTrainViewModelFactory(mDb, mTrainId);
         final ChosenTrainViewModel viewModel = ViewModelProviders.of(this, factory).get(ChosenTrainViewModel.class);
 
-        if(mTrainId != 0){
+        if (mTrainId != 0) {
             viewModel.getChosenTrain().observe(this, new Observer<TrainEntry>() {
                 @Override
                 public void onChanged(@Nullable TrainEntry trainEntry) {
@@ -132,13 +135,14 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         return binding.getRoot();
     }
 
-    private void populateFields(TrainEntry trainToEdit){
+    private void populateFields(TrainEntry trainToEdit) {
         binding.brandSpinner.setSelection(categoryList.indexOf(trainToEdit.getCategoryName()));
         binding.brandSpinner.setSelection(brandList.indexOf(trainToEdit.getBrandName()));
         binding.editReference.setText(trainToEdit.getModelReference());
         binding.editTrainName.setText(trainToEdit.getTrainName());
         binding.editQuantity.setText(String.valueOf(trainToEdit.getQuantity()));
         binding.editTrainDescription.setText(trainToEdit.getDescription());
+        mImageUri = trainToEdit.getImageUri();
         GlideApp.with(AddTrainFragment.this)
                 .load(trainToEdit.getImageUri())
                 .placeholder(R.drawable.placeholder)
@@ -151,37 +155,47 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()){
-            case R.id.save_btn:{
+        switch (v.getId()) {
+            case R.id.save_btn: {
                 saveTrain();
                 break;
             }
-            case R.id.addTrain_addBrandBtn:{
-                AddBrandFragment addBrandFrag = new AddBrandFragment();
-                getChildFragmentManager().beginTransaction()
-                        .add(R.id.childFragContainer, addBrandFrag)
-                        .commit();
+            case R.id.addTrain_addBrandBtn: {
+                insertAddBrandFragment();
                 break;
             }
-            case R.id.addTrain_addCategoryBtn:{
-                AddCategoryFragment addCatFrag = new AddCategoryFragment();
-                getChildFragmentManager().beginTransaction()
-                        .add(R.id.childFragContainer, addCatFrag)
-                        .commit();
+            case R.id.addTrain_addCategoryBtn: {
+                insertAddCategoryFragment();
                 break;
             }
-            case R.id.product_details_gallery_image:{
+            case R.id.product_details_gallery_image: {
                 openImageDialog();
                 break;
             }
         }
     }
 
-    private void saveTrain(){
+    private void insertAddCategoryFragment() {
+        AddCategoryFragment addCatFrag = new AddCategoryFragment();
+        getChildFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.translate_from_top, 0)
+                .replace(R.id.childFragContainer, addCatFrag)
+                .commit();
+    }
+
+    private void insertAddBrandFragment() {
+        AddBrandFragment addBrandFrag = new AddBrandFragment();
+        getChildFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.translate_from_top, 0)
+                .replace(R.id.childFragContainer, addBrandFrag)
+                .commit();
+    }
+
+    private void saveTrain() {
         String quantityToParse = binding.editQuantity.getText().toString().trim();
         //Quantity can be null. But if it is not null it should be a positive integer
         int quantity = 0;
-        if(!TextUtils.isEmpty(quantityToParse)){
+        if (!TextUtils.isEmpty(quantityToParse)) {
             try {
                 quantity = Integer.valueOf(quantityToParse);
                 if (quantity < 0) {
@@ -199,15 +213,25 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         String location = binding.editLocationNumber.getText().toString().trim() + "-" +
                 binding.editLocationLetter.getText().toString().trim();
 
-        final TrainEntry newTrain = new TrainEntry(trainName, reference, mChosenBrand, mChosenCategory, quantity, mImageUri.toString(), description, location);
-        Log.v("AddTrainFragment", "new train:" + newTrain.toString());
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                mDb.trainDao().insertTrain(newTrain);
-            }
-        });
+        final TrainEntry newTrain = new TrainEntry(trainName, reference, mChosenBrand, mChosenCategory, quantity, mImageUri, description, location);
+        if(mTrainId == 0) {
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mDb.trainDao().insertTrain(newTrain);
+                }
+            });
+        } else{
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mDb.trainDao().updateTrainInfo(newTrain);
+                }
+            });
+        }
         TrainListFragment trainListFrag = new TrainListFragment();
+        trainListFrag.setEnterTransition(new Slide(Gravity.END));
+        trainListFrag.setExitTransition(new Slide(Gravity.START));
         getFragmentManager().beginTransaction()
                 .replace(R.id.container, trainListFrag)
                 .addToBackStack(null)
@@ -223,7 +247,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (mUsersChoice) {
-                    case 0:{
+                    case 0: {
                         if (ContextCompat.checkSelfPermission(getActivity(),
                                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                                 != PackageManager.PERMISSION_GRANTED) {
@@ -251,7 +275,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         pickImageDialog.show();
     }
 
-    private void openGallery(){
+    private void openGallery() {
         Intent intent = new Intent();
         // Show only images, no videos or anything else
         intent.setType("image/*");
@@ -276,10 +300,11 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 // Get the path of the temporary file
                 mTempPhotoPath = photoFile.getAbsolutePath();
 
-                mImageUri = FileProvider.getUriForFile(getActivity(),
+                Uri imageUri = FileProvider.getUriForFile(getActivity(),
                         Constants.FILE_PROVIDER_AUTHORITY,
                         photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+                mImageUri = imageUri.toString();
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                 startActivityForResult(takePictureIntent, Constants.REQUEST_IMAGE_CAPTURE);
             }
         }
@@ -299,8 +324,9 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
             }
         } else if (requestCode == Constants.PICK_IMAGE_REQUEST) {
             if (resultCode == RESULT_OK) {
-                mImageUri = data.getData();
-                Glide.with(getActivity())
+                Uri imageUri = data.getData();
+                mImageUri = imageUri.toString();
+                Glide.with(AddTrainFragment.this)
                         .load(mImageUri)
                         .into(binding.productDetailsGalleryImage);
             }
@@ -328,9 +354,9 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onItemSelected(AdapterView<?> spinner, View view, int position, long id) {
-        if(spinner.getId() == R.id.brandSpinner){
+        if (spinner.getId() == R.id.brandSpinner) {
             mChosenBrand = brandList.get(position);
-        } else{
+        } else {
             mChosenCategory = categoryList.get(position);
         }
     }

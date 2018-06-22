@@ -7,7 +7,9 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.transition.Slide;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -61,7 +63,7 @@ public class TrainDetailsFragment extends Fragment {
 
     private void populateUI(TrainEntry chosenTrain) {
         binding.detailsBrand.setText(chosenTrain.getBrandName());
-        binding.detailsProductName.setText(String.valueOf(chosenTrain.getTrainId()));
+        binding.detailsProductName.setText(chosenTrain.getTrainName());
         binding.detailsReference.setText(chosenTrain.getModelReference());
         binding.detailsCategory.setText(chosenTrain.getCategoryName());
         binding.detailsQuantity.setText(String.valueOf(chosenTrain.getQuantity()));
@@ -88,6 +90,8 @@ public class TrainDetailsFragment extends Fragment {
                     public void run() {
                         mDb.trainDao().deleteTrain(mChosenTrain);
                         TrainListFragment trainListFrag = new TrainListFragment();
+                        trainListFrag.setEnterTransition(new Slide(Gravity.END));
+                        trainListFrag.setExitTransition(new Slide(Gravity.START));
                         getFragmentManager().beginTransaction()
                                 .replace(R.id.container, trainListFrag)
                                 .commit();
@@ -100,6 +104,7 @@ public class TrainDetailsFragment extends Fragment {
                 Bundle args = new Bundle();
                 args.putInt(Constants.TRAIN_ID, mTrainId);
                 addTrainFrag.setArguments(args);
+                addTrainFrag.setEnterTransition(new Slide(Gravity.END));
                 getFragmentManager().beginTransaction()
                         .replace(R.id.container, addTrainFrag)
                         .addToBackStack(null)

@@ -58,6 +58,7 @@
             <EditText
                 android:id="@+id/editReference"
                 style="@style/editTextStyle"
+                android:inputType="textCapCharacters"
                 android:layout_marginTop="@dimen/margin_standard"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.466"
@@ -170,23 +171,24 @@
                 android:id="@+id/editLocationLetter"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:ems="10"
                 android:inputType="textCapCharacters"
-                app:layout_constraintStart_toEndOf="@+id/editLocationNumber"
+                app:layout_constraintStart_toEndOf="@+id/textView11"
                 app:layout_constraintTop_toBottomOf="@+id/product_details_gallery_image" />
 
             <Button
                 android:id="@+id/save_btn"
+                style = "@style/buttonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_margin="16dp"
                 android:text="@string/save"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/editLocationLetter" />
+                app:layout_constraintTop_toBottomOf="@id/editLocationLetter"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
 
             <EditText
                 android:id="@+id/editLocationNumber"
@@ -206,6 +208,7 @@
                 android:layout_height="@dimen/add_brand_imagebtn_height"
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
+                android:background="@color/colorPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/categorySpinner"
                 app:srcCompat="@drawable/baseline_add_white_24dp" />
@@ -217,6 +220,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
+                android:background="@color/colorPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/addTrain_addCategoryBtn"
                 app:srcCompat="@drawable/baseline_add_white_24dp" />
@@ -235,6 +239,14 @@
                 app:layout_constraintTop_toTopOf="parent">
 
             </FrameLayout>
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-"
+                app:layout_constraintStart_toEndOf="@+id/editLocationNumber"
+                tools:layout_editor_absoluteY="501dp" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

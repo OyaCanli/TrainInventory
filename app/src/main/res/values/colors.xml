@@ -3,4 +3,5 @@
     <color name="colorPrimary">#446D6C</color>
     <color name="colorPrimaryDark">#385A59</color>
     <color name="colorAccent">#FF5722</color>
+    <color name="frag_background">#FFC145</color>
 </resources>

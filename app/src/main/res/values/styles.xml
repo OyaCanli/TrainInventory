@@ -37,4 +37,13 @@
         <item name="android:textColor">@android:color/black</item>
     </style>
 
+    <style name="buttonStyle">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:paddingStart">@dimen/half_padding</item>
+        <item name="android:paddingLeft">@dimen/half_padding</item>
+        <item name="android:paddingEnd">@dimen/half_padding</item>
+        <item name="android:paddingRight">@dimen/half_padding</item>
+    </style>
+
 </resources>
