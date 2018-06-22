@@ -1,6 +1,5 @@
 package com.canli.oya.traininventory.ui;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
@@ -19,11 +18,11 @@ import android.view.ViewGroup;
 
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.data.TrainDatabase;
-import com.canli.oya.traininventory.data.TrainEntry;
+import com.canli.oya.traininventory.data.entities.TrainEntry;
 import com.canli.oya.traininventory.databinding.FragmentTrainDetailsBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
-import com.canli.oya.traininventory.utils.ChosenTrainViewModel;
-import com.canli.oya.traininventory.utils.ChosenTrainViewModelFactory;
+import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
+import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModelFactory;
 import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.utils.GlideApp;
 

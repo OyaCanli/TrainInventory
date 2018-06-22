@@ -24,7 +24,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.canli.oya.traininventory.R;
-import com.canli.oya.traininventory.data.BrandEntry;
+import com.canli.oya.traininventory.data.entities.BrandEntry;
 import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.BitmapUtils;

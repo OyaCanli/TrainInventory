@@ -1,10 +1,11 @@
-package com.canli.oya.traininventory.utils;
+package com.canli.oya.traininventory.viewmodel;
 
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
 import com.canli.oya.traininventory.data.TrainDatabase;
+import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
 
 public class ChosenTrainViewModelFactory extends ViewModelProvider.NewInstanceFactory{
 

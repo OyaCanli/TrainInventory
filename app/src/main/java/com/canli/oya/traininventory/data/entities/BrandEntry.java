@@ -1,4 +1,4 @@
-package com.canli.oya.traininventory.data;
+package com.canli.oya.traininventory.data.entities;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;

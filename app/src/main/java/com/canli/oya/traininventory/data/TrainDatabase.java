@@ -6,6 +6,13 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.util.Log;
 
+import com.canli.oya.traininventory.data.dao.BrandDao;
+import com.canli.oya.traininventory.data.dao.CategoryDao;
+import com.canli.oya.traininventory.data.dao.TrainDao;
+import com.canli.oya.traininventory.data.entities.BrandEntry;
+import com.canli.oya.traininventory.data.entities.CategoryEntry;
+import com.canli.oya.traininventory.data.entities.TrainEntry;
+
 @Database(entities = {TrainEntry.class, BrandEntry.class, CategoryEntry.class}, version =1, exportSchema = false)
 public abstract class TrainDatabase extends RoomDatabase{
 

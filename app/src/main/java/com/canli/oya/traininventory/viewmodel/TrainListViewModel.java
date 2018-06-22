@@ -1,4 +1,4 @@
-package com.canli.oya.traininventory.utils;
+package com.canli.oya.traininventory.viewmodel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;

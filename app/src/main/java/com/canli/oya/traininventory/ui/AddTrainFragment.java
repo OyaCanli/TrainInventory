@@ -14,12 +14,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.transition.Slide;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,12 +29,12 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.data.TrainDatabase;
-import com.canli.oya.traininventory.data.TrainEntry;
+import com.canli.oya.traininventory.data.entities.TrainEntry;
 import com.canli.oya.traininventory.databinding.FragmentAddTrainBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.BitmapUtils;
-import com.canli.oya.traininventory.utils.ChosenTrainViewModel;
-import com.canli.oya.traininventory.utils.ChosenTrainViewModelFactory;
+import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
+import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModelFactory;
 import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.utils.GlideApp;
 
@@ -213,8 +211,8 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         String location = binding.editLocationNumber.getText().toString().trim() + "-" +
                 binding.editLocationLetter.getText().toString().trim();
 
-        final TrainEntry newTrain = new TrainEntry(trainName, reference, mChosenBrand, mChosenCategory, quantity, mImageUri, description, location);
         if(mTrainId == 0) {
+            final TrainEntry newTrain = new TrainEntry(trainName, reference, mChosenBrand, mChosenCategory, quantity, mImageUri, description, location);
             AppExecutors.getInstance().diskIO().execute(new Runnable() {
                 @Override
                 public void run() {
@@ -222,10 +220,11 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 }
             });
         } else{
+            final TrainEntry trainToUpdate = new TrainEntry(mTrainId, trainName, reference, mChosenBrand, mChosenCategory, quantity, mImageUri, description, location);
             AppExecutors.getInstance().diskIO().execute(new Runnable() {
                 @Override
                 public void run() {
-                    mDb.trainDao().updateTrainInfo(newTrain);
+                    mDb.trainDao().updateTrainInfo(trainToUpdate);
                 }
             });
         }

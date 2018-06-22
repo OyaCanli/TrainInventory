@@ -1,6 +1,5 @@
 package com.canli.oya.traininventory.ui;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -23,7 +22,7 @@ import com.canli.oya.traininventory.adapters.TrainAdapter;
 import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.TrainMinimal;
 import com.canli.oya.traininventory.utils.Constants;
-import com.canli.oya.traininventory.utils.TrainListViewModel;
+import com.canli.oya.traininventory.viewmodel.TrainListViewModel;
 
 import java.util.List;
 

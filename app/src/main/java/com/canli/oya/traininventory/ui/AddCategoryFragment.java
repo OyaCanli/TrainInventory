@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.canli.oya.traininventory.R;
-import com.canli.oya.traininventory.data.CategoryEntry;
+import com.canli.oya.traininventory.data.entities.CategoryEntry;
 import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.utils.AppExecutors;
 
