@@ -27,6 +27,7 @@ import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModelFactory;
 import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.utils.GlideApp;
+import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 public class TrainDetailsFragment extends Fragment {
 
@@ -47,11 +48,8 @@ public class TrainDetailsFragment extends Fragment {
         setHasOptionsMenu(true);
         mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
-        Bundle bundle = getArguments();
-        mTrainId = bundle.getInt(Constants.TRAIN_ID);
-
-        ChosenTrainViewModelFactory factory = new ChosenTrainViewModelFactory(mDb, mTrainId);
-        final ChosenTrainViewModel viewModel = ViewModelProviders.of(getActivity(), factory).get(ChosenTrainViewModel.class);
+        //ChosenTrainViewModelFactory factory = new ChosenTrainViewModelFactory(mDb, mTrainId);
+        final MainViewModel viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
         viewModel.getChosenTrain().observe(this, new Observer<TrainEntry>() {
             @Override
             public void onChanged(@Nullable TrainEntry trainEntry) {
@@ -93,7 +91,7 @@ public class TrainDetailsFragment extends Fragment {
             case R.id.action_edit:{
                 AddTrainFragment addTrainFrag = new AddTrainFragment();
                 Bundle args = new Bundle();
-                args.putInt(Constants.TRAIN_ID, mTrainId);
+                args.putString(Constants.INTENT_REQUEST_CODE, Constants.EDIT_CASE);
                 addTrainFrag.setArguments(args);
                 addTrainFrag.setEnterTransition(new Slide(Gravity.END));
                 getFragmentManager().beginTransaction()

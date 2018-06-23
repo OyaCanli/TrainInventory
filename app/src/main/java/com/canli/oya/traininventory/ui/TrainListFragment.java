@@ -19,10 +19,9 @@ import android.widget.TextView;
 
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.adapters.TrainAdapter;
-import com.canli.oya.traininventory.data.TrainDatabase;
-import com.canli.oya.traininventory.data.TrainMinimal;
+import com.canli.oya.traininventory.data.entities.TrainEntry;
 import com.canli.oya.traininventory.utils.Constants;
-import com.canli.oya.traininventory.viewmodel.TrainListViewModel;
+import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 import java.util.List;
 
@@ -33,6 +32,8 @@ public class TrainListFragment extends Fragment implements TrainAdapter.ListItem
     private RecyclerView recycler;
     private TrainAdapter mAdapter;
     private ConstraintLayout empty_screen;
+    private MainViewModel viewModel;
+    List<TrainEntry> mTrainList;
 
     public TrainListFragment() {
     }
@@ -50,26 +51,25 @@ public class TrainListFragment extends Fragment implements TrainAdapter.ListItem
         recycler.setItemAnimator(new DefaultItemAnimator());
         recycler.setAdapter(mAdapter);
 
-        TrainListViewModel viewModel = ViewModelProviders.of(this).get(TrainListViewModel.class);
-        viewModel.getTrains().observe(this, new Observer<List<TrainMinimal>>() {
-            @Override
-            public void onChanged(@Nullable List<TrainMinimal> trainMinimals) {
-                mAdapter.setTrains(trainMinimals);
-            }
-        });
+        viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        viewModel.getTrains().observe(getActivity(), new Observer<List<TrainEntry>>() {
+                    @Override
+                    public void onChanged(@Nullable List<TrainEntry> trainEntries) {
+                       mAdapter.setTrains(trainEntries);
+                       mTrainList = trainEntries;
+                    }
+                });
 
-        empty_screen = rootView.findViewById(R.id.empty_view);
+                empty_screen = rootView.findViewById(R.id.empty_view);
         empty_tv = rootView.findViewById(R.id.empty_text);
 
         return rootView;
     }
 
     @Override
-    public void onListItemClick(int trainId) {
+    public void onListItemClick(int position) {
+        viewModel.setChosenTrain(mTrainList.get(position));
         TrainDetailsFragment trainDetailsFrag = new TrainDetailsFragment();
-        Bundle args = new Bundle();
-        args.putInt(Constants.TRAIN_ID, trainId);
-        trainDetailsFrag.setArguments(args);
         trainDetailsFrag.setEnterTransition(new Slide(Gravity.END));
         trainDetailsFrag.setExitTransition(new Slide(Gravity.START));
         getFragmentManager().beginTransaction()

@@ -1,6 +1,7 @@
 package com.canli.oya.traininventory.ui;
 
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,6 +27,7 @@ import com.canli.oya.traininventory.data.entities.BrandEntry;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModelFactory;
+import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -54,8 +56,8 @@ public class BrandListFragment extends Fragment{
         recycler.setItemAnimator(new DefaultItemAnimator());
         recycler.setAdapter(adapter);
 
-        ChosenTrainViewModelFactory factory = new ChosenTrainViewModelFactory(mDb, 0);
-        final ChosenTrainViewModel viewModel = ViewModelProviders.of(getActivity(), factory).get(ChosenTrainViewModel.class);
+        //ChosenTrainViewModelFactory factory = new ChosenTrainViewModelFactory(mDb, 0);
+        final MainViewModel viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
         viewModel.getBrandList().observe(getActivity(), new Observer<List<BrandEntry>>() {
             @Override
             public void onChanged(@Nullable List<BrandEntry> brandEntries) {

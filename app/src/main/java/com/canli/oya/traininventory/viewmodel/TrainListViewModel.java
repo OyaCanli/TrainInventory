@@ -6,13 +6,13 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
 import com.canli.oya.traininventory.data.TrainDatabase;
-import com.canli.oya.traininventory.data.TrainMinimal;
+import com.canli.oya.traininventory.data.entities.TrainEntry;
 
 import java.util.List;
 
 public class TrainListViewModel extends AndroidViewModel {
 
-    private LiveData<List<TrainMinimal>> trainList;
+    private LiveData<List<TrainEntry>> trainList;
 
     public TrainListViewModel(@NonNull Application application) {
         super(application);
@@ -20,7 +20,7 @@ public class TrainListViewModel extends AndroidViewModel {
         trainList = mDb.trainDao().getAllTrains();
     }
 
-    public LiveData<List<TrainMinimal>> getTrains() {
+    public LiveData<List<TrainEntry>> getTrains() {
         return trainList;
     }
 }

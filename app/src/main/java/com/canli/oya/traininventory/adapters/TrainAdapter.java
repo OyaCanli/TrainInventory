@@ -1,7 +1,6 @@
 package com.canli.oya.traininventory.adapters;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,16 +9,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.canli.oya.traininventory.R;
-import com.canli.oya.traininventory.data.TrainMinimal;
+import com.canli.oya.traininventory.data.entities.TrainEntry;
 import com.canli.oya.traininventory.utils.GlideApp;
 
 import java.util.List;
 
 public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHolder>{
 
-    private List<TrainMinimal> mTrainList;
+    private List<TrainEntry> mTrainList;
     private ListItemClickListener mClickListener;
     private Context mContext;
 
@@ -37,7 +35,7 @@ public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHol
 
     @Override
     public void onBindViewHolder(@NonNull TrainViewHolder holder, int position) {
-        TrainMinimal currentTrain = mTrainList.get(position);
+        TrainEntry currentTrain = mTrainList.get(position);
 
         holder.trainName_tv.setText(currentTrain.getTrainName());
         holder.brand_tv.setText(currentTrain.getBrandName());
@@ -59,7 +57,7 @@ public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHol
         return mTrainList.size();
     }
 
-    public void setTrains(List<TrainMinimal> newList){
+    public void setTrains(List<TrainEntry> newList){
         mTrainList = newList;
         notifyDataSetChanged();
     }
@@ -84,12 +82,12 @@ public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHol
 
         @Override
         public void onClick(View v) {
-            int trainId = mTrainList.get(getLayoutPosition()).getTrainId();
-            mClickListener.onListItemClick(trainId);
+            int position = getLayoutPosition();
+            mClickListener.onListItemClick(position);
         }
     }
 
     public interface ListItemClickListener {
-        void onListItemClick(int trainId);
+        void onListItemClick(int position);
     }
 }

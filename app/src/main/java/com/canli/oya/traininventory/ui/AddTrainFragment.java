@@ -40,6 +40,7 @@ import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModelFactory;
 import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.utils.GlideApp;
+import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,21 +78,18 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_add_train, container, false);
+
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
+        //ChosenTrainViewModelFactory factory = new ChosenTrainViewModelFactory(mDb, mTrainId);
+        final MainViewModel viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
         getActivity().setTitle(getString(R.string.add_train));
 
         Bundle bundle = getArguments();
-        if (bundle != null && bundle.containsKey(Constants.TRAIN_ID)) { //This is the "edit" case
-            mTrainId = bundle.getInt(Constants.TRAIN_ID);
-        }
-
-        ChosenTrainViewModelFactory factory = new ChosenTrainViewModelFactory(mDb, mTrainId);
-        final ChosenTrainViewModel viewModel = ViewModelProviders.of(getActivity(), factory).get(ChosenTrainViewModel.class);
-
-        if (mTrainId != 0) {
+        if (bundle != null && bundle.containsKey(Constants.INTENT_REQUEST_CODE)) { //This is the "edit" case
             viewModel.getChosenTrain().observe(this, new Observer<TrainEntry>() {
                 @Override
                 public void onChanged(@Nullable TrainEntry trainEntry) {
@@ -99,7 +97,6 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 }
             });
         }
-        //CategoryBrandViewModel cbViewModel= ViewModelProviders.of(this).get(CategoryBrandViewModel.class);
 
         //Set category spinner
         categoryList = new ArrayList<>();
