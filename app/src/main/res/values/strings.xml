@@ -32,4 +32,5 @@
     <string name="add_train">Add Train</string>
     <string name="brand_deleted">Brand deleted</string>
     <string name="undo">UNDO</string>
+    <string name="category_placeholder">(%1$s)</string>
 </resources>

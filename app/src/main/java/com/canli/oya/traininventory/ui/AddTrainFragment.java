@@ -152,9 +152,12 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 .placeholder(R.drawable.placeholder)
                 .centerCrop()
                 .into(binding.productDetailsGalleryImage);
-        String[] locationParts = trainToEdit.getLocation().split("-");
-        binding.editLocationNumber.setText(locationParts[0]);
-        binding.editLocationLetter.setText(locationParts[1]);
+        String location = trainToEdit.getLocation();
+        if(location.contains("-") && location.length()>1){
+            String[] locationParts = trainToEdit.getLocation().split("-");
+            binding.editLocationNumber.setText(locationParts[0]);
+            binding.editLocationLetter.setText(locationParts[1]);
+        }
     }
 
     @Override

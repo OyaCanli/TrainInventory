@@ -28,7 +28,7 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
     @NonNull
     @Override
     public BrandViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.spinner_item, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.list_item_brand, parent, false);
         return new BrandViewHolder(view);
     }
 
@@ -36,10 +36,6 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
         mBrandList.clear();
         mBrandList.addAll(newList);
         notifyDataSetChanged();
-    }
-
-    public List<BrandEntry> getBrandList() {
-        return mBrandList;
     }
 
     @Override
@@ -66,8 +62,8 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
 
         BrandViewHolder(View itemView) {
             super(itemView);
-            this.brandName_tv = itemView.findViewById(R.id.spin_item_brand_name);
-            this.logo_iv = itemView.findViewById(R.id.spin_item_logo);
+            this.brandName_tv = itemView.findViewById(R.id.brand_item_brandName);
+            this.logo_iv = itemView.findViewById(R.id.brand_item_logo);
         }
     }
 }

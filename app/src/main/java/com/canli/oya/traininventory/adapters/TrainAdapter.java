@@ -42,7 +42,7 @@ public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHol
         holder.trainName_tv.setText(currentTrain.getTrainName());
         holder.brand_tv.setText(currentTrain.getBrandName());
         holder.reference_tv.setText(currentTrain.getModelReference());
-        holder.category_tv.setText(currentTrain.getCategoryName());
+        holder.category_tv.setText(mContext.getString(R.string.category_placeholder, currentTrain.getCategoryName()));
 
         GlideApp.with(mContext)
                 .load(currentTrain.getImageUri())

@@ -3,5 +3,6 @@
     <color name="colorPrimary">#446D6C</color>
     <color name="colorPrimaryDark">#385A59</color>
     <color name="colorAccent">#FF5722</color>
-    <color name="frag_background">#FFC145</color>
+    <color name="window_background">#F2C14E</color>
+    <color name="cardBackground">#FFFFFF</color>
 </resources>

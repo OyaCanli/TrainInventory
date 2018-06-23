@@ -5,15 +5,17 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:background="@drawable/framed_view"
+        android:layout_margin="@dimen/margin_standard">
 
         <ImageView
             android:id="@+id/details_image"
             android:layout_width="@dimen/train_details_image_width"
             android:layout_height="@dimen/train_details_image_height"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginLeft="@dimen/half_margin"
+            android:layout_marginStart="@dimen/half_margin"
+            android:layout_marginTop="@dimen/half_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/placeholder" />
@@ -79,9 +81,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -92,8 +94,8 @@
             android:id="@+id/textView16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginLeft="@dimen/half_margin"
+            android:layout_marginStart="@dimen/half_margin"
             android:layout_marginTop="16dp"
             android:text="@string/quantity"
             app:layout_constraintStart_toStartOf="parent"
@@ -113,8 +115,8 @@
             android:id="@+id/textView18"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginLeft="@dimen/half_margin"
+            android:layout_marginStart="@dimen/half_margin"
             android:layout_marginTop="16dp"
             android:text="@string/location"
             app:layout_constraintStart_toStartOf="parent"
