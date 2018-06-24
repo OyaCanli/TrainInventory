@@ -16,8 +16,8 @@ import java.util.List;
 
 public class CustomSpinAdapter extends BaseAdapter {
 
-    private Context mContext;
-    private List<BrandEntry> mBrandList;
+    private final Context mContext;
+    private final List<BrandEntry> mBrandList;
 
     public CustomSpinAdapter(Context context, List<BrandEntry> list) {
         mContext = context;

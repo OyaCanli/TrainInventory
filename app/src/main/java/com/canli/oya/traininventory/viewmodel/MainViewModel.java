@@ -15,15 +15,14 @@ import java.util.List;
 
 public class MainViewModel extends AndroidViewModel {
 
-    private LiveData<List<TrainEntry>> trainList;
-    private LiveData<List<String>> categoryList;
-    private LiveData<List<BrandEntry>> brandList;
-    private MutableLiveData<TrainEntry> mChosenTrain = new MutableLiveData<>();
-    private TrainDatabase mDb;
+    private final LiveData<List<TrainEntry>> trainList;
+    private final LiveData<List<String>> categoryList;
+    private final LiveData<List<BrandEntry>> brandList;
+    private final MutableLiveData<TrainEntry> mChosenTrain = new MutableLiveData<>();
 
     public MainViewModel(@NonNull Application application) {
         super(application);
-        mDb = TrainDatabase.getInstance(this.getApplication());
+        TrainDatabase mDb = TrainDatabase.getInstance(this.getApplication());
         trainList = mDb.trainDao().getAllTrains();
         categoryList = mDb.categoryDao().getAllCategoryNames();
         brandList = mDb.brandDao().getAllBrands();

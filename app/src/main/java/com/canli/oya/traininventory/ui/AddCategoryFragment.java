@@ -18,7 +18,7 @@ import com.canli.oya.traininventory.utils.AppExecutors;
 
 public class AddCategoryFragment extends Fragment {
 
-    EditText categoryName_et;
+    private EditText categoryName_et;
 
     public AddCategoryFragment() {
     }

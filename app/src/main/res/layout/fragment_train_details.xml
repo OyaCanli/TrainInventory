@@ -6,8 +6,9 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_standard"
         android:background="@drawable/framed_view"
-        android:layout_margin="@dimen/margin_standard">
+        android:padding="@dimen/padding_standard">
 
         <ImageView
             android:id="@+id/details_image"
@@ -28,7 +29,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="@dimen/large_margin"
+            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/details_image"
             app:layout_constraintTop_toTopOf="parent"
@@ -71,6 +72,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/details_image"
             app:layout_constraintTop_toBottomOf="@+id/details_reference"
@@ -98,6 +100,7 @@
             android:layout_marginStart="@dimen/half_margin"
             android:layout_marginTop="16dp"
             android:text="@string/quantity"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/details_description" />
 
@@ -119,6 +122,7 @@
             android:layout_marginStart="@dimen/half_margin"
             android:layout_marginTop="16dp"
             android:text="@string/location"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView16" />
 
@@ -126,10 +130,10 @@
             android:id="@+id/details_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text = "1-D"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             app:layout_constraintBaseline_toBaselineOf="@+id/textView18"
-            app:layout_constraintStart_toEndOf="@+id/textView18" />
+            app:layout_constraintStart_toEndOf="@+id/textView18"
+            tools:text="1-D" />
     </android.support.constraint.ConstraintLayout>
 </layout>

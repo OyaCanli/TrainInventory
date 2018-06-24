@@ -12,6 +12,7 @@
     <dimen name="train_item_image_height">80dp</dimen>
     <dimen name="train_details_image_height">140dp</dimen>
     <dimen name="train_details_image_width">120dp</dimen>
+    <dimen name="add_brand_logo_dim">80dp</dimen>
     <dimen name="edit_train_image_height">100dp</dimen>
     <dimen name="add_brand_imagebtn_height">30dp</dimen>
     <dimen name="spinner_brand_logo_dim">40dp</dimen>

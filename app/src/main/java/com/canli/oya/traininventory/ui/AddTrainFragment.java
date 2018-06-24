@@ -36,8 +36,6 @@ import com.canli.oya.traininventory.data.entities.TrainEntry;
 import com.canli.oya.traininventory.databinding.FragmentAddTrainBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.BitmapUtils;
-import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
-import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModelFactory;
 import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.utils.GlideApp;
 import com.canli.oya.traininventory.viewmodel.MainViewModel;
@@ -62,7 +60,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     private int mUsersChoice;
     private List<String> categoryList;
     private List<BrandEntry> brandList;
-    int mTrainId;
+    private int mTrainId;
 
     private final DialogInterface.OnClickListener mDialogClickListener = new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int item) {
@@ -94,6 +92,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 @Override
                 public void onChanged(@Nullable TrainEntry trainEntry) {
                     populateFields(trainEntry);
+                    mTrainId = trainEntry.getTrainId();
                 }
             });
         }
@@ -218,6 +217,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 binding.editLocationLetter.getText().toString().trim();
 
         if(mTrainId == 0) {
+            //If this is a new train
             final TrainEntry newTrain = new TrainEntry(trainName, reference, mChosenBrand, mChosenCategory, quantity, mImageUri, description, location);
             AppExecutors.getInstance().diskIO().execute(new Runnable() {
                 @Override
@@ -226,6 +226,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 }
             });
         } else{
+            //If this is a train that already exist
             final TrainEntry trainToUpdate = new TrainEntry(mTrainId, trainName, reference, mChosenBrand, mChosenCategory, quantity, mImageUri, description, location);
             AppExecutors.getInstance().diskIO().execute(new Runnable() {
                 @Override

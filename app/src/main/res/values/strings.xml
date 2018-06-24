@@ -11,7 +11,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="image_of_the_train">image of the train</string>
-    <string name="no_trains_found">No trains found.</string>
+    <string name="no_trains_found">No trains found. Click on + button to add a new train.</string>
     <string name="brand">Brand:</string>
     <string name="reference">Reference</string>
     <string name="name">Name</string>
@@ -33,4 +33,6 @@
     <string name="brand_deleted">Brand deleted</string>
     <string name="undo">UNDO</string>
     <string name="category_placeholder">(%1$s)</string>
+    <string name="no_brands_found">No brands found. You can add brands from above, or while you add trains.</string>
+    <string name="see_add_brands">See/Add Brands</string>
 </resources>

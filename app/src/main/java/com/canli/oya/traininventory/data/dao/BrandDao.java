@@ -16,9 +16,6 @@ public interface BrandDao {
     @Query("SELECT * FROM brands")
     LiveData<List<BrandEntry>> getAllBrands();
 
-    @Query("SELECT brandName FROM brands")
-    LiveData<List<String>> getAllBrandNames();
-
     @Insert
     void insertBrand(BrandEntry brand);
 

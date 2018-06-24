@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.transition.Slide;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -15,25 +14,24 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.adapters.TrainAdapter;
 import com.canli.oya.traininventory.data.entities.TrainEntry;
-import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 import java.util.List;
 
 public class TrainListFragment extends Fragment implements TrainAdapter.ListItemClickListener{
 
-
-    private TextView empty_tv;
     private RecyclerView recycler;
     private TrainAdapter mAdapter;
-    private ConstraintLayout empty_screen;
     private MainViewModel viewModel;
-    List<TrainEntry> mTrainList;
+    private List<TrainEntry> mTrainList;
+    private TextView empty_tv;
+    private ImageView empty_image;
 
     public TrainListFragment() {
     }
@@ -55,15 +53,27 @@ public class TrainListFragment extends Fragment implements TrainAdapter.ListItem
         viewModel.getTrains().observe(getActivity(), new Observer<List<TrainEntry>>() {
                     @Override
                     public void onChanged(@Nullable List<TrainEntry> trainEntries) {
-                       mAdapter.setTrains(trainEntries);
-                       mTrainList = trainEntries;
+                       if(trainEntries.isEmpty()){
+                           showEmpty();
+                       } else{
+                           mAdapter.setTrains(trainEntries);
+                           mTrainList = trainEntries;
+                       }
                     }
                 });
 
-                empty_screen = rootView.findViewById(R.id.empty_view);
+
         empty_tv = rootView.findViewById(R.id.empty_text);
+        empty_image = rootView.findViewById(R.id.empty_image);
 
         return rootView;
+    }
+
+    private void showEmpty(){
+        recycler.setVisibility(View.GONE);
+        empty_tv.setText(R.string.no_trains_found);
+        empty_tv.setVisibility(View.VISIBLE);
+        empty_image.setVisibility(View.VISIBLE);
     }
 
     @Override

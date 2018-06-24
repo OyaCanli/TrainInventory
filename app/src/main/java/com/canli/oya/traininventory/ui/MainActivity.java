@@ -93,16 +93,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .commit();
                 break;
             }
-            case R.id.add_brand:{
-                AddBrandFragment addBrandFrag = new AddBrandFragment();
-                addBrandFrag.setEnterTransition(new Slide(Gravity.END));
-                addBrandFrag.setExitTransition(new Slide(Gravity.START));
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, addBrandFrag)
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            }
             case R.id.add_category:{
                 AddCategoryFragment addCatFrag = new AddCategoryFragment();
                 addCatFrag.setEnterTransition(new Slide(Gravity.END));
@@ -120,7 +110,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.fab_main){
+        Fragment frag = getSupportFragmentManager().findFragmentById(R.id.container);
+        if(frag instanceof TrainListFragment){
             AddTrainFragment addTrainFrag = new AddTrainFragment();
             addTrainFrag.setEnterTransition(new Slide(Gravity.END));
             addTrainFrag.setExitTransition(new Slide(Gravity.START));
@@ -128,15 +119,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .replace(R.id.container, addTrainFrag)
                     .addToBackStack(null)
                     .commit();
+        } else if(frag instanceof BrandListFragment){
+            ((BrandListFragment) frag).openAddBrandFragment();
         }
     }
 
     @Override
     public void onBackStackChanged() {
         Fragment frag = getSupportFragmentManager().findFragmentById(R.id.container);
-        if(frag instanceof TrainListFragment){
+        if(frag instanceof TrainListFragment || frag instanceof BrandListFragment){
             fab.setVisibility(View.VISIBLE);
-        } else{
+        } else {
             fab.setVisibility(View.GONE);
         }
         View focusedView = this.getCurrentFocus();

@@ -18,8 +18,8 @@ import java.util.List;
 public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHolder>{
 
     private List<TrainEntry> mTrainList;
-    private ListItemClickListener mClickListener;
-    private Context mContext;
+    private final ListItemClickListener mClickListener;
+    private final Context mContext;
 
     public TrainAdapter(@NonNull Context context, ListItemClickListener listener) {
         mClickListener = listener;

@@ -18,8 +18,8 @@ import java.util.List;
 
 public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHolder>{
 
-    private List<BrandEntry> mBrandList = new ArrayList<>();
-    private Context mContext;
+    private final List<BrandEntry> mBrandList = new ArrayList<>();
+    private final Context mContext;
 
     public BrandAdapter(Context context){
         mContext = context;

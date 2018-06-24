@@ -3,31 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <item android:id="@+id/see_all"
-        android:title="@string/see_all">
-        <menu>
-            <item
-                android:id="@+id/see_trains"
-                android:title="@string/trains" />
-            <item android:id="@+id/see_brands"
-                android:title="@string/all_brands"/>
-        </menu>
-    </item>
+    <item
+        android:id="@+id/see_trains"
+        android:title="@string/trains" />
 
     <item
-        android:id="@+id/add_item"
-        android:title="@string/add">
-        <menu>
-            <item
-                android:id="@+id/add_train"
-                android:title="@string/new_train" />
-            <item
-                android:id="@+id/add_brand"
-                android:title="@string/new_brand" />
-            <item
-                android:id="@+id/add_category"
-                android:title="@string/new_category" />
-        </menu>
-    </item>
+        android:id="@+id/add_train"
+        android:title="@string/new_train" />
+
+    <item
+        android:id="@+id/see_brands"
+        android:title="@string/see_add_brands" />
+    <item
+        android:id="@+id/add_category"
+        android:title="@string/new_category" />
 
 </menu>

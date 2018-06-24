@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.transition.Slide;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,8 +24,6 @@ import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.TrainEntry;
 import com.canli.oya.traininventory.databinding.FragmentTrainDetailsBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
-import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
-import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModelFactory;
 import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.utils.GlideApp;
 import com.canli.oya.traininventory.viewmodel.MainViewModel;
@@ -32,9 +31,8 @@ import com.canli.oya.traininventory.viewmodel.MainViewModel;
 public class TrainDetailsFragment extends Fragment {
 
     private FragmentTrainDetailsBinding binding;
-    TrainDatabase mDb;
-    int mTrainId;
-    TrainEntry mChosenTrain;
+    private TrainDatabase mDb;
+    private TrainEntry mChosenTrain;
 
     public TrainDetailsFragment(){
         setHasOptionsMenu(true);
@@ -68,6 +66,7 @@ public class TrainDetailsFragment extends Fragment {
         binding.detailsCategory.setText(chosenTrain.getCategoryName());
         binding.detailsQuantity.setText(String.valueOf(chosenTrain.getQuantity()));
         binding.detailsLocation.setText(chosenTrain.getLocation());
+        binding.detailsDescription.setText(chosenTrain.getDescription());
         GlideApp.with(TrainDetailsFragment.this)
                 .load(chosenTrain.getImageUri())
                 .placeholder(R.drawable.placeholder)

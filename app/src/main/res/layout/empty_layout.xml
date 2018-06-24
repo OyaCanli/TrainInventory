@@ -7,7 +7,7 @@
     android:visibility="gone">
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/empty_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_standard"
@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.313"
-        app:srcCompat="@android:drawable/ic_dialog_info" />
+        app:srcCompat="@drawable/train_icon" />
 
     <TextView
         android:id="@+id/empty_text"
@@ -33,5 +33,5 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        app:layout_constraintTop_toBottomOf="@+id/empty_image" />
 </android.support.constraint.ConstraintLayout>

@@ -17,7 +17,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,8 +24,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.canli.oya.traininventory.R;
-import com.canli.oya.traininventory.data.entities.BrandEntry;
 import com.canli.oya.traininventory.data.TrainDatabase;
+import com.canli.oya.traininventory.data.entities.BrandEntry;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.BitmapUtils;
 import com.canli.oya.traininventory.utils.Constants;
@@ -59,41 +58,60 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_brand, container, false);
+
+        //get database instance
         mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
+
+        //Set click listeners
         Button save_btn = rootView.findViewById(R.id.addBrand_saveBtn);
         save_btn.setOnClickListener(this);
-        brandName_et = rootView.findViewById(R.id.addBrand_editBrandName);
-        brandName_et.requestFocus();
         addPhoto_iv = rootView.findViewById(R.id.addBrand_image);
         addPhoto_iv.setOnClickListener(this);
+
+        //Request focus on the edittext
+        brandName_et = rootView.findViewById(R.id.addBrand_editBrandName);
+        brandName_et.requestFocus();
+
         return rootView;
     }
 
     @Override
     public void onClick(View v) {
+        //If save is clicked
         if(v.getId() == R.id.addBrand_saveBtn){
             saveBrand();
         } else {
+            //If add photo is clicked
             openImageDialog();
         }
     }
 
     private void saveBrand(){
+
+        //Get brand name from edittext
         String brandName = brandName_et.getText().toString().trim();
+
+        //If there is a uri for logo image, parse it to string
         String imagePath = null;
         if(mLogoUri != null){
             imagePath = mLogoUri.toString();
         }
+
+        //Construct a new BrandEntry object from this data
         final BrandEntry newBrand = new BrandEntry(brandName, imagePath);
+
+        //Insert to database in a background thread
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 mDb.brandDao().insertBrand(newBrand);
             }
         });
+
+        /*If this fragment is inflated into another fragment, once save is clicked,
+        the fragment will be removed*/
         Fragment parentFrag = getParentFragment();
-        if(parentFrag != null){
-            //Remove the fragment
+        if(parentFrag != null && parentFrag instanceof AddTrainFragment){
             Fragment frag = getFragmentManager().findFragmentById(R.id.childFragContainer);
             getFragmentManager().beginTransaction()
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
@@ -103,6 +121,8 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
     }
 
     private void openImageDialog() {
+
+        //Opens a dialog which lets the user choose either adding a photo from gallery or taking a new picture.
         String[] dialogOptions = getActivity().getResources().getStringArray(R.array.dialog_options);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Add image from: ");

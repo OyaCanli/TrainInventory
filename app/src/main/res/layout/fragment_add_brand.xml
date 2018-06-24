@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/framed_view">
@@ -45,8 +44,8 @@
 
     <ImageView
         android:id="@+id/addBrand_image"
-        android:layout_width="@dimen/train_details_image_height"
-        android:layout_height="@dimen/train_details_image_height"
+        android:layout_width="@dimen/add_brand_logo_dim"
+        android:layout_height="@dimen/add_brand_logo_dim"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="@+id/addBrand_editBrandName"
