@@ -13,8 +13,8 @@ import java.util.List;
 @Dao
 public interface CategoryDao {
 
-   /* @Query("SELECT * FROM categories")
-    LiveData<List<CategoryEntry>> getAllCategories();*/
+   @Query("SELECT * FROM categories")
+    LiveData<List<CategoryEntry>> getAllCategories();
 
     @Query("SELECT categoryName FROM categories")
     LiveData<List<String>> getAllCategoryNames();

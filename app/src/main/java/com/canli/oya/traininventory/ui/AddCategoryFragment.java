@@ -39,7 +39,7 @@ public class AddCategoryFragment extends Fragment {
         return rootView;
     }
 
-    private void saveCategory(){
+    private void saveCategory() {
         final TrainDatabase database = TrainDatabase.getInstance(getActivity().getApplicationContext());
         String categoryName = categoryName_et.getText().toString().trim();
         final CategoryEntry newCategory = new CategoryEntry(categoryName);
@@ -49,14 +49,19 @@ public class AddCategoryFragment extends Fragment {
                 database.categoryDao().insertCategory(newCategory);
             }
         });
+
+        //Remove the fragment
         Fragment parentFrag = getParentFragment();
-        if(parentFrag != null){
-            //Remove the fragment
-            Fragment frag = getFragmentManager().findFragmentById(R.id.childFragContainer);
-            getFragmentManager().beginTransaction()
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-                    .remove(frag)
-                    .commit();
+        Fragment currentInstance;
+        if (parentFrag instanceof AddTrainFragment) {
+            currentInstance = getFragmentManager().findFragmentById(R.id.childFragContainer);
+        } else {
+            currentInstance = getFragmentManager().findFragmentById(R.id.brandlist_addFrag_container);
         }
+
+        getFragmentManager().beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                .remove(currentInstance)
+                .commit();
     }
 }

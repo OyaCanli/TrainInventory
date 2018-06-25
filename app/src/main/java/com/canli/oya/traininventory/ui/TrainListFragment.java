@@ -10,8 +10,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -34,6 +38,7 @@ public class TrainListFragment extends Fragment implements TrainAdapter.ListItem
     private ImageView empty_image;
 
     public TrainListFragment() {
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -42,6 +47,7 @@ public class TrainListFragment extends Fragment implements TrainAdapter.ListItem
         View rootView = inflater.inflate(R.layout.fragment_list, container, false);
 
         getActivity().setTitle(getString(R.string.all_trains));
+        setHasOptionsMenu(true);
 
         mAdapter = new TrainAdapter(getActivity(), this);
         recycler = rootView.findViewById(R.id.list);
@@ -61,7 +67,6 @@ public class TrainListFragment extends Fragment implements TrainAdapter.ListItem
                        }
                     }
                 });
-
 
         empty_tv = rootView.findViewById(R.id.empty_text);
         empty_image = rootView.findViewById(R.id.empty_image);
@@ -84,6 +89,44 @@ public class TrainListFragment extends Fragment implements TrainAdapter.ListItem
         trainDetailsFrag.setExitTransition(new Slide(Gravity.START));
         getFragmentManager().beginTransaction()
                 .replace(R.id.container, trainDetailsFrag)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_search_and_add, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        //added filter to list (dynamic change input text)
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                //TODO: implement filtering here
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_add){
+            openAddTrainFragment();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void openAddTrainFragment(){
+        AddTrainFragment addTrainFrag = new AddTrainFragment();
+        addTrainFrag.setEnterTransition(new Slide(Gravity.END));
+        addTrainFrag.setExitTransition(new Slide(Gravity.START));
+        getFragmentManager().beginTransaction()
+                .replace(R.id.container, addTrainFrag)
                 .addToBackStack(null)
                 .commit();
     }

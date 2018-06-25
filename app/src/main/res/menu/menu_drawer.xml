@@ -16,6 +16,6 @@
         android:title="@string/see_add_brands" />
     <item
         android:id="@+id/add_category"
-        android:title="@string/new_category" />
+        android:title="@string/see_add_categories" />
 
 </menu>

@@ -51,10 +51,7 @@ public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHol
 
     @Override
     public int getItemCount() {
-        if(mTrainList == null){
-            return 0;
-        }
-        return mTrainList.size();
+        return mTrainList == null ? 0 : mTrainList.size();
     }
 
     public void setTrains(List<TrainEntry> newList){

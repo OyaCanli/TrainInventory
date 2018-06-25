@@ -11,7 +11,7 @@ public class CategoryEntry {
     private int categoryId;
     private String categoryName;
 
-    CategoryEntry(int categoryId, String categoryName) {
+    public CategoryEntry(int categoryId, String categoryName) {
         this.categoryId = categoryId;
         this.categoryName = categoryName;
     }

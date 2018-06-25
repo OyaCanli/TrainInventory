@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -35,7 +36,7 @@ import java.io.IOException;
 
 import static android.app.Activity.RESULT_OK;
 
-public class AddBrandFragment extends Fragment implements View.OnClickListener{
+public class AddBrandFragment extends Fragment implements View.OnClickListener {
 
     private TrainDatabase mDb;
     private EditText brandName_et;
@@ -44,6 +45,7 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
     private String mTempPhotoPath;
     private Uri mLogoUri;
     private int mUsersChoice;
+    FrameLayout container;
 
     private final DialogInterface.OnClickListener mDialogClickListener = new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int item) {
@@ -78,7 +80,7 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         //If save is clicked
-        if(v.getId() == R.id.addBrand_saveBtn){
+        if (v.getId() == R.id.addBrand_saveBtn) {
             saveBrand();
         } else {
             //If add photo is clicked
@@ -86,14 +88,14 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    private void saveBrand(){
+    private void saveBrand() {
 
         //Get brand name from edittext
         String brandName = brandName_et.getText().toString().trim();
 
         //If there is a uri for logo image, parse it to string
         String imagePath = null;
-        if(mLogoUri != null){
+        if (mLogoUri != null) {
             imagePath = mLogoUri.toString();
         }
 
@@ -108,16 +110,20 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
             }
         });
 
-        /*If this fragment is inflated into another fragment, once save is clicked,
-        the fragment will be removed*/
+        Toast.makeText(getActivity(), R.string.brand_Saved, Toast.LENGTH_SHORT).show();
+
+        //Remove fragment
         Fragment parentFrag = getParentFragment();
-        if(parentFrag != null && parentFrag instanceof AddTrainFragment){
-            Fragment frag = getFragmentManager().findFragmentById(R.id.childFragContainer);
-            getFragmentManager().beginTransaction()
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-                    .remove(frag)
-                    .commit();
+        Fragment currentInstance;
+        if (parentFrag instanceof AddTrainFragment) {
+            currentInstance = getFragmentManager().findFragmentById(R.id.childFragContainer);
+        } else {
+            currentInstance = getFragmentManager().findFragmentById(R.id.brandlist_addFrag_container);
         }
+        getFragmentManager().beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                .remove(currentInstance)
+                .commit();
     }
 
     private void openImageDialog() {
@@ -131,7 +137,7 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (mUsersChoice) {
-                    case 0:{
+                    case 0: {
                         if (ContextCompat.checkSelfPermission(getActivity(),
                                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                                 != PackageManager.PERMISSION_GRANTED) {
@@ -159,7 +165,7 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
         pickImageDialog.show();
     }
 
-    private void openGallery(){
+    private void openGallery() {
         Intent intent = new Intent();
         // Show only images, no videos or anything else
         intent.setType("image/*");

@@ -18,7 +18,7 @@ import java.util.List;
 
 public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHolder>{
 
-    private final List<BrandEntry> mBrandList = new ArrayList<>();
+    private List<BrandEntry> mBrandList;
     private final Context mContext;
 
     public BrandAdapter(Context context){
@@ -33,8 +33,7 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
     }
 
     public void setBrands(List<BrandEntry> newList){
-        mBrandList.clear();
-        mBrandList.addAll(newList);
+        mBrandList = newList;
         notifyDataSetChanged();
     }
 
@@ -52,7 +51,7 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
 
     @Override
     public int getItemCount() {
-        return mBrandList.size();
+        return mBrandList == null ? 0 : mBrandList.size();
     }
 
     public class BrandViewHolder extends RecyclerView.ViewHolder{
@@ -62,8 +61,8 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
 
         BrandViewHolder(View itemView) {
             super(itemView);
-            this.brandName_tv = itemView.findViewById(R.id.brand_item_brandName);
-            this.logo_iv = itemView.findViewById(R.id.brand_item_logo);
+            brandName_tv = itemView.findViewById(R.id.brand_item_brandName);
+            logo_iv = itemView.findViewById(R.id.brand_item_logo);
         }
     }
 }

@@ -45,6 +45,7 @@
         <item name="android:paddingLeft">@dimen/half_padding</item>
         <item name="android:paddingEnd">@dimen/half_padding</item>
         <item name="android:paddingRight">@dimen/half_padding</item>
+        <item name="android:foreground">?selectableItemBackground</item>
     </style>
 
 </resources>

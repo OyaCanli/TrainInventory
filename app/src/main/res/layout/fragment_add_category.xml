@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/framed_view"
-    android:layout_margin="@dimen/margin_standard">
+    android:background="@drawable/framed_view">
 
     <EditText
         android:id="@+id/addCategory_editCatName"

@@ -21,11 +21,10 @@ import android.view.inputmethod.InputMethodManager;
 import com.canli.oya.traininventory.R;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
-        View.OnClickListener, FragmentManager.OnBackStackChangedListener{
+        FragmentManager.OnBackStackChangedListener{
 
     private ActionBarDrawerToggle toggle;
     private DrawerLayout drawer;
-    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +45,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         getSupportFragmentManager().addOnBackStackChangedListener(this);
-
-        fab = findViewById(R.id.fab_main);
-        fab.setOnClickListener(this);
 
         if(savedInstanceState == null) {
             TrainListFragment trainListFrag = new TrainListFragment();
@@ -94,11 +90,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             }
             case R.id.add_category:{
-                AddCategoryFragment addCatFrag = new AddCategoryFragment();
-                addCatFrag.setEnterTransition(new Slide(Gravity.END));
-                addCatFrag.setExitTransition(new Slide(Gravity.START));
+                CategoryListFragment catListFrag = new CategoryListFragment();
+                catListFrag.setEnterTransition(new Slide(Gravity.END));
+                catListFrag.setExitTransition(new Slide(Gravity.START));
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, addCatFrag)
+                        .replace(R.id.container, catListFrag)
                         .addToBackStack(null)
                         .commit();
                 break;
@@ -108,30 +104,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    @Override
-    public void onClick(View v) {
-        Fragment frag = getSupportFragmentManager().findFragmentById(R.id.container);
-        if(frag instanceof TrainListFragment){
-            AddTrainFragment addTrainFrag = new AddTrainFragment();
-            addTrainFrag.setEnterTransition(new Slide(Gravity.END));
-            addTrainFrag.setExitTransition(new Slide(Gravity.START));
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, addTrainFrag)
-                    .addToBackStack(null)
-                    .commit();
-        } else if(frag instanceof BrandListFragment){
-            ((BrandListFragment) frag).openAddBrandFragment();
-        }
-    }
 
     @Override
     public void onBackStackChanged() {
-        Fragment frag = getSupportFragmentManager().findFragmentById(R.id.container);
-        if(frag instanceof TrainListFragment || frag instanceof BrandListFragment){
-            fab.setVisibility(View.VISIBLE);
-        } else {
-            fab.setVisibility(View.GONE);
-        }
         View focusedView = this.getCurrentFocus();
         if (focusedView != null) {
             focusedView.clearFocus();
