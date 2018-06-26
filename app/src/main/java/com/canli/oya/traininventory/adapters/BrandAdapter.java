@@ -20,9 +20,11 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
 
     private List<BrandEntry> mBrandList;
     private final Context mContext;
+    private final ListItemClickListener mClickListener;
 
-    public BrandAdapter(Context context){
+    public BrandAdapter(Context context, ListItemClickListener listener){
         mContext = context;
+        mClickListener = listener;
     }
 
     @NonNull
@@ -54,7 +56,7 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
         return mBrandList == null ? 0 : mBrandList.size();
     }
 
-    public class BrandViewHolder extends RecyclerView.ViewHolder{
+    public class BrandViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         final TextView brandName_tv;
         final ImageView logo_iv;
@@ -63,6 +65,13 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
             super(itemView);
             brandName_tv = itemView.findViewById(R.id.brand_item_brandName);
             logo_iv = itemView.findViewById(R.id.brand_item_logo);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getLayoutPosition();
+            mClickListener.onListItemClick(position);
         }
     }
 }

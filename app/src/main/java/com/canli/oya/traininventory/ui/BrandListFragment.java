@@ -23,14 +23,16 @@ import android.widget.TextView;
 
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.adapters.BrandAdapter;
+import com.canli.oya.traininventory.adapters.ListItemClickListener;
 import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.BrandEntry;
 import com.canli.oya.traininventory.utils.AppExecutors;
+import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 import java.util.List;
 
-public class BrandListFragment extends Fragment {
+public class BrandListFragment extends Fragment implements ListItemClickListener{
 
     private List<BrandEntry> brands;
     private BrandAdapter adapter;
@@ -38,6 +40,7 @@ public class BrandListFragment extends Fragment {
     private TextView empty_tv;
     private ImageView empty_image;
     private RecyclerView recycler;
+    private MainViewModel viewModel;
 
     public BrandListFragment() {
         setHasOptionsMenu(true);
@@ -51,7 +54,7 @@ public class BrandListFragment extends Fragment {
 
         mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
-        adapter = new BrandAdapter(getActivity());
+        adapter = new BrandAdapter(getActivity(), this);
         recycler = rootView.findViewById(R.id.list);
         recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         recycler.setItemAnimator(new DefaultItemAnimator());
@@ -60,7 +63,7 @@ public class BrandListFragment extends Fragment {
         empty_tv = rootView.findViewById(R.id.empty_text);
         empty_image = rootView.findViewById(R.id.empty_image);
 
-        final MainViewModel viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
         viewModel.getBrandList().observe(getActivity(), new Observer<List<BrandEntry>>() {
             @Override
             public void onChanged(@Nullable List<BrandEntry> brandEntries) {
@@ -155,6 +158,19 @@ public class BrandListFragment extends Fragment {
             openAddBrandFragment();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onListItemClick(int position) {
+        viewModel.setChosenBrand(brands.get(position));
+        AddBrandFragment addBrandFrag = new AddBrandFragment();
+        Bundle args = new Bundle();
+        args.putString(Constants.INTENT_REQUEST_CODE, Constants.EDIT_CASE);
+        addBrandFrag.setArguments(args);
+        getChildFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.translate_from_top, 0)
+                .replace(R.id.brandlist_addFrag_container, addBrandFrag)
+                .commit();
     }
 }
 

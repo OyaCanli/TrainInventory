@@ -14,7 +14,7 @@ import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryHolder> {
 
-    private List<CategoryEntry> mCategoryList;
+    private List<String> mCategoryList;
 
     public CategoryAdapter(){
     }
@@ -26,14 +26,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         return new CategoryHolder(view);
     }
 
-    public void setCategories(List<CategoryEntry> newList){
+    public void setCategories(List<String> newList){
         mCategoryList = newList;
         notifyDataSetChanged();
     }
 
     @Override
     public void onBindViewHolder(@NonNull CategoryHolder holder, int position) {
-        String currentCategory = mCategoryList.get(position).getCategoryName();
+        String currentCategory = mCategoryList.get(position);
         holder.categoryName_tv.setText(currentCategory);
     }
 

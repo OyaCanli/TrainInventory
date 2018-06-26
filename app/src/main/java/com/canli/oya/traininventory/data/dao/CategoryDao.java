@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
 import com.canli.oya.traininventory.data.entities.CategoryEntry;
@@ -14,12 +15,9 @@ import java.util.List;
 public interface CategoryDao {
 
    @Query("SELECT * FROM categories")
-    LiveData<List<CategoryEntry>> getAllCategories();
+    LiveData<List<String>> getAllCategories();
 
-    @Query("SELECT categoryName FROM categories")
-    LiveData<List<String>> getAllCategoryNames();
-
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertCategory(CategoryEntry category);
 
     @Delete

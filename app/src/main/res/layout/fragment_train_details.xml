@@ -118,13 +118,13 @@
             android:id="@+id/textView18"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/half_margin"
-            android:layout_marginStart="@dimen/half_margin"
-            android:layout_marginTop="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="@dimen/margin_standard"
             android:text="@string/location"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView16" />
+            app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
         <TextView
             android:id="@+id/details_location"
@@ -135,5 +135,26 @@
             app:layout_constraintBaseline_toBaselineOf="@+id/textView18"
             app:layout_constraintStart_toEndOf="@+id/textView18"
             tools:text="1-D" />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/scale"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView16" />
+
+        <TextView
+            android:id="@+id/details_scale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_standard"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView13"
+            app:layout_constraintStart_toEndOf="@+id/textView13"
+            tools:text="3M" />
     </android.support.constraint.ConstraintLayout>
 </layout>

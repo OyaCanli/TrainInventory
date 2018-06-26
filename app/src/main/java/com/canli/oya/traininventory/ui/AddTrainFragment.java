@@ -32,6 +32,7 @@ import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.adapters.CustomSpinAdapter;
 import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.BrandEntry;
+import com.canli.oya.traininventory.data.entities.CategoryEntry;
 import com.canli.oya.traininventory.data.entities.TrainEntry;
 import com.canli.oya.traininventory.databinding.FragmentAddTrainBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
@@ -82,9 +83,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
 
         mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
-        //ChosenTrainViewModelFactory factory = new ChosenTrainViewModelFactory(mDb, mTrainId);
         final MainViewModel viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
-        getActivity().setTitle(getString(R.string.add_train));
 
         Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey(Constants.INTENT_REQUEST_CODE)) { //This is the "edit" case
@@ -95,6 +94,9 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                     mTrainId = trainEntry.getTrainId();
                 }
             });
+            getActivity().setTitle(getString(R.string.edit_train));
+        } else {
+            getActivity().setTitle(getString(R.string.add_train));
         }
 
         //Set category spinner
@@ -103,14 +105,15 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.categorySpinner.setAdapter(categoryAdapter);
         binding.categorySpinner.setOnItemSelectedListener(this);
-        viewModel.getCategoryNames().observe(this, new Observer<List<String>>() {
+        viewModel.getCategoryList().observe(getActivity(), new Observer<List<String>>() {
             @Override
-            public void onChanged(@Nullable List<String> strings) {
+            public void onChanged(@Nullable List<String> categoryEntries) {
                 categoryList.clear();
-                categoryList.addAll(strings);
+                categoryList.addAll(categoryEntries);
                 categoryAdapter.notifyDataSetChanged();
             }
         });
+
 
         //Set brand spinner
         brandList = new ArrayList<>();
@@ -215,10 +218,11 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         String description = binding.editTrainDescription.getText().toString().trim();
         String location = binding.editLocationNumber.getText().toString().trim() + "-" +
                 binding.editLocationLetter.getText().toString().trim();
+        String scale = binding.editScale.getText().toString().trim();
 
         if(mTrainId == 0) {
             //If this is a new train
-            final TrainEntry newTrain = new TrainEntry(trainName, reference, mChosenBrand, mChosenCategory, quantity, mImageUri, description, location);
+            final TrainEntry newTrain = new TrainEntry(trainName, reference, mChosenBrand, mChosenCategory, quantity, mImageUri, description, location, scale);
             AppExecutors.getInstance().diskIO().execute(new Runnable() {
                 @Override
                 public void run() {
@@ -227,7 +231,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
             });
         } else{
             //If this is a train that already exist
-            final TrainEntry trainToUpdate = new TrainEntry(mTrainId, trainName, reference, mChosenBrand, mChosenCategory, quantity, mImageUri, description, location);
+            final TrainEntry trainToUpdate = new TrainEntry(mTrainId, trainName, reference, mChosenBrand, mChosenCategory, quantity, mImageUri, description, location, scale);
             AppExecutors.getInstance().diskIO().execute(new Runnable() {
                 @Override
                 public void run() {

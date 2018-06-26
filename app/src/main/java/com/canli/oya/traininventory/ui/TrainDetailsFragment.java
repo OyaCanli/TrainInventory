@@ -67,6 +67,7 @@ public class TrainDetailsFragment extends Fragment {
         binding.detailsQuantity.setText(String.valueOf(chosenTrain.getQuantity()));
         binding.detailsLocation.setText(chosenTrain.getLocation());
         binding.detailsDescription.setText(chosenTrain.getDescription());
+        binding.detailsScale.setText(chosenTrain.getScale());
         GlideApp.with(TrainDetailsFragment.this)
                 .load(chosenTrain.getImageUri())
                 .placeholder(R.drawable.placeholder)

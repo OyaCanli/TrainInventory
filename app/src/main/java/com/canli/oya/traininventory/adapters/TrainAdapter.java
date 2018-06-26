@@ -83,8 +83,4 @@ public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHol
             mClickListener.onListItemClick(position);
         }
     }
-
-    public interface ListItemClickListener {
-        void onListItemClick(int position);
-    }
 }

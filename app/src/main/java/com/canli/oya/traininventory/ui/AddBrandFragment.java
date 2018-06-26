@@ -1,6 +1,9 @@
 package com.canli.oya.traininventory.ui;
 
 import android.Manifest;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -27,9 +30,12 @@ import com.bumptech.glide.Glide;
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.BrandEntry;
+import com.canli.oya.traininventory.data.entities.TrainEntry;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.BitmapUtils;
 import com.canli.oya.traininventory.utils.Constants;
+import com.canli.oya.traininventory.utils.GlideApp;
+import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +51,10 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
     private String mTempPhotoPath;
     private Uri mLogoUri;
     private int mUsersChoice;
-    FrameLayout container;
+    private EditText webUrl_et;
+    private boolean isUpdateCase;
+    private Context mContext;
+    private int mBrandId;
 
     private final DialogInterface.OnClickListener mDialogClickListener = new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int item) {
@@ -54,6 +63,12 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
     };
 
     public AddBrandFragment() {
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 
     @Nullable
@@ -70,11 +85,38 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
         addPhoto_iv = rootView.findViewById(R.id.addBrand_image);
         addPhoto_iv.setOnClickListener(this);
 
-        //Request focus on the edittext
         brandName_et = rootView.findViewById(R.id.addBrand_editBrandName);
+        webUrl_et = rootView.findViewById(R.id.addBrand_editWeb);
+        //Request focus on the first edittext
         brandName_et.requestFocus();
 
+        final MainViewModel viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+
+        Bundle bundle = getArguments();
+        if (bundle != null && bundle.containsKey(Constants.INTENT_REQUEST_CODE)) { //This is the "edit" case
+            isUpdateCase = true;
+            viewModel.getChosenBrand().observe(getActivity(), new Observer<BrandEntry>() {
+                @Override
+                public void onChanged(@Nullable BrandEntry brandEntry) {
+                    populateFields(brandEntry);
+                    mBrandId = brandEntry.getBrandId();
+                }
+            });
+        }
+
         return rootView;
+    }
+
+    private void populateFields(BrandEntry brand){
+        brandName_et.setText(brand.getBrandName());
+        webUrl_et.setText(brand.getWebUrl());
+        if(mContext != null){
+            GlideApp.with(mContext)
+                    .load(brand.getBrandLogoUri())
+                    .centerCrop()
+                    .placeholder(R.drawable.placeholder)
+                    .into(addPhoto_iv);
+        }
     }
 
     @Override
@@ -89,9 +131,11 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
     }
 
     private void saveBrand() {
-
         //Get brand name from edittext
         String brandName = brandName_et.getText().toString().trim();
+
+        //Get web address from edittext
+        String webAddress = webUrl_et.getText().toString().trim();
 
         //If there is a uri for logo image, parse it to string
         String imagePath = null;
@@ -99,16 +143,26 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
             imagePath = mLogoUri.toString();
         }
 
-        //Construct a new BrandEntry object from this data
-        final BrandEntry newBrand = new BrandEntry(brandName, imagePath);
-
-        //Insert to database in a background thread
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                mDb.brandDao().insertBrand(newBrand);
-            }
-        });
+        if(isUpdateCase){
+            //Construct a new BrandEntry object from this data with ID included
+            final BrandEntry brandToUpdate = new BrandEntry(mBrandId, brandName, imagePath, webAddress);
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mDb.brandDao().updateBrandInfo(brandToUpdate);
+                }
+            });
+        } else{
+            //Construct a new BrandEntry object from this data (without ID)
+            final BrandEntry newBrand = new BrandEntry(brandName, imagePath, webAddress);
+            //Insert to database in a background thread
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mDb.brandDao().insertBrand(newBrand);
+                }
+            });
+        }
 
         Toast.makeText(getActivity(), R.string.brand_Saved, Toast.LENGTH_SHORT).show();
 

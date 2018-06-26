@@ -37,7 +37,7 @@ public class CategoryListFragment extends Fragment {
     private ImageView empty_image;
     private RecyclerView recycler;
     private CategoryAdapter mAdapter;
-    private List<CategoryEntry> mCategories;
+    private List<String> mCategories;
 
     public CategoryListFragment() {
         setHasOptionsMenu(true);
@@ -61,9 +61,9 @@ public class CategoryListFragment extends Fragment {
         empty_image = rootView.findViewById(R.id.empty_image);
 
         final MainViewModel viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
-        viewModel.getCategoryList().observe(getActivity(), new Observer<List<CategoryEntry>>() {
+        viewModel.getCategoryList().observe(getActivity(), new Observer<List<String>>() {
             @Override
-            public void onChanged(@Nullable List<CategoryEntry> categoryEntries) {
+            public void onChanged(@Nullable List<String> categoryEntries) {
                 if (categoryEntries.isEmpty()) {
                     showEmpty();
                 } else {
@@ -88,7 +88,7 @@ public class CategoryListFragment extends Fragment {
                 final int position = viewHolder.getAdapterPosition();
 
                 //First take a backup of the category to erase
-                final CategoryEntry categoryToErase = mCategories.get(position);
+                final CategoryEntry categoryToErase = new CategoryEntry( mCategories.get(position));
 
                 //Remove the category from the database
                 AppExecutors.getInstance().diskIO().execute(new Runnable() {

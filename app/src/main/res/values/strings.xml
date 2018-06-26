@@ -13,9 +13,9 @@
     <string name="image_of_the_train">image of the train</string>
     <string name="no_trains_found">No trains found. Click on + button to add a new train.</string>
     <string name="brand">Brand:</string>
-    <string name="reference">Reference</string>
-    <string name="name">Name</string>
-    <string name="quantity">Quantity</string>
+    <string name="reference">Reference:</string>
+    <string name="name">Name:</string>
+    <string name="quantity">Quantity:</string>
     <string name="add_image">Add image:</string>
     <string name="save">Save</string>
     <string name="description">Description:</string>
@@ -40,4 +40,7 @@
     <string name="all_categories">All Categories</string>
     <string name="no_categories_found">No categories found. Click on the + button to add a new category.</string>
     <string name="search">Search</string>
+    <string name="website">Website:</string>
+    <string name="scale">Scale:</string>
+    <string name="edit_train">Edit Train</string>
 </resources>

@@ -1,8 +1,14 @@
 package com.canli.oya.traininventory.data.entities;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+import static android.arch.persistence.room.ForeignKey.NO_ACTION;
 
 @Entity(tableName = "trains")
 public class TrainEntry {
@@ -17,9 +23,10 @@ public class TrainEntry {
     private String imageUri;
     private String description;
     private String location;
+    private String scale;
 
     @Ignore
-    public TrainEntry(String trainName, String modelReference, String brandName, String categoryName, int quantity, String imageUri, String description, String location) {
+    public TrainEntry(String trainName, String modelReference, String brandName, String categoryName, int quantity, String imageUri, String description, String location, String scale) {
         this.trainName = trainName;
         this.modelReference = modelReference;
         this.brandName = brandName;
@@ -28,9 +35,10 @@ public class TrainEntry {
         this.imageUri = imageUri;
         this.description = description;
         this.location = location;
+        this.scale = scale;
     }
 
-    public TrainEntry(int trainId, String trainName, String modelReference, String brandName, String categoryName, int quantity, String imageUri, String description, String location) {
+    public TrainEntry(int trainId, String trainName, String modelReference, String brandName, String categoryName, int quantity, String imageUri, String description, String location, String scale) {
         this.trainId = trainId;
         this.trainName = trainName;
         this.modelReference = modelReference;
@@ -40,6 +48,7 @@ public class TrainEntry {
         this.imageUri = imageUri;
         this.description = description;
         this.location = location;
+        this.scale = scale;
     }
 
     public int getTrainId() {
@@ -78,6 +87,10 @@ public class TrainEntry {
         return location;
     }
 
+    public String getScale() {
+        return scale;
+    }
+
     public void setTrainId(int trainId) {
         this.trainId = trainId;
     }
@@ -114,6 +127,10 @@ public class TrainEntry {
         this.location = location;
     }
 
+    public void setScale(String scale) {
+        this.scale = scale;
+    }
+
     @Override
     public String toString() {
         return "TrainEntry{" +
@@ -126,6 +143,7 @@ public class TrainEntry {
                 ", imageUri='" + imageUri + '\'' +
                 ", description='" + description + '\'' +
                 ", location='" + location + '\'' +
+                ", scale='" + scale + '\'' +
                 '}';
     }
 }

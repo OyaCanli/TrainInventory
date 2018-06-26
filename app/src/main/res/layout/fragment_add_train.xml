@@ -60,7 +60,6 @@
             <EditText
                 android:id="@+id/editReference"
                 style="@style/editTextStyle"
-                android:layout_marginTop="@dimen/margin_standard"
                 android:inputType="textCapCharacters"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.466"
@@ -94,8 +93,9 @@
                 style="@style/editTextStyle"
                 android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.483"
                 app:layout_constraintStart_toEndOf="@+id/barrier"
-                app:layout_constraintTop_toBottomOf="@+id/editTrainName" />
+                app:layout_constraintTop_toBottomOf="@+id/editScale" />
 
             <android.support.constraint.Barrier
                 android:id="@+id/barrier"
@@ -112,10 +112,10 @@
                 android:layout_height="@dimen/edit_train_image_height"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/editTrainDescription"
                 app:srcCompat="@drawable/gallery" />
 
             <TextView
@@ -131,10 +131,6 @@
             <TextView
                 android:id="@+id/textView7"
                 style="@style/FieldStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_standard"
-                android:layout_marginStart="@dimen/margin_standard"
                 android:layout_marginTop="@dimen/margin_standard"
                 android:text="@string/description"
                 app:layout_constraintStart_toStartOf="parent"
@@ -144,12 +140,6 @@
                 android:id="@+id/editTrainDescription"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="@dimen/margin_standard"
-                android:ems="10"
                 android:inputType="textMultiLine"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -158,11 +148,7 @@
             <TextView
                 android:id="@+id/textView6"
                 style="@style/FieldStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:layout_marginLeft="@dimen/margin_standard"
-                android:layout_marginStart="@dimen/margin_standard"
                 android:layout_marginTop="16dp"
                 android:text="@string/location"
                 app:layout_constraintBottom_toBottomOf="@+id/editLocationNumber"
@@ -175,7 +161,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/half_margin"
                 android:layout_marginTop="16dp"
-                android:ems="10"
                 android:inputType="textCapCharacters"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -218,6 +203,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:background="@color/colorPrimary"
+                app:layout_constraintBottom_toBottomOf="@+id/categorySpinner"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/categorySpinner"
                 app:srcCompat="@drawable/baseline_add_white_24dp" />
@@ -253,6 +239,7 @@
                 android:id="@+id/textView11"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
+                android:layout_marginStart="@dimen/half_margin"
                 android:layout_marginLeft="@dimen/half_margin"
                 android:text="-"
                 android:textSize="40sp"
@@ -261,6 +248,22 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/editLocationNumber"
                 app:layout_constraintTop_toTopOf="@+id/editLocationLetter" />
+
+            <EditText
+                android:id="@+id/editScale"
+                style="@style/editTextStyle"
+                android:ems="10"
+                android:inputType="textPersonName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/barrier"
+                app:layout_constraintTop_toBottomOf="@+id/editTrainName" />
+
+            <TextView
+                android:id="@+id/textView13"
+                style="@style/FieldStyle"
+                android:text="@string/scale"
+                app:layout_constraintBaseline_toBaselineOf="@+id/editScale"
+                app:layout_constraintStart_toStartOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

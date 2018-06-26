@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/framed_view">
@@ -37,19 +38,19 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
         android:text="@string/add_logo"
         app:layout_constraintEnd_toStartOf="@+id/addBrand_editBrandName"
-        app:layout_constraintTop_toBottomOf="@+id/addBrand_editBrandName" />
+        app:layout_constraintTop_toTopOf="@+id/addBrand_image" />
 
     <ImageView
         android:id="@+id/addBrand_image"
         android:layout_width="@dimen/add_brand_logo_dim"
         android:layout_height="@dimen/add_brand_logo_dim"
-        android:layout_marginStart="16dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="@+id/addBrand_editBrandName"
-        app:layout_constraintTop_toBottomOf="@+id/addBrand_editBrandName"
+        app:layout_constraintTop_toBottomOf="@+id/addBrand_editWeb"
         app:srcCompat="@drawable/gallery" />
 
     <Button
@@ -64,4 +65,30 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addBrand_image" />
+
+    <EditText
+        android:id="@+id/addBrand_editWeb"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView8"
+        app:layout_constraintTop_toBottomOf="@+id/addBrand_editBrandName" />
+
+    <TextView
+        android:id="@+id/textView12"
+        style="@style/FieldStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/website"
+        app:layout_constraintBaseline_toBaselineOf="@+id/addBrand_editWeb"
+        app:layout_constraintEnd_toStartOf="@+id/addBrand_editWeb" />
 </android.support.constraint.ConstraintLayout>

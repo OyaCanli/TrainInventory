@@ -22,13 +22,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.canli.oya.traininventory.R;
+import com.canli.oya.traininventory.adapters.ListItemClickListener;
 import com.canli.oya.traininventory.adapters.TrainAdapter;
 import com.canli.oya.traininventory.data.entities.TrainEntry;
 import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 import java.util.List;
 
-public class TrainListFragment extends Fragment implements TrainAdapter.ListItemClickListener{
+public class TrainListFragment extends Fragment implements ListItemClickListener {
 
     private RecyclerView recycler;
     private TrainAdapter mAdapter;
@@ -55,6 +56,9 @@ public class TrainListFragment extends Fragment implements TrainAdapter.ListItem
         recycler.setItemAnimator(new DefaultItemAnimator());
         recycler.setAdapter(mAdapter);
 
+        empty_tv = rootView.findViewById(R.id.empty_text);
+        empty_image = rootView.findViewById(R.id.empty_image);
+
         viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
         viewModel.getTrains().observe(getActivity(), new Observer<List<TrainEntry>>() {
                     @Override
@@ -67,9 +71,6 @@ public class TrainListFragment extends Fragment implements TrainAdapter.ListItem
                        }
                     }
                 });
-
-        empty_tv = rootView.findViewById(R.id.empty_text);
-        empty_image = rootView.findViewById(R.id.empty_image);
 
         return rootView;
     }
