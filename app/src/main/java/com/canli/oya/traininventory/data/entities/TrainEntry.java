@@ -9,8 +9,25 @@ import android.support.annotation.NonNull;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 import static android.arch.persistence.room.ForeignKey.NO_ACTION;
+import static android.arch.persistence.room.ForeignKey.RESTRICT;
+import static android.arch.persistence.room.ForeignKey.SET_NULL;
 
-@Entity(tableName = "trains")
+@Entity(tableName = "trains", foreignKeys = {
+        @ForeignKey(
+                entity = BrandEntry.class,
+                parentColumns = "brandName",
+                childColumns = "brandName",
+                onUpdate = CASCADE,
+                onDelete = SET_NULL
+        ),
+        @ForeignKey(
+                entity = CategoryEntry.class,
+                parentColumns = "categoryName",
+                childColumns = "categoryName")
+}, indices = {
+        @Index(value = "brandName"),
+        @Index(value = "categoryName")
+})
 public class TrainEntry {
 
     @PrimaryKey(autoGenerate = true)
