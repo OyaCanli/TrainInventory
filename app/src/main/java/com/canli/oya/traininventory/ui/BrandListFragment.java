@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.adapters.BrandAdapter;
@@ -93,30 +94,39 @@ public class BrandListFragment extends Fragment implements ListItemClickListener
                 //First take a backup of the brand to erase
                 final BrandEntry brandToErase = brands.get(position);
 
-                //Remove the train from the database
                 AppExecutors.getInstance().diskIO().execute(new Runnable() {
                     @Override
                     public void run() {
-                        mDb.brandDao().deleteBrand(brandToErase);
+                        //Check whether this brand is used in trains table.
+                        List<Integer> trainsThatUSeThisBrand = mDb.trainDao().getTrainsThatUseThisBrand(brandToErase.getBrandName());
+                        if(trainsThatUSeThisBrand.size() > 0){
+                            // If it is used, show a warning and don't let user delete this
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getActivity(), "This brand is used by some trains. You cannot erase this brand", Toast.LENGTH_LONG).show();
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+                            return;
+                        } else{
+                            //If it is not used delete the brand
+                            mDb.brandDao().deleteBrand(brandToErase);
+
+                            //Show a snackbar for undoing delete
+                            Snackbar snackbar = Snackbar
+                                    .make(coordinator, R.string.brand_deleted, Snackbar.LENGTH_INDEFINITE)
+                                    .setAction(R.string.undo, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            //If UNDO is clicked, add the item back in the database
+                                            mDb.brandDao().insertBrand(brandToErase);
+                                        }
+                                    });
+                            snackbar.show();
+                        }
                     }
                 });
-
-                //Show a snackbar for undoing delete
-                Snackbar snackbar = Snackbar
-                        .make(coordinator, R.string.brand_deleted, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.undo, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                //If UNDO is clicked, add the item back in the database
-                                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mDb.brandDao().insertBrand(brandToErase);
-                                    }
-                                });
-                            }
-                        });
-                snackbar.show();
             }
         }).attachToRecyclerView(recycler);
 

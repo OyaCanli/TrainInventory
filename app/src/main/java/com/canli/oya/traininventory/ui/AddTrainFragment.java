@@ -239,13 +239,8 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 }
             });
         }
-        TrainListFragment trainListFrag = new TrainListFragment();
-        trainListFrag.setEnterTransition(new Slide(Gravity.END));
-        trainListFrag.setExitTransition(new Slide(Gravity.START));
-        getFragmentManager().beginTransaction()
-                .replace(R.id.container, trainListFrag)
-                .addToBackStack(null)
-                .commit();
+        //After adding the train, go back to train list.
+        getFragmentManager().popBackStack();
     }
 
     private void openImageDialog() {

@@ -7,7 +7,7 @@ import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
-import static android.arch.persistence.room.ForeignKey.SET_NULL;
+import static android.arch.persistence.room.ForeignKey.RESTRICT;
 
 @Entity(tableName = "trains", foreignKeys = {
         @ForeignKey(
@@ -15,7 +15,7 @@ import static android.arch.persistence.room.ForeignKey.SET_NULL;
                 parentColumns = "brandName",
                 childColumns = "brandName",
                 onUpdate = CASCADE,
-                onDelete = SET_NULL
+                onDelete = RESTRICT
         ),
         @ForeignKey(
                 entity = CategoryEntry.class,

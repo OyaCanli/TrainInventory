@@ -18,6 +18,9 @@ public interface TrainDao {
     @Query("SELECT * FROM trains")
     LiveData<List<TrainEntry>> getAllTrains();
 
+    @Query("SELECT trainId FROM trains WHERE brandName = :brandName")
+    List<Integer> getTrainsThatUseThisBrand(String brandName);
+
     @Insert
     void insertTrain(TrainEntry train);
 
