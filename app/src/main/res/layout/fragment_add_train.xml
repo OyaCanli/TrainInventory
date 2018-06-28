@@ -206,7 +206,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/categorySpinner"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/categorySpinner"
-                app:srcCompat="@drawable/baseline_add_white_24dp" />
+                android:src="@drawable/ic_baseline_add" />
 
             <ImageButton
                 android:id="@+id/addTrain_addBrandBtn"
@@ -218,7 +218,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/brandSpinner"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/brandSpinner"
-                app:srcCompat="@drawable/baseline_add_white_24dp" />
+                android:src="@drawable/ic_baseline_add" />
 
             <FrameLayout
                 android:id="@+id/childFragContainer"

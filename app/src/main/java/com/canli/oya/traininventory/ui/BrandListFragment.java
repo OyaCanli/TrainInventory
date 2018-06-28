@@ -2,16 +2,22 @@ package com.canli.oya.traininventory.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.transition.Slide;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,7 +30,6 @@ import android.widget.Toast;
 
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.adapters.BrandAdapter;
-import com.canli.oya.traininventory.adapters.ListItemClickListener;
 import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.BrandEntry;
 import com.canli.oya.traininventory.utils.AppExecutors;
@@ -33,7 +38,7 @@ import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 import java.util.List;
 
-public class BrandListFragment extends Fragment implements ListItemClickListener{
+public class BrandListFragment extends Fragment implements BrandAdapter.BrandItemClickListener{
 
     private List<BrandEntry> brands;
     private BrandAdapter adapter;
@@ -98,13 +103,12 @@ public class BrandListFragment extends Fragment implements ListItemClickListener
                     @Override
                     public void run() {
                         //Check whether this brand is used in trains table.
-                        List<Integer> trainsThatUSeThisBrand = mDb.trainDao().getTrainsThatUseThisBrand(brandToErase.getBrandName());
-                        if(trainsThatUSeThisBrand.size() > 0){
+                        if(mDb.trainDao().isThisBrandUsed(brandToErase.getBrandName())){
                             // If it is used, show a warning and don't let user delete this
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(getActivity(), "This brand is used by some trains. You cannot erase this brand", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), R.string.cannot_erase_brand, Toast.LENGTH_LONG).show();
                                     adapter.notifyDataSetChanged();
                                 }
                             });
@@ -119,8 +123,13 @@ public class BrandListFragment extends Fragment implements ListItemClickListener
                                     .setAction(R.string.undo, new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            //If UNDO is clicked, add the item back in the database
-                                            mDb.brandDao().insertBrand(brandToErase);
+                                            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    //If UNDO is clicked, add the item back in the database
+                                                    mDb.brandDao().insertBrand(brandToErase);
+                                                }
+                                            });
                                         }
                                     });
                             snackbar.show();
@@ -171,7 +180,24 @@ public class BrandListFragment extends Fragment implements ListItemClickListener
     }
 
     @Override
-    public void onListItemClick(int position) {
+    public void onBrandItemClicked(View view, int position) {
+        switch(view.getId()){
+            case R.id.brand_item_web_icon:{
+                openWebSite(position);
+                break;
+            }
+            case R.id.brand_item_train_icon:{
+                showTrainsFromThisBrand(position);
+                break;
+            }
+            case R.id.brand_item_edit_icon:{
+                editBrand(position);
+                break;
+            }
+        }
+    }
+
+    private void editBrand(int position) {
         viewModel.setChosenBrand(brands.get(position));
         AddBrandFragment addBrandFrag = new AddBrandFragment();
         Bundle args = new Bundle();
@@ -181,6 +207,37 @@ public class BrandListFragment extends Fragment implements ListItemClickListener
                 .setCustomAnimations(R.anim.translate_from_top, 0)
                 .replace(R.id.brandlist_addFrag_container, addBrandFrag)
                 .commit();
+    }
+
+    private void showTrainsFromThisBrand(int position) {
+        TrainListFragment trainListFrag = new TrainListFragment();
+        Bundle args = new Bundle();
+        args.putString(Constants.INTENT_REQUEST_CODE, Constants.TRAINS_OF_BRAND);
+        args.putString(Constants.BRAND_NAME, brands.get(position).getBrandName());
+        trainListFrag.setArguments(args);
+        trainListFrag.setEnterTransition(new Slide(Gravity.END));
+        trainListFrag.setExitTransition(new Slide(Gravity.START));
+        getFragmentManager().beginTransaction()
+                .replace(R.id.container, trainListFrag)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void openWebSite(int position){
+        String urlString = brands.get(position).getWebUrl();
+        Uri webUri = null;
+        if(!TextUtils.isEmpty(urlString)){
+            try{
+                webUri = Uri.parse(urlString);
+            }catch(Exception e){
+                Log.e("BrandListFragment", e.toString());
+            }
+            Intent webIntent = new Intent(Intent.ACTION_VIEW);
+            webIntent.setData(webUri);
+            if(webIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivity(webIntent);
+            }
+        }
     }
 }
 

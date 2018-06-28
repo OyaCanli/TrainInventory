@@ -9,7 +9,7 @@
         app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/action_add"
-        android:icon="@drawable/baseline_add_white_24dp"
+        android:icon="@drawable/ic_baseline_add"
         android:title="@string/add"
         app:showAsAction="ifRoom" />
 </menu>

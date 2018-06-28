@@ -17,4 +17,6 @@
     <dimen name="add_brand_imagebtn_height">30dp</dimen>
     <dimen name="spinner_brand_logo_dim">40dp</dimen>
     <dimen name="list_brand_logo_dim">60dp</dimen>
+    <dimen name="brand_item_logo_dim">32dp</dimen>
+    <dimen name="textSize">16sp</dimen>
 </resources>

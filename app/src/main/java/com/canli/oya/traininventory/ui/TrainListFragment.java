@@ -22,14 +22,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.canli.oya.traininventory.R;
-import com.canli.oya.traininventory.adapters.ListItemClickListener;
 import com.canli.oya.traininventory.adapters.TrainAdapter;
+import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.TrainEntry;
+import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 import java.util.List;
 
-public class TrainListFragment extends Fragment implements ListItemClickListener {
+public class TrainListFragment extends Fragment implements TrainAdapter.TrainItemClickListener {
 
     private RecyclerView recycler;
     private TrainAdapter mAdapter;
@@ -59,25 +60,55 @@ public class TrainListFragment extends Fragment implements ListItemClickListener
         empty_tv = rootView.findViewById(R.id.empty_text);
         empty_image = rootView.findViewById(R.id.empty_image);
 
-        viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
-        viewModel.getTrains().observe(getActivity(), new Observer<List<TrainEntry>>() {
+        Bundle bundle = getArguments();
+        if(bundle != null && bundle.containsKey(Constants.INTENT_REQUEST_CODE)){
+            TrainDatabase mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
+            if(bundle.getString(Constants.INTENT_REQUEST_CODE) == Constants.TRAINS_OF_BRAND){
+                mDb.trainDao().getTrainsFromThisBrand(bundle.getString(Constants.BRAND_NAME)).observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
                     @Override
                     public void onChanged(@Nullable List<TrainEntry> trainEntries) {
-                       if(trainEntries.isEmpty()){
-                           showEmpty();
-                       } else{
-                           mAdapter.setTrains(trainEntries);
-                           mTrainList = trainEntries;
-                       }
+                        if(trainEntries.isEmpty()){
+                            showEmpty(getString(R.string.no_train_for_this_brand));
+                        } else{
+                            mAdapter.setTrains(trainEntries);
+                            mTrainList = trainEntries;
+                        }
                     }
                 });
+            }else{
+                mDb.trainDao().getTrainsFromThisCategory(bundle.getString(Constants.CATEGORY_NAME)).observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
+                    @Override
+                    public void onChanged(@Nullable List<TrainEntry> trainEntries) {
+                        if(trainEntries.isEmpty()){
+                            showEmpty(getString(R.string.no_items_for_this_category));
+                        } else{
+                            mAdapter.setTrains(trainEntries);
+                            mTrainList = trainEntries;
+                        }
+                    }
+                });
+            }
+        }else{
+            viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+            viewModel.getAllTrains().observe(getActivity(), new Observer<List<TrainEntry>>() {
+                @Override
+                public void onChanged(@Nullable List<TrainEntry> trainEntries) {
+                    if(trainEntries.isEmpty()){
+                        showEmpty(getString(R.string.no_trains_found));
+                    } else{
+                        mAdapter.setTrains(trainEntries);
+                        mTrainList = trainEntries;
+                    }
+                }
+            });
+        }
 
         return rootView;
     }
 
-    private void showEmpty(){
+    private void showEmpty(String message){
         recycler.setVisibility(View.GONE);
-        empty_tv.setText(R.string.no_trains_found);
+        empty_tv.setText(message);
         empty_tv.setVisibility(View.VISIBLE);
         empty_image.setVisibility(View.VISIBLE);
     }

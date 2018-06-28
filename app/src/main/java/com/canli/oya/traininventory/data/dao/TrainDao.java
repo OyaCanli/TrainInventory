@@ -18,8 +18,17 @@ public interface TrainDao {
     @Query("SELECT * FROM trains")
     LiveData<List<TrainEntry>> getAllTrains();
 
-    @Query("SELECT trainId FROM trains WHERE brandName = :brandName")
-    List<Integer> getTrainsThatUseThisBrand(String brandName);
+    @Query("SELECT 1 FROM trains WHERE brandName = :brandName")
+    boolean isThisBrandUsed(String brandName);
+
+    @Query("SELECT 1 FROM trains WHERE categoryName = :categoryName")
+    boolean isThisCategoryUsed(String categoryName);
+
+    @Query("SELECT * FROM trains WHERE brandName = :brandName")
+    LiveData<List<TrainEntry>> getTrainsFromThisBrand(String brandName);
+
+    @Query("SELECT * FROM trains WHERE categoryName = :categoryName")
+    LiveData<List<TrainEntry>> getTrainsFromThisCategory(String categoryName);
 
     @Insert
     void insertTrain(TrainEntry train);

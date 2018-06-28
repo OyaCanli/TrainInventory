@@ -18,10 +18,10 @@ import java.util.List;
 public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHolder>{
 
     private List<TrainEntry> mTrainList;
-    private final ListItemClickListener mClickListener;
+    private final TrainItemClickListener mClickListener;
     private final Context mContext;
 
-    public TrainAdapter(@NonNull Context context, ListItemClickListener listener) {
+    public TrainAdapter(@NonNull Context context, TrainItemClickListener listener) {
         mClickListener = listener;
         mContext = context;
     }
@@ -82,5 +82,9 @@ public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHol
             int position = getLayoutPosition();
             mClickListener.onListItemClick(position);
         }
+    }
+
+    public interface TrainItemClickListener {
+        void onListItemClick(int position);
     }
 }

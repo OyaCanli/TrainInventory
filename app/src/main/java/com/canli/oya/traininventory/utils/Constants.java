@@ -18,5 +18,11 @@ public final class Constants {
 
     public static final String EDIT_CASE = "editCase";
 
+    public static final String TRAINS_OF_BRAND = "trainOfBrand";
 
+    public static final String BRAND_NAME = "brandName";
+
+    public static final String TRAINS_OF_CATEGORY = "trainsOfCategory";
+
+    public static final String CATEGORY_NAME = "categoryName";
 }

@@ -20,9 +20,9 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
 
     private List<BrandEntry> mBrandList;
     private final Context mContext;
-    private final ListItemClickListener mClickListener;
+    private final BrandItemClickListener mClickListener;
 
-    public BrandAdapter(Context context, ListItemClickListener listener){
+    public BrandAdapter(Context context, BrandItemClickListener listener){
         mContext = context;
         mClickListener = listener;
     }
@@ -60,18 +60,30 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
 
         final TextView brandName_tv;
         final ImageView logo_iv;
+        final ImageView webIcon_iv;
+        final ImageView trainIcon_iv;
+        final ImageView editIcon_iv;
 
         BrandViewHolder(View itemView) {
             super(itemView);
             brandName_tv = itemView.findViewById(R.id.brand_item_brandName);
             logo_iv = itemView.findViewById(R.id.brand_item_logo);
-            itemView.setOnClickListener(this);
+            webIcon_iv = itemView.findViewById(R.id.brand_item_web_icon);
+            trainIcon_iv = itemView.findViewById(R.id.brand_item_train_icon);
+            editIcon_iv = itemView.findViewById(R.id.brand_item_edit_icon);
+            webIcon_iv.setOnClickListener(this);
+            trainIcon_iv.setOnClickListener(this);
+            editIcon_iv.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             int position = getLayoutPosition();
-            mClickListener.onListItemClick(position);
+            mClickListener.onBrandItemClicked(v, position);
         }
+    }
+
+    public interface BrandItemClickListener{
+        void onBrandItemClicked(View view, int position);
     }
 }

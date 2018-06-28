@@ -31,7 +31,7 @@ public class MainViewModel extends AndroidViewModel {
         Log.d("ChosenTrainViewModel", "constructor of viewmodel");
     }
 
-    public LiveData<List<TrainEntry>> getTrains() {
+    public LiveData<List<TrainEntry>> getAllTrains() {
         return trainList;
     }
 
