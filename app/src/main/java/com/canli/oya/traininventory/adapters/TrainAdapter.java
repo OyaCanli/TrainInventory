@@ -79,12 +79,12 @@ public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHol
 
         @Override
         public void onClick(View v) {
-            int position = getLayoutPosition();
-            mClickListener.onListItemClick(position);
+            int trainId = mTrainList.get(getLayoutPosition()).getTrainId();
+            mClickListener.onListItemClick(trainId);
         }
     }
 
     public interface TrainItemClickListener {
-        void onListItemClick(int position);
+        void onListItemClick(int trainId);
     }
 }

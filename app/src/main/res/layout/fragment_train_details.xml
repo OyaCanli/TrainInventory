@@ -23,60 +23,39 @@
 
         <TextView
             android:id="@+id/details_product_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/details_image"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Train name" />
+            tools:text="Train name"
+            style="@style/details_plain_text" />
 
         <TextView
             android:id="@+id/details_brand"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/details_image"
             app:layout_constraintTop_toBottomOf="@+id/details_product_name"
-            tools:text="Brand Name" />
+            tools:text="Brand Name"
+            style="@style/details_plain_text" />
 
         <TextView
             android:id="@+id/details_reference"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/details_image"
             app:layout_constraintTop_toBottomOf="@+id/details_brand"
-            tools:text="Reference" />
+            tools:text="Reference"
+            style="@style/details_plain_text" />
 
         <TextView
             android:id="@+id/details_category"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
             android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/details_image"
             app:layout_constraintTop_toBottomOf="@+id/details_reference"
-            tools:text="Category" />
+            tools:text="Category"
+            style="@style/details_plain_text" />
 
         <TextView
             android:id="@+id/details_description"

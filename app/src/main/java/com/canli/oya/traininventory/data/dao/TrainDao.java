@@ -18,6 +18,9 @@ public interface TrainDao {
     @Query("SELECT * FROM trains")
     LiveData<List<TrainEntry>> getAllTrains();
 
+    @Query("SELECT * FROM trains WHERE trainId = :id")
+    LiveData<TrainEntry> getChosenTrain(int id);
+
     @Query("SELECT 1 FROM trains WHERE brandName = :brandName")
     boolean isThisBrandUsed(String brandName);
 
@@ -29,6 +32,10 @@ public interface TrainDao {
 
     @Query("SELECT * FROM trains WHERE categoryName = :categoryName")
     LiveData<List<TrainEntry>> getTrainsFromThisCategory(String categoryName);
+
+    @Query("SELECT * FROM trains WHERE (trainName LIKE '%' || :query || '%') " +
+            "OR (modelReference LIKE '%' || :query || '%') OR (description LIKE '%' || :query || '%')")
+    List<TrainEntry> searchInTrains(String query);
 
     @Insert
     void insertTrain(TrainEntry train);

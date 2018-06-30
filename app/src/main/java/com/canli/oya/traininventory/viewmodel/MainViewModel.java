@@ -19,7 +19,6 @@ public class MainViewModel extends AndroidViewModel {
     private final LiveData<List<TrainEntry>> trainList;
     private final LiveData<List<String>> categoryList;
     private final LiveData<List<BrandEntry>> brandList;
-    private final MutableLiveData<TrainEntry> mChosenTrain = new MutableLiveData<>();
     private final MutableLiveData<BrandEntry> mChosenBrand = new MutableLiveData<>();
 
     public MainViewModel(@NonNull Application application) {
@@ -43,16 +42,8 @@ public class MainViewModel extends AndroidViewModel {
         return brandList;
     }
 
-    public LiveData<TrainEntry> getChosenTrain() {
-        return mChosenTrain;
-    }
-
     public LiveData<BrandEntry> getChosenBrand() {
         return mChosenBrand;
-    }
-
-    public void setChosenTrain(TrainEntry chosenTrain) {
-        mChosenTrain.setValue(chosenTrain);
     }
 
     public void setChosenBrand(BrandEntry chosenBrand){

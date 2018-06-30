@@ -11,6 +11,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,6 +26,7 @@ import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.adapters.TrainAdapter;
 import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.TrainEntry;
+import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
@@ -38,6 +40,8 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
     private List<TrainEntry> mTrainList;
     private TextView empty_tv;
     private ImageView empty_image;
+    private TrainDatabase mDb;
+    private List<TrainEntry> filteredTrains;
 
     public TrainListFragment() {
         setHasOptionsMenu(true);
@@ -60,9 +64,10 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
         empty_tv = rootView.findViewById(R.id.empty_text);
         empty_image = rootView.findViewById(R.id.empty_image);
 
+        mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
+
         Bundle bundle = getArguments();
         if(bundle != null && bundle.containsKey(Constants.INTENT_REQUEST_CODE)){
-            TrainDatabase mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
             if(bundle.getString(Constants.INTENT_REQUEST_CODE) == Constants.TRAINS_OF_BRAND){
                 mDb.trainDao().getTrainsFromThisBrand(bundle.getString(Constants.BRAND_NAME)).observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
                     @Override
@@ -114,9 +119,11 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
     }
 
     @Override
-    public void onListItemClick(int position) {
-        viewModel.setChosenTrain(mTrainList.get(position));
+    public void onListItemClick(int trainId) {
         TrainDetailsFragment trainDetailsFrag = new TrainDetailsFragment();
+        Bundle args = new Bundle();
+        args.putInt(Constants.TRAIN_ID, trainId);
+        trainDetailsFrag.setArguments(args);
         trainDetailsFrag.setEnterTransition(new Slide(Gravity.END));
         trainDetailsFrag.setExitTransition(new Slide(Gravity.START));
         getFragmentManager().beginTransaction()
@@ -139,10 +146,32 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
 
             @Override
             public boolean onQueryTextChange(String query) {
-                //TODO: implement filtering here
+                filterTrains(query);
                 return false;
             }
         });
+    }
+
+    private void filterTrains(final String query){
+        if (query == null || "".equals(query)) {
+            filteredTrains = mTrainList;
+            mAdapter.setTrains(filteredTrains);
+            mAdapter.notifyDataSetChanged();
+        } else {
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    filteredTrains = mDb.trainDao().searchInTrains(query);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter.setTrains(filteredTrains);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+            });
+        }
     }
 
     @Override

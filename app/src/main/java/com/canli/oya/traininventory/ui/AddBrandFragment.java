@@ -110,6 +110,10 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
     private void populateFields(BrandEntry brand){
         brandName_et.setText(brand.getBrandName());
         webUrl_et.setText(brand.getWebUrl());
+        String logoUriString = brand.getBrandLogoUri();
+        if(logoUriString != null){
+            mLogoUri = Uri.parse(logoUriString);
+        }
         if(mContext != null){
             GlideApp.with(mContext)
                     .load(brand.getBrandLogoUri())
@@ -259,7 +263,7 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
         pickImageDialog.dismiss();
         if (requestCode == Constants.REQUEST_IMAGE_CAPTURE) {
             if (resultCode == RESULT_OK) {
-                Glide.with(getActivity())
+                Glide.with(mContext)
                         .load(mLogoUri)
                         .into(addPhoto_iv);
             } else {
@@ -268,7 +272,7 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
         } else if (requestCode == Constants.PICK_IMAGE_REQUEST) {
             if (resultCode == RESULT_OK) {
                 mLogoUri = data.getData();
-                Glide.with(getActivity())
+                Glide.with(mContext)
                         .load(mLogoUri)
                         .into(addPhoto_iv);
             }
@@ -292,5 +296,11 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
                 break;
             }
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mContext = null;
     }
 }

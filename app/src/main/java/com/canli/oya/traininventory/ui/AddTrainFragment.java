@@ -3,6 +3,7 @@ package com.canli.oya.traininventory.ui;
 import android.Manifest;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -39,6 +40,8 @@ import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.BitmapUtils;
 import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.utils.GlideApp;
+import com.canli.oya.traininventory.viewmodel.ChosenTrainFactory;
+import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
 import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 import java.io.File;
@@ -62,6 +65,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     private List<String> categoryList;
     private List<BrandEntry> brandList;
     private int mTrainId;
+    Context mContext;
 
     private final DialogInterface.OnClickListener mDialogClickListener = new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int item) {
@@ -70,6 +74,12 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     };
 
     public AddTrainFragment() {
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 
     @Nullable
@@ -83,18 +93,23 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
 
         mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
-        final MainViewModel viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        /*This is the main viewmodel which is attached to the activity and which is shared by many fragments
+        We need it here for getting categories and brands for populating spinners*/
+        final MainViewModel mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
 
         Bundle bundle = getArguments();
-        if (bundle != null && bundle.containsKey(Constants.INTENT_REQUEST_CODE)) { //This is the "edit" case
+        if (bundle != null && bundle.containsKey(Constants.TRAIN_ID)) { //This is the "edit" case
+            getActivity().setTitle(getString(R.string.edit_train));
+            mTrainId = bundle.getInt(Constants.TRAIN_ID);
+            //This view model is instantiated only in edit mode. It contains the chosen train. It is attached to this fragment
+            ChosenTrainFactory factory = new ChosenTrainFactory(mDb, mTrainId);
+            final ChosenTrainViewModel viewModel = ViewModelProviders.of(this, factory).get(ChosenTrainViewModel.class);
             viewModel.getChosenTrain().observe(this, new Observer<TrainEntry>() {
                 @Override
                 public void onChanged(@Nullable TrainEntry trainEntry) {
                     populateFields(trainEntry);
-                    mTrainId = trainEntry.getTrainId();
                 }
             });
-            getActivity().setTitle(getString(R.string.edit_train));
         } else {
             getActivity().setTitle(getString(R.string.add_train));
         }
@@ -105,7 +120,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.categorySpinner.setAdapter(categoryAdapter);
         binding.categorySpinner.setOnItemSelectedListener(this);
-        viewModel.getCategoryList().observe(getActivity(), new Observer<List<String>>() {
+        mainViewModel.getCategoryList().observe(getActivity(), new Observer<List<String>>() {
             @Override
             public void onChanged(@Nullable List<String> categoryEntries) {
                 categoryList.clear();
@@ -120,7 +135,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         final CustomSpinAdapter brandAdapter = new CustomSpinAdapter(getActivity(), brandList);
         binding.brandSpinner.setAdapter(brandAdapter);
         binding.brandSpinner.setOnItemSelectedListener(this);
-        viewModel.getBrandList().observe(this, new Observer<List<BrandEntry>>() {
+        mainViewModel.getBrandList().observe(this, new Observer<List<BrandEntry>>() {
             @Override
             public void onChanged(@Nullable List<BrandEntry> brandEntries) {
                 brandList.clear();
@@ -146,13 +161,13 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         binding.editQuantity.setText(String.valueOf(trainToEdit.getQuantity()));
         binding.editTrainDescription.setText(trainToEdit.getDescription());
         mImageUri = trainToEdit.getImageUri();
-        GlideApp.with(AddTrainFragment.this)
-                .load(trainToEdit.getImageUri())
+        GlideApp.with(mContext)
+                .load(mImageUri)
                 .placeholder(R.drawable.placeholder)
                 .centerCrop()
                 .into(binding.productDetailsGalleryImage);
         String location = trainToEdit.getLocation();
-        if(location.contains("-") && location.length()>1){
+        if (location.contains("-") && location.length() > 1) {
             String[] locationParts = trainToEdit.getLocation().split("-");
             binding.editLocationNumber.setText(locationParts[0]);
             binding.editLocationLetter.setText(locationParts[1]);
@@ -220,7 +235,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 binding.editLocationLetter.getText().toString().trim();
         String scale = binding.editScale.getText().toString().trim();
 
-        if(mTrainId == 0) {
+        if (mTrainId == 0) {
             //If this is a new train
             final TrainEntry newTrain = new TrainEntry(trainName, reference, mChosenBrand, mChosenCategory, quantity, mImageUri, description, location, scale);
             AppExecutors.getInstance().diskIO().execute(new Runnable() {
@@ -229,7 +244,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                     mDb.trainDao().insertTrain(newTrain);
                 }
             });
-        } else{
+        } else {
             //If this is a train that already exist
             final TrainEntry trainToUpdate = new TrainEntry(mTrainId, trainName, reference, mChosenBrand, mChosenCategory, quantity, mImageUri, description, location, scale);
             AppExecutors.getInstance().diskIO().execute(new Runnable() {
@@ -239,7 +254,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 }
             });
         }
-        //After adding the train, go back to train list.
+        //After adding the train, go back to where user come from.
         getFragmentManager().popBackStack();
     }
 
@@ -369,5 +384,11 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mContext = null;
     }
 }

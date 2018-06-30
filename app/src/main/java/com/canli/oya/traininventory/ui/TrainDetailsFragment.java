@@ -11,6 +11,7 @@ import android.support.transition.Slide;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,6 +27,8 @@ import com.canli.oya.traininventory.databinding.FragmentTrainDetailsBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.utils.GlideApp;
+import com.canli.oya.traininventory.viewmodel.ChosenTrainFactory;
+import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
 import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 public class TrainDetailsFragment extends Fragment {
@@ -33,8 +36,9 @@ public class TrainDetailsFragment extends Fragment {
     private FragmentTrainDetailsBinding binding;
     private TrainDatabase mDb;
     private TrainEntry mChosenTrain;
+    private int mTrainId;
 
-    public TrainDetailsFragment(){
+    public TrainDetailsFragment() {
         setHasOptionsMenu(true);
     }
 
@@ -46,8 +50,10 @@ public class TrainDetailsFragment extends Fragment {
         setHasOptionsMenu(true);
         mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
-        //ChosenTrainViewModelFactory factory = new ChosenTrainViewModelFactory(mDb, mTrainId);
-        final MainViewModel viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        Bundle bundle = getArguments();
+        mTrainId = bundle.getInt(Constants.TRAIN_ID);
+        ChosenTrainFactory factory = new ChosenTrainFactory(mDb, mTrainId);
+        final ChosenTrainViewModel viewModel = ViewModelProviders.of(this, factory).get(ChosenTrainViewModel.class);
         viewModel.getChosenTrain().observe(this, new Observer<TrainEntry>() {
             @Override
             public void onChanged(@Nullable TrainEntry trainEntry) {
@@ -55,6 +61,7 @@ public class TrainDetailsFragment extends Fragment {
                 mChosenTrain = trainEntry;
             }
         });
+
         return binding.getRoot();
     }
 
@@ -83,15 +90,15 @@ public class TrainDetailsFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
-            case R.id.action_delete:{
+        switch (item.getItemId()) {
+            case R.id.action_delete: {
                 openAlertDialogForDelete();
                 break;
             }
-            case R.id.action_edit:{
+            case R.id.action_edit: {
                 AddTrainFragment addTrainFrag = new AddTrainFragment();
                 Bundle args = new Bundle();
-                args.putString(Constants.INTENT_REQUEST_CODE, Constants.EDIT_CASE);
+                args.putInt(Constants.TRAIN_ID, mTrainId);
                 addTrainFrag.setArguments(args);
                 addTrainFrag.setEnterTransition(new Slide(Gravity.END));
                 getFragmentManager().beginTransaction()
@@ -126,12 +133,7 @@ public class TrainDetailsFragment extends Fragment {
             @Override
             public void run() {
                 mDb.trainDao().deleteTrain(mChosenTrain);
-                TrainListFragment trainListFrag = new TrainListFragment();
-                trainListFrag.setEnterTransition(new Slide(Gravity.END));
-                trainListFrag.setExitTransition(new Slide(Gravity.START));
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.container, trainListFrag)
-                        .commit();
+                getFragmentManager().popBackStack();
             }
         });
     }

@@ -14,6 +14,8 @@ public final class Constants {
     public static final String FILE_PROVIDER_AUTHORITY = "com.canli.oya.traininventory.fileprovider";
 
     //Intent extras:
+    public static final String TRAIN_ID = "trainId";
+
     public static final String INTENT_REQUEST_CODE = "intentRequestCode";
 
     public static final String EDIT_CASE = "editCase";
