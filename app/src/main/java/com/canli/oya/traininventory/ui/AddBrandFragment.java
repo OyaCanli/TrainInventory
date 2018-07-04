@@ -22,7 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -30,7 +29,6 @@ import com.bumptech.glide.Glide;
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.BrandEntry;
-import com.canli.oya.traininventory.data.entities.TrainEntry;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.BitmapUtils;
 import com.canli.oya.traininventory.utils.Constants;
@@ -90,6 +88,15 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
         //Request focus on the first edittext
         brandName_et.requestFocus();
 
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        //get database instance
+        mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
+
         final MainViewModel viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
 
         Bundle bundle = getArguments();
@@ -103,8 +110,6 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
                 }
             });
         }
-
-        return rootView;
     }
 
     private void populateFields(BrandEntry brand){

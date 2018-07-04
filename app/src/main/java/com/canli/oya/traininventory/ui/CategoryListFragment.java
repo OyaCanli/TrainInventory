@@ -53,8 +53,6 @@ public class CategoryListFragment extends Fragment implements CategoryAdapter.Ca
         View rootView = inflater.inflate(R.layout.fragment_brandlist, container, false);
         setHasOptionsMenu(true);
 
-        mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
-
         mAdapter = new CategoryAdapter(this);
         recycler = rootView.findViewById(R.id.list);
         recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -64,6 +62,13 @@ public class CategoryListFragment extends Fragment implements CategoryAdapter.Ca
         empty_tv = rootView.findViewById(R.id.empty_text);
         empty_image = rootView.findViewById(R.id.empty_image);
 
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
         final MainViewModel viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
         viewModel.getCategoryList().observe(getActivity(), new Observer<List<String>>() {
             @Override
@@ -133,8 +138,6 @@ public class CategoryListFragment extends Fragment implements CategoryAdapter.Ca
                 });
             }
         }).attachToRecyclerView(recycler);
-
-        return rootView;
     }
 
     private void showEmpty() {

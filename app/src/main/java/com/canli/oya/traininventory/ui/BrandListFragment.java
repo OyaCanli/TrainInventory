@@ -58,8 +58,6 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
         View rootView = inflater.inflate(R.layout.fragment_brandlist, container, false);
         setHasOptionsMenu(true);
 
-        mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
-
         adapter = new BrandAdapter(getActivity(), this);
         recycler = rootView.findViewById(R.id.list);
         recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -68,6 +66,15 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
 
         empty_tv = rootView.findViewById(R.id.empty_text);
         empty_image = rootView.findViewById(R.id.empty_image);
+
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
         viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
         viewModel.getBrandList().observe(getActivity(), new Observer<List<BrandEntry>>() {
@@ -82,7 +89,6 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
                 }
             }
         });
-
         getActivity().setTitle(getString(R.string.all_brands));
 
         final CoordinatorLayout coordinator = getActivity().findViewById(R.id.coordinator);
@@ -138,8 +144,6 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
                 });
             }
         }).attachToRecyclerView(recycler);
-
-        return rootView;
     }
 
     private void showEmpty() {

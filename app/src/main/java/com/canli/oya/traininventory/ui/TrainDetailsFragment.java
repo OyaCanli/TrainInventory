@@ -10,8 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.transition.Slide;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.text.Html;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,7 +27,6 @@ import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.utils.GlideApp;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainFactory;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
-import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 public class TrainDetailsFragment extends Fragment {
 
@@ -48,6 +45,13 @@ public class TrainDetailsFragment extends Fragment {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_train_details, container, false);
         setHasOptionsMenu(true);
+
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
         Bundle bundle = getArguments();
@@ -61,8 +65,6 @@ public class TrainDetailsFragment extends Fragment {
                 mChosenTrain = trainEntry;
             }
         });
-
-        return binding.getRoot();
     }
 
     private void populateUI(TrainEntry chosenTrain) {

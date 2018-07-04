@@ -13,17 +13,14 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.transition.Slide;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -33,7 +30,6 @@ import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.adapters.CustomSpinAdapter;
 import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.BrandEntry;
-import com.canli.oya.traininventory.data.entities.CategoryEntry;
 import com.canli.oya.traininventory.data.entities.TrainEntry;
 import com.canli.oya.traininventory.databinding.FragmentAddTrainBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
@@ -88,9 +84,18 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_add_train, container, false);
 
-        getActivity().getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        //Set click listener on buttons
+        binding.addTrainAddBrandBtn.setOnClickListener(this);
+        binding.addTrainAddCategoryBtn.setOnClickListener(this);
+        binding.saveBtn.setOnClickListener(this);
+        binding.productDetailsGalleryImage.setOnClickListener(this);
 
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
         /*This is the main viewmodel which is attached to the activity and which is shared by many fragments
@@ -129,7 +134,6 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
             }
         });
 
-
         //Set brand spinner
         brandList = new ArrayList<>();
         final CustomSpinAdapter brandAdapter = new CustomSpinAdapter(getActivity(), brandList);
@@ -143,14 +147,6 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 brandAdapter.notifyDataSetChanged();
             }
         });
-
-        //Set click listener on buttons
-        binding.addTrainAddBrandBtn.setOnClickListener(this);
-        binding.addTrainAddCategoryBtn.setOnClickListener(this);
-        binding.saveBtn.setOnClickListener(this);
-        binding.productDetailsGalleryImage.setOnClickListener(this);
-
-        return binding.getRoot();
     }
 
     private void populateFields(TrainEntry trainToEdit) {

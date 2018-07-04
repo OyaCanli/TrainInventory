@@ -11,7 +11,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -52,7 +51,6 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_list, container, false);
 
-        getActivity().setTitle(getString(R.string.all_trains));
         setHasOptionsMenu(true);
 
         mAdapter = new TrainAdapter(getActivity(), this);
@@ -64,11 +62,20 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
         empty_tv = rootView.findViewById(R.id.empty_text);
         empty_image = rootView.findViewById(R.id.empty_image);
 
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        getActivity().setTitle(getString(R.string.all_trains));
+
         mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
         Bundle bundle = getArguments();
         if(bundle != null && bundle.containsKey(Constants.INTENT_REQUEST_CODE)){
-            if(bundle.getString(Constants.INTENT_REQUEST_CODE) == Constants.TRAINS_OF_BRAND){
+            if(bundle.getString(Constants.INTENT_REQUEST_CODE).equals(Constants.TRAINS_OF_BRAND)){
                 mDb.trainDao().getTrainsFromThisBrand(bundle.getString(Constants.BRAND_NAME)).observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
                     @Override
                     public void onChanged(@Nullable List<TrainEntry> trainEntries) {
@@ -107,8 +114,6 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
                 }
             });
         }
-
-        return rootView;
     }
 
     private void showEmpty(String message){
