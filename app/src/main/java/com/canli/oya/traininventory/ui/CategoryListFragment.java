@@ -70,7 +70,7 @@ public class CategoryListFragment extends Fragment implements CategoryAdapter.Ca
         super.onActivityCreated(savedInstanceState);
         mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
         final MainViewModel viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
-        viewModel.getCategoryList().observe(getActivity(), new Observer<List<String>>() {
+        viewModel.getCategoryList().observe(CategoryListFragment.this, new Observer<List<String>>() {
             @Override
             public void onChanged(@Nullable List<String> categoryEntries) {
                 if (categoryEntries.isEmpty()) {

@@ -102,7 +102,8 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
             }
         }else{
             viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
-            viewModel.getAllTrains().observe(getActivity(), new Observer<List<TrainEntry>>() {
+            viewModel.getAllTrains().observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
+
                 @Override
                 public void onChanged(@Nullable List<TrainEntry> trainEntries) {
                     if(trainEntries.isEmpty()){

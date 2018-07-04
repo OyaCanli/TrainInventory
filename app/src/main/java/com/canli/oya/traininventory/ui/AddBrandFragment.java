@@ -102,7 +102,7 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
         Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey(Constants.INTENT_REQUEST_CODE)) { //This is the "edit" case
             isUpdateCase = true;
-            viewModel.getChosenBrand().observe(getActivity(), new Observer<BrandEntry>() {
+            viewModel.getChosenBrand().observe(AddBrandFragment.this, new Observer<BrandEntry>() {
                 @Override
                 public void onChanged(@Nullable BrandEntry brandEntry) {
                     populateFields(brandEntry);
