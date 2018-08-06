@@ -1,19 +1,18 @@
 package com.canli.oya.traininventory.adapters;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.data.entities.BrandEntry;
+import com.canli.oya.traininventory.databinding.BrandItemBinding;
 import com.canli.oya.traininventory.utils.GlideApp;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHolder>{
@@ -30,8 +29,10 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
     @NonNull
     @Override
     public BrandViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.list_item_brand, parent, false);
-        return new BrandViewHolder(view);
+        BrandItemBinding binding = DataBindingUtil
+                .inflate(LayoutInflater.from(parent.getContext()), R.layout.brand_item,
+                        parent, false);
+        return new BrandViewHolder(binding);
     }
 
     public void setBrands(List<BrandEntry> newList){
@@ -43,12 +44,12 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
     public void onBindViewHolder(@NonNull BrandViewHolder holder, int position) {
         BrandEntry currentBrand = mBrandList.get(position);
 
-        holder.brandName_tv.setText(currentBrand.getBrandName());
+        holder.binding.brandItemBrandName.setText(currentBrand.getBrandName());
         GlideApp.with(mContext)
                 .load(currentBrand.getBrandLogoUri())
                 .centerCrop()
                 .placeholder(R.drawable.placeholder)
-                .into(holder.logo_iv);
+                .into(holder.binding.brandItemLogo);
     }
 
     @Override
@@ -58,22 +59,14 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
 
     public class BrandViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        final TextView brandName_tv;
-        final ImageView logo_iv;
-        final ImageView webIcon_iv;
-        final ImageView trainIcon_iv;
-        final ImageView editIcon_iv;
+        final BrandItemBinding binding;
 
-        BrandViewHolder(View itemView) {
-            super(itemView);
-            brandName_tv = itemView.findViewById(R.id.brand_item_brandName);
-            logo_iv = itemView.findViewById(R.id.brand_item_logo);
-            webIcon_iv = itemView.findViewById(R.id.brand_item_web_icon);
-            trainIcon_iv = itemView.findViewById(R.id.brand_item_train_icon);
-            editIcon_iv = itemView.findViewById(R.id.brand_item_edit_icon);
-            webIcon_iv.setOnClickListener(this);
-            trainIcon_iv.setOnClickListener(this);
-            editIcon_iv.setOnClickListener(this);
+        BrandViewHolder(BrandItemBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+            binding.brandItemWebIcon.setOnClickListener(this);
+            binding.brandItemTrainIcon.setOnClickListener(this);
+            binding.brandItemEditIcon.setOnClickListener(this);
         }
 
         @Override

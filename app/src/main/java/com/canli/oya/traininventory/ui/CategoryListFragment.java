@@ -85,6 +85,7 @@ public class CategoryListFragment extends Fragment implements CategoryAdapter.Ca
 
         getActivity().setTitle(getString(R.string.all_categories));
 
+        //This part is for providing swipe-to-delete functionality, as well as a snack bar to undo deleting
         final CoordinatorLayout coordinator = getActivity().findViewById(R.id.coordinator);
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
@@ -113,11 +114,10 @@ public class CategoryListFragment extends Fragment implements CategoryAdapter.Ca
                                     mAdapter.notifyDataSetChanged();
                                 }
                             });
-                            return;
                         } else {
                             //If it is not used, erase the category
                             mDb.categoryDao().deleteCategory(categoryToErase);
-                            //Show a snackbar for undoing delete
+                            //Show a snack bar for undoing delete
                             Snackbar snackbar = Snackbar
                                     .make(coordinator, R.string.brand_deleted, Snackbar.LENGTH_INDEFINITE)
                                     .setAction(R.string.undo, new View.OnClickListener() {

@@ -1,6 +1,7 @@
 package com.canli.oya.traininventory.adapters;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.data.entities.TrainEntry;
+import com.canli.oya.traininventory.databinding.TrainItemBinding;
 import com.canli.oya.traininventory.utils.GlideApp;
 
 import java.util.List;
@@ -29,24 +31,26 @@ public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHol
     @NonNull
     @Override
     public TrainViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.list_item_train, parent, false);
-        return new TrainViewHolder(view);
+        TrainItemBinding binding = DataBindingUtil
+                .inflate(LayoutInflater.from(parent.getContext()), R.layout.train_item,
+                        parent, false);
+        return new TrainViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull TrainViewHolder holder, int position) {
         TrainEntry currentTrain = mTrainList.get(position);
 
-        holder.trainName_tv.setText(currentTrain.getTrainName());
-        holder.brand_tv.setText(currentTrain.getBrandName());
-        holder.reference_tv.setText(currentTrain.getModelReference());
-        holder.category_tv.setText(mContext.getString(R.string.category_placeholder, currentTrain.getCategoryName()));
+        holder.binding.trainItemTrainName.setText(currentTrain.getTrainName());
+        holder.binding.trainItemBrand.setText(currentTrain.getBrandName());
+        holder.binding.trainItemReference.setText(currentTrain.getModelReference());
+        holder.binding.trainItemCategory.setText(mContext.getString(R.string.category_placeholder, currentTrain.getCategoryName()));
 
         GlideApp.with(mContext)
                 .load(currentTrain.getImageUri())
                 .centerCrop()
                 .placeholder(R.drawable.placeholder)
-                .into(holder.trainImage_iv);
+                .into(holder.binding.productItemImage);
     }
 
     @Override
@@ -61,20 +65,14 @@ public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHol
 
     public class TrainViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        final TextView trainName_tv;
-        final TextView brand_tv;
-        final TextView reference_tv;
-        final TextView category_tv;
-        final ImageView trainImage_iv;
+        final TrainItemBinding binding;
 
-        TrainViewHolder(View view){
-            super(view);
-            this.trainName_tv = view.findViewById(R.id.train_item_train_name);
-            this.brand_tv = view.findViewById(R.id.train_item_brand);
-            this.reference_tv = view.findViewById(R.id.train_item_reference);
-            this.category_tv = view.findViewById(R.id.train_item_category);
-            this.trainImage_iv = view.findViewById(R.id.product_item_image);
-            view.setOnClickListener(this);
+        TrainViewHolder(TrainItemBinding binding){
+            super(binding.getRoot());
+            this.binding = binding;
+
+            binding.getRoot().setOnClickListener(this);
+
         }
 
         @Override

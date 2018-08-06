@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/half_margin"
+        android:layout_marginLeft="@dimen/margin_standard"
+        android:layout_marginRight="@dimen/margin_standard"
+        android:layout_marginTop="@dimen/half_margin"
+        android:background="@drawable/framed_view"
+        android:padding="@dimen/half_padding">
+
+        <TextView
+            android:id="@+id/train_item_train_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/half_margin"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="@dimen/half_margin"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/product_item_image"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Train name" />
+
+        <TextView
+            android:id="@+id/train_item_brand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/half_margin"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toEndOf="@+id/product_item_image"
+            app:layout_constraintTop_toBottomOf="@+id/train_item_train_name"
+            tools:text="Brand name" />
+
+        <ImageView
+            android:id="@+id/product_item_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="@dimen/margin_standard"
+            android:layout_marginStart="@dimen/half_margin"
+            android:layout_marginTop="@dimen/half_margin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/alert_light_frame" />
+
+        <TextView
+            android:id="@+id/train_item_reference"
+            android:layout_width="wrap_content"
+            android:layout_height="15dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toEndOf="@+id/product_item_image"
+            app:layout_constraintTop_toBottomOf="@+id/train_item_brand"
+            tools:text="reference" />
+
+        <TextView
+            android:id="@+id/train_item_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:textStyle="italic"
+            app:layout_constraintBaseline_toBaselineOf="@+id/train_item_train_name"
+            app:layout_constraintStart_toEndOf="@+id/train_item_train_name"
+            tools:text="(Vagon)" />
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

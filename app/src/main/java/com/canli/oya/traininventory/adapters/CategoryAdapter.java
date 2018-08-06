@@ -1,15 +1,14 @@
 package com.canli.oya.traininventory.adapters;
 
+import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.canli.oya.traininventory.R;
-import com.canli.oya.traininventory.data.entities.CategoryEntry;
+import com.canli.oya.traininventory.databinding.CategoryItemBinding;
 
 import java.util.List;
 
@@ -25,8 +24,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     @NonNull
     @Override
     public CategoryHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_category, parent, false);
-        return new CategoryHolder(view);
+        CategoryItemBinding binding = DataBindingUtil
+                .inflate(LayoutInflater.from(parent.getContext()), R.layout.category_item,
+                        parent, false);
+        return new CategoryHolder(binding);
     }
 
     public void setCategories(List<String> newList){
@@ -37,7 +38,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     @Override
     public void onBindViewHolder(@NonNull CategoryHolder holder, int position) {
         String currentCategory = mCategoryList.get(position);
-        holder.categoryName_tv.setText(currentCategory);
+        holder.binding.categoryItemCategoryName.setText(currentCategory);
     }
 
     @Override
@@ -46,14 +47,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     }
 
     class CategoryHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        final TextView categoryName_tv;
-        final ImageView trainIcon_iv;
+        final CategoryItemBinding binding;
 
-        CategoryHolder(View itemView) {
-            super(itemView);
-            categoryName_tv = itemView.findViewById(R.id.category_item_category_name);
-            trainIcon_iv = itemView.findViewById(R.id.category_item_train_icon);
-            trainIcon_iv.setOnClickListener(this);
+        CategoryHolder(CategoryItemBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+            binding.categoryItemTrainIcon.setOnClickListener(this);
         }
 
         @Override

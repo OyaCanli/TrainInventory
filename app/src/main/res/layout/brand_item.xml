@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_standard"
+        android:layout_marginLeft="@dimen/margin_standard"
+        android:layout_marginRight="@dimen/margin_standard"
+        android:layout_marginStart="@dimen/margin_standard"
+        android:layout_marginTop="@dimen/margin_standard"
+        android:background="@drawable/framed_view"
+        android:padding="@dimen/half_padding">
+
+        <TextView
+            android:id="@+id/brand_item_brandName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="@dimen/margin_standard"
+            android:layout_marginRight="@dimen/margin_standard"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/half_margin"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/textSize"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/brand_item_logo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Brand Name" />
+
+        <ImageView
+            android:id="@+id/brand_item_logo"
+            android:layout_width="@dimen/list_brand_logo_dim"
+            android:layout_height="@dimen/list_brand_logo_dim"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/btn_star_big_on" />
+
+        <ImageView
+            android:id="@+id/brand_item_web_icon"
+            android:layout_width="@dimen/brand_item_logo_dim"
+            android:layout_height="@dimen/brand_item_logo_dim"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:padding="4dp"
+            android:src="@drawable/link_symbol"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/brand_item_train_icon"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/brand_item_brandName" />
+
+        <ImageView
+            android:id="@+id/brand_item_train_icon"
+            android:layout_width="@dimen/brand_item_logo_dim"
+            android:layout_height="@dimen/brand_item_logo_dim"
+            app:layout_constraintEnd_toStartOf="@+id/brand_item_edit_icon"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/brand_item_web_icon"
+            app:layout_constraintTop_toTopOf="@+id/brand_item_web_icon"
+            android:src="@drawable/ic_train_list_item" />
+
+        <ImageView
+            android:id="@+id/brand_item_edit_icon"
+            android:layout_width="@dimen/brand_item_logo_dim"
+            android:layout_height="@dimen/brand_item_logo_dim"
+            app:layout_constraintEnd_toStartOf="@+id/brand_item_logo"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/brand_item_train_icon"
+            app:layout_constraintTop_toTopOf="@+id/brand_item_train_icon"
+            android:src="@drawable/ic_edit_colored" />
+    </android.support.constraint.ConstraintLayout>
+</layout>
