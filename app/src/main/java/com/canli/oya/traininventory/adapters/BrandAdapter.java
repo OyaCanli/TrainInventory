@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.data.entities.BrandEntry;
 import com.canli.oya.traininventory.databinding.BrandItemBinding;
-import com.canli.oya.traininventory.utils.GlideApp;
 
 import java.util.List;
 
@@ -46,11 +45,6 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
         BrandEntry currentBrand = mBrandList.get(position);
         holder.binding.setBrand(currentBrand);
         holder.binding.executePendingBindings();
-        GlideApp.with(mContext)
-                .load(currentBrand.getBrandLogoUri())
-                .centerCrop()
-                .placeholder(R.drawable.placeholder)
-                .into(holder.binding.brandItemLogo);
     }
 
     @Override
@@ -58,7 +52,7 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
         return mBrandList == null ? 0 : mBrandList.size();
     }
 
-    public class BrandViewHolder extends RecyclerView.ViewHolder {
+    class BrandViewHolder extends RecyclerView.ViewHolder {
 
         final BrandItemBinding binding;
 

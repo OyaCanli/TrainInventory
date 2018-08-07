@@ -5,13 +5,11 @@ import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.data.entities.TrainEntry;
 import com.canli.oya.traininventory.databinding.TrainItemBinding;
-import com.canli.oya.traininventory.utils.GlideApp;
 
 import java.util.List;
 
@@ -43,11 +41,6 @@ public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHol
         holder.binding.executePendingBindings();
         holder.binding.trainItemCategory.setText(mContext.getString(R.string.category_placeholder, currentTrain.getCategoryName()));
 
-        GlideApp.with(mContext)
-                .load(currentTrain.getImageUri())
-                .centerCrop()
-                .placeholder(R.drawable.placeholder)
-                .into(holder.binding.productItemImage);
     }
 
     @Override
@@ -60,7 +53,7 @@ public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHol
         notifyDataSetChanged();
     }
 
-    public class TrainViewHolder extends RecyclerView.ViewHolder{
+    class TrainViewHolder extends RecyclerView.ViewHolder{
 
         final TrainItemBinding binding;
 

@@ -60,7 +60,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@android:drawable/alert_light_frame" />
+            android:src="@{train.imageUri}"
+            android:contentDescription="@string/cd_product_image"/>
 
         <TextView
             android:id="@+id/train_item_reference"

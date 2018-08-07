@@ -47,4 +47,9 @@
     <string name="no_items_for_this_category">No items found for this category</string>
     <string name="cannot_erase_category">This category is used by some trains. You cannot erase this category</string>
     <string name="cannot_erase_brand">This brand is used by some trains. You cannot erase this brand</string>
+    <string name="cd_product_image">imzge of the train</string>
+    <string name="cd_edit_icon">Edit icon</string>
+    <string name="cd_train_icon_for_brands">Train icon which shows the trains from this brand</string>
+    <string name="cd_web_icon_fror_brands">Web icon for opening the website of the brand</string>
+    <string name="cd_brand_logo">Brand of the logo</string>
 </resources>
