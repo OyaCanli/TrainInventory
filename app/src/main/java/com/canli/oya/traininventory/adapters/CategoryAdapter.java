@@ -18,7 +18,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     private List<String> mCategoryList;
     private CategoryItemClickListener mClickListener;
 
-    public CategoryAdapter(CategoryItemClickListener listener){
+    public CategoryAdapter(CategoryItemClickListener listener) {
         mClickListener = listener;
     }
 
@@ -28,10 +28,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         CategoryItemBinding binding = DataBindingUtil
                 .inflate(LayoutInflater.from(parent.getContext()), R.layout.category_item,
                         parent, false);
+        binding.setCategoryItemClick(mClickListener);
         return new CategoryHolder(binding);
     }
 
-    public void setCategories(List<String> newList){
+    public void setCategories(List<String> newList) {
         mCategoryList = newList;
         notifyDataSetChanged();
     }
@@ -48,23 +49,16 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         return mCategoryList == null ? 0 : mCategoryList.size();
     }
 
-    class CategoryHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class CategoryHolder extends RecyclerView.ViewHolder {
         final CategoryItemBinding binding;
 
         CategoryHolder(CategoryItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-            binding.categoryItemTrainIcon.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            int position = getLayoutPosition();
-            mClickListener.onCategoryItemClicked(position);
         }
     }
 
-    public interface CategoryItemClickListener{
-        void onCategoryItemClicked(int position);
+    public interface CategoryItemClickListener {
+        void onCategoryItemClicked(String categoryName);
     }
 }

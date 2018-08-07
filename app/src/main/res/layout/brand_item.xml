@@ -6,6 +6,10 @@
     <data>
         <variable name="brand"
             type="com.canli.oya.traininventory.data.entities.BrandEntry"/>
+
+        <variable
+            name="brandItemClick"
+            type="com.canli.oya.traininventory.adapters.BrandAdapter.BrandItemClickListener" />
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -60,6 +64,7 @@
             android:layout_marginTop="8dp"
             android:padding="4dp"
             android:src="@drawable/link_symbol"
+            android:onClick="@{(theView) ->  brandItemClick.onBrandItemClicked(theView, brand)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/brand_item_train_icon"
             app:layout_constraintHorizontal_bias="0.5"
@@ -74,7 +79,9 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/brand_item_web_icon"
             app:layout_constraintTop_toTopOf="@+id/brand_item_web_icon"
-            android:src="@drawable/ic_train_list_item" />
+            android:src="@drawable/ic_train_list_item"
+            android:onClick="@{(theView) ->  brandItemClick.onBrandItemClicked(theView, brand)}"
+            />
 
         <ImageView
             android:id="@+id/brand_item_edit_icon"
@@ -84,6 +91,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/brand_item_train_icon"
             app:layout_constraintTop_toTopOf="@+id/brand_item_train_icon"
-            android:src="@drawable/ic_edit_colored" />
+            android:src="@drawable/ic_edit_colored"
+            android:onClick="@{(theView) ->  brandItemClick.onBrandItemClicked(theView, brand)}" />
     </android.support.constraint.ConstraintLayout>
 </layout>

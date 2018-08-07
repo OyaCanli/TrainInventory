@@ -184,25 +184,25 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
     }
 
     @Override
-    public void onBrandItemClicked(View view, int position) {
+    public void onBrandItemClicked(View view, BrandEntry clickedBrand) {
         switch(view.getId()){
             case R.id.brand_item_web_icon:{
-                openWebSite(position);
+                openWebSite(clickedBrand);
                 break;
             }
             case R.id.brand_item_train_icon:{
-                showTrainsFromThisBrand(position);
+                showTrainsFromThisBrand(clickedBrand);
                 break;
             }
             case R.id.brand_item_edit_icon:{
-                editBrand(position);
+                editBrand(clickedBrand);
                 break;
             }
         }
     }
 
-    private void editBrand(int position) {
-        viewModel.setChosenBrand(brands.get(position));
+    private void editBrand(BrandEntry clickedBrand) {
+        viewModel.setChosenBrand(clickedBrand);
         AddBrandFragment addBrandFrag = new AddBrandFragment();
         Bundle args = new Bundle();
         args.putString(Constants.INTENT_REQUEST_CODE, Constants.EDIT_CASE);
@@ -213,11 +213,11 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
                 .commit();
     }
 
-    private void showTrainsFromThisBrand(int position) {
+    private void showTrainsFromThisBrand(BrandEntry clickedBrand) {
         TrainListFragment trainListFrag = new TrainListFragment();
         Bundle args = new Bundle();
         args.putString(Constants.INTENT_REQUEST_CODE, Constants.TRAINS_OF_BRAND);
-        args.putString(Constants.BRAND_NAME, brands.get(position).getBrandName());
+        args.putString(Constants.BRAND_NAME, clickedBrand.getBrandName());
         trainListFrag.setArguments(args);
         trainListFrag.setEnterTransition(new Slide(Gravity.END));
         trainListFrag.setExitTransition(new Slide(Gravity.START));
@@ -227,8 +227,8 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
                 .commit();
     }
 
-    private void openWebSite(int position){
-        String urlString = brands.get(position).getWebUrl();
+    private void openWebSite(BrandEntry clickedBrand){
+        String urlString = clickedBrand.getWebUrl();
         Uri webUri = null;
         if(!TextUtils.isEmpty(urlString)){
             try{

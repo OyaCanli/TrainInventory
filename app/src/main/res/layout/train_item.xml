@@ -7,6 +7,10 @@
         <variable
             name="train"
             type="com.canli.oya.traininventory.data.entities.TrainEntry"/>
+
+        <variable
+            name="trainItemClick"
+            type="com.canli.oya.traininventory.adapters.TrainAdapter.TrainItemClickListener" />
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -17,7 +21,8 @@
         android:layout_marginRight="@dimen/margin_standard"
         android:layout_marginTop="@dimen/half_margin"
         android:background="@drawable/framed_view"
-        android:padding="@dimen/half_padding">
+        android:padding="@dimen/half_padding"
+        android:onClick="@{() ->  trainItemClick.onListItemClick(train.trainId)}">
 
         <TextView
             android:id="@+id/train_item_train_name"

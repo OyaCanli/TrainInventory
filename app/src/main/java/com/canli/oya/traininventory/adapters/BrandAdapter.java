@@ -32,6 +32,7 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
         BrandItemBinding binding = DataBindingUtil
                 .inflate(LayoutInflater.from(parent.getContext()), R.layout.brand_item,
                         parent, false);
+        binding.setBrandItemClick(mClickListener);
         return new BrandViewHolder(binding);
     }
 
@@ -57,26 +58,17 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
         return mBrandList == null ? 0 : mBrandList.size();
     }
 
-    public class BrandViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class BrandViewHolder extends RecyclerView.ViewHolder {
 
         final BrandItemBinding binding;
 
         BrandViewHolder(BrandItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-            binding.brandItemWebIcon.setOnClickListener(this);
-            binding.brandItemTrainIcon.setOnClickListener(this);
-            binding.brandItemEditIcon.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            int position = getLayoutPosition();
-            mClickListener.onBrandItemClicked(v, position);
         }
     }
 
     public interface BrandItemClickListener{
-        void onBrandItemClicked(View view, int position);
+        void onBrandItemClicked(View view, BrandEntry clickedBrand);
     }
 }

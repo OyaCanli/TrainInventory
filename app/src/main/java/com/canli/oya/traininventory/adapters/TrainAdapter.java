@@ -32,6 +32,7 @@ public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHol
         TrainItemBinding binding = DataBindingUtil
                 .inflate(LayoutInflater.from(parent.getContext()), R.layout.train_item,
                         parent, false);
+        binding.setTrainItemClick(mClickListener);
         return new TrainViewHolder(binding);
     }
 
@@ -59,22 +60,13 @@ public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHol
         notifyDataSetChanged();
     }
 
-    public class TrainViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class TrainViewHolder extends RecyclerView.ViewHolder{
 
         final TrainItemBinding binding;
 
         TrainViewHolder(TrainItemBinding binding){
             super(binding.getRoot());
             this.binding = binding;
-
-            binding.getRoot().setOnClickListener(this);
-
-        }
-
-        @Override
-        public void onClick(View v) {
-            int trainId = mTrainList.get(getLayoutPosition()).getTrainId();
-            mClickListener.onListItemClick(trainId);
         }
     }
 

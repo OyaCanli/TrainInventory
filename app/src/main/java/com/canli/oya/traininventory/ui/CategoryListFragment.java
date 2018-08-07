@@ -178,11 +178,11 @@ public class CategoryListFragment extends Fragment implements CategoryAdapter.Ca
     }
 
     @Override
-    public void onCategoryItemClicked(int position) {
+    public void onCategoryItemClicked(String categoryName) {
         TrainListFragment trainListFrag = new TrainListFragment();
         Bundle args = new Bundle();
         args.putString(Constants.INTENT_REQUEST_CODE, Constants.TRAINS_OF_CATEGORY);
-        args.putString(Constants.CATEGORY_NAME, mCategories.get(position));
+        args.putString(Constants.CATEGORY_NAME, categoryName);
         trainListFrag.setArguments(args);
         trainListFrag.setEnterTransition(new Slide(Gravity.END));
         trainListFrag.setExitTransition(new Slide(Gravity.START));
