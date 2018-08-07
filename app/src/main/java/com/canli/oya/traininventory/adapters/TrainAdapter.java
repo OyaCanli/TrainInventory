@@ -7,8 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.data.entities.TrainEntry;
@@ -40,10 +38,8 @@ public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHol
     @Override
     public void onBindViewHolder(@NonNull TrainViewHolder holder, int position) {
         TrainEntry currentTrain = mTrainList.get(position);
-
-        holder.binding.trainItemTrainName.setText(currentTrain.getTrainName());
-        holder.binding.trainItemBrand.setText(currentTrain.getBrandName());
-        holder.binding.trainItemReference.setText(currentTrain.getModelReference());
+        holder.binding.setTrain(currentTrain);
+        holder.binding.executePendingBindings();
         holder.binding.trainItemCategory.setText(mContext.getString(R.string.category_placeholder, currentTrain.getCategoryName()));
 
         GlideApp.with(mContext)

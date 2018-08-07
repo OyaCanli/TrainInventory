@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable name="brand"
+            type="com.canli.oya.traininventory.data.entities.BrandEntry"/>
+    </data>
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +34,8 @@
             app:layout_constraintEnd_toStartOf="@+id/brand_item_logo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Brand Name" />
+            tools:text="Brand Name"
+            android:text = "@{brand.brandName}"/>
 
         <ImageView
             android:id="@+id/brand_item_logo"

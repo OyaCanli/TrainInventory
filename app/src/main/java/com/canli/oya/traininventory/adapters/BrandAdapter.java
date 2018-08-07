@@ -43,8 +43,8 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
     @Override
     public void onBindViewHolder(@NonNull BrandViewHolder holder, int position) {
         BrandEntry currentBrand = mBrandList.get(position);
-
-        holder.binding.brandItemBrandName.setText(currentBrand.getBrandName());
+        holder.binding.setBrand(currentBrand);
+        holder.binding.executePendingBindings();
         GlideApp.with(mContext)
                 .load(currentBrand.getBrandLogoUri())
                 .centerCrop()

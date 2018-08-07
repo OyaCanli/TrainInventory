@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="train"
+            type="com.canli.oya.traininventory.data.entities.TrainEntry"/>
+    </data>
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,7 +29,8 @@
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/product_item_image"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Train name" />
+            tools:text="Train name"
+            android:text="@{train.trainName}"/>
 
         <TextView
             android:id="@+id/train_item_brand"
@@ -34,7 +41,8 @@
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toEndOf="@+id/product_item_image"
             app:layout_constraintTop_toBottomOf="@+id/train_item_train_name"
-            tools:text="Brand name" />
+            tools:text="Brand name"
+            android:text="@{train.brandName}"/>
 
         <ImageView
             android:id="@+id/product_item_image"
@@ -58,7 +66,8 @@
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toEndOf="@+id/product_item_image"
             app:layout_constraintTop_toBottomOf="@+id/train_item_brand"
-            tools:text="reference" />
+            tools:text="reference"
+            android:text="@{train.modelReference}"/>
 
         <TextView
             android:id="@+id/train_item_category"
@@ -69,7 +78,7 @@
             android:textStyle="italic"
             app:layout_constraintBaseline_toBaselineOf="@+id/train_item_train_name"
             app:layout_constraintStart_toEndOf="@+id/train_item_train_name"
-            tools:text="(Vagon)" />
+            tools:text="(Vagon)"/>
 
     </android.support.constraint.ConstraintLayout>
 </layout>

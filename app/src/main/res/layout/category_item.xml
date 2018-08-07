@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="categoryName"
+            type="String"/>
+    </data>
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,7 +29,8 @@
             app:layout_constraintEnd_toStartOf="@+id/category_item_train_icon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Vagon" />
+            tools:text="Vagon"
+            android:text="@{categoryName}"/>
 
         <ImageView
             android:id="@+id/category_item_train_icon"

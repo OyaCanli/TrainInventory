@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.canli.oya.traininventory.BR;
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.databinding.CategoryItemBinding;
 
@@ -38,7 +39,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     @Override
     public void onBindViewHolder(@NonNull CategoryHolder holder, int position) {
         String currentCategory = mCategoryList.get(position);
-        holder.binding.categoryItemCategoryName.setText(currentCategory);
+        holder.binding.setVariable(BR.categoryName, currentCategory);
+        holder.binding.executePendingBindings();
     }
 
     @Override

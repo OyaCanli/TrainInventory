@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             trainListFrag.setExitTransition(new Slide(Gravity.START));
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, trainListFrag)
-                    .addToBackStack(null)
                     .commit();
         }
     }
