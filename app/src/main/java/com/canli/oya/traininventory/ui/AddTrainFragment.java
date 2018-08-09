@@ -35,7 +35,6 @@ import com.canli.oya.traininventory.databinding.FragmentAddTrainBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.BitmapUtils;
 import com.canli.oya.traininventory.utils.Constants;
-import com.canli.oya.traininventory.utils.GlideApp;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainFactory;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
 import com.canli.oya.traininventory.viewmodel.MainViewModel;
@@ -105,6 +104,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey(Constants.TRAIN_ID)) { //This is the "edit" case
             getActivity().setTitle(getString(R.string.edit_train));
+            binding.setIsEdit(true);
             mTrainId = bundle.getInt(Constants.TRAIN_ID);
             //This view model is instantiated only in edit mode. It contains the chosen train. It is attached to this fragment
             ChosenTrainFactory factory = new ChosenTrainFactory(mDb, mTrainId);
@@ -150,24 +150,9 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     }
 
     private void populateFields(TrainEntry trainToEdit) {
+        binding.setChosenTrain(trainToEdit);
         binding.brandSpinner.setSelection(categoryList.indexOf(trainToEdit.getCategoryName()));
         binding.brandSpinner.setSelection(brandList.indexOf(trainToEdit.getBrandName()));
-        binding.editReference.setText(trainToEdit.getModelReference());
-        binding.editTrainName.setText(trainToEdit.getTrainName());
-        binding.editQuantity.setText(String.valueOf(trainToEdit.getQuantity()));
-        binding.editTrainDescription.setText(trainToEdit.getDescription());
-        mImageUri = trainToEdit.getImageUri();
-        GlideApp.with(mContext)
-                .load(mImageUri)
-                .placeholder(R.drawable.placeholder)
-                .centerCrop()
-                .into(binding.productDetailsGalleryImage);
-        String location = trainToEdit.getLocation();
-        if (location.contains("-") && location.length() > 1) {
-            String[] locationParts = trainToEdit.getLocation().split("-");
-            binding.editLocationNumber.setText(locationParts[0]);
-            binding.editLocationLetter.setText(locationParts[1]);
-        }
     }
 
     @Override

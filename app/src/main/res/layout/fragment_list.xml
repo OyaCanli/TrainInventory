@@ -1,53 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.MainActivity"
-    android:paddingTop="@dimen/half_padding"
-    tools:showIn="@layout/app_bar_main">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <data>
+        <variable name="isEmpty"
+            type="boolean"/>
 
-    <ImageView
-        android:id="@+id/empty_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_standard"
-        android:layout_marginEnd="@dimen/margin_standard"
-        android:layout_marginStart="@dimen/margin_standard"
-        android:layout_marginTop="@dimen/margin_standard"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.313"
-        app:srcCompat="@drawable/train_icon" />
+        <import type="android.view.View"/>
 
-    <TextView
-        android:id="@+id/empty_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:visibility="gone"
-        android:gravity="center"
-        android:text="@string/no_trains_found"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/empty_image" />
+        <variable
+            name="emptyMessage"
+            type="String" />
+    </data>
 
-</android.support.constraint.ConstraintLayout>
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/half_padding"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context=".ui.MainActivity"
+        tools:showIn="@layout/activity_main">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scrollbars="vertical"
+            android:visibility= "@{isEmpty ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/empty_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_standard"
+            android:layout_marginEnd="@dimen/margin_standard"
+            android:layout_marginStart="@dimen/margin_standard"
+            android:layout_marginTop="@dimen/margin_standard"
+            android:visibility= "@{isEmpty ? View.VISIBLE : View.GONE}"
+            android:contentDescription="@string/cd_empty_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.313"
+            app:srcCompat="@drawable/train_icon" />
+
+        <TextView
+            android:id="@+id/empty_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="@{emptyMessage}"
+            android:textSize="18sp"
+            android:visibility= "@{isEmpty ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/empty_image" />
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

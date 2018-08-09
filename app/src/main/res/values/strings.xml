@@ -31,6 +31,7 @@
     <string name="add_brand">Add Brand</string>
     <string name="add_train">Add Train</string>
     <string name="brand_deleted">Brand deleted</string>
+    <string name="category_deleted">Category deleted</string>
     <string name="undo">UNDO</string>
     <string name="category_placeholder">(%1$s)</string>
     <string name="no_brands_found">No brands found. You can add brands from above, or while you add trains.</string>
@@ -52,4 +53,17 @@
     <string name="cd_train_icon_for_brands">Train icon which shows the trains from this brand</string>
     <string name="cd_web_icon_fror_brands">Web icon for opening the website of the brand</string>
     <string name="cd_brand_logo">Brand of the logo</string>
+    <string name="cd_empty_icon">Train icon is shown when the list is empty</string>
+    <string name="cd_chosen_train_image">An image of the chosen train</string>
+    <string name="hint_train_name">Train name</string>
+    <string name="hint_quantity">Quantity</string>
+    <string name="hint_reference">Model Reference</string>
+    <string name="cd_details_gallery_icon">Train image if available, click for changing the image</string>
+    <string name="hint_train_description">Train description</string>
+    <string name="hint_location_number">Row of the location, which is a number</string>
+    <string name="hint_location_letter">Column of the location, which is a letter</string>
+    <string name="cd_add_category_button">Button for adding a category</string>
+    <string name="cd_add_brand_button">Button for adding a brand</string>
+    <string name="hint_train_scale">Scale of the train</string>
+    <string name="cd_brand_logo_edit">Brand logo. You can click for changing it.</string>
 </resources>

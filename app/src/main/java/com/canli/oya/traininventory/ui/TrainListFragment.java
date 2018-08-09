@@ -2,6 +2,7 @@ package com.canli.oya.traininventory.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,7 +10,6 @@ import android.support.transition.Slide;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,13 +18,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.adapters.TrainAdapter;
 import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.TrainEntry;
+import com.canli.oya.traininventory.databinding.FragmentListBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.viewmodel.MainViewModel;
@@ -33,14 +32,12 @@ import java.util.List;
 
 public class TrainListFragment extends Fragment implements TrainAdapter.TrainItemClickListener {
 
-    private RecyclerView recycler;
     private TrainAdapter mAdapter;
     private MainViewModel viewModel;
     private List<TrainEntry> mTrainList;
-    private TextView empty_tv;
-    private ImageView empty_image;
     private TrainDatabase mDb;
     private List<TrainEntry> filteredTrains;
+    private FragmentListBinding binding;
 
     public TrainListFragment() {
         setHasOptionsMenu(true);
@@ -49,20 +46,17 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_list, container, false);
-
+        binding = DataBindingUtil.inflate(
+                inflater, R.layout.fragment_list, container, false);
         setHasOptionsMenu(true);
 
+        //Set recycler view
         mAdapter = new TrainAdapter(getActivity(), this);
-        recycler = rootView.findViewById(R.id.list);
-        recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recycler.setItemAnimator(new DefaultItemAnimator());
-        recycler.setAdapter(mAdapter);
+        binding.list.setLayoutManager(new LinearLayoutManager(getActivity()));
+        binding.list.setItemAnimator(new DefaultItemAnimator());
+        binding.list.setAdapter(mAdapter);
 
-        empty_tv = rootView.findViewById(R.id.empty_text);
-        empty_image = rootView.findViewById(R.id.empty_image);
-
-        return rootView;
+        return binding.getRoot();
     }
 
     @Override
@@ -80,8 +74,10 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
                     @Override
                     public void onChanged(@Nullable List<TrainEntry> trainEntries) {
                         if(trainEntries.isEmpty()){
-                            showEmpty(getString(R.string.no_train_for_this_brand));
+                            binding.setIsEmpty(true);
+                            binding.setEmptyMessage(getString(R.string.no_train_for_this_brand));
                         } else{
+                            binding.setIsEmpty(false);
                             mAdapter.setTrains(trainEntries);
                             mTrainList = trainEntries;
                         }
@@ -92,8 +88,10 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
                     @Override
                     public void onChanged(@Nullable List<TrainEntry> trainEntries) {
                         if(trainEntries.isEmpty()){
-                            showEmpty(getString(R.string.no_items_for_this_category));
+                            binding.setIsEmpty(true);
+                            binding.setEmptyMessage(getString(R.string.no_items_for_this_category));
                         } else{
+                            binding.setIsEmpty(false);
                             mAdapter.setTrains(trainEntries);
                             mTrainList = trainEntries;
                         }
@@ -107,21 +105,16 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
                 @Override
                 public void onChanged(@Nullable List<TrainEntry> trainEntries) {
                     if(trainEntries.isEmpty()){
-                        showEmpty(getString(R.string.no_trains_found));
+                        binding.setIsEmpty(true);
+                        binding.setEmptyMessage(getString(R.string.no_trains_found));
                     } else{
+                        binding.setIsEmpty(false);
                         mAdapter.setTrains(trainEntries);
                         mTrainList = trainEntries;
                     }
                 }
             });
         }
-    }
-
-    private void showEmpty(String message){
-        recycler.setVisibility(View.GONE);
-        empty_tv.setText(message);
-        empty_tv.setVisibility(View.VISIBLE);
-        empty_image.setVisibility(View.VISIBLE);
     }
 
     @Override

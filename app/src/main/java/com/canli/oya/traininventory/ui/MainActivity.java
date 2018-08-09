@@ -1,46 +1,43 @@
 package com.canli.oya.traininventory.ui;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.transition.Slide;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.canli.oya.traininventory.R;
+import com.canli.oya.traininventory.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         FragmentManager.OnBackStackChangedListener{
 
     private ActionBarDrawerToggle toggle;
-    private DrawerLayout drawer;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         //Set toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
 
         //Set navigation drawer
-        drawer = findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, binding.drawerLayout, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        binding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        binding.navView.setNavigationItemSelectedListener(this);
 
         getSupportFragmentManager().addOnBackStackChangedListener(this);
 
@@ -97,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             }
         }
-        drawer.closeDrawer(GravityCompat.START);
+        binding.drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -20,19 +21,16 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.BrandEntry;
+import com.canli.oya.traininventory.databinding.FragmentAddBrandBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.BitmapUtils;
 import com.canli.oya.traininventory.utils.Constants;
-import com.canli.oya.traininventory.utils.GlideApp;
 import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 import java.io.File;
@@ -40,19 +38,17 @@ import java.io.IOException;
 
 import static android.app.Activity.RESULT_OK;
 
-public class AddBrandFragment extends Fragment implements View.OnClickListener {
+public class AddBrandFragment extends Fragment implements View.OnClickListener{
 
     private TrainDatabase mDb;
-    private EditText brandName_et;
-    private ImageView addPhoto_iv;
     private AlertDialog pickImageDialog;
     private String mTempPhotoPath;
     private Uri mLogoUri;
     private int mUsersChoice;
-    private EditText webUrl_et;
     private boolean isUpdateCase;
     private Context mContext;
     private int mBrandId;
+    private FragmentAddBrandBinding binding;
 
     private final DialogInterface.OnClickListener mDialogClickListener = new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int item) {
@@ -72,23 +68,20 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_add_brand, container, false);
+        binding = DataBindingUtil.inflate(
+                inflater, R.layout.fragment_add_brand, container, false);
 
         //get database instance
         mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
         //Set click listeners
-        Button save_btn = rootView.findViewById(R.id.addBrand_saveBtn);
-        save_btn.setOnClickListener(this);
-        addPhoto_iv = rootView.findViewById(R.id.addBrand_image);
-        addPhoto_iv.setOnClickListener(this);
+        binding.addBrandSaveBtn.setOnClickListener(this);
+        binding.addBrandImage.setOnClickListener(this);
 
-        brandName_et = rootView.findViewById(R.id.addBrand_editBrandName);
-        webUrl_et = rootView.findViewById(R.id.addBrand_editWeb);
         //Request focus on the first edittext
-        brandName_et.requestFocus();
+        binding.addBrandEditBrandName.requestFocus();
 
-        return rootView;
+        return binding.getRoot();
     }
 
     @Override
@@ -113,19 +106,8 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
     }
 
     private void populateFields(BrandEntry brand){
-        brandName_et.setText(brand.getBrandName());
-        webUrl_et.setText(brand.getWebUrl());
-        String logoUriString = brand.getBrandLogoUri();
-        if(logoUriString != null){
-            mLogoUri = Uri.parse(logoUriString);
-        }
-        if(mContext != null){
-            GlideApp.with(mContext)
-                    .load(brand.getBrandLogoUri())
-                    .centerCrop()
-                    .placeholder(R.drawable.placeholder)
-                    .into(addPhoto_iv);
-        }
+        binding.setChosenBrand(brand);
+        binding.setIsEdit(true);
     }
 
     @Override
@@ -141,10 +123,10 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
 
     private void saveBrand() {
         //Get brand name from edittext
-        String brandName = brandName_et.getText().toString().trim();
+        String brandName = binding.addBrandEditBrandName.getText().toString().trim();
 
         //Get web address from edittext
-        String webAddress = webUrl_et.getText().toString().trim();
+        String webAddress = binding.addBrandEditWeb.getText().toString().trim();
 
         //If there is a uri for logo image, parse it to string
         String imagePath = null;
@@ -270,7 +252,7 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
             if (resultCode == RESULT_OK) {
                 Glide.with(mContext)
                         .load(mLogoUri)
-                        .into(addPhoto_iv);
+                        .into(binding.addBrandImage);
             } else {
                 BitmapUtils.deleteImageFile(getActivity(), mTempPhotoPath);
             }
@@ -279,7 +261,7 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
                 mLogoUri = data.getData();
                 Glide.with(mContext)
                         .load(mLogoUri)
-                        .into(addPhoto_iv);
+                        .into(binding.addBrandImage);
             }
         }
     }

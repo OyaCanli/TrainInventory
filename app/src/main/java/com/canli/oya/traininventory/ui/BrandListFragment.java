@@ -3,6 +3,7 @@ package com.canli.oya.traininventory.ui;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,14 +25,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.adapters.BrandAdapter;
 import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.BrandEntry;
+import com.canli.oya.traininventory.databinding.FragmentBrandlistBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.viewmodel.MainViewModel;
@@ -43,10 +43,9 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
     private List<BrandEntry> brands;
     private BrandAdapter adapter;
     private TrainDatabase mDb;
-    private TextView empty_tv;
-    private ImageView empty_image;
-    private RecyclerView recycler;
     private MainViewModel viewModel;
+    private FragmentBrandlistBinding binding;
+
 
     public BrandListFragment() {
         setHasOptionsMenu(true);
@@ -55,19 +54,17 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_brandlist, container, false);
+        binding = DataBindingUtil.inflate(
+                inflater, R.layout.fragment_brandlist, container, false);
+
         setHasOptionsMenu(true);
 
         adapter = new BrandAdapter(getActivity(), this);
-        recycler = rootView.findViewById(R.id.list);
-        recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recycler.setItemAnimator(new DefaultItemAnimator());
-        recycler.setAdapter(adapter);
+        binding.included.list.setLayoutManager(new LinearLayoutManager(getActivity()));
+        binding.included.list.setItemAnimator(new DefaultItemAnimator());
+        binding.included.list.setAdapter(adapter);
 
-        empty_tv = rootView.findViewById(R.id.empty_text);
-        empty_image = rootView.findViewById(R.id.empty_image);
-
-        return rootView;
+        return binding.getRoot();
     }
 
     @Override
@@ -81,11 +78,12 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
             @Override
             public void onChanged(@Nullable List<BrandEntry> brandEntries) {
                 if (brandEntries.isEmpty()) {
-                    showEmpty();
+                    binding.included.setIsEmpty(true);
+                    binding.included.setEmptyMessage(getString(R.string.no_brands_found));
                 } else {
                     adapter.setBrands(brandEntries);
                     brands = brandEntries;
-                    showData();
+                    binding.included.setIsEmpty(false);
                 }
             }
         });
@@ -143,23 +141,9 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
                     }
                 });
             }
-        }).attachToRecyclerView(recycler);
+        }).attachToRecyclerView(binding.included.list);
     }
 
-    private void showEmpty() {
-        recycler.setVisibility(View.GONE);
-        empty_tv.setText(R.string.no_brands_found);
-        empty_tv.setVisibility(View.VISIBLE);
-        empty_image.setVisibility(View.VISIBLE);
-    }
-
-    private void showData() {
-        if (empty_image.getVisibility() == View.VISIBLE) {
-            empty_tv.setVisibility(View.GONE);
-            empty_image.setVisibility(View.GONE);
-            recycler.setVisibility(View.VISIBLE);
-        }
-    }
 
     public void openAddBrandFragment() {
         AddBrandFragment addBrandFrag = new AddBrandFragment();

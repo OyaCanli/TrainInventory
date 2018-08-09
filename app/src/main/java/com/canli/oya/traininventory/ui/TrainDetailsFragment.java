@@ -24,7 +24,6 @@ import com.canli.oya.traininventory.data.entities.TrainEntry;
 import com.canli.oya.traininventory.databinding.FragmentTrainDetailsBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.Constants;
-import com.canli.oya.traininventory.utils.GlideApp;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainFactory;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
 
@@ -68,20 +67,8 @@ public class TrainDetailsFragment extends Fragment {
     }
 
     private void populateUI(TrainEntry chosenTrain) {
-        binding.detailsBrand.setText(chosenTrain.getBrandName());
-        binding.detailsProductName.setText(chosenTrain.getTrainName());
-        getActivity().setTitle(chosenTrain.getTrainName());
-        binding.detailsReference.setText(chosenTrain.getModelReference());
-        binding.detailsCategory.setText(chosenTrain.getCategoryName());
-        binding.detailsQuantity.setText(String.valueOf(chosenTrain.getQuantity()));
-        binding.detailsLocation.setText(chosenTrain.getLocation());
-        binding.detailsDescription.setText(chosenTrain.getDescription());
-        binding.detailsScale.setText(chosenTrain.getScale());
-        GlideApp.with(TrainDetailsFragment.this)
-                .load(chosenTrain.getImageUri())
-                .placeholder(R.drawable.placeholder)
-                .centerCrop()
-                .into(binding.detailsImage);
+        binding.setChosenTrain(chosenTrain);
+        binding.executePendingBindings();
     }
 
     @Override

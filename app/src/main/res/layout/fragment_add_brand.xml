@@ -1,93 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/framed_view">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/textView8"
-        style="@style/FieldStyle"
+    <data>
+        <variable
+            name="chosenBrand"
+            type="com.canli.oya.traininventory.data.entities.BrandEntry" />
+        <variable
+            name="isEdit"
+            type="boolean" />
+
+        <import type="com.canli.oya.traininventory.ui.AddBrandFragment" />
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:text="@string/brand_name"
-        app:layout_constraintBaseline_toBaselineOf="@+id/addBrand_editBrandName"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:background="@drawable/framed_view">
 
-    <EditText
-        android:id="@+id/addBrand_editBrandName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView8"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/textView8"
+            style="@style/FieldStyle"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:text="@string/brand_name"
+            app:layout_constraintBaseline_toBaselineOf="@+id/addBrand_editBrandName"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/textView9"
-        style="@style/FieldStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:text="@string/add_logo"
-        app:layout_constraintEnd_toStartOf="@+id/addBrand_editBrandName"
-        app:layout_constraintTop_toTopOf="@+id/addBrand_image" />
+        <EditText
+            android:id="@+id/addBrand_editBrandName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="@{isEdit ? chosenBrand.brandName : null}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView8"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/addBrand_image"
-        android:layout_width="@dimen/add_brand_logo_dim"
-        android:layout_height="@dimen/add_brand_logo_dim"
-        android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="@+id/addBrand_editBrandName"
-        app:layout_constraintTop_toBottomOf="@+id/addBrand_editWeb"
-        app:srcCompat="@drawable/gallery" />
+        <TextView
+            android:id="@+id/textView9"
+            style="@style/FieldStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:text="@string/add_logo"
+            app:layout_constraintEnd_toStartOf="@+id/addBrand_editBrandName"
+            app:layout_constraintTop_toTopOf="@+id/addBrand_image" />
 
-    <Button
-        android:id="@+id/addBrand_saveBtn"
-        style="@style/buttonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/save"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addBrand_image" />
+        <ImageView
+            android:id="@+id/addBrand_image"
+            android:layout_width="@dimen/add_brand_logo_dim"
+            android:layout_height="@dimen/add_brand_logo_dim"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="16dp"
+            android:contentDescription="@string/cd_brand_logo_edit"
+            app:layout_constraintStart_toStartOf="@+id/addBrand_editBrandName"
+            app:layout_constraintTop_toBottomOf="@+id/addBrand_editWeb"
+            android:src="@{isEdit ? chosenBrand.brandLogoUri : null}"/>
 
-    <EditText
-        android:id="@+id/addBrand_editWeb"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:inputType="textEmailAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView8"
-        app:layout_constraintTop_toBottomOf="@+id/addBrand_editBrandName" />
+        <Button
+            android:id="@+id/addBrand_saveBtn"
+            style="@style/buttonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/save"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addBrand_image" />
 
-    <TextView
-        android:id="@+id/textView12"
-        style="@style/FieldStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:text="@string/website"
-        app:layout_constraintBaseline_toBaselineOf="@+id/addBrand_editWeb"
-        app:layout_constraintEnd_toStartOf="@+id/addBrand_editWeb" />
-</android.support.constraint.ConstraintLayout>
+        <EditText
+            android:id="@+id/addBrand_editWeb"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:inputType="textEmailAddress"
+            android:text="@{isEdit ? chosenBrand.webUrl : null}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView8"
+            app:layout_constraintTop_toBottomOf="@+id/addBrand_editBrandName" />
+
+        <TextView
+            android:id="@+id/textView12"
+            style="@style/FieldStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:text="@string/website"
+            app:layout_constraintBaseline_toBaselineOf="@+id/addBrand_editWeb"
+            app:layout_constraintEnd_toStartOf="@+id/addBrand_editWeb" />
+    </android.support.constraint.ConstraintLayout>
+</layout>
