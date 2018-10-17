@@ -25,24 +25,23 @@ import android.widget.Toast;
 
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.adapters.CategoryAdapter;
-import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.CategoryEntry;
 import com.canli.oya.traininventory.databinding.FragmentBrandlistBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.Constants;
-import com.canli.oya.traininventory.viewmodel.MainViewModel;
+import com.canli.oya.traininventory.utils.InjectorUtils;
+import com.canli.oya.traininventory.viewmodel.CategoryViewModel;
+import com.canli.oya.traininventory.viewmodel.CategoryViewModelFactory;
 
 import java.util.List;
 
-public class CategoryListFragment extends Fragment implements CategoryAdapter.CategoryItemClickListener{
+public class CategoryListFragment extends Fragment implements CategoryAdapter.CategoryItemClickListener {
 
-    private TrainDatabase mDb;
     private CategoryAdapter mAdapter;
     private List<String> mCategories;
     private FragmentBrandlistBinding binding;
 
     public CategoryListFragment() {
-        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -65,12 +64,13 @@ public class CategoryListFragment extends Fragment implements CategoryAdapter.Ca
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
-        final MainViewModel viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+
+        CategoryViewModelFactory factory = InjectorUtils.provideCategoryVMFactory(getActivity());
+        final CategoryViewModel viewModel = ViewModelProviders.of(getActivity(), factory).get(CategoryViewModel.class);
         viewModel.getCategoryList().observe(CategoryListFragment.this, new Observer<List<String>>() {
             @Override
             public void onChanged(@Nullable List<String> categoryEntries) {
-                if (categoryEntries.isEmpty()) {
+                if (categoryEntries == null || categoryEntries.isEmpty()) {
                     binding.included.setIsEmpty(true);
                     binding.included.setEmptyMessage(getString(R.string.no_categories_found));
                 } else {
@@ -103,7 +103,7 @@ public class CategoryListFragment extends Fragment implements CategoryAdapter.Ca
                     @Override
                     public void run() {
                         //First check whether this category is used by trains table
-                        if (mDb.trainDao().isThisCategoryUsed(categoryToErase.getCategoryName())) {
+                        if (viewModel.isThisCategoryUsed(categoryToErase.getCategoryName())) {
                             // If it is used, show a warning and don't let user delete this
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
@@ -114,7 +114,7 @@ public class CategoryListFragment extends Fragment implements CategoryAdapter.Ca
                             });
                         } else {
                             //If it is not used, erase the category
-                            mDb.categoryDao().deleteCategory(categoryToErase);
+                            viewModel.deleteCategory(categoryToErase);
                             //Show a snack bar for undoing delete
                             Snackbar snackbar = Snackbar
                                     .make(coordinator, R.string.category_deleted, Snackbar.LENGTH_INDEFINITE)
@@ -122,12 +122,7 @@ public class CategoryListFragment extends Fragment implements CategoryAdapter.Ca
                                         @Override
                                         public void onClick(View view) {
                                             //If UNDO is clicked, add the item back in the database
-                                            AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    mDb.categoryDao().insertCategory(categoryToErase);
-                                                }
-                                            });
+                                            viewModel.insertCategory(categoryToErase);
                                         }
                                     });
                             snackbar.show();

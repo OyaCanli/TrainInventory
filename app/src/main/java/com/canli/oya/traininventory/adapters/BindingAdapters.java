@@ -13,7 +13,7 @@ public class BindingAdapters {
         GlideApp.with(view.getContext())
                 .load(url)
                 .centerCrop()
-                .placeholder(R.drawable.gallery)
+                .placeholder(R.drawable.ic_gallery)
                 .into(view);
     }
 }

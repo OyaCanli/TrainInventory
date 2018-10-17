@@ -34,7 +34,9 @@ import com.canli.oya.traininventory.data.entities.BrandEntry;
 import com.canli.oya.traininventory.databinding.FragmentBrandlistBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.Constants;
-import com.canli.oya.traininventory.viewmodel.MainViewModel;
+import com.canli.oya.traininventory.utils.InjectorUtils;
+import com.canli.oya.traininventory.viewmodel.BrandViewModelFactory;
+import com.canli.oya.traininventory.viewmodel.BrandsViewModel;
 
 import java.util.List;
 
@@ -42,13 +44,11 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
 
     private List<BrandEntry> brands;
     private BrandAdapter adapter;
-    private TrainDatabase mDb;
-    private MainViewModel viewModel;
+    private BrandsViewModel viewModel;
     private FragmentBrandlistBinding binding;
 
 
     public BrandListFragment() {
-        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -71,13 +71,12 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
-
-        viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        BrandViewModelFactory factory = InjectorUtils.provideBrandVMFactory(getActivity());
+        viewModel = ViewModelProviders.of(getActivity(), factory).get(BrandsViewModel.class);
         viewModel.getBrandList().observe(BrandListFragment.this, new Observer<List<BrandEntry>>() {
             @Override
             public void onChanged(@Nullable List<BrandEntry> brandEntries) {
-                if (brandEntries.isEmpty()) {
+                if (brandEntries == null || brandEntries.isEmpty()) {
                     binding.included.setIsEmpty(true);
                     binding.included.setEmptyMessage(getString(R.string.no_brands_found));
                 } else {
@@ -107,8 +106,8 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
                     @Override
                     public void run() {
                         //Check whether this brand is used in trains table.
-                        if(mDb.trainDao().isThisBrandUsed(brandToErase.getBrandName())){
-                            // If it is used, show a warning and don't let user delete this
+                        if(viewModel.isThisBrandUsed(brandToErase.getBrandName())){
+                            // If it is used, show a warning and don't let the user delete this
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -116,24 +115,17 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
                                     adapter.notifyDataSetChanged();
                                 }
                             });
-                            return;
-                        } else{
+                        } else {
                             //If it is not used delete the brand
-                            mDb.brandDao().deleteBrand(brandToErase);
+                            viewModel.deleteBrand(brandToErase);
 
-                            //Show a snackbar for undoing delete
+                            //Show a snack bar for undoing delete
                             Snackbar snackbar = Snackbar
                                     .make(coordinator, R.string.brand_deleted, Snackbar.LENGTH_INDEFINITE)
                                     .setAction(R.string.undo, new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    //If UNDO is clicked, add the item back in the database
-                                                    mDb.brandDao().insertBrand(brandToErase);
-                                                }
-                                            });
+                                            viewModel.insertBrand(brandToErase);
                                         }
                                     });
                             snackbar.show();
@@ -143,7 +135,6 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
             }
         }).attachToRecyclerView(binding.included.list);
     }
-
 
     public void openAddBrandFragment() {
         AddBrandFragment addBrandFrag = new AddBrandFragment();

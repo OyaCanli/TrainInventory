@@ -24,6 +24,7 @@ import com.canli.oya.traininventory.data.entities.TrainEntry;
 import com.canli.oya.traininventory.databinding.FragmentTrainDetailsBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.Constants;
+import com.canli.oya.traininventory.utils.InjectorUtils;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainFactory;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
 
@@ -34,9 +35,7 @@ public class TrainDetailsFragment extends Fragment {
     private TrainEntry mChosenTrain;
     private int mTrainId;
 
-    public TrainDetailsFragment() {
-        setHasOptionsMenu(true);
-    }
+    public TrainDetailsFragment() { }
 
     @Nullable
     @Override
@@ -54,8 +53,10 @@ public class TrainDetailsFragment extends Fragment {
         mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
         Bundle bundle = getArguments();
-        mTrainId = bundle.getInt(Constants.TRAIN_ID);
-        ChosenTrainFactory factory = new ChosenTrainFactory(mDb, mTrainId);
+        if (bundle != null) {
+            mTrainId = bundle.getInt(Constants.TRAIN_ID);
+        }
+        ChosenTrainFactory factory = InjectorUtils.provideChosenTrainFactory(getActivity(), mTrainId);
         final ChosenTrainViewModel viewModel = ViewModelProviders.of(this, factory).get(ChosenTrainViewModel.class);
         viewModel.getChosenTrain().observe(this, new Observer<TrainEntry>() {
             @Override

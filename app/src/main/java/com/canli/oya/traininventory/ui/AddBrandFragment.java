@@ -25,22 +25,21 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.canli.oya.traininventory.R;
-import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.BrandEntry;
 import com.canli.oya.traininventory.databinding.FragmentAddBrandBinding;
-import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.BitmapUtils;
 import com.canli.oya.traininventory.utils.Constants;
-import com.canli.oya.traininventory.viewmodel.MainViewModel;
+import com.canli.oya.traininventory.utils.InjectorUtils;
+import com.canli.oya.traininventory.viewmodel.BrandViewModelFactory;
+import com.canli.oya.traininventory.viewmodel.BrandsViewModel;
 
 import java.io.File;
 import java.io.IOException;
 
 import static android.app.Activity.RESULT_OK;
 
-public class AddBrandFragment extends Fragment implements View.OnClickListener{
+public class AddBrandFragment extends Fragment implements View.OnClickListener {
 
-    private TrainDatabase mDb;
     private AlertDialog pickImageDialog;
     private String mTempPhotoPath;
     private Uri mLogoUri;
@@ -49,6 +48,7 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
     private Context mContext;
     private int mBrandId;
     private FragmentAddBrandBinding binding;
+    private BrandsViewModel viewModel;
 
     private final DialogInterface.OnClickListener mDialogClickListener = new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int item) {
@@ -71,14 +71,11 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_add_brand, container, false);
 
-        //get database instance
-        mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
-
         //Set click listeners
         binding.addBrandSaveBtn.setOnClickListener(this);
         binding.addBrandImage.setOnClickListener(this);
 
-        //Request focus on the first edittext
+        //Request focus on the first edit text
         binding.addBrandEditBrandName.requestFocus();
 
         return binding.getRoot();
@@ -87,10 +84,9 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //get database instance
-        mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
-        final MainViewModel viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        BrandViewModelFactory factory = InjectorUtils.provideBrandVMFactory(mContext);
+        viewModel = ViewModelProviders.of(getActivity(), factory).get(BrandsViewModel.class);
 
         Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey(Constants.INTENT_REQUEST_CODE)) { //This is the "edit" case
@@ -105,7 +101,7 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    private void populateFields(BrandEntry brand){
+    private void populateFields(BrandEntry brand) {
         binding.setChosenBrand(brand);
         binding.setIsEdit(true);
     }
@@ -122,10 +118,10 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
     }
 
     private void saveBrand() {
-        //Get brand name from edittext
+        //Get brand name from edit text
         String brandName = binding.addBrandEditBrandName.getText().toString().trim();
 
-        //Get web address from edittext
+        //Get web address from edit text
         String webAddress = binding.addBrandEditWeb.getText().toString().trim();
 
         //If there is a uri for logo image, parse it to string
@@ -134,25 +130,16 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
             imagePath = mLogoUri.toString();
         }
 
-        if(isUpdateCase){
+        if (isUpdateCase) {
             //Construct a new BrandEntry object from this data with ID included
             final BrandEntry brandToUpdate = new BrandEntry(mBrandId, brandName, imagePath, webAddress);
-            AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                @Override
-                public void run() {
-                    mDb.brandDao().updateBrandInfo(brandToUpdate);
-                }
-            });
-        } else{
+            viewModel.updateBrand(brandToUpdate);
+
+        } else {
             //Construct a new BrandEntry object from this data (without ID)
             final BrandEntry newBrand = new BrandEntry(brandName, imagePath, webAddress);
             //Insert to database in a background thread
-            AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                @Override
-                public void run() {
-                    mDb.brandDao().insertBrand(newBrand);
-                }
-            });
+            viewModel.insertBrand(newBrand);
         }
 
         Toast.makeText(getActivity(), R.string.brand_Saved, Toast.LENGTH_SHORT).show();
@@ -176,9 +163,9 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
         //Opens a dialog which lets the user choose either adding a photo from gallery or taking a new picture.
         String[] dialogOptions = getActivity().getResources().getStringArray(R.array.dialog_options);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Add image from: ");
+        builder.setTitle(R.string.add_image_from);
         builder.setSingleChoiceItems(dialogOptions, -1, mDialogClickListener);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (mUsersChoice) {
@@ -201,7 +188,7 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
                 }
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
 
             }
@@ -216,7 +203,7 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         // Always show the chooser (if there are multiple options available)
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), Constants.PICK_IMAGE_REQUEST);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_picture)), Constants.PICK_IMAGE_REQUEST);
     }
 
     private void openCamera() {
@@ -278,7 +265,7 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener{
                     openCamera();
                 } else {
                     // If you do not get permission, show a Toast
-                    Toast.makeText(getActivity(), "Permission denied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.permission_denied, Toast.LENGTH_SHORT).show();
                 }
                 break;
             }

@@ -1,5 +1,6 @@
 package com.canli.oya.traininventory.ui;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,18 +10,19 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.data.entities.CategoryEntry;
-import com.canli.oya.traininventory.data.TrainDatabase;
-import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.databinding.FragmentAddCategoryBinding;
+import com.canli.oya.traininventory.utils.InjectorUtils;
+import com.canli.oya.traininventory.viewmodel.CategoryViewModel;
+import com.canli.oya.traininventory.viewmodel.CategoryViewModelFactory;
 
 
 public class AddCategoryFragment extends Fragment {
 
     private FragmentAddCategoryBinding binding;
+    private CategoryViewModel viewModel;
 
     public AddCategoryFragment() {
     }
@@ -42,16 +44,18 @@ public class AddCategoryFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        CategoryViewModelFactory factory = InjectorUtils.provideCategoryVMFactory(getActivity());
+        viewModel = ViewModelProviders.of(getActivity(), factory).get(CategoryViewModel.class);
+    }
+
     private void saveCategory() {
-        final TrainDatabase database = TrainDatabase.getInstance(getActivity().getApplicationContext());
         String categoryName = binding.addCategoryEditCatName.getText().toString().trim();
         final CategoryEntry newCategory = new CategoryEntry(categoryName);
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                database.categoryDao().insertCategory(newCategory);
-            }
-        });
+        //Insert the category by the intermediance of view model
+        viewModel.insertCategory(newCategory);
 
         //Remove the fragment
         Fragment parentFrag = getParentFragment();

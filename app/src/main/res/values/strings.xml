@@ -66,4 +66,10 @@
     <string name="cd_add_brand_button">Button for adding a brand</string>
     <string name="hint_train_scale">Scale of the train</string>
     <string name="cd_brand_logo_edit">Brand logo. You can click for changing it.</string>
+    <string name="cd_brand_item_logo">Brand logo</string>
+    <string name="add_image_from">Add image from:</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="select_picture">Select Picture</string>
+    <string name="permission_denied">Permission denied</string>
 </resources>

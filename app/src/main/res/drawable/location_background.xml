@@ -6,7 +6,11 @@
         android:width="4dp"
         android:color="@color/colorPrimary"/>
 
-    <solid android:color="@android:color/white"/>
+
+    <padding android:bottom="@dimen/padding_standard"
+        android:left="@dimen/padding_standard"
+        android:right="@dimen/padding_standard"
+        android:top="@dimen/padding_standard"/>
 
     <corners android:radius="5dp" />
 

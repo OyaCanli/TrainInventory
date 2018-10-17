@@ -17,7 +17,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/framed_view">
+        android:background="@drawable/train_item_background">
 
         <TextView
             android:id="@+id/textView8"

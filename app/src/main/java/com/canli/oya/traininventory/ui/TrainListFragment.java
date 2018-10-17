@@ -23,24 +23,27 @@ import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.adapters.TrainAdapter;
 import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.TrainEntry;
+import com.canli.oya.traininventory.data.repositories.TrainRepository;
 import com.canli.oya.traininventory.databinding.FragmentListBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.Constants;
-import com.canli.oya.traininventory.viewmodel.MainViewModel;
+import com.canli.oya.traininventory.utils.InjectorUtils;
+import com.canli.oya.traininventory.viewmodel.SearchViewModel;
+import com.canli.oya.traininventory.viewmodel.SearchViewModelFactory;
+import com.canli.oya.traininventory.viewmodel.TrainsViewModel;
+import com.canli.oya.traininventory.viewmodel.TrainsViewModelFactory;
 
 import java.util.List;
 
 public class TrainListFragment extends Fragment implements TrainAdapter.TrainItemClickListener {
 
     private TrainAdapter mAdapter;
-    private MainViewModel viewModel;
     private List<TrainEntry> mTrainList;
     private TrainDatabase mDb;
     private List<TrainEntry> filteredTrains;
     private FragmentListBinding binding;
 
     public TrainListFragment() {
-        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -68,26 +71,29 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
         mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
         Bundle bundle = getArguments();
+        //If the list will be used for showing selected trains
         if(bundle != null && bundle.containsKey(Constants.INTENT_REQUEST_CODE)){
+            SearchViewModelFactory searchFactory = InjectorUtils.provideSearchVMFactory(getActivity());
+            SearchViewModel searchVM = ViewModelProviders.of(this, searchFactory).get(SearchViewModel.class);
             if(bundle.getString(Constants.INTENT_REQUEST_CODE).equals(Constants.TRAINS_OF_BRAND)){
-                mDb.trainDao().getTrainsFromThisBrand(bundle.getString(Constants.BRAND_NAME)).observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
+                searchVM.getTrainsFromThisBrand(bundle.getString(Constants.BRAND_NAME)).observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
                     @Override
                     public void onChanged(@Nullable List<TrainEntry> trainEntries) {
-                        if(trainEntries.isEmpty()){
+                        if(trainEntries == null || trainEntries.isEmpty()){
                             binding.setIsEmpty(true);
                             binding.setEmptyMessage(getString(R.string.no_train_for_this_brand));
-                        } else{
+                        } else {
                             binding.setIsEmpty(false);
                             mAdapter.setTrains(trainEntries);
                             mTrainList = trainEntries;
                         }
                     }
                 });
-            }else{
-                mDb.trainDao().getTrainsFromThisCategory(bundle.getString(Constants.CATEGORY_NAME)).observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
+            } else {
+                searchVM.getTrainsFromThisCategory(bundle.getString(Constants.CATEGORY_NAME)).observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
                     @Override
                     public void onChanged(@Nullable List<TrainEntry> trainEntries) {
-                        if(trainEntries.isEmpty()){
+                        if(trainEntries == null || trainEntries.isEmpty()){
                             binding.setIsEmpty(true);
                             binding.setEmptyMessage(getString(R.string.no_items_for_this_category));
                         } else{
@@ -98,13 +104,15 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
                     }
                 });
             }
-        }else{
-            viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
-            viewModel.getAllTrains().observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
+        } else {
+            //If the list is going to be use for showing all trains, which is the default behaviour
+            TrainsViewModelFactory factory = InjectorUtils.provideTrainVMFactory(getActivity());
+            TrainsViewModel viewModel = ViewModelProviders.of(TrainListFragment.this, factory).get(TrainsViewModel.class);
+            viewModel.getTrainList().observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
 
                 @Override
                 public void onChanged(@Nullable List<TrainEntry> trainEntries) {
-                    if(trainEntries.isEmpty()){
+                    if(trainEntries == null || trainEntries.isEmpty()){
                         binding.setIsEmpty(true);
                         binding.setEmptyMessage(getString(R.string.no_trains_found));
                     } else{

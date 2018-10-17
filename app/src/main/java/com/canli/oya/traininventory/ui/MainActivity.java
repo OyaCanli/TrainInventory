@@ -21,7 +21,6 @@ import com.canli.oya.traininventory.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         FragmentManager.OnBackStackChangedListener{
 
-    private ActionBarDrawerToggle toggle;
     private ActivityMainBinding binding;
 
     @Override
@@ -33,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(binding.toolbar);
 
         //Set navigation drawer
-        toggle = new ActionBarDrawerToggle(
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, binding.drawerLayout, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         binding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
@@ -41,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         getSupportFragmentManager().addOnBackStackChangedListener(this);
 
+        //Bring the train list fragment at the launch of activity
         if(savedInstanceState == null) {
             TrainListFragment trainListFrag = new TrainListFragment();
             trainListFrag.setExitTransition(new Slide(Gravity.START));
@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    //This is for closing soft keyboard if user navigates to another fragment while keyboard was open
     @Override
     public void onBackStackChanged() {
         View focusedView = this.getCurrentFocus();

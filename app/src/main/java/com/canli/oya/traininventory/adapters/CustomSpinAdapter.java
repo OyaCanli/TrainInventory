@@ -52,11 +52,16 @@ public class CustomSpinAdapter extends BaseAdapter {
         ImageView logo_iv = convertView.findViewById(R.id.spin_item_logo);
 
         brandName_tv.setText(currentBrand.getBrandName());
-        GlideApp.with(mContext)
-                .load(currentBrand.getBrandLogoUri())
-                .centerCrop()
-                .placeholder(R.drawable.placeholder)
-                .into(logo_iv);
+        String imageUri = currentBrand.getBrandLogoUri();
+        if(imageUri == null){
+            logo_iv.setVisibility(View.GONE);
+        } else {
+            logo_iv.setVisibility(View.VISIBLE);
+            GlideApp.with(mContext)
+                    .load(imageUri)
+                    .centerCrop()
+                    .into(logo_iv);
+        }
 
         return convertView;
     }

@@ -19,6 +19,9 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -35,9 +38,13 @@ import com.canli.oya.traininventory.databinding.FragmentAddTrainBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.BitmapUtils;
 import com.canli.oya.traininventory.utils.Constants;
+import com.canli.oya.traininventory.utils.InjectorUtils;
+import com.canli.oya.traininventory.viewmodel.BrandViewModelFactory;
+import com.canli.oya.traininventory.viewmodel.BrandsViewModel;
+import com.canli.oya.traininventory.viewmodel.CategoryViewModel;
+import com.canli.oya.traininventory.viewmodel.CategoryViewModelFactory;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainFactory;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
-import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,10 +90,11 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_add_train, container, false);
 
+        setHasOptionsMenu(true);
+
         //Set click listener on buttons
         binding.addTrainAddBrandBtn.setOnClickListener(this);
         binding.addTrainAddCategoryBtn.setOnClickListener(this);
-        binding.saveBtn.setOnClickListener(this);
         binding.productDetailsGalleryImage.setOnClickListener(this);
 
         return binding.getRoot();
@@ -97,9 +105,12 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         super.onActivityCreated(savedInstanceState);
         mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
-        /*This is the main viewmodel which is attached to the activity and which is shared by many fragments
-        We need it here for getting categories and brands for populating spinners*/
-        final MainViewModel mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        //These two view models are shared among few fragments, that's why they are attached to the host activity
+        BrandViewModelFactory brandFactory = InjectorUtils.provideBrandVMFactory(mContext);
+        final BrandsViewModel brandsViewModel = ViewModelProviders.of(getActivity(), brandFactory).get(BrandsViewModel.class);
+
+        CategoryViewModelFactory categoryFactory = InjectorUtils.provideCategoryVMFactory(mContext);
+        final CategoryViewModel categoryViewModel = ViewModelProviders.of(getActivity(), categoryFactory).get(CategoryViewModel.class);
 
         Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey(Constants.TRAIN_ID)) { //This is the "edit" case
@@ -125,7 +136,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.categorySpinner.setAdapter(categoryAdapter);
         binding.categorySpinner.setOnItemSelectedListener(this);
-        mainViewModel.getCategoryList().observe(AddTrainFragment.this, new Observer<List<String>>() {
+        categoryViewModel.getCategoryList().observe(AddTrainFragment.this, new Observer<List<String>>() {
             @Override
             public void onChanged(@Nullable List<String> categoryEntries) {
                 categoryList.clear();
@@ -139,7 +150,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         final CustomSpinAdapter brandAdapter = new CustomSpinAdapter(getActivity(), brandList);
         binding.brandSpinner.setAdapter(brandAdapter);
         binding.brandSpinner.setOnItemSelectedListener(this);
-        mainViewModel.getBrandList().observe(AddTrainFragment.this, new Observer<List<BrandEntry>>() {
+        brandsViewModel.getBrandList().observe(AddTrainFragment.this, new Observer<List<BrandEntry>>() {
             @Override
             public void onChanged(@Nullable List<BrandEntry> brandEntries) {
                 brandList.clear();
@@ -158,10 +169,6 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.save_btn: {
-                saveTrain();
-                break;
-            }
             case R.id.addTrain_addBrandBtn: {
                 insertAddBrandFragment();
                 break;
@@ -175,6 +182,20 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 break;
             }
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_with_save, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_save){
+            saveTrain();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void insertAddCategoryFragment() {

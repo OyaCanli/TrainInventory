@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_standard"
-        android:background="@drawable/framed_view"
+        android:background="@drawable/train_item_background"
         android:padding="@dimen/padding_standard">
 
         <ImageView
