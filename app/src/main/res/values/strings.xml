@@ -2,15 +2,7 @@
     <string name="app_name">Train Inventory</string>
     <string name="trains">Trains</string>
     <string name="brands">Brands</string>
-    <string name="category">Category</string>
-    <string name="new_train">New Train</string>
-    <string name="new_brand">New Brand</string>
-    <string name="new_category">New Category</string>
-    <string name="see_all">SEE ALL:</string>
-    <string name="add">ADD:</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="image_of_the_train">image of the train</string>
+    <string name="category">Categories</string>
     <string name="no_trains_found">No trains found. Click on + button to add a new train.</string>
     <string name="brand">Brand:</string>
     <string name="reference">Reference:</string>
@@ -28,16 +20,13 @@
     <string name="delete">Delete</string>
     <string name="category_name">Category name</string>
     <string name="all_brands">All Brands</string>
-    <string name="add_brand">Add Brand</string>
     <string name="add_train">Add Train</string>
     <string name="brand_deleted">Brand deleted</string>
     <string name="category_deleted">Category deleted</string>
     <string name="undo">UNDO</string>
     <string name="category_placeholder">(%1$s)</string>
     <string name="no_brands_found">No brands found. You can add brands from above, or while you add trains.</string>
-    <string name="see_add_brands">See/Add Brands</string>
     <string name="brand_Saved">Brand is saved</string>
-    <string name="see_add_categories">See/Add Categories</string>
     <string name="all_categories">All Categories</string>
     <string name="no_categories_found">No categories found. Click on the + button to add a new category.</string>
     <string name="search">Search</string>
@@ -72,4 +61,6 @@
     <string name="cancel">Cancel</string>
     <string name="select_picture">Select Picture</string>
     <string name="permission_denied">Permission denied</string>
+    <string name="cd_category_item_train_btn">Train icon. Click here to see trains from this category.</string>
+    <string name="add">Add</string>
 </resources>

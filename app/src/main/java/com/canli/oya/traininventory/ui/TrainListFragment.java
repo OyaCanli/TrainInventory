@@ -6,12 +6,12 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.transition.Slide;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,7 +23,6 @@ import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.adapters.TrainAdapter;
 import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.TrainEntry;
-import com.canli.oya.traininventory.data.repositories.TrainRepository;
 import com.canli.oya.traininventory.databinding.FragmentListBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.Constants;
@@ -44,6 +43,7 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
     private FragmentListBinding binding;
 
     public TrainListFragment() {
+        setRetainInstance(true);
     }
 
     @Nullable
@@ -131,11 +131,28 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
         Bundle args = new Bundle();
         args.putInt(Constants.TRAIN_ID, trainId);
         trainDetailsFrag.setArguments(args);
-        trainDetailsFrag.setEnterTransition(new Slide(Gravity.END));
-        trainDetailsFrag.setExitTransition(new Slide(Gravity.START));
-        getFragmentManager().beginTransaction()
-                .replace(R.id.container, trainDetailsFrag)
-                .addToBackStack(null)
+        loadFragment(trainDetailsFrag, Constants.TAG_DETAILS);
+    }
+
+    private void loadFragment(Fragment newFrag, String tag) {
+        //This method loads a new fragment, if there isn't already an instance of it.
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        Fragment currentFrag = fm.findFragmentById(R.id.container);
+        if (currentFrag != null) {
+            ft.detach(currentFrag);
+        }
+
+        Fragment fragment = fm.findFragmentByTag(tag);
+        if (fragment == null) {
+            fragment = newFrag;
+            ft.replace(R.id.container, fragment, tag)
+                    .addToBackStack(tag);
+        } else {
+            ft.attach(fragment);
+        }
+
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .commit();
     }
 
@@ -190,12 +207,6 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
     }
 
     private void openAddTrainFragment(){
-        AddTrainFragment addTrainFrag = new AddTrainFragment();
-        addTrainFrag.setEnterTransition(new Slide(Gravity.END));
-        addTrainFrag.setExitTransition(new Slide(Gravity.START));
-        getFragmentManager().beginTransaction()
-                .replace(R.id.container, addTrainFrag)
-                .addToBackStack(null)
-                .commit();
+        loadFragment(new AddTrainFragment(), Constants.TAG_ADD_TRAIN);
     }
 }

@@ -8,13 +8,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.transition.Slide;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,6 +40,7 @@ public class CategoryListFragment extends Fragment implements CategoryAdapter.Ca
     private FragmentBrandlistBinding binding;
 
     public CategoryListFragment() {
+        setRetainInstance(true);
     }
 
     @Nullable
@@ -162,10 +161,9 @@ public class CategoryListFragment extends Fragment implements CategoryAdapter.Ca
         args.putString(Constants.INTENT_REQUEST_CODE, Constants.TRAINS_OF_CATEGORY);
         args.putString(Constants.CATEGORY_NAME, categoryName);
         trainListFrag.setArguments(args);
-        trainListFrag.setEnterTransition(new Slide(Gravity.END));
-        trainListFrag.setExitTransition(new Slide(Gravity.START));
         getFragmentManager().beginTransaction()
                 .replace(R.id.container, trainListFrag)
+                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .addToBackStack(null)
                 .commit();
     }

@@ -4,5 +4,5 @@
     <color name="colorPrimaryDark">#385A59</color>
     <color name="colorAccent">#FF5722</color>
     <color name="window_background">#F2C14E</color>
-    <color name="cardBackground">#FFFFFF</color>
+    <color name="bot_nav_inactive_color">#DDFFFFFF</color>
 </resources>

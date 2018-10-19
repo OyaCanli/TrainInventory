@@ -9,7 +9,6 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
 import com.canli.oya.traininventory.data.entities.BrandEntry;
-import com.canli.oya.traininventory.data.entities.TrainEntry;
 
 import java.util.List;
 

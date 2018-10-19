@@ -11,15 +11,16 @@ public class CategoryEntry {
     @PrimaryKey
     private String categoryName;
 
-    public CategoryEntry(String categoryName) {
+    public CategoryEntry(@NonNull String categoryName) {
         this.categoryName = categoryName;
     }
 
+    @NonNull
     public String getCategoryName() {
         return categoryName;
     }
 
-    public void setCategoryName(String categoryName) {
+    public void setCategoryName(@NonNull String categoryName) {
         this.categoryName = categoryName;
     }
 }

@@ -21,6 +21,9 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -152,10 +155,21 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
         } else {
             currentInstance = getFragmentManager().findFragmentById(R.id.brandlist_addFrag_container);
         }
+
+        //
+        View focusedView = getActivity().getCurrentFocus();
+        if (focusedView != null) {
+            focusedView.clearFocus();
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
+        }
+
         getFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                 .remove(currentInstance)
                 .commit();
+
+
     }
 
     private void openImageDialog() {
@@ -272,9 +286,27 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+
+
     @Override
     public void onDetach() {
         super.onDetach();
         mContext = null;
+    }
+
+    /*This is for solving the weird behaviour of child fragments during exit.
+    I found this solution from this SO entry and adapted to my case:
+    https://stackoverflow.com/questions/14900738/nested-fragments-disappear-during-transition-animation*/
+    private static final Animation dummyAnimation = new AlphaAnimation(1,1);
+    static{
+        dummyAnimation.setDuration(500);
+    }
+
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        if(!enter && getParentFragment() instanceof BrandListFragment){
+            return dummyAnimation;
+        }
+        return super.onCreateAnimation(transit, enter, nextAnim);
     }
 }

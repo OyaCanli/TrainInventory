@@ -29,7 +29,6 @@ import android.widget.Toast;
 
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.adapters.BrandAdapter;
-import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.BrandEntry;
 import com.canli.oya.traininventory.databinding.FragmentBrandlistBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
@@ -47,8 +46,8 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
     private BrandsViewModel viewModel;
     private FragmentBrandlistBinding binding;
 
-
     public BrandListFragment() {
+        setRetainInstance(true);
     }
 
     @Nullable
@@ -91,12 +90,12 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
         final CoordinatorLayout coordinator = getActivity().findViewById(R.id.coordinator);
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
 
             @Override
-            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
+            public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
                 final int position = viewHolder.getAdapterPosition();
 
                 //First take a backup of the brand to erase
@@ -136,7 +135,7 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
         }).attachToRecyclerView(binding.included.list);
     }
 
-    public void openAddBrandFragment() {
+    private void openAddBrandFragment() {
         AddBrandFragment addBrandFrag = new AddBrandFragment();
         getChildFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.translate_from_top, 0)

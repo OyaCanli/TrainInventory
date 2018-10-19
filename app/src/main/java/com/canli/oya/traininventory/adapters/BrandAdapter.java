@@ -17,11 +17,9 @@ import java.util.List;
 public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHolder>{
 
     private List<BrandEntry> mBrandList;
-    private final Context mContext;
     private final BrandItemClickListener mClickListener;
 
     public BrandAdapter(Context context, BrandItemClickListener listener){
-        mContext = context;
         mClickListener = listener;
     }
 

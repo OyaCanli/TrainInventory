@@ -23,14 +23,13 @@ public class BrandEntry {
         this.webUrl = webUrl;
     }
 
-    public BrandEntry(@NonNull int brandId, @NonNull String brandName, String brandLogoUri, String webUrl) {
+    public BrandEntry(int brandId, @NonNull String brandName, String brandLogoUri, String webUrl) {
         this.brandId = brandId;
         this.brandName = brandName;
         this.brandLogoUri = brandLogoUri;
         this.webUrl = webUrl;
     }
 
-    @NonNull
     public int getBrandId() {
         return brandId;
     }
@@ -59,7 +58,7 @@ public class BrandEntry {
         this.webUrl = webUrl;
     }
 
-    public void setBrandId(@NonNull int brandId) {
+    public void setBrandId(int brandId) {
         this.brandId = brandId;
     }
 }

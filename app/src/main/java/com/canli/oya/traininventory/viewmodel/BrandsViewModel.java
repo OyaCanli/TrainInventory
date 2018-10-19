@@ -13,7 +13,7 @@ public class BrandsViewModel extends ViewModel {
 
     private final LiveData<List<BrandEntry>> brandList;
     private final MutableLiveData<BrandEntry> mChosenBrand = new MutableLiveData<>();
-    private BrandRepository mRepo;
+    private final BrandRepository mRepo;
 
     BrandsViewModel(BrandRepository brandRepo) {
         brandList = brandRepo.getBrandList();

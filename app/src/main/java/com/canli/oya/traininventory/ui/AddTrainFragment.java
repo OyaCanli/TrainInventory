@@ -67,7 +67,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     private List<String> categoryList;
     private List<BrandEntry> brandList;
     private int mTrainId;
-    Context mContext;
+    private Context mContext;
 
     private final DialogInterface.OnClickListener mDialogClickListener = new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int item) {
