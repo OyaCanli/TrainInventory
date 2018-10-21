@@ -14,9 +14,10 @@ import com.canli.oya.traininventory.viewmodel.TrainsViewModelFactory;
 
 public class InjectorUtils {
 
-    private static TrainRepository provideTrainRepo(Context context){
+    public static TrainRepository provideTrainRepo(Context context){
         TrainDatabase db = TrainDatabase.getInstance(context);
-        return TrainRepository.getInstance(db);
+        AppExecutors executors = AppExecutors.getInstance();
+        return TrainRepository.getInstance(db, executors);
     }
 
     private static BrandRepository provideBrandRepo(Context context){

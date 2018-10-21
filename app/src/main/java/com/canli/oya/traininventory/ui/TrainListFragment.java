@@ -138,21 +138,13 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
         //This method loads a new fragment, if there isn't already an instance of it.
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        Fragment currentFrag = fm.findFragmentById(R.id.container);
-        if (currentFrag != null) {
-            ft.detach(currentFrag);
-        }
-
         Fragment fragment = fm.findFragmentByTag(tag);
-        if (fragment == null) {
+        if(fragment == null) {
             fragment = newFrag;
-            ft.replace(R.id.container, fragment, tag)
-                    .addToBackStack(tag);
-        } else {
-            ft.attach(fragment);
+            ft.addToBackStack(tag);
         }
-
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+        ft.replace(R.id.container, fragment, tag)
+                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .commit();
     }
 
@@ -208,5 +200,9 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
 
     private void openAddTrainFragment(){
         loadFragment(new AddTrainFragment(), Constants.TAG_ADD_TRAIN);
+    }
+
+    public void scrollToTop(){
+        binding.list.smoothScrollToPosition(0);
     }
 }

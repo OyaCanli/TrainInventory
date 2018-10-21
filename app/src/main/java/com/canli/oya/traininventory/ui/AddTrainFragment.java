@@ -17,11 +17,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -34,8 +37,8 @@ import com.canli.oya.traininventory.adapters.CustomSpinAdapter;
 import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.BrandEntry;
 import com.canli.oya.traininventory.data.entities.TrainEntry;
+import com.canli.oya.traininventory.data.repositories.TrainRepository;
 import com.canli.oya.traininventory.databinding.FragmentAddTrainBinding;
-import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.BitmapUtils;
 import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.utils.InjectorUtils;
@@ -59,7 +62,6 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     private FragmentAddTrainBinding binding;
     private String mChosenCategory;
     private String mChosenBrand;
-    private TrainDatabase mDb;
     private AlertDialog pickImageDialog;
     private String mTempPhotoPath;
     private String mImageUri;
@@ -68,6 +70,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     private List<BrandEntry> brandList;
     private int mTrainId;
     private Context mContext;
+    private UnsavedChangesListener mCallback;
 
     private final DialogInterface.OnClickListener mDialogClickListener = new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int item) {
@@ -78,10 +81,23 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     public AddTrainFragment() {
     }
 
+    public interface UnsavedChangesListener {
+        void warnForUnsavedChanges(boolean shouldWarn);
+    }
+
+    // Override onAttach to make sure that the container activity has implemented the callback
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+        // This makes sure that the host activity has implemented the callback interface
+        // If not, it throws an exception
+        try {
+            mCallback = (UnsavedChangesListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement UnsavedChangesListener");
+        }
     }
 
     @Nullable
@@ -103,7 +119,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
+        TrainDatabase database = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
         //These two view models are shared among few fragments, that's why they are attached to the host activity
         BrandViewModelFactory brandFactory = InjectorUtils.provideBrandVMFactory(mContext);
@@ -118,7 +134,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
             binding.setIsEdit(true);
             mTrainId = bundle.getInt(Constants.TRAIN_ID);
             //This view model is instantiated only in edit mode. It contains the chosen train. It is attached to this fragment
-            ChosenTrainFactory factory = new ChosenTrainFactory(mDb, mTrainId);
+            ChosenTrainFactory factory = new ChosenTrainFactory(database, mTrainId);
             final ChosenTrainViewModel viewModel = ViewModelProviders.of(this, factory).get(ChosenTrainViewModel.class);
             viewModel.getChosenTrain().observe(this, new Observer<TrainEntry>() {
                 @Override
@@ -126,8 +142,10 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                     populateFields(trainEntry);
                 }
             });
-        } else {
+            setTouchListenersToEditTexts();
+        } else { //This is the "add" case
             getActivity().setTitle(getString(R.string.add_train));
+            setChangeListenersToEdittexts();
         }
 
         //Set category spinner
@@ -237,24 +255,16 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 binding.editLocationLetter.getText().toString().trim();
         String scale = binding.editScale.getText().toString().trim();
 
+        TrainRepository trainRepo = InjectorUtils.provideTrainRepo(mContext);
+
         if (mTrainId == 0) {
             //If this is a new train
             final TrainEntry newTrain = new TrainEntry(trainName, reference, mChosenBrand, mChosenCategory, quantity, mImageUri, description, location, scale);
-            AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                @Override
-                public void run() {
-                    mDb.trainDao().insertTrain(newTrain);
-                }
-            });
+            trainRepo.insertTrain(newTrain);
         } else {
             //If this is a train that already exist
             final TrainEntry trainToUpdate = new TrainEntry(mTrainId, trainName, reference, mChosenBrand, mChosenCategory, quantity, mImageUri, description, location, scale);
-            AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                @Override
-                public void run() {
-                    mDb.trainDao().updateTrainInfo(trainToUpdate);
-                }
-            });
+            trainRepo.updateTrain(trainToUpdate);
         }
         //After adding the train, go back to where user come from.
         getFragmentManager().popBackStack();
@@ -391,6 +401,53 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onDetach() {
         super.onDetach();
+        mCallback.warnForUnsavedChanges(false);
         mContext = null;
+    }
+
+    private void setChangeListenersToEdittexts(){
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mCallback.warnForUnsavedChanges(true);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+        //Set change listeners on edit texts
+        binding.editReference.addTextChangedListener(textWatcher);
+        binding.editTrainName.addTextChangedListener(textWatcher);
+        binding.editTrainDescription.addTextChangedListener(textWatcher);
+        binding.editLocationNumber.addTextChangedListener(textWatcher);
+        binding.editLocationLetter.addTextChangedListener(textWatcher);
+        binding.editScale.addTextChangedListener(textWatcher);
+        binding.editQuantity.addTextChangedListener(textWatcher);
+    }
+
+    private void setTouchListenersToEditTexts() {
+        View.OnTouchListener touchListener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mCallback.warnForUnsavedChanges(true);
+                return false;
+            }
+        };
+
+        //Set change listeners on edit texts
+        binding.editReference.setOnTouchListener(touchListener);
+        binding.editTrainName.setOnTouchListener(touchListener);
+        binding.editTrainDescription.setOnTouchListener(touchListener);
+        binding.editLocationNumber.setOnTouchListener(touchListener);
+        binding.editLocationLetter.setOnTouchListener(touchListener);
+        binding.editScale.setOnTouchListener(touchListener);
+        binding.editQuantity.setOnTouchListener(touchListener);
     }
 }

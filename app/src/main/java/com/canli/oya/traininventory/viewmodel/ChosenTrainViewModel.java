@@ -20,13 +20,4 @@ public class ChosenTrainViewModel extends ViewModel {
         return chosenTrain;
     }
 
-    public void deleteTrain(final TrainEntry trainEntry){
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                mDatabase.trainDao().deleteTrain(trainEntry);
-            }
-        });
-    }
-
 }
