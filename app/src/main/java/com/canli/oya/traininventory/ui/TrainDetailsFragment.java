@@ -26,12 +26,14 @@ import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.utils.InjectorUtils;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainFactory;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
+import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 public class TrainDetailsFragment extends Fragment {
 
     private FragmentTrainDetailsBinding binding;
     private TrainEntry mChosenTrain;
     private int mTrainId;
+    private MainViewModel mainViewModel;
 
     public TrainDetailsFragment() {
     }
@@ -54,6 +56,7 @@ public class TrainDetailsFragment extends Fragment {
         if (bundle != null) {
             mTrainId = bundle.getInt(Constants.TRAIN_ID);
         }
+        mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
         ChosenTrainFactory factory = InjectorUtils.provideChosenTrainFactory(getActivity(), mTrainId);
         ChosenTrainViewModel viewModel = ViewModelProviders.of(this, factory).get(ChosenTrainViewModel.class);
         viewModel.getChosenTrain().observe(this, new Observer<TrainEntry>() {
@@ -71,21 +74,6 @@ public class TrainDetailsFragment extends Fragment {
         getActivity().setTitle(chosenTrain.getTrainName());
         binding.setChosenTrain(chosenTrain);
         binding.executePendingBindings();
-    }
-
-    private void loadFragment(Fragment newFrag) {
-        //This method loads a new fragment, if there isn't already an instance of it.
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        String tag = Constants.TAG_ADD_TRAIN;
-        Fragment fragment = fm.findFragmentByTag(tag);
-        if (fragment == null) {
-            fragment = newFrag;
-            ft.addToBackStack(tag);
-        }
-        ft.replace(R.id.container, fragment, tag)
-                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                .commit();
     }
 
     @Override
@@ -106,7 +94,11 @@ public class TrainDetailsFragment extends Fragment {
                 Bundle args = new Bundle();
                 args.putInt(Constants.TRAIN_ID, mTrainId);
                 addTrainFrag.setArguments(args);
-                loadFragment(addTrainFrag);
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, addTrainFrag)
+                        .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                        .commit();
+                mainViewModel.arrangeFragmentHistory(addTrainFrag);
                 break;
             }
         }

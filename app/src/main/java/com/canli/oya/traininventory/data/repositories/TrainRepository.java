@@ -64,4 +64,17 @@ public class TrainRepository {
             }
         });
     }
+
+    public LiveData<List<TrainEntry>> getTrainsFromThisBrand(String brandName){
+        return mDatabase.trainDao().getTrainsFromThisBrand(brandName);
+    }
+
+    public LiveData<List<TrainEntry>> getTrainsFromThisCategory(String category){
+        return mDatabase.trainDao().getTrainsFromThisCategory(category);
+    }
+
+    public List<TrainEntry> searchInTrains(String query){
+        return mDatabase.trainDao().searchInTrains(query);
+    }
+
 }

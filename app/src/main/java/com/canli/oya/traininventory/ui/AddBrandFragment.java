@@ -32,9 +32,7 @@ import com.canli.oya.traininventory.data.entities.BrandEntry;
 import com.canli.oya.traininventory.databinding.FragmentAddBrandBinding;
 import com.canli.oya.traininventory.utils.BitmapUtils;
 import com.canli.oya.traininventory.utils.Constants;
-import com.canli.oya.traininventory.utils.InjectorUtils;
-import com.canli.oya.traininventory.viewmodel.BrandViewModelFactory;
-import com.canli.oya.traininventory.viewmodel.BrandsViewModel;
+import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,7 +49,7 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
     private Context mContext;
     private int mBrandId;
     private FragmentAddBrandBinding binding;
-    private BrandsViewModel viewModel;
+    private MainViewModel mViewModel;
 
     private final DialogInterface.OnClickListener mDialogClickListener = new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int item) {
@@ -88,13 +86,12 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        BrandViewModelFactory factory = InjectorUtils.provideBrandVMFactory(mContext);
-        viewModel = ViewModelProviders.of(getActivity(), factory).get(BrandsViewModel.class);
+        mViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
 
         Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey(Constants.INTENT_REQUEST_CODE)) { //This is the "edit" case
             isUpdateCase = true;
-            viewModel.getChosenBrand().observe(AddBrandFragment.this, new Observer<BrandEntry>() {
+            mViewModel.getChosenBrand().observe(AddBrandFragment.this, new Observer<BrandEntry>() {
                 @Override
                 public void onChanged(@Nullable BrandEntry brandEntry) {
                     populateFields(brandEntry);
@@ -136,13 +133,13 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
         if (isUpdateCase) {
             //Construct a new BrandEntry object from this data with ID included
             final BrandEntry brandToUpdate = new BrandEntry(mBrandId, brandName, imagePath, webAddress);
-            viewModel.updateBrand(brandToUpdate);
+            mViewModel.updateBrand(brandToUpdate);
 
         } else {
             //Construct a new BrandEntry object from this data (without ID)
             final BrandEntry newBrand = new BrandEntry(brandName, imagePath, webAddress);
             //Insert to database in a background thread
-            viewModel.insertBrand(newBrand);
+            mViewModel.insertBrand(newBrand);
         }
 
         Toast.makeText(getActivity(), R.string.brand_Saved, Toast.LENGTH_SHORT).show();
@@ -168,7 +165,6 @@ public class AddBrandFragment extends Fragment implements View.OnClickListener {
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                 .remove(currentInstance)
                 .commit();
-
 
     }
 

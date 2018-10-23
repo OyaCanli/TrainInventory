@@ -37,17 +37,13 @@ import com.canli.oya.traininventory.adapters.CustomSpinAdapter;
 import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.BrandEntry;
 import com.canli.oya.traininventory.data.entities.TrainEntry;
-import com.canli.oya.traininventory.data.repositories.TrainRepository;
 import com.canli.oya.traininventory.databinding.FragmentAddTrainBinding;
 import com.canli.oya.traininventory.utils.BitmapUtils;
 import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.utils.InjectorUtils;
-import com.canli.oya.traininventory.viewmodel.BrandViewModelFactory;
-import com.canli.oya.traininventory.viewmodel.BrandsViewModel;
-import com.canli.oya.traininventory.viewmodel.CategoryViewModel;
-import com.canli.oya.traininventory.viewmodel.CategoryViewModelFactory;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainFactory;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
+import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,8 +65,8 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     private List<String> categoryList;
     private List<BrandEntry> brandList;
     private int mTrainId;
-    private Context mContext;
     private UnsavedChangesListener mCallback;
+    private MainViewModel mViewModel;
 
     private final DialogInterface.OnClickListener mDialogClickListener = new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int item) {
@@ -89,7 +85,6 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mContext = context;
         // This makes sure that the host activity has implemented the callback interface
         // If not, it throws an exception
         try {
@@ -121,12 +116,9 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         super.onActivityCreated(savedInstanceState);
         TrainDatabase database = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
-        //These two view models are shared among few fragments, that's why they are attached to the host activity
-        BrandViewModelFactory brandFactory = InjectorUtils.provideBrandVMFactory(mContext);
-        final BrandsViewModel brandsViewModel = ViewModelProviders.of(getActivity(), brandFactory).get(BrandsViewModel.class);
-
-        CategoryViewModelFactory categoryFactory = InjectorUtils.provideCategoryVMFactory(mContext);
-        final CategoryViewModel categoryViewModel = ViewModelProviders.of(getActivity(), categoryFactory).get(CategoryViewModel.class);
+        mViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        mViewModel.loadBrandList(InjectorUtils.provideBrandRepo(getContext()));
+        mViewModel.loadCategoryList(InjectorUtils.provideCategoryRepo(getContext()));
 
         Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey(Constants.TRAIN_ID)) { //This is the "edit" case
@@ -154,7 +146,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.categorySpinner.setAdapter(categoryAdapter);
         binding.categorySpinner.setOnItemSelectedListener(this);
-        categoryViewModel.getCategoryList().observe(AddTrainFragment.this, new Observer<List<String>>() {
+        mViewModel.getCategoryList().observe(AddTrainFragment.this, new Observer<List<String>>() {
             @Override
             public void onChanged(@Nullable List<String> categoryEntries) {
                 categoryList.clear();
@@ -168,7 +160,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         final CustomSpinAdapter brandAdapter = new CustomSpinAdapter(getActivity(), brandList);
         binding.brandSpinner.setAdapter(brandAdapter);
         binding.brandSpinner.setOnItemSelectedListener(this);
-        brandsViewModel.getBrandList().observe(AddTrainFragment.this, new Observer<List<BrandEntry>>() {
+        mViewModel.getBrandList().observe(AddTrainFragment.this, new Observer<List<BrandEntry>>() {
             @Override
             public void onChanged(@Nullable List<BrandEntry> brandEntries) {
                 brandList.clear();
@@ -255,27 +247,26 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 binding.editLocationLetter.getText().toString().trim();
         String scale = binding.editScale.getText().toString().trim();
 
-        TrainRepository trainRepo = InjectorUtils.provideTrainRepo(mContext);
-
         if (mTrainId == 0) {
             //If this is a new train
             final TrainEntry newTrain = new TrainEntry(trainName, reference, mChosenBrand, mChosenCategory, quantity, mImageUri, description, location, scale);
-            trainRepo.insertTrain(newTrain);
+            mViewModel.insertTrain(newTrain);
         } else {
             //If this is a train that already exist
             final TrainEntry trainToUpdate = new TrainEntry(mTrainId, trainName, reference, mChosenBrand, mChosenCategory, quantity, mImageUri, description, location, scale);
-            trainRepo.updateTrain(trainToUpdate);
+            mViewModel.updateTrain(trainToUpdate);
         }
         //After adding the train, go back to where user come from.
-        getFragmentManager().popBackStack();
+        mCallback.warnForUnsavedChanges(false);
+        getActivity().onBackPressed();
     }
 
     private void openImageDialog() {
         String[] dialogOptions = getActivity().getResources().getStringArray(R.array.dialog_options);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Add image from: ");
+        builder.setTitle(R.string.add_image_from);
         builder.setSingleChoiceItems(dialogOptions, -1, mDialogClickListener);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (mUsersChoice) {
@@ -298,7 +289,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 }
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
 
             }
@@ -402,7 +393,6 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     public void onDetach() {
         super.onDetach();
         mCallback.warnForUnsavedChanges(false);
-        mContext = null;
     }
 
     private void setChangeListenersToEdittexts(){

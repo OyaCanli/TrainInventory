@@ -18,15 +18,13 @@ import android.view.inputmethod.InputMethodManager;
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.data.entities.CategoryEntry;
 import com.canli.oya.traininventory.databinding.FragmentAddCategoryBinding;
-import com.canli.oya.traininventory.utils.InjectorUtils;
-import com.canli.oya.traininventory.viewmodel.CategoryViewModel;
-import com.canli.oya.traininventory.viewmodel.CategoryViewModelFactory;
+import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 
 public class AddCategoryFragment extends Fragment {
 
     private FragmentAddCategoryBinding binding;
-    private CategoryViewModel viewModel;
+    private MainViewModel mViewModel;
 
     public AddCategoryFragment() {
     }
@@ -51,15 +49,14 @@ public class AddCategoryFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        CategoryViewModelFactory factory = InjectorUtils.provideCategoryVMFactory(getActivity());
-        viewModel = ViewModelProviders.of(getActivity(), factory).get(CategoryViewModel.class);
+        mViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
     }
 
     private void saveCategory() {
         String categoryName = binding.addCategoryEditCatName.getText().toString().trim();
         final CategoryEntry newCategory = new CategoryEntry(categoryName);
         //Insert the category by the intermediance of view model
-        viewModel.insertCategory(newCategory);
+        mViewModel.insertCategory(newCategory);
 
         //Remove the fragment
         Fragment parentFrag = getParentFragment();

@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
@@ -21,16 +19,12 @@ import android.view.ViewGroup;
 
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.adapters.TrainAdapter;
-import com.canli.oya.traininventory.data.TrainDatabase;
 import com.canli.oya.traininventory.data.entities.TrainEntry;
 import com.canli.oya.traininventory.databinding.FragmentListBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.utils.InjectorUtils;
-import com.canli.oya.traininventory.viewmodel.SearchViewModel;
-import com.canli.oya.traininventory.viewmodel.SearchViewModelFactory;
-import com.canli.oya.traininventory.viewmodel.TrainsViewModel;
-import com.canli.oya.traininventory.viewmodel.TrainsViewModelFactory;
+import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 import java.util.List;
 
@@ -38,9 +32,9 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
 
     private TrainAdapter mAdapter;
     private List<TrainEntry> mTrainList;
-    private TrainDatabase mDb;
     private List<TrainEntry> filteredTrains;
     private FragmentListBinding binding;
+    private MainViewModel mViewModel;
 
     public TrainListFragment() {
         setRetainInstance(true);
@@ -68,15 +62,14 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
 
         getActivity().setTitle(getString(R.string.all_trains));
 
-        mDb = TrainDatabase.getInstance(getActivity().getApplicationContext());
+        mViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        mViewModel.loadTrainList(InjectorUtils.provideTrainRepo(getContext()));
 
         Bundle bundle = getArguments();
         //If the list will be used for showing selected trains
         if(bundle != null && bundle.containsKey(Constants.INTENT_REQUEST_CODE)){
-            SearchViewModelFactory searchFactory = InjectorUtils.provideSearchVMFactory(getActivity());
-            SearchViewModel searchVM = ViewModelProviders.of(this, searchFactory).get(SearchViewModel.class);
             if(bundle.getString(Constants.INTENT_REQUEST_CODE).equals(Constants.TRAINS_OF_BRAND)){
-                searchVM.getTrainsFromThisBrand(bundle.getString(Constants.BRAND_NAME)).observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
+                mViewModel.getTrainsFromThisBrand(bundle.getString(Constants.BRAND_NAME)).observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
                     @Override
                     public void onChanged(@Nullable List<TrainEntry> trainEntries) {
                         if(trainEntries == null || trainEntries.isEmpty()){
@@ -90,7 +83,7 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
                     }
                 });
             } else {
-                searchVM.getTrainsFromThisCategory(bundle.getString(Constants.CATEGORY_NAME)).observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
+                mViewModel.getTrainsFromThisCategory(bundle.getString(Constants.CATEGORY_NAME)).observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
                     @Override
                     public void onChanged(@Nullable List<TrainEntry> trainEntries) {
                         if(trainEntries == null || trainEntries.isEmpty()){
@@ -106,9 +99,7 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
             }
         } else {
             //If the list is going to be use for showing all trains, which is the default behaviour
-            TrainsViewModelFactory factory = InjectorUtils.provideTrainVMFactory(getActivity());
-            TrainsViewModel viewModel = ViewModelProviders.of(TrainListFragment.this, factory).get(TrainsViewModel.class);
-            viewModel.getTrainList().observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
+            mViewModel.getTrainList().observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
 
                 @Override
                 public void onChanged(@Nullable List<TrainEntry> trainEntries) {
@@ -131,21 +122,11 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
         Bundle args = new Bundle();
         args.putInt(Constants.TRAIN_ID, trainId);
         trainDetailsFrag.setArguments(args);
-        loadFragment(trainDetailsFrag, Constants.TAG_DETAILS);
-    }
-
-    private void loadFragment(Fragment newFrag, String tag) {
-        //This method loads a new fragment, if there isn't already an instance of it.
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        Fragment fragment = fm.findFragmentByTag(tag);
-        if(fragment == null) {
-            fragment = newFrag;
-            ft.addToBackStack(tag);
-        }
-        ft.replace(R.id.container, fragment, tag)
+        getFragmentManager().beginTransaction()
+                .replace(R.id.container, trainDetailsFrag)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .commit();
+        mViewModel.arrangeFragmentHistory(trainDetailsFrag);
     }
 
     @Override
@@ -177,7 +158,7 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
             AppExecutors.getInstance().diskIO().execute(new Runnable() {
                 @Override
                 public void run() {
-                    filteredTrains = mDb.trainDao().searchInTrains(query);
+                    filteredTrains = mViewModel.searchInTrains(query);
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -199,7 +180,12 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
     }
 
     private void openAddTrainFragment(){
-        loadFragment(new AddTrainFragment(), Constants.TAG_ADD_TRAIN);
+        AddTrainFragment addTrainFragment = new AddTrainFragment();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.container, addTrainFragment)
+                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                .commit();
+        mViewModel.arrangeFragmentHistory(addTrainFragment);
     }
 
     public void scrollToTop(){

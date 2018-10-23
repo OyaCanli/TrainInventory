@@ -34,8 +34,7 @@ import com.canli.oya.traininventory.databinding.FragmentBrandlistBinding;
 import com.canli.oya.traininventory.utils.AppExecutors;
 import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.utils.InjectorUtils;
-import com.canli.oya.traininventory.viewmodel.BrandViewModelFactory;
-import com.canli.oya.traininventory.viewmodel.BrandsViewModel;
+import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 import java.util.List;
 
@@ -43,7 +42,7 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
 
     private List<BrandEntry> brands;
     private BrandAdapter adapter;
-    private BrandsViewModel viewModel;
+    private MainViewModel mViewModel;
     private FragmentBrandlistBinding binding;
 
     public BrandListFragment() {
@@ -70,9 +69,9 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        BrandViewModelFactory factory = InjectorUtils.provideBrandVMFactory(getActivity());
-        viewModel = ViewModelProviders.of(getActivity(), factory).get(BrandsViewModel.class);
-        viewModel.getBrandList().observe(BrandListFragment.this, new Observer<List<BrandEntry>>() {
+        mViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        mViewModel.loadBrandList(InjectorUtils.provideBrandRepo(getContext()));
+        mViewModel.getBrandList().observe(BrandListFragment.this, new Observer<List<BrandEntry>>() {
             @Override
             public void onChanged(@Nullable List<BrandEntry> brandEntries) {
                 if (brandEntries == null || brandEntries.isEmpty()) {
@@ -105,7 +104,7 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
                     @Override
                     public void run() {
                         //Check whether this brand is used in trains table.
-                        if(viewModel.isThisBrandUsed(brandToErase.getBrandName())){
+                        if(mViewModel.isThisBrandUsed(brandToErase.getBrandName())){
                             // If it is used, show a warning and don't let the user delete this
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
@@ -116,7 +115,7 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
                             });
                         } else {
                             //If it is not used delete the brand
-                            viewModel.deleteBrand(brandToErase);
+                            mViewModel.deleteBrand(brandToErase);
 
                             //Show a snack bar for undoing delete
                             Snackbar snackbar = Snackbar
@@ -124,7 +123,7 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
                                     .setAction(R.string.undo, new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            viewModel.insertBrand(brandToErase);
+                                            mViewModel.insertBrand(brandToErase);
                                         }
                                     });
                             snackbar.show();
@@ -176,7 +175,7 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
     }
 
     private void editBrand(BrandEntry clickedBrand) {
-        viewModel.setChosenBrand(clickedBrand);
+        mViewModel.setChosenBrand(clickedBrand);
         AddBrandFragment addBrandFrag = new AddBrandFragment();
         Bundle args = new Bundle();
         args.putString(Constants.INTENT_REQUEST_CODE, Constants.EDIT_CASE);

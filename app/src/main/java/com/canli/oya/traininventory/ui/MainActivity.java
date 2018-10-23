@@ -1,5 +1,6 @@
 package com.canli.oya.traininventory.ui;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
@@ -11,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -18,15 +20,22 @@ import android.view.inputmethod.InputMethodManager;
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.databinding.ActivityMainBinding;
 import com.canli.oya.traininventory.utils.Constants;
+import com.canli.oya.traininventory.viewmodel.MainViewModel;
+
+import java.util.LinkedList;
 
 import static android.view.View.GONE;
 
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
-        FragmentManager.OnBackStackChangedListener, AddTrainFragment.UnsavedChangesListener {
+        AddTrainFragment.UnsavedChangesListener {
 
     private ActivityMainBinding binding;
     private boolean thereAreUnsavedChanges;
+    private static final String TAG = "MainActivity";
+    private Fragment trainListFrag, brandListFrag, categoryListFrag;
+    private FragmentManager fm;
+    private MainViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,79 +46,79 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setSupportActionBar(binding.toolbar);
 
         binding.navigation.setOnNavigationItemSelectedListener(this);
+        fm = getSupportFragmentManager();
 
-        getSupportFragmentManager().addOnBackStackChangedListener(this);
+        trainListFrag = new TrainListFragment();
+        brandListFrag = new BrandListFragment();
+        categoryListFrag = new CategoryListFragment();
 
+        mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         //Bring the train list fragment at the launch of activity
         if (savedInstanceState == null) {
-            TrainListFragment trainListFrag = new TrainListFragment();
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(0, android.R.animator.fade_out)
-                    .add(R.id.container, trainListFrag)
+                    .add(R.id.container, trainListFrag, Constants.TAG_TRAINS)
                     .commit();
+            mViewModel.fragmentHistory.add(trainListFrag);
         }
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         Fragment currentFrag = fm.findFragmentById(R.id.container);
 
         int id = item.getItemId();
         switch (id) {
             case R.id.trains: {
-                String tag = Constants.TAG_TRAINS;
-                Fragment fragment = fm.findFragmentByTag(tag);
-                if(currentFrag == fragment) {
-                    ((TrainListFragment) fragment).scrollToTop();
+                if (currentFrag == trainListFrag) {
+                    ((TrainListFragment) trainListFrag).scrollToTop();
                     break;
                 }
-                if (fragment == null) {
-                    fragment = new TrainListFragment();
-                    //ft.addToBackStack(tag);
-                }
-                ft.replace(R.id.container, fragment, tag)
-                        .addToBackStack(tag);
+                ft.replace(R.id.container, trainListFrag);
+                mViewModel.arrangeFragmentHistory(trainListFrag);
                 break;
             }
             case R.id.brands: {
-                String tag = Constants.TAG_BRANDS;
-                Fragment fragment = fm.findFragmentByTag(tag);
-                if(currentFrag == fragment) {
+                if (currentFrag == brandListFrag) {
                     break;
                 }
-                if (fragment == null) {
-                    fragment = new BrandListFragment();
-                    //ft.addToBackStack(tag);
-                }
-                ft.replace(R.id.container, fragment, tag)
-                        .addToBackStack(tag);
+                ft.replace(R.id.container, brandListFrag);
+                mViewModel.arrangeFragmentHistory(brandListFrag);
                 break;
             }
             case R.id.categories: {
-                String tag = Constants.TAG_CATEGORIES;
-                Fragment fragment = fm.findFragmentByTag(tag);
-                if(currentFrag == fragment) {
+                if (currentFrag == categoryListFrag) {
                     break;
                 }
-                if (fragment == null) {
-                    fragment = new CategoryListFragment();
-                    //ft.addToBackStack(tag);
-                }
-                ft.replace(R.id.container, fragment, tag)
-                        .addToBackStack(tag);
+                ft.replace(R.id.container, categoryListFrag);
+                mViewModel.arrangeFragmentHistory(categoryListFrag);
                 break;
             }
         }
         ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .commit();
+        fm.executePendingTransactions();
+        onFragmentHistoryChanged();
         return true;
     }
 
-    @Override
-    public void onBackStackChanged() {
+    private void goBackToPreviousFragment() {
+        if (mViewModel.fragmentHistory.size() > 1) {
+            mViewModel.fragmentHistory.removeLast();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, mViewModel.fragmentHistory.getLast())
+                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                    .commit();
+            fm.executePendingTransactions();
+            onFragmentHistoryChanged();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private void onFragmentHistoryChanged() {
         clearFocusAndHideKeyboard();
         Fragment currentFrag = getSupportFragmentManager().findFragmentById(R.id.container);
         setMenuItemChecked(currentFrag);
@@ -117,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     private void hideOrShowBottomNavigation(Fragment currentFrag) {
-        if(currentFrag instanceof AddTrainFragment){
+        if (currentFrag instanceof AddTrainFragment) {
             binding.navigation.setVisibility(GONE);
         } else {
             binding.navigation.setVisibility(View.VISIBLE);
@@ -137,9 +146,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private void setMenuItemChecked(Fragment currentFrag) {
         /*If user navigates with back button, active menu item doesn't adapt itself.
         We need to set it checked programmatically.*/
-        if(currentFrag instanceof BrandListFragment){
+        if (currentFrag instanceof BrandListFragment) {
             binding.navigation.getMenu().getItem(1).setChecked(true);
-        } else if (currentFrag instanceof CategoryListFragment){
+        } else if (currentFrag instanceof CategoryListFragment) {
             binding.navigation.getMenu().getItem(2).setChecked(true);
         } else {
             binding.navigation.getMenu().getItem(0).setChecked(true);
@@ -149,10 +158,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     @Override
     public void onBackPressed() {
         Fragment currentFrag = getSupportFragmentManager().findFragmentById(R.id.container);
-        if(thereAreUnsavedChanges && currentFrag instanceof AddTrainFragment){
+        if (thereAreUnsavedChanges && currentFrag instanceof AddTrainFragment) {
             showUnsavedChangesDialog();
         } else {
-            super.onBackPressed();
+            goBackToPreviousFragment();
         }
     }
 
@@ -187,4 +196,5 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     public void warnForUnsavedChanges(boolean shouldWarn) {
         thereAreUnsavedChanges = shouldWarn;
     }
+
 }
