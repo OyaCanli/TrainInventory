@@ -36,6 +36,7 @@ public class MainViewModel extends ViewModel {
     private CategoryListFragment mCategoryListFragment;
     private TrainDetailsFragment mTrainDetailsFragment;
     private AddTrainFragment mAddTrainFragment;
+    private MutableLiveData<Fragment> currentFrag = new MutableLiveData<>();
 
     /////////// TRAIN LIST /////////////
     public void loadTrainList(TrainRepository trainRepo){
@@ -175,5 +176,13 @@ public class MainViewModel extends ViewModel {
             mAddTrainFragment = new AddTrainFragment();
         }
         return mAddTrainFragment;
+    }
+
+    public void setCurrentFrag(Fragment currentFrag) {
+        this.currentFrag.setValue(currentFrag);
+    }
+
+    public LiveData<Fragment> getCurrentFrag() {
+        return currentFrag;
     }
 }

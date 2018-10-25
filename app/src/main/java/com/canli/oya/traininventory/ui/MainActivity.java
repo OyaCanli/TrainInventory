@@ -1,11 +1,13 @@
 package com.canli.oya.traininventory.ui;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -53,6 +55,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     .commit();
             mViewModel.fragmentHistory.add(mViewModel.getCategoryListFragment());
         }
+
+        mViewModel.getCurrentFrag().observe(this, new Observer<Fragment>() {
+            @Override
+            public void onChanged(@Nullable Fragment fragment) {
+                onActiveFragmentChanged(fragment);
+            }
+        });
     }
 
     @Override
@@ -73,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 args.putString(Constants.INTENT_REQUEST_CODE, Constants.ALL_TRAIN);
                 trainListFrag.setArguments(args);
                 ft.replace(R.id.container, trainListFrag);
+                mViewModel.setCurrentFrag(trainListFrag);
                 mViewModel.arrangeFragmentHistory(mViewModel.getTrainListFragment());
                 break;
             }
@@ -82,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 }
                 ft.replace(R.id.container, mViewModel.getBrandListFragment());
                 mViewModel.arrangeFragmentHistory(mViewModel.getBrandListFragment());
+                mViewModel.setCurrentFrag(mViewModel.getBrandListFragment());
                 break;
             }
             case R.id.categories: {
@@ -89,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     break;
                 }
                 ft.replace(R.id.container,  mViewModel.getCategoryListFragment());
+                mViewModel.setCurrentFrag(mViewModel.getCategoryListFragment());
                 mViewModel.arrangeFragmentHistory(mViewModel.getCategoryListFragment());
                 break;
             }
@@ -96,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .commit();
         fm.executePendingTransactions();
-        onFragmentHistoryChanged();
         return true;
     }
 
@@ -108,15 +119,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                     .commit();
             fm.executePendingTransactions();
-            onFragmentHistoryChanged();
+            mViewModel.setCurrentFrag(mViewModel.fragmentHistory.getLast());
         } else {
             super.onBackPressed();
         }
     }
 
-    private void onFragmentHistoryChanged() {
+    private void onActiveFragmentChanged(Fragment currentFrag) {
         clearFocusAndHideKeyboard();
-        Fragment currentFrag = getSupportFragmentManager().findFragmentById(R.id.container);
         setMenuItemChecked(currentFrag);
         hideOrShowBottomNavigation(currentFrag);
     }
@@ -139,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
     }
 
-    private void setMenuItemChecked(Fragment currentFrag) {
+    public void setMenuItemChecked(Fragment currentFrag) {
         /*If user navigates with back button, active menu item doesn't adapt itself.
         We need to set it checked programmatically.*/
         if (currentFrag instanceof BrandListFragment) {

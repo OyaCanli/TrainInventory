@@ -196,6 +196,7 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
                 .replace(R.id.container, trainListFrag)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .commit();
+        mViewModel.setCurrentFrag(trainListFrag);
         mViewModel.arrangeFragmentHistory(trainListFrag);
     }
 
