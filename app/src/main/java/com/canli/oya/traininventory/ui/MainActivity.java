@@ -22,10 +22,6 @@ import com.canli.oya.traininventory.databinding.ActivityMainBinding;
 import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
-import java.util.LinkedList;
-
-import static android.view.View.GONE;
-
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
         AddTrainFragment.UnsavedChangesListener {
@@ -33,7 +29,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private ActivityMainBinding binding;
     private boolean thereAreUnsavedChanges;
     private static final String TAG = "MainActivity";
-    private Fragment trainListFrag, brandListFrag, categoryListFrag;
     private FragmentManager fm;
     private MainViewModel mViewModel;
 
@@ -48,18 +43,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         binding.navigation.setOnNavigationItemSelectedListener(this);
         fm = getSupportFragmentManager();
 
-        trainListFrag = new TrainListFragment();
-        brandListFrag = new BrandListFragment();
-        categoryListFrag = new CategoryListFragment();
-
         mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+
         //Bring the train list fragment at the launch of activity
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(0, android.R.animator.fade_out)
-                    .add(R.id.container, trainListFrag, Constants.TAG_TRAINS)
+                    .add(R.id.container, mViewModel.getCategoryListFragment())
                     .commit();
-            mViewModel.fragmentHistory.add(trainListFrag);
+            mViewModel.fragmentHistory.add(mViewModel.getCategoryListFragment());
         }
     }
 
@@ -72,28 +64,32 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         int id = item.getItemId();
         switch (id) {
             case R.id.trains: {
-                if (currentFrag == trainListFrag) {
-                    ((TrainListFragment) trainListFrag).scrollToTop();
+                if (currentFrag == mViewModel.getTrainListFragment()) {
+                    mViewModel.getTrainListFragment().scrollToTop();
                     break;
                 }
+                TrainListFragment trainListFrag = mViewModel.getTrainListFragment();
+                Bundle args = new Bundle();
+                args.putString(Constants.INTENT_REQUEST_CODE, Constants.ALL_TRAIN);
+                trainListFrag.setArguments(args);
                 ft.replace(R.id.container, trainListFrag);
-                mViewModel.arrangeFragmentHistory(trainListFrag);
+                mViewModel.arrangeFragmentHistory(mViewModel.getTrainListFragment());
                 break;
             }
             case R.id.brands: {
-                if (currentFrag == brandListFrag) {
+                if (currentFrag == mViewModel.getBrandListFragment()) {
                     break;
                 }
-                ft.replace(R.id.container, brandListFrag);
-                mViewModel.arrangeFragmentHistory(brandListFrag);
+                ft.replace(R.id.container, mViewModel.getBrandListFragment());
+                mViewModel.arrangeFragmentHistory(mViewModel.getBrandListFragment());
                 break;
             }
             case R.id.categories: {
-                if (currentFrag == categoryListFrag) {
+                if (currentFrag ==  mViewModel.getCategoryListFragment()) {
                     break;
                 }
-                ft.replace(R.id.container, categoryListFrag);
-                mViewModel.arrangeFragmentHistory(categoryListFrag);
+                ft.replace(R.id.container,  mViewModel.getCategoryListFragment());
+                mViewModel.arrangeFragmentHistory(mViewModel.getCategoryListFragment());
                 break;
             }
         }
@@ -127,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     private void hideOrShowBottomNavigation(Fragment currentFrag) {
         if (currentFrag instanceof AddTrainFragment) {
-            binding.navigation.setVisibility(GONE);
+            binding.navigation.setVisibility(View.GONE);
         } else {
             binding.navigation.setVisibility(View.VISIBLE);
         }
@@ -149,9 +145,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if (currentFrag instanceof BrandListFragment) {
             binding.navigation.getMenu().getItem(1).setChecked(true);
         } else if (currentFrag instanceof CategoryListFragment) {
-            binding.navigation.getMenu().getItem(2).setChecked(true);
-        } else {
             binding.navigation.getMenu().getItem(0).setChecked(true);
+        } else {
+            binding.navigation.getMenu().getItem(2).setChecked(true);
         }
     }
 

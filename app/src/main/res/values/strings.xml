@@ -68,4 +68,6 @@
     <string name="unsaved_changes_warning">There are unsaved changes. Are you sure that you want to discard your changes?</string>
     <string name="discard_changes">Discard changes</string>
     <string name="keep_editing">Keep editing</string>
+    <string name="trains_of_the_brand">Trains of the brand %1$s</string>
+    <string name="all_from_this_Category">All %1$ss</string>
 </resources>

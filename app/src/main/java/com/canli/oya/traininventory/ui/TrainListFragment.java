@@ -60,65 +60,74 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getActivity().setTitle(getString(R.string.all_trains));
-
         mViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
         mViewModel.loadTrainList(InjectorUtils.provideTrainRepo(getContext()));
 
         Bundle bundle = getArguments();
         //If the list will be used for showing selected trains
-        if(bundle != null && bundle.containsKey(Constants.INTENT_REQUEST_CODE)){
-            if(bundle.getString(Constants.INTENT_REQUEST_CODE).equals(Constants.TRAINS_OF_BRAND)){
-                mViewModel.getTrainsFromThisBrand(bundle.getString(Constants.BRAND_NAME)).observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
-                    @Override
-                    public void onChanged(@Nullable List<TrainEntry> trainEntries) {
-                        if(trainEntries == null || trainEntries.isEmpty()){
-                            binding.setIsEmpty(true);
-                            binding.setEmptyMessage(getString(R.string.no_train_for_this_brand));
-                        } else {
-                            binding.setIsEmpty(false);
-                            mAdapter.setTrains(trainEntries);
-                            mTrainList = trainEntries;
+        if (bundle != null && bundle.containsKey(Constants.INTENT_REQUEST_CODE)) {
+            String requestType = bundle.getString(Constants.INTENT_REQUEST_CODE);
+            switch(requestType){
+                case Constants.TRAINS_OF_BRAND: {
+                    String brandName = bundle.getString(Constants.BRAND_NAME);
+                    getActivity().setTitle(getString(R.string.trains_of_the_brand, brandName));
+                    mViewModel.getTrainsFromThisBrand(brandName).observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
+                        @Override
+                        public void onChanged(@Nullable List<TrainEntry> trainEntries) {
+                            if (trainEntries == null || trainEntries.isEmpty()) {
+                                binding.setIsEmpty(true);
+                                binding.setEmptyMessage(getString(R.string.no_train_for_this_brand));
+                            } else {
+                                binding.setIsEmpty(false);
+                                mAdapter.setTrains(trainEntries);
+                                mTrainList = trainEntries;
+                            }
                         }
-                    }
-                });
-            } else {
-                mViewModel.getTrainsFromThisCategory(bundle.getString(Constants.CATEGORY_NAME)).observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
-                    @Override
-                    public void onChanged(@Nullable List<TrainEntry> trainEntries) {
-                        if(trainEntries == null || trainEntries.isEmpty()){
-                            binding.setIsEmpty(true);
-                            binding.setEmptyMessage(getString(R.string.no_items_for_this_category));
-                        } else{
-                            binding.setIsEmpty(false);
-                            mAdapter.setTrains(trainEntries);
-                            mTrainList = trainEntries;
-                        }
-                    }
-                });
-            }
-        } else {
-            //If the list is going to be use for showing all trains, which is the default behaviour
-            mViewModel.getTrainList().observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
-
-                @Override
-                public void onChanged(@Nullable List<TrainEntry> trainEntries) {
-                    if(trainEntries == null || trainEntries.isEmpty()){
-                        binding.setIsEmpty(true);
-                        binding.setEmptyMessage(getString(R.string.no_trains_found));
-                    } else{
-                        binding.setIsEmpty(false);
-                        mAdapter.setTrains(trainEntries);
-                        mTrainList = trainEntries;
-                    }
+                    });
+                    break;
                 }
-            });
+                case Constants.TRAINS_OF_CATEGORY:{
+                    String categoryName = bundle.getString(Constants.CATEGORY_NAME);
+                    getActivity().setTitle(getString(R.string.all_from_this_Category, categoryName));
+                    mViewModel.getTrainsFromThisCategory(categoryName).observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
+                        @Override
+                        public void onChanged(@Nullable List<TrainEntry> trainEntries) {
+                            if (trainEntries == null || trainEntries.isEmpty()) {
+                                binding.setIsEmpty(true);
+                                binding.setEmptyMessage(getString(R.string.no_items_for_this_category));
+                            } else {
+                                binding.setIsEmpty(false);
+                                mAdapter.setTrains(trainEntries);
+                                mTrainList = trainEntries;
+                            }
+                        }
+                    });
+                    break;
+                }
+                default: {
+                    //If the list is going to be use for showing all trains, which is the default behaviour
+                    getActivity().setTitle(getString(R.string.all_trains));
+                    mViewModel.getTrainList().observe(TrainListFragment.this, new Observer<List<TrainEntry>>() {
+                        @Override
+                        public void onChanged(@Nullable List<TrainEntry> trainEntries) {
+                            if (trainEntries == null || trainEntries.isEmpty()) {
+                                binding.setIsEmpty(true);
+                                binding.setEmptyMessage(getString(R.string.no_trains_found));
+                            } else {
+                                binding.setIsEmpty(false);
+                                mAdapter.setTrains(trainEntries);
+                                mTrainList = trainEntries;
+                            }
+                        }
+                    });
+                }
+            }
         }
     }
 
     @Override
     public void onListItemClick(int trainId) {
-        TrainDetailsFragment trainDetailsFrag = new TrainDetailsFragment();
+        TrainDetailsFragment trainDetailsFrag = mViewModel.getTrainDetailsFragment();
         Bundle args = new Bundle();
         args.putInt(Constants.TRAIN_ID, trainId);
         trainDetailsFrag.setArguments(args);
@@ -149,7 +158,7 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
         });
     }
 
-    private void filterTrains(final String query){
+    private void filterTrains(final String query) {
         if (query == null || "".equals(query)) {
             filteredTrains = mTrainList;
             mAdapter.setTrains(filteredTrains);
@@ -173,14 +182,14 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_add){
+        if (item.getItemId() == R.id.action_add) {
             openAddTrainFragment();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void openAddTrainFragment(){
-        AddTrainFragment addTrainFragment = new AddTrainFragment();
+    private void openAddTrainFragment() {
+        AddTrainFragment addTrainFragment = mViewModel.getAddTrainFragment();
         getFragmentManager().beginTransaction()
                 .replace(R.id.container, addTrainFragment)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
@@ -188,7 +197,7 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
         mViewModel.arrangeFragmentHistory(addTrainFragment);
     }
 
-    public void scrollToTop(){
+    public void scrollToTop() {
         binding.list.smoothScrollToPosition(0);
     }
 }

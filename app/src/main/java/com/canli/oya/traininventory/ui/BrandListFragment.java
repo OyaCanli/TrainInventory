@@ -187,17 +187,16 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
     }
 
     private void showTrainsFromThisBrand(BrandEntry clickedBrand) {
-        TrainListFragment trainListFrag = new TrainListFragment();
+        TrainListFragment trainListFrag = mViewModel.getTrainListFragment();
         Bundle args = new Bundle();
         args.putString(Constants.INTENT_REQUEST_CODE, Constants.TRAINS_OF_BRAND);
         args.putString(Constants.BRAND_NAME, clickedBrand.getBrandName());
         trainListFrag.setArguments(args);
-        trainListFrag.setEnterTransition(new Slide(Gravity.END));
-        trainListFrag.setExitTransition(new Slide(Gravity.START));
         getFragmentManager().beginTransaction()
                 .replace(R.id.container, trainListFrag)
-                .addToBackStack(null)
+                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .commit();
+        mViewModel.arrangeFragmentHistory(trainListFrag);
     }
 
     private void openWebSite(BrandEntry clickedBrand){

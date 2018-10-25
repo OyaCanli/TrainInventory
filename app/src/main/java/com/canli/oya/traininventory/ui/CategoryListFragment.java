@@ -156,7 +156,7 @@ public class CategoryListFragment extends Fragment implements CategoryAdapter.Ca
 
     @Override
     public void onCategoryItemClicked(String categoryName) {
-        TrainListFragment trainListFrag = new TrainListFragment();
+        TrainListFragment trainListFrag = mViewModel.getTrainListFragment();
         Bundle args = new Bundle();
         args.putString(Constants.INTENT_REQUEST_CODE, Constants.TRAINS_OF_CATEGORY);
         args.putString(Constants.CATEGORY_NAME, categoryName);
@@ -164,7 +164,7 @@ public class CategoryListFragment extends Fragment implements CategoryAdapter.Ca
         getFragmentManager().beginTransaction()
                 .replace(R.id.container, trainListFrag)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                .addToBackStack(null)
                 .commit();
+        mViewModel.arrangeFragmentHistory(trainListFrag);
     }
 }

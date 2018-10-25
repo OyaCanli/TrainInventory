@@ -5,10 +5,10 @@
     tools:showIn="navigation_view">
 
     <item
-        android:id="@+id/trains"
-        android:title="@string/trains"
-        android:icon="@drawable/ic_train_bottom_nav"
-        app:showAsAction="ifRoom"/>
+        android:id="@+id/categories"
+        android:title="@string/category"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_category"/>
 
     <item
         android:id="@+id/brands"
@@ -17,9 +17,9 @@
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/categories"
-        android:title="@string/category"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_category"/>
+        android:id="@+id/trains"
+        android:title="@string/trains"
+        android:icon="@drawable/ic_train_bottom_nav"
+        app:showAsAction="ifRoom"/>
 
 </menu>

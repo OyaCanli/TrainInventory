@@ -18,6 +18,8 @@ public final class Constants {
 
     public static final String INTENT_REQUEST_CODE = "intentRequestCode";
 
+    public static final String ALL_TRAIN = "allTrains";
+
     public static final String EDIT_CASE = "editCase";
 
     public static final String TRAINS_OF_BRAND = "trainOfBrand";
@@ -28,14 +30,5 @@ public final class Constants {
 
     public static final String CATEGORY_NAME = "categoryName";
 
-    //Tags
-    public static final String TAG_TRAINS = "trainsList";
 
-    public static final String TAG_BRANDS = "brandList";
-
-    public static final String TAG_CATEGORIES = "categoryList";
-
-    public static final String TAG_DETAILS = "trainDetails";
-
-    public static final String TAG_ADD_TRAIN = "addTrain";
 }
