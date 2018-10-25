@@ -67,6 +67,10 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     private int mTrainId;
     private UnsavedChangesListener mCallback;
     private MainViewModel mViewModel;
+    private TrainEntry mChosenTrain;
+    private boolean chosenTrainLoaded;
+    private boolean categoryListLoaded;
+    private boolean brandListLoaded;
 
     private final DialogInterface.OnClickListener mDialogClickListener = new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int item) {
@@ -131,7 +135,11 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
             viewModel.getChosenTrain().observe(this, new Observer<TrainEntry>() {
                 @Override
                 public void onChanged(@Nullable TrainEntry trainEntry) {
-                    populateFields(trainEntry);
+                    binding.setChosenTrain(trainEntry);
+                    mChosenTrain = trainEntry;
+                    chosenTrainLoaded = true;
+                    if(categoryListLoaded) setCategorySpinner();
+                    if(brandListLoaded) setBrandSpinner();
                 }
             });
             setTouchListenersToEditTexts();
@@ -152,6 +160,8 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 categoryList.clear();
                 categoryList.addAll(categoryEntries);
                 categoryAdapter.notifyDataSetChanged();
+                categoryListLoaded = true;
+                if(chosenTrainLoaded) setCategorySpinner();
             }
         });
 
@@ -166,14 +176,24 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 brandList.clear();
                 brandList.addAll(brandEntries);
                 brandAdapter.notifyDataSetChanged();
+                brandListLoaded = true;
+                if(chosenTrainLoaded) setBrandSpinner();
             }
         });
     }
 
-    private void populateFields(TrainEntry trainToEdit) {
-        binding.setChosenTrain(trainToEdit);
-        binding.brandSpinner.setSelection(categoryList.indexOf(trainToEdit.getCategoryName()));
-        binding.brandSpinner.setSelection(brandList.indexOf(trainToEdit.getBrandName()));
+    private void setCategorySpinner(){
+        binding.categorySpinner.setSelection(categoryList.indexOf(mChosenTrain.getCategoryName()));
+    }
+
+    private void setBrandSpinner() {
+        int brandIndex = 0;
+        for(int i = 0; i < brandList.size(); i++){
+            if(brandList.get(i).getBrandName().equals(mChosenTrain.getBrandName())){
+                brandIndex = i;
+            }
+        }
+        binding.brandSpinner.setSelection(brandIndex);
     }
 
     @Override
