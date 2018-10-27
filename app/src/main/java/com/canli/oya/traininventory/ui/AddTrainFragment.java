@@ -65,7 +65,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     private List<String> categoryList;
     private List<BrandEntry> brandList;
     private int mTrainId;
-    private UnsavedChangesListener mCallback;
+    private UnsavedChangesListener unsavedChangesListener;
     private MainViewModel mViewModel;
     private TrainEntry mChosenTrain;
     private boolean chosenTrainLoaded;
@@ -79,6 +79,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     };
 
     public AddTrainFragment() {
+        setRetainInstance(true);
     }
 
     public interface UnsavedChangesListener {
@@ -92,7 +93,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         // This makes sure that the host activity has implemented the callback interface
         // If not, it throws an exception
         try {
-            mCallback = (UnsavedChangesListener) context;
+            unsavedChangesListener = (UnsavedChangesListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + " must implement UnsavedChangesListener");
@@ -277,7 +278,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
             mViewModel.updateTrain(trainToUpdate);
         }
         //After adding the train, go back to where user come from.
-        mCallback.warnForUnsavedChanges(false);
+        unsavedChangesListener.warnForUnsavedChanges(false);
         getActivity().onBackPressed();
     }
 
@@ -412,7 +413,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onDetach() {
         super.onDetach();
-        mCallback.warnForUnsavedChanges(false);
+        unsavedChangesListener.warnForUnsavedChanges(false);
     }
 
     private void setChangeListenersToEdittexts(){
@@ -424,7 +425,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mCallback.warnForUnsavedChanges(true);
+                unsavedChangesListener.warnForUnsavedChanges(true);
             }
 
             @Override
@@ -446,7 +447,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         View.OnTouchListener touchListener = new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                mCallback.warnForUnsavedChanges(true);
+                unsavedChangesListener.warnForUnsavedChanges(true);
                 return false;
             }
         };

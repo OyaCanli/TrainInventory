@@ -2,11 +2,13 @@ package com.canli.oya.traininventory.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
@@ -35,9 +37,24 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
     private List<TrainEntry> filteredTrains;
     private FragmentListBinding binding;
     private MainViewModel mViewModel;
+    private FragmentSwitchListener mCallback;
 
     public TrainListFragment() {
         setRetainInstance(true);
+    }
+
+    // Override onAttach to make sure that the container activity has implemented the callback
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        // This makes sure that the host activity has implemented the callback interface
+        // If not, it throws an exception
+        try {
+            mCallback = (FragmentSwitchListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement FragmentSwitchListener");
+        }
     }
 
     @Nullable
@@ -127,15 +144,17 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
 
     @Override
     public void onListItemClick(int trainId) {
-        TrainDetailsFragment trainDetailsFrag = mViewModel.getTrainDetailsFragment();
+        TrainDetailsFragment trainDetailsFrag = new TrainDetailsFragment();
         Bundle args = new Bundle();
         args.putInt(Constants.TRAIN_ID, trainId);
         trainDetailsFrag.setArguments(args);
-        getFragmentManager().beginTransaction()
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction()
                 .replace(R.id.container, trainDetailsFrag)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .commit();
-        mViewModel.arrangeFragmentHistory(trainDetailsFrag);
+        fm.executePendingTransactions();
+        mCallback.onFragmentSwitched();
     }
 
     @Override
@@ -189,12 +208,14 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
     }
 
     private void openAddTrainFragment() {
-        AddTrainFragment addTrainFragment = mViewModel.getAddTrainFragment();
-        getFragmentManager().beginTransaction()
+        AddTrainFragment addTrainFragment = new AddTrainFragment();
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction()
                 .replace(R.id.container, addTrainFragment)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .commit();
-        mViewModel.arrangeFragmentHistory(addTrainFragment);
+        fm.executePendingTransactions();
+        mCallback.onFragmentSwitched();
     }
 
     public void scrollToTop() {

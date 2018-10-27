@@ -2,12 +2,14 @@ package com.canli.oya.traininventory.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,14 +26,13 @@ import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.utils.InjectorUtils;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainFactory;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
-import com.canli.oya.traininventory.viewmodel.MainViewModel;
 
 public class TrainDetailsFragment extends Fragment {
 
     private FragmentTrainDetailsBinding binding;
     private TrainEntry mChosenTrain;
     private int mTrainId;
-    private MainViewModel mainViewModel;
+    private FragmentSwitchListener mCallback;
 
     public TrainDetailsFragment() {
     }
@@ -46,6 +47,20 @@ public class TrainDetailsFragment extends Fragment {
         return binding.getRoot();
     }
 
+    // Override onAttach to make sure that the container activity has implemented the callback
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        // This makes sure that the host activity has implemented the callback interface
+        // If not, it throws an exception
+        try {
+            mCallback = (FragmentSwitchListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement FragmentSwitchListener");
+        }
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -54,7 +69,6 @@ public class TrainDetailsFragment extends Fragment {
         if (bundle != null) {
             mTrainId = bundle.getInt(Constants.TRAIN_ID);
         }
-        mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
         ChosenTrainFactory factory = InjectorUtils.provideChosenTrainFactory(getActivity(), mTrainId);
         ChosenTrainViewModel viewModel = ViewModelProviders.of(this, factory).get(ChosenTrainViewModel.class);
         viewModel.getChosenTrain().observe(this, new Observer<TrainEntry>() {
@@ -92,11 +106,13 @@ public class TrainDetailsFragment extends Fragment {
                 Bundle args = new Bundle();
                 args.putInt(Constants.TRAIN_ID, mTrainId);
                 addTrainFrag.setArguments(args);
-                getFragmentManager().beginTransaction()
+                FragmentManager fm = getFragmentManager();
+                fm.beginTransaction()
                         .replace(R.id.container, addTrainFrag)
                         .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                         .commit();
-                mainViewModel.arrangeFragmentHistory(addTrainFrag);
+                fm.executePendingTransactions();
+                mCallback.onFragmentSwitched();
                 break;
             }
         }

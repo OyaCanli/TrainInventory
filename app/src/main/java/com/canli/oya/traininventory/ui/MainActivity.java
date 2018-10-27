@@ -1,20 +1,17 @@
 package com.canli.oya.traininventory.ui;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -22,17 +19,20 @@ import android.view.inputmethod.InputMethodManager;
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.databinding.ActivityMainBinding;
 import com.canli.oya.traininventory.utils.Constants;
-import com.canli.oya.traininventory.viewmodel.MainViewModel;
+
+import java.util.LinkedList;
 
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
-        AddTrainFragment.UnsavedChangesListener {
+        AddTrainFragment.UnsavedChangesListener, FragmentSwitchListener {
 
     private ActivityMainBinding binding;
     private boolean thereAreUnsavedChanges;
-    private static final String TAG = "MainActivity";
     private FragmentManager fm;
-    private MainViewModel mViewModel;
+    private TrainListFragment mTrainListFragment;
+    private BrandListFragment mBrandListFragment;
+    private CategoryListFragment mCategoryListFragment;
+    public LinkedList<Fragment> fragmentHistory = new LinkedList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,23 +45,17 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         binding.navigation.setOnNavigationItemSelectedListener(this);
         fm = getSupportFragmentManager();
 
-        mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-
         //Bring the train list fragment at the launch of activity
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(0, android.R.animator.fade_out)
-                    .add(R.id.container, mViewModel.getCategoryListFragment())
+                    .add(R.id.container, getCategoryListFragment())
                     .commit();
-            mViewModel.fragmentHistory.add(mViewModel.getCategoryListFragment());
+            fragmentHistory.add(getCategoryListFragment());
+        } else {
+            onActiveFragmentChanged();
         }
 
-        mViewModel.getCurrentFrag().observe(this, new Observer<Fragment>() {
-            @Override
-            public void onChanged(@Nullable Fragment fragment) {
-                onActiveFragmentChanged(fragment);
-            }
-        });
     }
 
     @Override
@@ -73,59 +67,58 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         int id = item.getItemId();
         switch (id) {
             case R.id.trains: {
-                if (currentFrag == mViewModel.getTrainListFragment()) {
-                    mViewModel.getTrainListFragment().scrollToTop();
+                TrainListFragment trainListFrag = getTrainListFragment();
+                if (currentFrag == trainListFrag) {
+                    trainListFrag.scrollToTop();
                     break;
                 }
-                TrainListFragment trainListFrag = mViewModel.getTrainListFragment();
                 Bundle args = new Bundle();
                 args.putString(Constants.INTENT_REQUEST_CODE, Constants.ALL_TRAIN);
                 trainListFrag.setArguments(args);
                 ft.replace(R.id.container, trainListFrag);
-                mViewModel.setCurrentFrag(trainListFrag);
-                mViewModel.arrangeFragmentHistory(mViewModel.getTrainListFragment());
                 break;
             }
             case R.id.brands: {
-                if (currentFrag == mViewModel.getBrandListFragment()) {
+                if (currentFrag == getBrandListFragment()) {
                     break;
                 }
-                ft.replace(R.id.container, mViewModel.getBrandListFragment());
-                mViewModel.arrangeFragmentHistory(mViewModel.getBrandListFragment());
-                mViewModel.setCurrentFrag(mViewModel.getBrandListFragment());
+                ft.replace(R.id.container, getBrandListFragment());
                 break;
             }
             case R.id.categories: {
-                if (currentFrag ==  mViewModel.getCategoryListFragment()) {
+                if (currentFrag ==  getCategoryListFragment()) {
                     break;
                 }
-                ft.replace(R.id.container,  mViewModel.getCategoryListFragment());
-                mViewModel.setCurrentFrag(mViewModel.getCategoryListFragment());
-                mViewModel.arrangeFragmentHistory(mViewModel.getCategoryListFragment());
+                ft.replace(R.id.container, getCategoryListFragment());
                 break;
             }
         }
         ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .commit();
         fm.executePendingTransactions();
+        onActiveFragmentChanged();
+        arrangeFragmentHistory();
         return true;
     }
 
     private void goBackToPreviousFragment() {
-        if (mViewModel.fragmentHistory.size() > 1) {
-            mViewModel.fragmentHistory.removeLast();
+        /*Remove the last item of the fragment list and
+        and replace back the previous fragment*/
+        if (fragmentHistory.size() > 1) {
+            fragmentHistory.removeLast();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, mViewModel.fragmentHistory.getLast())
+                    .replace(R.id.container, fragmentHistory.getLast())
                     .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                     .commit();
             fm.executePendingTransactions();
-            mViewModel.setCurrentFrag(mViewModel.fragmentHistory.getLast());
+            onActiveFragmentChanged();
         } else {
             super.onBackPressed();
         }
     }
 
-    private void onActiveFragmentChanged(Fragment currentFrag) {
+    private void onActiveFragmentChanged() {
+        Fragment currentFrag = fm.findFragmentById(R.id.container);
         clearFocusAndHideKeyboard();
         setMenuItemChecked(currentFrag);
         hideOrShowBottomNavigation(currentFrag);
@@ -203,4 +196,36 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         thereAreUnsavedChanges = shouldWarn;
     }
 
+    public void arrangeFragmentHistory() {
+        Fragment currentFrag = getSupportFragmentManager().findFragmentById(R.id.container);
+        fragmentHistory.removeFirstOccurrence(currentFrag);
+        fragmentHistory.add(currentFrag);
+    }
+
+    public TrainListFragment getTrainListFragment() {
+        if(mTrainListFragment == null){
+            mTrainListFragment = new TrainListFragment();
+        }
+        return mTrainListFragment;
+    }
+
+    public BrandListFragment getBrandListFragment() {
+        if (mBrandListFragment == null) {
+            mBrandListFragment = new BrandListFragment();
+        }
+        return mBrandListFragment;
+    }
+
+    public CategoryListFragment getCategoryListFragment() {
+        if (mCategoryListFragment == null) {
+            mCategoryListFragment = new CategoryListFragment();
+        }
+        return mCategoryListFragment;
+    }
+
+    @Override
+    public void onFragmentSwitched() {
+        onActiveFragmentChanged();
+        arrangeFragmentHistory();
+    }
 }
