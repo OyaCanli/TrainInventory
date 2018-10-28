@@ -30,7 +30,5 @@ public final class Constants {
 
     public static final String CATEGORY_NAME = "categoryName";
 
-    public static final String FRAGMENT_HISTORY = "fragmentHistory";
-
 
 }

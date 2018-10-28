@@ -2,7 +2,6 @@ package com.canli.oya.traininventory.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,24 +38,9 @@ public class CategoryListFragment extends Fragment implements CategoryAdapter.Ca
     private List<String> mCategories;
     private FragmentBrandlistBinding binding;
     private MainViewModel mViewModel;
-    private FragmentSwitchListener mCallback;
 
     public CategoryListFragment() {
         setRetainInstance(true);
-    }
-
-    // Override onAttach to make sure that the container activity has implemented the callback
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        // This makes sure that the host activity has implemented the callback interface
-        // If not, it throws an exception
-        try {
-            mCallback = (FragmentSwitchListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement FragmentSwitchListener");
-        }
     }
 
     @Nullable
@@ -173,17 +156,16 @@ public class CategoryListFragment extends Fragment implements CategoryAdapter.Ca
 
     @Override
     public void onCategoryItemClicked(String categoryName) {
-        TrainListFragment trainListFrag = new TrainListFragment();
+        TrainListFragment trainListFrag = mViewModel.getTrainListFragment();
         Bundle args = new Bundle();
         args.putString(Constants.INTENT_REQUEST_CODE, Constants.TRAINS_OF_CATEGORY);
         args.putString(Constants.CATEGORY_NAME, categoryName);
         trainListFrag.setArguments(args);
-        FragmentManager fm = getFragmentManager();
-        fm.beginTransaction()
+        getFragmentManager().beginTransaction()
                 .replace(R.id.container, trainListFrag)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .commit();
-        fm.executePendingTransactions();
-        mCallback.onFragmentSwitched();
+        mViewModel.setCurrentFrag(trainListFrag);
+        mViewModel.arrangeFragmentHistory(trainListFrag);
     }
 }

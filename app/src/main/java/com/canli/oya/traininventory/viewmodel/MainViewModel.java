@@ -3,8 +3,7 @@ package com.canli.oya.traininventory.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-
-import android.util.Log;
+import android.support.v4.app.Fragment;
 
 import com.canli.oya.traininventory.data.entities.BrandEntry;
 import com.canli.oya.traininventory.data.entities.CategoryEntry;
@@ -12,6 +11,7 @@ import com.canli.oya.traininventory.data.entities.TrainEntry;
 import com.canli.oya.traininventory.data.repositories.BrandRepository;
 import com.canli.oya.traininventory.data.repositories.CategoryRepository;
 import com.canli.oya.traininventory.data.repositories.TrainRepository;
+import com.canli.oya.traininventory.databinding.FragmentTrainDetailsBinding;
 import com.canli.oya.traininventory.ui.AddTrainFragment;
 import com.canli.oya.traininventory.ui.BrandListFragment;
 import com.canli.oya.traininventory.ui.CategoryListFragment;
@@ -30,8 +30,13 @@ public class MainViewModel extends ViewModel {
     private BrandRepository mBrandRepo;
     private CategoryRepository mCategoryRepo;
     private final MutableLiveData<BrandEntry> mChosenBrand = new MutableLiveData<>();
-
-    private static final String TAG = "MainViewModel";
+    public LinkedList<Fragment> fragmentHistory = new LinkedList<>();
+    private TrainListFragment mTrainListFragment;
+    private BrandListFragment mBrandListFragment;
+    private CategoryListFragment mCategoryListFragment;
+    private TrainDetailsFragment mTrainDetailsFragment;
+    private AddTrainFragment mAddTrainFragment;
+    private MutableLiveData<Fragment> currentFrag = new MutableLiveData<>();
 
     /////////// TRAIN LIST /////////////
     public void loadTrainList(TrainRepository trainRepo){
@@ -132,5 +137,52 @@ public class MainViewModel extends ViewModel {
         return mTrainRepo.searchInTrains(query);
     }
 
+    ////////////// FRAGMENTS ///////////
+    public void arrangeFragmentHistory(Fragment fragment) {
+        fragmentHistory.removeFirstOccurrence(fragment);
+        fragmentHistory.add(fragment);
+    }
 
+    public TrainListFragment getTrainListFragment() {
+        if(mTrainListFragment == null){
+            mTrainListFragment = new TrainListFragment();
+        }
+        return mTrainListFragment;
+    }
+
+    public BrandListFragment getBrandListFragment() {
+        if (mBrandListFragment == null) {
+            mBrandListFragment = new BrandListFragment();
+        }
+        return mBrandListFragment;
+    }
+
+    public CategoryListFragment getCategoryListFragment() {
+        if (mCategoryListFragment == null) {
+            mCategoryListFragment = new CategoryListFragment();
+        }
+        return mCategoryListFragment;
+    }
+
+    public TrainDetailsFragment getTrainDetailsFragment() {
+        if (mTrainDetailsFragment == null) {
+            mTrainDetailsFragment = new TrainDetailsFragment();
+        }
+        return mTrainDetailsFragment;
+    }
+
+    public AddTrainFragment getAddTrainFragment() {
+        if (mAddTrainFragment == null) {
+            mAddTrainFragment = new AddTrainFragment();
+        }
+        return mAddTrainFragment;
+    }
+
+    public void setCurrentFrag(Fragment currentFrag) {
+        this.currentFrag.setValue(currentFrag);
+    }
+
+    public LiveData<Fragment> getCurrentFrag() {
+        return currentFrag;
+    }
 }
