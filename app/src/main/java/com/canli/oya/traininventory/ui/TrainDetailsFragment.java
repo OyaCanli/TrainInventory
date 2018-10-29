@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,7 +19,6 @@ import android.view.ViewGroup;
 
 import com.canli.oya.traininventory.R;
 import com.canli.oya.traininventory.data.entities.TrainEntry;
-import com.canli.oya.traininventory.data.repositories.TrainRepository;
 import com.canli.oya.traininventory.databinding.FragmentTrainDetailsBinding;
 import com.canli.oya.traininventory.utils.Constants;
 import com.canli.oya.traininventory.utils.InjectorUtils;
@@ -92,11 +92,14 @@ public class TrainDetailsFragment extends Fragment {
                 Bundle args = new Bundle();
                 args.putInt(Constants.TRAIN_ID, mTrainId);
                 addTrainFrag.setArguments(args);
-                getFragmentManager().beginTransaction()
+                FragmentManager fm = getFragmentManager();
+                fm.beginTransaction()
                         .replace(R.id.container, addTrainFrag)
                         .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                         .commit();
-                mainViewModel.arrangeFragmentHistory(addTrainFrag);
+                fm.executePendingTransactions();
+                mainViewModel.arrangeFragmentHistory(Constants.TAG_ADD_TRAIN);
+                mainViewModel.setCurrentFrag(Constants.TAG_ADD_TRAIN);
                 break;
             }
         }
@@ -121,8 +124,8 @@ public class TrainDetailsFragment extends Fragment {
     }
 
     private void deleteTrain() {
-        TrainRepository trainRepo = InjectorUtils.provideTrainRepo(getContext());
-        trainRepo.deleteTrain(mChosenTrain);
+        mainViewModel.deleteTrain(mChosenTrain);
         getActivity().onBackPressed();
     }
+
 }

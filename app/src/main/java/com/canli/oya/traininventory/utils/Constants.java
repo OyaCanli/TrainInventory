@@ -30,5 +30,16 @@ public final class Constants {
 
     public static final String CATEGORY_NAME = "categoryName";
 
+    //TAGS
+
+    public static final String TAG_TRAINLIST = "trainListFrag";
+
+    public static final String TAG_BRANDLIST = "brandList";
+
+    public static final String TAG_CATEGORYLIST = "categoryList";
+
+    public static final String TAG_TRAIN_DETAILS = "trainDetails";
+
+    public static final String TAG_ADD_TRAIN = "addTrain";
 
 }

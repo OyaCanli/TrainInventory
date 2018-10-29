@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.transition.Slide;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,7 +17,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -187,7 +185,7 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
     }
 
     private void showTrainsFromThisBrand(BrandEntry clickedBrand) {
-        TrainListFragment trainListFrag = mViewModel.getTrainListFragment();
+        TrainListFragment trainListFrag = new TrainListFragment();
         Bundle args = new Bundle();
         args.putString(Constants.INTENT_REQUEST_CODE, Constants.TRAINS_OF_BRAND);
         args.putString(Constants.BRAND_NAME, clickedBrand.getBrandName());
@@ -196,8 +194,8 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
                 .replace(R.id.container, trainListFrag)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .commit();
-        mViewModel.setCurrentFrag(trainListFrag);
-        mViewModel.arrangeFragmentHistory(trainListFrag);
+        mViewModel.arrangeFragmentHistory(Constants.TAG_TRAINLIST);
+        mViewModel.setCurrentFrag(Constants.TAG_TRAINLIST);
     }
 
     private void openWebSite(BrandEntry clickedBrand){

@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -156,16 +157,19 @@ public class CategoryListFragment extends Fragment implements CategoryAdapter.Ca
 
     @Override
     public void onCategoryItemClicked(String categoryName) {
-        TrainListFragment trainListFrag = mViewModel.getTrainListFragment();
+        TrainListFragment trainListFrag = new TrainListFragment();
         Bundle args = new Bundle();
         args.putString(Constants.INTENT_REQUEST_CODE, Constants.TRAINS_OF_CATEGORY);
         args.putString(Constants.CATEGORY_NAME, categoryName);
         trainListFrag.setArguments(args);
-        getFragmentManager().beginTransaction()
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction()
                 .replace(R.id.container, trainListFrag)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .commit();
-        mViewModel.setCurrentFrag(trainListFrag);
-        mViewModel.arrangeFragmentHistory(trainListFrag);
+        fm.executePendingTransactions();
+        mViewModel.arrangeFragmentHistory(Constants.TAG_TRAINLIST);
+        mViewModel.setCurrentFrag(Constants.TAG_TRAINLIST);
     }
+
 }

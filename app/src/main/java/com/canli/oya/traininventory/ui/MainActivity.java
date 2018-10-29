@@ -33,6 +33,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private static final String TAG = "MainActivity";
     private FragmentManager fm;
     private MainViewModel mViewModel;
+    private TrainListFragment mTrainListFragment;
+    private BrandListFragment mBrandListFragment;
+    private CategoryListFragment mCategoryListFragment;
+    private TrainDetailsFragment mTrainDetailsFragment;
+    private AddTrainFragment mAddTrainFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,17 +54,20 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         //Bring the train list fragment at the launch of activity
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
+            FragmentManager fm = getSupportFragmentManager();
+            fm.beginTransaction()
                     .setCustomAnimations(0, android.R.animator.fade_out)
-                    .add(R.id.container, mViewModel.getCategoryListFragment())
+                    .add(R.id.container, getCategoryListFragment())
                     .commit();
-            mViewModel.fragmentHistory.add(mViewModel.getCategoryListFragment());
+            fm.executePendingTransactions();
+            mViewModel.setCurrentFrag(Constants.TAG_CATEGORYLIST);
+            mViewModel.fragmentHistory.add(Constants.TAG_CATEGORYLIST);
         }
 
-        mViewModel.getCurrentFrag().observe(this, new Observer<Fragment>() {
+        mViewModel.getCurrentFrag().observe(this, new Observer<String>() {
             @Override
-            public void onChanged(@Nullable Fragment fragment) {
-                onActiveFragmentChanged(fragment);
+            public void onChanged(@Nullable String tag) {
+                onActiveFragmentChanged(tag);
             }
         });
     }
@@ -69,64 +77,96 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         FragmentTransaction ft = fm.beginTransaction();
         Fragment currentFrag = fm.findFragmentById(R.id.container);
+        String fragmentTag = null;
 
         int id = item.getItemId();
         switch (id) {
             case R.id.trains: {
-                if (currentFrag == mViewModel.getTrainListFragment()) {
-                    mViewModel.getTrainListFragment().scrollToTop();
+                if (currentFrag == getTrainListFragment()) {
+                    getTrainListFragment().scrollToTop();
                     break;
                 }
-                TrainListFragment trainListFrag = mViewModel.getTrainListFragment();
+                TrainListFragment trainListFrag = getTrainListFragment();
                 Bundle args = new Bundle();
                 args.putString(Constants.INTENT_REQUEST_CODE, Constants.ALL_TRAIN);
                 trainListFrag.setArguments(args);
                 ft.replace(R.id.container, trainListFrag);
-                mViewModel.setCurrentFrag(trainListFrag);
-                mViewModel.arrangeFragmentHistory(mViewModel.getTrainListFragment());
+                fragmentTag = Constants.TAG_TRAINLIST;
                 break;
             }
             case R.id.brands: {
-                if (currentFrag == mViewModel.getBrandListFragment()) {
+                if (currentFrag == getBrandListFragment()) {
                     break;
                 }
-                ft.replace(R.id.container, mViewModel.getBrandListFragment());
-                mViewModel.arrangeFragmentHistory(mViewModel.getBrandListFragment());
-                mViewModel.setCurrentFrag(mViewModel.getBrandListFragment());
+                ft.replace(R.id.container, getBrandListFragment());
+                fragmentTag = Constants.TAG_BRANDLIST;
                 break;
             }
             case R.id.categories: {
-                if (currentFrag ==  mViewModel.getCategoryListFragment()) {
+                if (currentFrag ==  getCategoryListFragment()) {
                     break;
                 }
-                ft.replace(R.id.container,  mViewModel.getCategoryListFragment());
-                mViewModel.setCurrentFrag(mViewModel.getCategoryListFragment());
-                mViewModel.arrangeFragmentHistory(mViewModel.getCategoryListFragment());
+                ft.replace(R.id.container,  getCategoryListFragment());
+                fragmentTag = Constants.TAG_CATEGORYLIST;
                 break;
             }
         }
         ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .commit();
         fm.executePendingTransactions();
+        mViewModel.arrangeFragmentHistory(fragmentTag);
+        mViewModel.setCurrentFrag(fragmentTag);
         return true;
     }
 
     private void goBackToPreviousFragment() {
         if (mViewModel.fragmentHistory.size() > 1) {
             mViewModel.fragmentHistory.removeLast();
+            String fragmentType = mViewModel.fragmentHistory.getLast();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, mViewModel.fragmentHistory.getLast())
+                    .replace(R.id.container, getCorrespondingFragment(fragmentType))
                     .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                     .commit();
             fm.executePendingTransactions();
-            mViewModel.setCurrentFrag(mViewModel.fragmentHistory.getLast());
+            mViewModel.setCurrentFrag(fragmentType);
         } else {
             super.onBackPressed();
         }
     }
 
-    private void onActiveFragmentChanged(Fragment currentFrag) {
+    private Fragment getCorrespondingFragment(String tag) {
+        Fragment fragment;
+        switch(tag){
+            case Constants.TAG_TRAINLIST:{
+                fragment = getTrainListFragment();
+                break;
+            }
+            case Constants.TAG_BRANDLIST:{
+                fragment = getBrandListFragment();
+                break;
+            }
+            case Constants.CATEGORY_NAME:{
+                fragment = getCategoryListFragment();
+                break;
+            }
+            case Constants.TAG_TRAIN_DETAILS:{
+                fragment = getTrainDetailsFragment();
+                break;
+            }
+            case Constants.TAG_ADD_TRAIN:{
+                fragment = getAddTrainFragment();
+                break;
+            }
+            default:{
+                fragment = getCategoryListFragment();
+            }
+        }
+        return fragment;
+    }
+
+    private void onActiveFragmentChanged(String tag) {
         clearFocusAndHideKeyboard();
+        Fragment currentFrag = getCorrespondingFragment(tag);
         setMenuItemChecked(currentFrag);
         hideOrShowBottomNavigation(currentFrag);
     }
@@ -203,4 +243,38 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         thereAreUnsavedChanges = shouldWarn;
     }
 
+    public TrainListFragment getTrainListFragment() {
+        if(mTrainListFragment == null){
+            mTrainListFragment = new TrainListFragment();
+        }
+        return mTrainListFragment;
+    }
+
+    public BrandListFragment getBrandListFragment() {
+        if (mBrandListFragment == null) {
+            mBrandListFragment = new BrandListFragment();
+        }
+        return mBrandListFragment;
+    }
+
+    public CategoryListFragment getCategoryListFragment() {
+        if (mCategoryListFragment == null) {
+            mCategoryListFragment = new CategoryListFragment();
+        }
+        return mCategoryListFragment;
+    }
+
+    public TrainDetailsFragment getTrainDetailsFragment() {
+        if (mTrainDetailsFragment == null) {
+            mTrainDetailsFragment = new TrainDetailsFragment();
+        }
+        return mTrainDetailsFragment;
+    }
+
+    public AddTrainFragment getAddTrainFragment() {
+        if (mAddTrainFragment == null) {
+            mAddTrainFragment = new AddTrainFragment();
+        }
+        return mAddTrainFragment;
+    }
 }

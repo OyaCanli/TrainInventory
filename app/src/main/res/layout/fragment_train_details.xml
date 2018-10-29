@@ -4,152 +4,159 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="chosenTrain"
             type="com.canli.oya.traininventory.data.entities.TrainEntry" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <ScrollView
+        android:id="@+id/details_scroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_standard"
-        android:background="@drawable/train_item_background"
-        android:padding="@dimen/padding_standard">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/details_image"
-            android:layout_width="@dimen/train_details_image_width"
-            android:layout_height="@dimen/train_details_image_height"
-            android:layout_marginLeft="@dimen/half_margin"
-            android:layout_marginStart="@dimen/half_margin"
-            android:layout_marginTop="@dimen/half_margin"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:src="@{chosenTrain.imageUri}"
-            android:contentDescription="@string/cd_chosen_train_image"/>
-
-        <TextView
-            android:id="@+id/details_product_name"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/details_image"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Train name"
-            android:text="@{chosenTrain.trainName}"
-            style="@style/details_plain_text" />
-
-        <TextView
-            android:id="@+id/details_brand"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/details_image"
-            app:layout_constraintTop_toBottomOf="@+id/details_product_name"
-            tools:text="Brand Name"
-            android:text="@{chosenTrain.brandName}"
-            style="@style/details_plain_text" />
-
-        <TextView
-            android:id="@+id/details_reference"
-            android:textColor="@color/colorPrimary"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/details_image"
-            app:layout_constraintTop_toBottomOf="@+id/details_brand"
-            tools:text="Reference"
-            android:text="@{chosenTrain.modelReference}"
-            style="@style/details_plain_text" />
-
-        <TextView
-            android:id="@+id/details_category"
-            android:textStyle="italic"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/details_image"
-            app:layout_constraintTop_toBottomOf="@+id/details_reference"
-            tools:text="Category"
-            android:text="@{chosenTrain.categoryName}"
-            style="@style/details_plain_text" />
-
-        <TextView
-            android:id="@+id/details_description"
-            android:layout_width="0dp"
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/details_image"
-            android:text="@{chosenTrain.description}"
-            tools:text="c'est piece est un petit peu abime au niveau des attaches.." />
+            android:layout_margin="@dimen/margin_standard"
+            android:background="@drawable/train_item_background"
+            android:padding="@dimen/padding_standard">
 
-        <TextView
-            android:id="@+id/textView16"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/half_margin"
-            android:layout_marginStart="@dimen/half_margin"
-            android:layout_marginTop="16dp"
-            android:text="@string/quantity"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/details_description" />
+            <ImageView
+                android:id="@+id/details_image"
+                android:layout_width="@dimen/train_details_image_width"
+                android:layout_height="@dimen/train_details_image_height"
+                android:layout_marginStart="@dimen/half_margin"
+                android:layout_marginLeft="@dimen/half_margin"
+                android:layout_marginTop="@dimen/half_margin"
+                android:contentDescription="@string/cd_chosen_train_image"
+                android:src="@{chosenTrain.imageUri}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/details_quantity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/textView16"
-            app:layout_constraintStart_toEndOf="@+id/textView16"
-            tools:text="1"
-            android:text="@{String.valueOf(chosenTrain.quantity)}"/>
+            <TextView
+                android:id="@+id/details_product_name"
+                style="@style/details_plain_text"
+                android:text="@{chosenTrain.trainName}"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/details_image"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Train name" />
 
-        <TextView
-            android:id="@+id/textView18"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="@dimen/margin_standard"
-            android:text="@string/location"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+            <TextView
+                android:id="@+id/details_brand"
+                style="@style/details_plain_text"
+                android:text="@{chosenTrain.brandName}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/details_image"
+                app:layout_constraintTop_toBottomOf="@+id/details_product_name"
+                tools:text="Brand Name" />
 
-        <TextView
-            android:id="@+id/details_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/textView18"
-            app:layout_constraintStart_toEndOf="@+id/textView18"
-            tools:text="1-D"
-            android:text="@{chosenTrain.location}"/>
+            <TextView
+                android:id="@+id/details_reference"
+                style="@style/details_plain_text"
+                android:text="@{chosenTrain.modelReference}"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/details_image"
+                app:layout_constraintTop_toBottomOf="@+id/details_brand"
+                tools:text="Reference" />
 
-        <TextView
-            android:id="@+id/textView13"
-            android:textStyle="bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/scale"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView16" />
+            <TextView
+                android:id="@+id/details_category"
+                style="@style/details_plain_text"
+                android:text="@{chosenTrain.categoryName}"
+                android:textStyle="italic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/details_image"
+                app:layout_constraintTop_toBottomOf="@+id/details_reference"
+                tools:text="Category" />
 
-        <TextView
-            android:id="@+id/details_scale"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_standard"
-            android:layout_marginStart="@dimen/margin_standard"
-            app:layout_constraintBaseline_toBaselineOf="@+id/textView13"
-            app:layout_constraintStart_toEndOf="@+id/textView13"
-            tools:text="3M"
-            android:text="@{chosenTrain.scale}"/>
-    </android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/details_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:text="@{chosenTrain.description}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/details_image"
+                tools:text="c'est piece est un petit peu abime au niveau des attaches.." />
+
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/half_margin"
+                android:layout_marginLeft="@dimen/half_margin"
+                android:layout_marginTop="16dp"
+                android:text="@string/quantity"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/details_description" />
+
+            <TextView
+                android:id="@+id/details_quantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:text="@{String.valueOf(chosenTrain.quantity)}"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView16"
+                app:layout_constraintStart_toEndOf="@+id/textView16"
+                tools:text="1" />
+
+            <TextView
+                android:id="@+id/textView18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="@dimen/margin_standard"
+                android:text="@string/location"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+            <TextView
+                android:id="@+id/details_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:text="@{chosenTrain.location}"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView18"
+                app:layout_constraintStart_toEndOf="@+id/textView18"
+                tools:text="1-D" />
+
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/scale"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView16" />
+
+            <TextView
+                android:id="@+id/details_scale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_standard"
+                android:layout_marginLeft="@dimen/margin_standard"
+                android:text="@{chosenTrain.scale}"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView13"
+                app:layout_constraintStart_toEndOf="@+id/textView13"
+                tools:text="3M" />
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 </layout>

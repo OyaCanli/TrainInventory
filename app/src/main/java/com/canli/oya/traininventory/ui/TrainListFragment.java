@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
@@ -127,15 +128,18 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
 
     @Override
     public void onListItemClick(int trainId) {
-        TrainDetailsFragment trainDetailsFrag = mViewModel.getTrainDetailsFragment();
+        TrainDetailsFragment trainDetailsFrag = new TrainDetailsFragment();
         Bundle args = new Bundle();
         args.putInt(Constants.TRAIN_ID, trainId);
         trainDetailsFrag.setArguments(args);
-        getFragmentManager().beginTransaction()
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction()
                 .replace(R.id.container, trainDetailsFrag)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .commit();
-        mViewModel.arrangeFragmentHistory(trainDetailsFrag);
+        fm.executePendingTransactions();
+        mViewModel.arrangeFragmentHistory(Constants.TAG_TRAIN_DETAILS);
+        mViewModel.setCurrentFrag(Constants.TAG_TRAIN_DETAILS);
     }
 
     @Override
@@ -189,15 +193,19 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
     }
 
     private void openAddTrainFragment() {
-        AddTrainFragment addTrainFragment = mViewModel.getAddTrainFragment();
-        getFragmentManager().beginTransaction()
+        AddTrainFragment addTrainFragment = new AddTrainFragment();
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction()
                 .replace(R.id.container, addTrainFragment)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .commit();
-        mViewModel.arrangeFragmentHistory(addTrainFragment);
+        fm.executePendingTransactions();
+        mViewModel.arrangeFragmentHistory(Constants.TAG_ADD_TRAIN);
+        mViewModel.setCurrentFrag(Constants.TAG_ADD_TRAIN);
     }
 
     public void scrollToTop() {
         binding.list.smoothScrollToPosition(0);
     }
+
 }
