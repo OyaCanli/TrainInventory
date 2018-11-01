@@ -166,10 +166,8 @@ public class CategoryListFragment extends Fragment implements CategoryAdapter.Ca
         fm.beginTransaction()
                 .replace(R.id.container, trainListFrag)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                .addToBackStack(null)
                 .commit();
-        fm.executePendingTransactions();
-        mViewModel.arrangeFragmentHistory(Constants.TAG_TRAINLIST);
-        mViewModel.setCurrentFrag(Constants.TAG_TRAINLIST);
     }
 
 }

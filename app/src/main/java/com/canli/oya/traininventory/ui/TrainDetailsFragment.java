@@ -96,10 +96,8 @@ public class TrainDetailsFragment extends Fragment {
                 fm.beginTransaction()
                         .replace(R.id.container, addTrainFrag)
                         .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                        .addToBackStack(null)
                         .commit();
-                fm.executePendingTransactions();
-                mainViewModel.arrangeFragmentHistory(Constants.TAG_ADD_TRAIN);
-                mainViewModel.setCurrentFrag(Constants.TAG_ADD_TRAIN);
                 break;
             }
         }
@@ -125,7 +123,7 @@ public class TrainDetailsFragment extends Fragment {
 
     private void deleteTrain() {
         mainViewModel.deleteTrain(mChosenTrain);
-        getActivity().onBackPressed();
+        getFragmentManager().popBackStack();
     }
 
 }

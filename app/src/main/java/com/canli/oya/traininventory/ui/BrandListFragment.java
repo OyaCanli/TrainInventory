@@ -193,9 +193,8 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
         getFragmentManager().beginTransaction()
                 .replace(R.id.container, trainListFrag)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                .addToBackStack(null)
                 .commit();
-        mViewModel.arrangeFragmentHistory(Constants.TAG_TRAINLIST);
-        mViewModel.setCurrentFrag(Constants.TAG_TRAINLIST);
     }
 
     private void openWebSite(BrandEntry clickedBrand){

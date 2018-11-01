@@ -125,21 +125,4 @@ public class MainViewModel extends ViewModel {
     public List<TrainEntry> searchInTrains(String query){
         return mTrainRepo.searchInTrains(query);
     }
-
-    ////////////// FRAGMENTS ///////////
-    public void arrangeFragmentHistory(String fragmentType) {
-        fragmentHistory.removeFirstOccurrence(fragmentType);
-        fragmentHistory.add(fragmentType);
-        for(String fragment : fragmentHistory){
-            Log.d("ARRANGEFRAGMENTHISTORY", "fragment : " + fragment);
-        }
-    }
-
-    public void setCurrentFrag(String currentFrag) {
-        mCurrentFrag.setValue(currentFrag);
-    }
-
-    public LiveData<String> getCurrentFrag() {
-        return mCurrentFrag;
-    }
 }

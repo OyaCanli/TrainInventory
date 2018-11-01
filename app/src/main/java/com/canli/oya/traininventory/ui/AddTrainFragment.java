@@ -1,6 +1,7 @@
 package com.canli.oya.traininventory.ui;
 
 import android.Manifest;
+import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -20,6 +21,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,6 +42,7 @@ import com.canli.oya.traininventory.data.entities.TrainEntry;
 import com.canli.oya.traininventory.databinding.FragmentAddTrainBinding;
 import com.canli.oya.traininventory.utils.BitmapUtils;
 import com.canli.oya.traininventory.utils.Constants;
+import com.canli.oya.traininventory.utils.GlideApp;
 import com.canli.oya.traininventory.utils.InjectorUtils;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainFactory;
 import com.canli.oya.traininventory.viewmodel.ChosenTrainViewModel;
@@ -68,9 +71,21 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     private UnsavedChangesListener mCallback;
     private MainViewModel mViewModel;
     private TrainEntry mChosenTrain;
-    private boolean chosenTrainLoaded;
-    private boolean categoryListLoaded;
-    private boolean brandListLoaded;
+    private boolean isEdit;
+    private TextWatcher mTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            mCallback.warnForUnsavedChanges(true);
+        }
+    };
 
     private final DialogInterface.OnClickListener mDialogClickListener = new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int item) {
@@ -116,37 +131,30 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.d("ADDTRAINFRAGMENT", "OnActivityCreated is called");
+
         TrainDatabase database = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
         mViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
         mViewModel.loadBrandList(InjectorUtils.provideBrandRepo(getContext()));
         mViewModel.loadCategoryList(InjectorUtils.provideCategoryRepo(getContext()));
 
-        Bundle bundle = getArguments();
-        if (bundle != null && bundle.containsKey(Constants.TRAIN_ID)) { //This is the "edit" case
-            getActivity().setTitle(getString(R.string.edit_train));
-            binding.setIsEdit(true);
-            mTrainId = bundle.getInt(Constants.TRAIN_ID);
-            //This view model is instantiated only in edit mode. It contains the chosen train. It is attached to this fragment
-            ChosenTrainFactory factory = new ChosenTrainFactory(database, mTrainId);
-            final ChosenTrainViewModel viewModel = ViewModelProviders.of(this, factory).get(ChosenTrainViewModel.class);
-            viewModel.getChosenTrain().observe(this, new Observer<TrainEntry>() {
-                @Override
-                public void onChanged(@Nullable TrainEntry trainEntry) {
-                    binding.setChosenTrain(trainEntry);
-                    mChosenTrain = trainEntry;
-                    chosenTrainLoaded = true;
-                    if(categoryListLoaded) setCategorySpinner();
-                    if(brandListLoaded) setBrandSpinner();
-                }
-            });
-            setTouchListenersToEditTexts();
-        } else { //This is the "add" case
-            getActivity().setTitle(getString(R.string.add_train));
-            setChangeListenersToEdittexts();
-        }
+        //Set brand spinner
+        brandList = new ArrayList<>();
+        final CustomSpinAdapter brandAdapter = new CustomSpinAdapter(getActivity(), brandList);
+        binding.brandSpinner.setAdapter(brandAdapter);
+        binding.brandSpinner.setOnItemSelectedListener(this);
+        mViewModel.getBrandList().observe(AddTrainFragment.this, new Observer<List<BrandEntry>>() {
+            @Override
+            public void onChanged(@Nullable List<BrandEntry> brandEntries) {
+                brandList.clear();
+                brandList.addAll(brandEntries);
+                brandAdapter.notifyDataSetChanged();
+                Log.d("ADDTRAINFRAGMENT", "Brandlist loaded");
+            }
+        });
 
         //Set category spinner
         categoryList = new ArrayList<>();
@@ -160,36 +168,98 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 categoryList.clear();
                 categoryList.addAll(categoryEntries);
                 categoryAdapter.notifyDataSetChanged();
-                categoryListLoaded = true;
-                if(chosenTrainLoaded) setCategorySpinner();
+                Log.d("ADDTRAINFRAGMENT", "categorylist loaded");
             }
         });
 
-        //Set brand spinner
-        brandList = new ArrayList<>();
-        final CustomSpinAdapter brandAdapter = new CustomSpinAdapter(getActivity(), brandList);
-        binding.brandSpinner.setAdapter(brandAdapter);
-        binding.brandSpinner.setOnItemSelectedListener(this);
-        mViewModel.getBrandList().observe(AddTrainFragment.this, new Observer<List<BrandEntry>>() {
-            @Override
-            public void onChanged(@Nullable List<BrandEntry> brandEntries) {
-                brandList.clear();
-                brandList.addAll(brandEntries);
-                brandAdapter.notifyDataSetChanged();
-                brandListLoaded = true;
-                if(chosenTrainLoaded) setBrandSpinner();
-            }
-        });
+        Bundle bundle = getArguments();
+        //"Edit" case
+        if (bundle != null && bundle.containsKey(Constants.TRAIN_ID)) {
+            getActivity().setTitle(getString(R.string.edit_train));
+            binding.setIsEdit(true);
+            isEdit = true;
+            mTrainId = bundle.getInt(Constants.TRAIN_ID);
+            //This view model is instantiated only in edit mode. It contains the chosen train. It is attached to this fragment
+            ChosenTrainFactory factory = new ChosenTrainFactory(database, mTrainId);
+            final ChosenTrainViewModel viewModel = ViewModelProviders.of(this, factory).get(ChosenTrainViewModel.class);
+            viewModel.getChosenTrain().observe(this, new Observer<TrainEntry>() {
+                @Override
+                public void onChanged(@Nullable TrainEntry trainEntry) {
+                    binding.setChosenTrain(trainEntry);
+                    binding.executePendingBindings();
+                    mChosenTrain = trainEntry;
+                    Log.d("ADDTRAINFRAGMENT", "Chosen train loaded");
+                    if(savedInstanceState != null) {
+                        restoreState(savedInstanceState);
+                    }
+                }
+            });
+            //Set a mediator live data to organize multiple liveData sources
+            // Wait for all there to be loaded before setting the spinners.
+            final MediatorLiveData<Integer> mediatorLiveData = new MediatorLiveData();
+            mediatorLiveData.setValue(0);
+            Observer observer = new Observer() {
+                @Override
+                public void onChanged(@Nullable Object o) {
+                    mediatorLiveData.setValue(mediatorLiveData.getValue() + 1);
+                }
+            };
+            mediatorLiveData.addSource(mViewModel.getBrandList(), observer);
+            mediatorLiveData.addSource(mViewModel.getCategoryList(), observer);
+            mediatorLiveData.addSource(viewModel.getChosenTrain(), observer);
+            mediatorLiveData.observe(this, new Observer<Integer>() {
+                @Override
+                public void onChanged(@Nullable Integer count) {
+                    if (savedInstanceState == null && count >= 3 ) {
+                        setCategorySpinner();
+                        setBrandSpinner();
+                    }
+                }
+            });
+            setTouchListenersToEditTexts();
+        } else { //This is the "add" case
+            getActivity().setTitle(getString(R.string.add_train));
+            binding.setIsEdit(false);
+            binding.executePendingBindings();
+            isEdit = false;
+            setChangeListenersToEdittexts();
+        }
     }
 
-    private void setCategorySpinner(){
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null && !isEdit) {
+            restoreState(savedInstanceState);
+        }
+    }
+
+    private void restoreState(@NonNull Bundle savedInstanceState) {
+        Log.d("ADDTRAINFRAGMENT", "restoreState is called");
+        binding.brandSpinner.setSelection(savedInstanceState.getInt(Constants.BRAND_SPINNER_POSITION));
+        binding.categorySpinner.setSelection(savedInstanceState.getInt(Constants.CATEGORY_SPINNER_POSITION));
+        mImageUri = savedInstanceState.getString(Constants.IMAGE_URL);
+        GlideApp.with(AddTrainFragment.this)
+                .load(mImageUri)
+                .placeholder(R.drawable.ic_gallery)
+                .into(binding.productDetailsGalleryImage);
+        binding.editTrainName.setText(savedInstanceState.getString(Constants.NAME_ET));
+        binding.editTrainDescription.setText(savedInstanceState.getString(Constants.DESCRIPTION_ET));
+        binding.editReference.setText(savedInstanceState.getString(Constants.MODEL_ET));
+        binding.editQuantity.setText(savedInstanceState.getString(Constants.QUANTITY_ET));
+        binding.editLocationLetter.setText(savedInstanceState.getString(Constants.LOCATION_LETTER_ET));
+        binding.editLocationNumber.setText(savedInstanceState.getString(Constants.LOCATION_NUMBER_ET));
+        binding.editScale.setText(savedInstanceState.getString(Constants.SCALE_ET));
+    }
+
+    private void setCategorySpinner() {
         binding.categorySpinner.setSelection(categoryList.indexOf(mChosenTrain.getCategoryName()));
     }
 
     private void setBrandSpinner() {
         int brandIndex = 0;
-        for(int i = 0; i < brandList.size(); i++){
-            if(brandList.get(i).getBrandName().equals(mChosenTrain.getBrandName())){
+        for (int i = 0; i < brandList.size(); i++) {
+            if (brandList.get(i).getBrandName().equals(mChosenTrain.getBrandName())) {
                 brandIndex = i;
             }
         }
@@ -222,7 +292,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_save){
+        if (item.getItemId() == R.id.action_save) {
             saveTrain();
         }
         return super.onOptionsItemSelected(item);
@@ -359,8 +429,9 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         pickImageDialog.dismiss();
         if (requestCode == Constants.REQUEST_IMAGE_CAPTURE) {
             if (resultCode == RESULT_OK) {
-                Glide.with(AddTrainFragment.this)
+                GlideApp.with(AddTrainFragment.this)
                         .load(mImageUri)
+                        .placeholder(R.drawable.ic_gallery)
                         .into(binding.productDetailsGalleryImage);
             } else {
                 BitmapUtils.deleteImageFile(getActivity(), mTempPhotoPath);
@@ -369,8 +440,9 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
             if (resultCode == RESULT_OK) {
                 Uri imageUri = data.getData();
                 mImageUri = imageUri.toString();
-                Glide.with(AddTrainFragment.this)
+                GlideApp.with(AddTrainFragment.this)
                         .load(mImageUri)
+                        .placeholder(R.drawable.ic_gallery)
                         .into(binding.productDetailsGalleryImage);
             }
         }
@@ -406,7 +478,21 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+    }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(Constants.NAME_ET, binding.editTrainName.getText().toString());
+        outState.putString(Constants.DESCRIPTION_ET, binding.editTrainDescription.getText().toString());
+        outState.putString(Constants.MODEL_ET, binding.editReference.getText().toString());
+        outState.putString(Constants.QUANTITY_ET, binding.editQuantity.getText().toString());
+        outState.putString(Constants.SCALE_ET, binding.editScale.getText().toString());
+        outState.putString(Constants.LOCATION_NUMBER_ET, binding.editLocationNumber.getText().toString());
+        outState.putString(Constants.LOCATION_LETTER_ET, binding.editLocationLetter.getText().toString());
+        outState.putInt(Constants.BRAND_SPINNER_POSITION, binding.brandSpinner.getSelectedItemPosition());
+        outState.putInt(Constants.CATEGORY_SPINNER_POSITION, binding.categorySpinner.getSelectedItemPosition());
+        outState.putString(Constants.IMAGE_URL, mImageUri);
     }
 
     @Override
@@ -415,31 +501,15 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         mCallback.warnForUnsavedChanges(false);
     }
 
-    private void setChangeListenersToEdittexts(){
-        TextWatcher textWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mCallback.warnForUnsavedChanges(true);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        };
+    private void setChangeListenersToEdittexts() {
         //Set change listeners on edit texts
-        binding.editReference.addTextChangedListener(textWatcher);
-        binding.editTrainName.addTextChangedListener(textWatcher);
-        binding.editTrainDescription.addTextChangedListener(textWatcher);
-        binding.editLocationNumber.addTextChangedListener(textWatcher);
-        binding.editLocationLetter.addTextChangedListener(textWatcher);
-        binding.editScale.addTextChangedListener(textWatcher);
-        binding.editQuantity.addTextChangedListener(textWatcher);
+        binding.editReference.addTextChangedListener(mTextWatcher);
+        binding.editTrainName.addTextChangedListener(mTextWatcher);
+        binding.editTrainDescription.addTextChangedListener(mTextWatcher);
+        binding.editLocationNumber.addTextChangedListener(mTextWatcher);
+        binding.editLocationLetter.addTextChangedListener(mTextWatcher);
+        binding.editScale.addTextChangedListener(mTextWatcher);
+        binding.editQuantity.addTextChangedListener(mTextWatcher);
     }
 
     private void setTouchListenersToEditTexts() {
@@ -459,5 +529,35 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         binding.editLocationLetter.setOnTouchListener(touchListener);
         binding.editScale.setOnTouchListener(touchListener);
         binding.editQuantity.setOnTouchListener(touchListener);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (isEdit) {
+            removeTextWatchers();
+        } else {
+            removeTouchListeners();
+        }
+    }
+
+    private void removeTextWatchers() {
+        binding.editReference.removeTextChangedListener(mTextWatcher);
+        binding.editTrainName.removeTextChangedListener(mTextWatcher);
+        binding.editTrainDescription.removeTextChangedListener(mTextWatcher);
+        binding.editLocationNumber.removeTextChangedListener(mTextWatcher);
+        binding.editLocationLetter.removeTextChangedListener(mTextWatcher);
+        binding.editScale.removeTextChangedListener(mTextWatcher);
+        binding.editQuantity.removeTextChangedListener(mTextWatcher);
+    }
+
+    private void removeTouchListeners() {
+        binding.editReference.setOnTouchListener(null);
+        binding.editTrainName.setOnTouchListener(null);
+        binding.editTrainDescription.setOnTouchListener(null);
+        binding.editLocationNumber.setOnTouchListener(null);
+        binding.editLocationLetter.setOnTouchListener(null);
+        binding.editScale.setOnTouchListener(null);
+        binding.editQuantity.setOnTouchListener(null);
     }
 }

@@ -30,16 +30,26 @@ public final class Constants {
 
     public static final String CATEGORY_NAME = "categoryName";
 
-    //TAGS
+    //keys for saving during rotation
+    public static final String NAME_ET = "nameEditText";
 
-    public static final String TAG_TRAINLIST = "trainListFrag";
+    public static final String MODEL_ET = "modelEditText";
 
-    public static final String TAG_BRANDLIST = "brandList";
+    public static final String DESCRIPTION_ET = "descriptionEditText";
 
-    public static final String TAG_CATEGORYLIST = "categoryList";
+    public static final String LOCATION_NUMBER_ET = "locationNumberEditText";
 
-    public static final String TAG_TRAIN_DETAILS = "trainDetails";
+    public static final String LOCATION_LETTER_ET = "locationLetterEditText";
 
-    public static final String TAG_ADD_TRAIN = "addTrain";
+    public static final String QUANTITY_ET = "quantityEditText";
 
+    public static final String SCALE_ET = "scaleEditText";
+
+    public static final String BRAND_SPINNER_POSITION = "brandSpinnerPosition";
+
+    public static final String CATEGORY_SPINNER_POSITION = "categorySpinnerPosition";
+
+    public static final String IMAGE_URL = "imageUrl";
+
+    public static final String UNSAVED_CHANGES = "unsavedChanges";
 }

@@ -136,10 +136,8 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
         fm.beginTransaction()
                 .replace(R.id.container, trainDetailsFrag)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                .addToBackStack(null)
                 .commit();
-        fm.executePendingTransactions();
-        mViewModel.arrangeFragmentHistory(Constants.TAG_TRAIN_DETAILS);
-        mViewModel.setCurrentFrag(Constants.TAG_TRAIN_DETAILS);
     }
 
     @Override
@@ -198,10 +196,8 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
         fm.beginTransaction()
                 .replace(R.id.container, addTrainFragment)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                .addToBackStack(null)
                 .commit();
-        fm.executePendingTransactions();
-        mViewModel.arrangeFragmentHistory(Constants.TAG_ADD_TRAIN);
-        mViewModel.setCurrentFrag(Constants.TAG_ADD_TRAIN);
     }
 
     public void scrollToTop() {
