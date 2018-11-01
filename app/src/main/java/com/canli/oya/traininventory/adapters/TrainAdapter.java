@@ -1,6 +1,5 @@
 package com.canli.oya.traininventory.adapters;
 
-import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -17,11 +16,9 @@ public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHol
 
     private List<TrainEntry> mTrainList;
     private final TrainItemClickListener mClickListener;
-    private final Context mContext;
 
-    public TrainAdapter(@NonNull Context context, TrainItemClickListener listener) {
+    public TrainAdapter(TrainItemClickListener listener) {
         mClickListener = listener;
-        mContext = context;
     }
 
     @NonNull
@@ -39,8 +36,6 @@ public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.TrainViewHol
         TrainEntry currentTrain = mTrainList.get(position);
         holder.binding.setTrain(currentTrain);
         holder.binding.executePendingBindings();
-        holder.binding.trainItemCategory.setText(mContext.getString(R.string.category_placeholder, currentTrain.getCategoryName()));
-
     }
 
     @Override

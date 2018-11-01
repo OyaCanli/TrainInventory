@@ -24,7 +24,6 @@
     <string name="brand_deleted">Brand deleted</string>
     <string name="category_deleted">Category deleted</string>
     <string name="undo">UNDO</string>
-    <string name="category_placeholder">(%1$s)</string>
     <string name="no_brands_found">No brands found. You can add brands from above, or while you add trains.</string>
     <string name="brand_Saved">Brand is saved</string>
     <string name="all_categories">All Categories</string>
@@ -37,7 +36,7 @@
     <string name="no_items_for_this_category">No items found for this category</string>
     <string name="cannot_erase_category">This category is used by some trains. You cannot erase this category</string>
     <string name="cannot_erase_brand">This brand is used by some trains. You cannot erase this brand</string>
-    <string name="cd_product_image">imzge of the train</string>
+    <string name="cd_product_image">image of the train</string>
     <string name="cd_edit_icon">Edit icon</string>
     <string name="cd_train_icon_for_brands">Train icon which shows the trains from this brand</string>
     <string name="cd_web_icon_fror_brands">Web icon for opening the website of the brand</string>

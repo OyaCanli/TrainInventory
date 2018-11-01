@@ -133,7 +133,6 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onActivityCreated(@Nullable final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.d("ADDTRAINFRAGMENT", "OnActivityCreated is called");
 
         TrainDatabase database = TrainDatabase.getInstance(getActivity().getApplicationContext());
 
@@ -152,7 +151,6 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 brandList.clear();
                 brandList.addAll(brandEntries);
                 brandAdapter.notifyDataSetChanged();
-                Log.d("ADDTRAINFRAGMENT", "Brandlist loaded");
             }
         });
 
@@ -168,7 +166,6 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 categoryList.clear();
                 categoryList.addAll(categoryEntries);
                 categoryAdapter.notifyDataSetChanged();
-                Log.d("ADDTRAINFRAGMENT", "categorylist loaded");
             }
         });
 
@@ -188,7 +185,6 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                     binding.setChosenTrain(trainEntry);
                     binding.executePendingBindings();
                     mChosenTrain = trainEntry;
-                    Log.d("ADDTRAINFRAGMENT", "Chosen train loaded");
                     if(savedInstanceState != null) {
                         restoreState(savedInstanceState);
                     }
@@ -235,7 +231,6 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     }
 
     private void restoreState(@NonNull Bundle savedInstanceState) {
-        Log.d("ADDTRAINFRAGMENT", "restoreState is called");
         binding.brandSpinner.setSelection(savedInstanceState.getInt(Constants.BRAND_SPINNER_POSITION));
         binding.categorySpinner.setSelection(savedInstanceState.getInt(Constants.CATEGORY_SPINNER_POSITION));
         mImageUri = savedInstanceState.getString(Constants.IMAGE_URL);

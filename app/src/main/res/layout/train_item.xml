@@ -11,6 +11,8 @@
         <variable
             name="trainItemClick"
             type="com.canli.oya.traininventory.adapters.TrainAdapter.TrainItemClickListener" />
+
+        <import type="com.canli.oya.traininventory.utils.DataBindingUtils" />
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -84,7 +86,8 @@
             android:textStyle="italic"
             app:layout_constraintBaseline_toBaselineOf="@+id/train_item_train_name"
             app:layout_constraintStart_toEndOf="@+id/train_item_train_name"
-            tools:text="(Vagon)"/>
+            tools:text="(Vagon)"
+            android:text="@{DataBindingUtils.encloseInParanthesis(train.categoryName)}"/>
 
     </android.support.constraint.ConstraintLayout>
 </layout>

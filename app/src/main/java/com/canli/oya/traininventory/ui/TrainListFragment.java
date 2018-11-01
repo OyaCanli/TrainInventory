@@ -49,7 +49,7 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
         setHasOptionsMenu(true);
 
         //Set recycler view
-        mAdapter = new TrainAdapter(getActivity(), this);
+        mAdapter = new TrainAdapter(this);
         binding.list.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.list.setItemAnimator(new DefaultItemAnimator());
         binding.list.setAdapter(mAdapter);
