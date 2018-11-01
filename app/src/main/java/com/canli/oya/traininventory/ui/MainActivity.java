@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     private ActivityMainBinding binding;
     private boolean thereAreUnsavedChanges;
-    private static final String TAG = "MainActivity";
     private FragmentManager fm;
     private TrainListFragment mTrainListFragment;
     private BrandListFragment mBrandListFragment;
@@ -41,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setSupportActionBar(binding.toolbar);
 
         binding.navigation.setOnNavigationItemSelectedListener(this);
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
         fm = getSupportFragmentManager();
 
         //Bring the train list fragment at the launch of activity
@@ -97,8 +97,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private void hideOrShowBottomNavigation(Fragment currentFrag) {
         if (currentFrag instanceof AddTrainFragment) {
             binding.navigation.setVisibility(View.GONE);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         } else {
             binding.navigation.setVisibility(View.VISIBLE);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
     }
 

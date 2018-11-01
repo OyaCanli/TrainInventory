@@ -287,8 +287,11 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_save) {
+        int id = item.getItemId();
+        if (id == R.id.action_save) {
             saveTrain();
+        } else if(id == android.R.id.home){
+            getActivity().onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }

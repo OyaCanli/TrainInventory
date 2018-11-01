@@ -12,7 +12,6 @@ import com.canli.oya.traininventory.data.repositories.BrandRepository;
 import com.canli.oya.traininventory.data.repositories.CategoryRepository;
 import com.canli.oya.traininventory.data.repositories.TrainRepository;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class MainViewModel extends ViewModel {
@@ -24,8 +23,6 @@ public class MainViewModel extends ViewModel {
     private BrandRepository mBrandRepo;
     private CategoryRepository mCategoryRepo;
     private final MutableLiveData<BrandEntry> mChosenBrand = new MutableLiveData<>();
-    public LinkedList<String> fragmentHistory = new LinkedList<>();
-    private MutableLiveData<String> mCurrentFrag = new MutableLiveData<>();
 
     /////////// TRAIN LIST /////////////
     public void loadTrainList(TrainRepository trainRepo){
