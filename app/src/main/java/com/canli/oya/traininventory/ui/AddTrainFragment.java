@@ -72,6 +72,7 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
     private MainViewModel mViewModel;
     private TrainEntry mChosenTrain;
     private boolean isEdit;
+    private boolean brandsLoaded, categoryLoaded, trainLoaded;
     private TextWatcher mTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -151,6 +152,8 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 brandList.clear();
                 brandList.addAll(brandEntries);
                 brandAdapter.notifyDataSetChanged();
+                brandsLoaded = true;
+                setSpinners();
             }
         });
 
@@ -166,6 +169,8 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                 categoryList.clear();
                 categoryList.addAll(categoryEntries);
                 categoryAdapter.notifyDataSetChanged();
+                categoryLoaded = true;
+                setSpinners();
             }
         });
 
@@ -185,33 +190,14 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
                     binding.setChosenTrain(trainEntry);
                     binding.executePendingBindings();
                     mChosenTrain = trainEntry;
+                    trainLoaded = true;
+                    setSpinners();
                     if(savedInstanceState != null) {
                         restoreState(savedInstanceState);
                     }
                 }
             });
-            //Set a mediator live data to organize multiple liveData sources
-            // Wait for all there to be loaded before setting the spinners.
-            final MediatorLiveData<Integer> mediatorLiveData = new MediatorLiveData();
-            mediatorLiveData.setValue(0);
-            Observer observer = new Observer() {
-                @Override
-                public void onChanged(@Nullable Object o) {
-                    mediatorLiveData.setValue(mediatorLiveData.getValue() + 1);
-                }
-            };
-            mediatorLiveData.addSource(mViewModel.getBrandList(), observer);
-            mediatorLiveData.addSource(mViewModel.getCategoryList(), observer);
-            mediatorLiveData.addSource(viewModel.getChosenTrain(), observer);
-            mediatorLiveData.observe(this, new Observer<Integer>() {
-                @Override
-                public void onChanged(@Nullable Integer count) {
-                    if (savedInstanceState == null && count >= 3 ) {
-                        setCategorySpinner();
-                        setBrandSpinner();
-                    }
-                }
-            });
+
             setTouchListenersToEditTexts();
         } else { //This is the "add" case
             getActivity().setTitle(getString(R.string.add_train));
@@ -247,18 +233,19 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         binding.editScale.setText(savedInstanceState.getString(Constants.SCALE_ET));
     }
 
-    private void setCategorySpinner() {
-        binding.categorySpinner.setSelection(categoryList.indexOf(mChosenTrain.getCategoryName()));
-    }
-
-    private void setBrandSpinner() {
-        int brandIndex = 0;
-        for (int i = 0; i < brandList.size(); i++) {
-            if (brandList.get(i).getBrandName().equals(mChosenTrain.getBrandName())) {
-                brandIndex = i;
+    private void setSpinners() {
+        if(trainLoaded && categoryLoaded && brandsLoaded){
+            //Set category spinner
+            binding.categorySpinner.setSelection(categoryList.indexOf(mChosenTrain.getCategoryName()));
+            //Set brand spinner
+            int brandIndex = 0;
+            for (int i = 0; i < brandList.size(); i++) {
+                if (brandList.get(i).getBrandName().equals(mChosenTrain.getBrandName())) {
+                    brandIndex = i;
+                }
             }
+            binding.brandSpinner.setSelection(brandIndex);
         }
-        binding.brandSpinner.setSelection(brandIndex);
     }
 
     @Override
