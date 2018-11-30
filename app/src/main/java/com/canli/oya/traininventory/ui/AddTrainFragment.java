@@ -178,7 +178,6 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
         //"Edit" case
         if (bundle != null && bundle.containsKey(Constants.TRAIN_ID)) {
             getActivity().setTitle(getString(R.string.edit_train));
-            binding.setIsEdit(true);
             isEdit = true;
             mTrainId = bundle.getInt(Constants.TRAIN_ID);
             //This view model is instantiated only in edit mode. It contains the chosen train. It is attached to this fragment
@@ -201,7 +200,6 @@ public class AddTrainFragment extends Fragment implements View.OnClickListener,
             setTouchListenersToEditTexts();
         } else { //This is the "add" case
             getActivity().setTitle(getString(R.string.add_train));
-            binding.setIsEdit(false);
             binding.executePendingBindings();
             isEdit = false;
             setChangeListenersToEdittexts();

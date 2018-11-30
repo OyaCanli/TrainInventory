@@ -8,10 +8,6 @@
             name="chosenTrain"
             type="com.canli.oya.traininventory.data.entities.TrainEntry" />
 
-        <variable
-            name="isEdit"
-            type="boolean" />
-
         <import type="com.canli.oya.traininventory.utils.DataBindingUtils" />
     </data>
 
@@ -72,7 +68,7 @@
                 style="@style/editTextStyle"
                 android:hint="@string/hint_reference"
                 android:inputType="textCapCharacters"
-                android:text="@{isEdit ? chosenTrain.modelReference : null}"
+                android:text="@{chosenTrain.modelReference}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.466"
                 app:layout_constraintStart_toEndOf="@+id/barrier"
@@ -90,7 +86,7 @@
                 style="@style/editTextStyle"
                 android:hint="@string/hint_train_name"
                 android:inputType="textCapWords"
-                android:text="@{isEdit ? chosenTrain.trainName : null}"
+                android:text="@{chosenTrain.trainName}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/barrier"
                 app:layout_constraintTop_toBottomOf="@+id/editReference" />
@@ -107,7 +103,7 @@
                 style="@style/editTextStyle"
                 android:hint="@string/hint_quantity"
                 android:inputType="number"
-                android:text="@{isEdit ? String.valueOf(chosenTrain.quantity) : null}"
+                android:text="@{String.valueOf(chosenTrain.quantity)}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.483"
                 app:layout_constraintStart_toEndOf="@+id/barrier"
@@ -130,7 +126,7 @@
                 android:layout_marginTop="@dimen/margin_standard"
                 android:layout_marginEnd="@dimen/half_margin"
                 android:contentDescription="@string/cd_details_gallery_icon"
-                android:src="@{isEdit ? chosenTrain.imageUri : null}"
+                android:src="@{chosenTrain.imageUri}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editTrainDescription" />
@@ -160,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_train_description"
                 android:inputType="textMultiLine"
-                android:text="@{isEdit ? chosenTrain.description : null}"
+                android:text="@{chosenTrain.description}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView7" />
@@ -273,7 +269,7 @@
                 android:ems="10"
                 android:hint="@string/hint_train_scale"
                 android:inputType="textPersonName"
-                android:text="@{isEdit ? chosenTrain.scale : null}"
+                android:text="@{chosenTrain.scale}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/barrier"
                 app:layout_constraintTop_toBottomOf="@+id/editTrainName" />
