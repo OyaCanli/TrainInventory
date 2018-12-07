@@ -48,7 +48,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.313"
-            app:srcCompat="@drawable/train_icon" />
+            app:srcCompat="@drawable/ic_train" />
 
         <TextView
             android:id="@+id/empty_text"

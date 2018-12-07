@@ -64,7 +64,7 @@
             android:layout_marginTop="@dimen/half_margin"
             android:padding="@dimen/small_padding"
             android:contentDescription="@string/cd_web_icon_fror_brands"
-            android:src="@drawable/link_symbol"
+            app:srcCompat="@drawable/link_symbol"
             android:onClick="@{(theView) ->  brandItemClick.onBrandItemClicked(theView, brand)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/brand_item_train_icon"
@@ -81,7 +81,7 @@
             app:layout_constraintStart_toEndOf="@+id/brand_item_web_icon"
             app:layout_constraintTop_toTopOf="@+id/brand_item_web_icon"
             android:contentDescription="@string/cd_train_icon_for_brands"
-            android:src="@drawable/ic_train_list_item"
+            app:srcCompat="@drawable/ic_train_list_item"
             android:onClick="@{(theView) ->  brandItemClick.onBrandItemClicked(theView, brand)}"
             />
 
@@ -94,7 +94,7 @@
             app:layout_constraintStart_toEndOf="@+id/brand_item_train_icon"
             app:layout_constraintTop_toTopOf="@+id/brand_item_train_icon"
             android:contentDescription="@string/cd_edit_icon"
-            android:src="@drawable/ic_edit_colored"
+            app:srcCompat="@drawable/ic_edit_colored"
             android:onClick="@{(theView) ->  brandItemClick.onBrandItemClicked(theView, brand)}" />
     </android.support.constraint.ConstraintLayout>
 </layout>
