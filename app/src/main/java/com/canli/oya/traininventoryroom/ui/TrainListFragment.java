@@ -17,6 +17,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.canli.oya.traininventoryroom.R;
 import com.canli.oya.traininventoryroom.adapters.TrainAdapter;
@@ -78,6 +80,7 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
                             if (trainEntries == null || trainEntries.isEmpty()) {
                                 binding.setIsEmpty(true);
                                 binding.setEmptyMessage(getString(R.string.no_train_for_this_brand));
+                                animateTrainLogo();
                             } else {
                                 binding.setIsEmpty(false);
                                 mAdapter.setTrains(trainEntries);
@@ -96,6 +99,7 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
                             if (trainEntries == null || trainEntries.isEmpty()) {
                                 binding.setIsEmpty(true);
                                 binding.setEmptyMessage(getString(R.string.no_items_for_this_category));
+                                animateTrainLogo();
                             } else {
                                 binding.setIsEmpty(false);
                                 mAdapter.setTrains(trainEntries);
@@ -114,6 +118,7 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
                             if (trainEntries == null || trainEntries.isEmpty()) {
                                 binding.setIsEmpty(true);
                                 binding.setEmptyMessage(getString(R.string.no_trains_found));
+                                animateTrainLogo();
                             } else {
                                 binding.setIsEmpty(false);
                                 mAdapter.setTrains(trainEntries);
@@ -198,6 +203,11 @@ public class TrainListFragment extends Fragment implements TrainAdapter.TrainIte
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    private void animateTrainLogo() {
+        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.translate_from_left);
+        binding.emptyImage.startAnimation(animation);
     }
 
     public void scrollToTop() {

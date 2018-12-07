@@ -23,6 +23,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.canli.oya.traininventoryroom.R;
@@ -75,6 +77,8 @@ public class BrandListFragment extends Fragment implements BrandAdapter.BrandIte
                 if (brandEntries == null || brandEntries.isEmpty()) {
                     binding.included.setIsEmpty(true);
                     binding.included.setEmptyMessage(getString(R.string.no_brands_found));
+                    Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.translate_from_left);
+                    binding.included.emptyImage.startAnimation(animation);
                 } else {
                     adapter.setBrands(brandEntries);
                     brands = brandEntries;
