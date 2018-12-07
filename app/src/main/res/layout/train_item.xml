@@ -6,13 +6,13 @@
     <data>
         <variable
             name="train"
-            type="com.canli.oya.traininventory.data.entities.TrainEntry"/>
+            type="com.canli.oya.traininventoryroom.data.entities.TrainEntry"/>
 
         <variable
             name="trainItemClick"
-            type="com.canli.oya.traininventory.adapters.TrainAdapter.TrainItemClickListener" />
+            type="com.canli.oya.traininventoryroom.adapters.TrainAdapter.TrainItemClickListener" />
 
-        <import type="com.canli.oya.traininventory.utils.DataBindingUtils" />
+        <import type="com.canli.oya.traininventoryroom.utils.DataBindingUtils" />
     </data>
 
     <android.support.constraint.ConstraintLayout

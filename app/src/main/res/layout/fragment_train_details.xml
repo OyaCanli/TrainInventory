@@ -7,7 +7,7 @@
 
         <variable
             name="chosenTrain"
-            type="com.canli.oya.traininventory.data.entities.TrainEntry" />
+            type="com.canli.oya.traininventoryroom.data.entities.TrainEntry" />
     </data>
 
     <ScrollView

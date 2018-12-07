@@ -5,11 +5,11 @@
 
     <data>
         <variable name="brand"
-            type="com.canli.oya.traininventory.data.entities.BrandEntry"/>
+            type="com.canli.oya.traininventoryroom.data.entities.BrandEntry"/>
 
         <variable
             name="brandItemClick"
-            type="com.canli.oya.traininventory.adapters.BrandAdapter.BrandItemClickListener" />
+            type="com.canli.oya.traininventoryroom.adapters.BrandAdapter.BrandItemClickListener" />
     </data>
 
     <android.support.constraint.ConstraintLayout

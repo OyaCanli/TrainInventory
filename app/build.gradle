@@ -6,7 +6,7 @@ android {
         enabled = true
     }
     defaultConfig {
-        applicationId "com.canli.oya.traininventory"
+        applicationId "com.canli.oya.traininventoryroom"
         minSdkVersion 16
         targetSdkVersion rootProject.ext.compileSdkVersion
         versionCode 1

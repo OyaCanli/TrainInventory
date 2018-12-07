@@ -9,7 +9,7 @@
             type="String"/>
         <variable
             name="categoryItemClick"
-            type="com.canli.oya.traininventory.adapters.CategoryAdapter.CategoryItemClickListener" />
+            type="com.canli.oya.traininventoryroom.adapters.CategoryAdapter.CategoryItemClickListener" />
     </data>
 
     <android.support.constraint.ConstraintLayout

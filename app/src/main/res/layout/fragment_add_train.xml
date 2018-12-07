@@ -6,9 +6,9 @@
     <data>
         <variable
             name="chosenTrain"
-            type="com.canli.oya.traininventory.data.entities.TrainEntry" />
+            type="com.canli.oya.traininventoryroom.data.entities.TrainEntry" />
 
-        <import type="com.canli.oya.traininventory.utils.DataBindingUtils" />
+        <import type="com.canli.oya.traininventoryroom.utils.DataBindingUtils" />
     </data>
 
     <ScrollView
