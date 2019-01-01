@@ -40,12 +40,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setSupportActionBar(binding.toolbar);
 
         binding.navigation.setOnNavigationItemSelectedListener(this);
-        getSupportFragmentManager().addOnBackStackChangedListener(this);
         fm = getSupportFragmentManager();
-
+        fm.addOnBackStackChangedListener(this);
+        
         //Bring the train list fragment at the launch of activity
         if (savedInstanceState == null) {
-            FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction()
                     .setCustomAnimations(0, android.R.animator.fade_out)
                     .add(R.id.container, getCategoryListFragment())
