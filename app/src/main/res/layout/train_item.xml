@@ -6,7 +6,7 @@
     <data>
         <variable
             name="train"
-            type="com.canli.oya.traininventoryroom.data.entities.TrainEntry"/>
+            type="com.canli.oya.traininventoryroom.data.TrainEntry"/>
 
         <variable
             name="trainItemClick"
@@ -62,7 +62,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@{train.imageUri}"
+            app:imageUrl="@{train.imageUri}"
             android:contentDescription="@string/cd_product_image"/>
 
         <TextView

@@ -5,7 +5,7 @@
 
     <data>
         <variable name="brand"
-            type="com.canli.oya.traininventoryroom.data.entities.BrandEntry"/>
+            type="com.canli.oya.traininventoryroom.data.BrandEntry"/>
 
         <variable
             name="brandItemClick"
@@ -52,7 +52,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@{brand.brandLogoUri}" />
+            app:imageUrl="@{brand.brandLogoUri}" />
 
         <ImageView
             android:id="@+id/brand_item_web_icon"

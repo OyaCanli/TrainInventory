@@ -6,7 +6,7 @@
     <data>
         <variable
             name="chosenTrain"
-            type="com.canli.oya.traininventoryroom.data.entities.TrainEntry" />
+            type="com.canli.oya.traininventoryroom.data.TrainEntry" />
 
         <import type="com.canli.oya.traininventoryroom.utils.DataBindingUtils" />
     </data>
@@ -126,7 +126,7 @@
                 android:layout_marginTop="@dimen/margin_standard"
                 android:layout_marginEnd="@dimen/half_margin"
                 android:contentDescription="@string/cd_details_gallery_icon"
-                android:src="@{chosenTrain.imageUri}"
+                app:imageUrl="@{chosenTrain.imageUri}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editTrainDescription" />

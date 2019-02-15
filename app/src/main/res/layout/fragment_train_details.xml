@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="chosenTrain"
-            type="com.canli.oya.traininventoryroom.data.entities.TrainEntry" />
+            type="com.canli.oya.traininventoryroom.data.TrainEntry" />
     </data>
 
     <ScrollView
@@ -30,7 +29,7 @@
                 android:layout_marginLeft="@dimen/half_margin"
                 android:layout_marginTop="@dimen/half_margin"
                 android:contentDescription="@string/cd_chosen_train_image"
-                android:src="@{chosenTrain.imageUri}"
+                app:imageUrl="@{chosenTrain.imageUri}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

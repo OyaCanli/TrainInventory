@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -43,13 +46,16 @@ dependencies {
 
     //Room
     implementation "android.arch.persistence.room:runtime:${rootProject.ext.roomVersion}"
-    annotationProcessor "android.arch.persistence.room:compiler:${rootProject.ext.roomVersion}"
+    kapt "android.arch.persistence.room:compiler:${rootProject.ext.roomVersion}"
 
     //ViewModel and liveData
     implementation "android.arch.lifecycle:extensions:${rootProject.ext.lifecycleVersion}"
-    annotationProcessor "android.arch.lifecycle:compiler:${rootProject.ext.lifecycleVersion}"
+    kapt "android.arch.lifecycle:compiler:${rootProject.ext.lifecycleVersion}"
 
     //Glide
     implementation "com.github.bumptech.glide:glide:${rootProject.ext.glideVersion}"
-    annotationProcessor "com.github.bumptech.glide:compiler:${rootProject.ext.glideVersion}"
+    kapt "com.github.bumptech.glide:compiler:${rootProject.ext.glideVersion}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    kapt "com.android.databinding:baseLibrary:$gradle_version"
 }

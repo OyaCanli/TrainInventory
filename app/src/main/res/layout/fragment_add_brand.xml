@@ -5,7 +5,7 @@
     <data>
         <variable
             name="chosenBrand"
-            type="com.canli.oya.traininventoryroom.data.entities.BrandEntry" />
+            type="com.canli.oya.traininventoryroom.data.BrandEntry" />
         <variable
             name="isEdit"
             type="boolean" />
@@ -67,7 +67,7 @@
             android:contentDescription="@string/cd_brand_logo_edit"
             app:layout_constraintStart_toStartOf="@+id/addBrand_editBrandName"
             app:layout_constraintTop_toBottomOf="@+id/addBrand_editWeb"
-            android:src="@{isEdit ? chosenBrand.brandLogoUri : null}"/>
+            app:imageUrl="@{isEdit ? chosenBrand.brandLogoUri : null}"/>
 
         <Button
             android:id="@+id/addBrand_saveBtn"
