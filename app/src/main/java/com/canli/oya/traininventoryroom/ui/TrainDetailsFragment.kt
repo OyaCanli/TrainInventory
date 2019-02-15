@@ -1,12 +1,11 @@
 package com.canli.oya.traininventoryroom.ui
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
-import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
 import android.view.*
+import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentTrainDetailsBinding
@@ -15,7 +14,7 @@ import com.canli.oya.traininventoryroom.utils.TRAIN_ID
 import com.canli.oya.traininventoryroom.viewmodel.ChosenTrainViewModel
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 
-class TrainDetailsFragment : Fragment() {
+class TrainDetailsFragment : androidx.fragment.app.Fragment() {
 
     private lateinit var binding: FragmentTrainDetailsBinding
     private var mChosenTrain: TrainEntry? = null
@@ -48,18 +47,18 @@ class TrainDetailsFragment : Fragment() {
     }
 
     private fun populateUI(chosenTrain: TrainEntry) {
-        activity!!.title = chosenTrain.trainName
+        activity?.title = chosenTrain.trainName
         binding.chosenTrain = chosenTrain
         binding.executePendingBindings()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater!!.inflate(R.menu.menu_train_details, menu)
+        inflater.inflate(R.menu.menu_train_details, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.action_delete -> {
                 openAlertDialogForDelete()
             }

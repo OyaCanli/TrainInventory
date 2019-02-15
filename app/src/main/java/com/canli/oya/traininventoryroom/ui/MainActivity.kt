@@ -1,29 +1,27 @@
 package com.canli.oya.traininventoryroom.ui
 
 import android.content.Context
-import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.support.design.widget.BottomNavigationView
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ActivityMainBinding
 import com.canli.oya.traininventoryroom.utils.ALL_TRAIN
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
 import com.canli.oya.traininventoryroom.utils.UNSAVED_CHANGES
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
-class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener, AddTrainFragment.UnsavedChangesListener, FragmentManager.OnBackStackChangedListener {
+class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener, AddTrainFragment.UnsavedChangesListener, androidx.fragment.app.FragmentManager.OnBackStackChangedListener {
 
     private lateinit var binding: ActivityMainBinding
     private var thereAreUnsavedChanges: Boolean = false
-    private lateinit var fm: FragmentManager
+    private lateinit var fm: androidx.fragment.app.FragmentManager
     private var mTrainListFragment: TrainListFragment? = null
     private var mBrandListFragment: BrandListFragment? = null
     private var mCategoryListFragment: CategoryListFragment? = null
@@ -103,7 +101,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         return true
     }
 
-    private fun hideOrShowBottomNavigation(currentFrag: Fragment?) {
+    private fun hideOrShowBottomNavigation(currentFrag: androidx.fragment.app.Fragment?) {
         if (currentFrag is AddTrainFragment) {
             binding.navigation.visibility = View.GONE
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -123,7 +121,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
     }
 
-    fun setMenuItemChecked(currentFrag: Fragment?) {
+    fun setMenuItemChecked(currentFrag: androidx.fragment.app.Fragment?) {
         /*If user navigates with back button, active menu item doesn't adapt itself.
         We need to set it checked programmatically.*/
         if (currentFrag is BrandListFragment) {

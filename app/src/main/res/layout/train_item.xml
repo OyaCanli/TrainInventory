@@ -15,7 +15,7 @@
         <import type="com.canli.oya.traininventoryroom.utils.DataBindingUtils" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/half_margin"
@@ -89,5 +89,5 @@
             tools:text="(Vagon)"
             android:text="@{DataBindingUtils.encloseInParanthesis(train.categoryName)}"/>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

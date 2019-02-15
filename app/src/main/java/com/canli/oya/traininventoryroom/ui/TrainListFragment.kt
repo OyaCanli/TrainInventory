@@ -1,15 +1,12 @@
 package com.canli.oya.traininventoryroom.ui
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
-import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.SearchView
 import android.view.*
 import android.view.animation.AnimationUtils
+import androidx.appcompat.widget.SearchView
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.adapters.TrainAdapter
 import com.canli.oya.traininventoryroom.data.TrainEntry
@@ -17,7 +14,7 @@ import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.utils.*
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 
-class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener {
+class TrainListFragment : androidx.fragment.app.Fragment(), TrainAdapter.TrainItemClickListener {
 
     private val mViewModel by lazy {
         ViewModelProviders.of(requireActivity()).get(MainViewModel::class.java)
@@ -39,8 +36,8 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener {
 
         //Set recycler view
         mAdapter = TrainAdapter(this)
-        binding.list.layoutManager = LinearLayoutManager(activity)
-        binding.list.itemAnimator = DefaultItemAnimator()
+        binding.list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity)
+        binding.list.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
         binding.list.adapter = mAdapter
 
         return binding.root
@@ -118,10 +115,10 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener {
                 .commit()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater!!.inflate(R.menu.menu_search_and_add, menu)
-        val searchView = menu!!.findItem(R.id.action_search).actionView as SearchView
+        inflater.inflate(R.menu.menu_search_and_add, menu)
+        val searchView = menu.findItem(R.id.action_search).actionView as SearchView
         //added filter to list (dynamic change input text)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
@@ -151,8 +148,8 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item!!.itemId == R.id.action_add) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_add) {
             openAddTrainFragment()
         }
         return super.onOptionsItemSelected(item)
@@ -161,11 +158,11 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener {
     private fun openAddTrainFragment() {
         val addTrainFragment = AddTrainFragment()
         val fm = fragmentManager
-        fm!!.beginTransaction()
-                .replace(R.id.container, addTrainFragment)
-                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                .addToBackStack(null)
-                .commit()
+        fm?.beginTransaction()
+                ?.replace(R.id.container, addTrainFragment)
+                ?.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                ?.addToBackStack(null)
+                ?.commit()
     }
 
     private fun animateTrainLogo() {

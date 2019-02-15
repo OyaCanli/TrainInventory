@@ -12,7 +12,7 @@
             type="com.canli.oya.traininventoryroom.adapters.CategoryAdapter.CategoryItemClickListener" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/half_margin"
@@ -47,6 +47,6 @@
             app:srcCompat="@drawable/ic_train_list_item"
             android:contentDescription="@string/cd_category_item_train_btn"/>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

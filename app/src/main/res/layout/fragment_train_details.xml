@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_standard"
@@ -156,6 +156,6 @@
                 app:layout_constraintBaseline_toBaselineOf="@+id/textView13"
                 app:layout_constraintStart_toEndOf="@+id/textView13"
                 tools:text="3M" />
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>

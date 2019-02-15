@@ -1,6 +1,6 @@
 package com.canli.oya.traininventoryroom.data.repositories
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 
 import com.canli.oya.traininventoryroom.data.TrainDatabase
 import com.canli.oya.traininventoryroom.data.TrainEntry

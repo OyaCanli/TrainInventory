@@ -2,26 +2,24 @@ package com.canli.oya.traininventoryroom.ui
 
 import android.Manifest
 import android.app.Activity.RESULT_OK
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.databinding.DataBindingUtil
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentTransaction
-import android.support.v4.content.ContextCompat
-import android.support.v4.content.FileProvider
-import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
@@ -31,7 +29,7 @@ import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 import java.io.File
 import java.io.IOException
 
-class AddBrandFragment : Fragment(), View.OnClickListener {
+class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentAddBrandBinding
 
@@ -50,7 +48,7 @@ class AddBrandFragment : Fragment(), View.OnClickListener {
 
     private val mDialogClickListener = DialogInterface.OnClickListener { _, item -> mUsersChoice = item }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         mContext = context
     }
@@ -124,7 +122,7 @@ class AddBrandFragment : Fragment(), View.OnClickListener {
 
         //Remove fragment
         val parentFrag = parentFragment
-        val currentInstance: Fragment?
+        val currentInstance: androidx.fragment.app.Fragment?
         if (parentFrag is AddTrainFragment) {
             currentInstance = fragmentManager?.findFragmentById(R.id.childFragContainer)
         } else {
@@ -140,7 +138,7 @@ class AddBrandFragment : Fragment(), View.OnClickListener {
         }
 
         fragmentManager!!.beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                .setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                 .remove(currentInstance!!)
                 .commit()
 

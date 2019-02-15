@@ -1,7 +1,7 @@
 package com.canli.oya.traininventoryroom.adapters
 
-import android.databinding.BindingAdapter
 import android.widget.ImageView
+import androidx.databinding.BindingAdapter
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.utils.GlideApp
 

@@ -1,11 +1,11 @@
 package com.canli.oya.traininventoryroom.data
 
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.ForeignKey
-import android.arch.persistence.room.ForeignKey.CASCADE
-import android.arch.persistence.room.ForeignKey.RESTRICT
-import android.arch.persistence.room.Index
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.ForeignKey.CASCADE
+import androidx.room.ForeignKey.RESTRICT
+import androidx.room.Index
+import androidx.room.PrimaryKey
 
 @Entity(tableName = "trains",
         foreignKeys = [ForeignKey(entity = BrandEntry::class,

@@ -14,7 +14,7 @@
 
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/train_item_background"
@@ -108,5 +108,5 @@
             android:text="@string/website"
             app:layout_constraintBaseline_toBaselineOf="@+id/addBrand_editWeb"
             app:layout_constraintEnd_toStartOf="@+id/addBrand_editWeb" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

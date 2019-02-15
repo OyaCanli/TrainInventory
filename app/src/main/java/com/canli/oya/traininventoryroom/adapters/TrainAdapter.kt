@@ -1,15 +1,13 @@
 package com.canli.oya.traininventoryroom.adapters
 
-import android.databinding.DataBindingUtil
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-
+import androidx.databinding.DataBindingUtil
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.TrainItemBinding
 
-class TrainAdapter internal constructor(private val mClickListener: TrainItemClickListener) : RecyclerView.Adapter<TrainAdapter.TrainViewHolder>() {
+class TrainAdapter internal constructor(private val mClickListener: TrainItemClickListener) : androidx.recyclerview.widget.RecyclerView.Adapter<TrainAdapter.TrainViewHolder>() {
 
     var trainList: List<TrainEntry>? = null
         set(value) {
@@ -35,7 +33,7 @@ class TrainAdapter internal constructor(private val mClickListener: TrainItemCli
         return trainList?.size ?: 0
     }
 
-    inner class TrainViewHolder(val binding: TrainItemBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class TrainViewHolder(val binding: TrainItemBinding) : androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root)
 
     interface TrainItemClickListener {
         fun onListItemClick(trainId: Int)

@@ -1,14 +1,12 @@
 package com.canli.oya.traininventoryroom.adapters
 
-import android.databinding.DataBindingUtil
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-
+import androidx.databinding.DataBindingUtil
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.CategoryItemBinding
 
-class CategoryAdapter internal constructor(private val mClickListener: CategoryItemClickListener) : RecyclerView.Adapter<CategoryAdapter.CategoryHolder>() {
+class CategoryAdapter internal constructor(private val mClickListener: CategoryItemClickListener) : androidx.recyclerview.widget.RecyclerView.Adapter<CategoryAdapter.CategoryHolder>() {
 
     var categoryList: List<String>? = null
         set(value) {
@@ -34,7 +32,7 @@ class CategoryAdapter internal constructor(private val mClickListener: CategoryI
         return categoryList?.size ?: 0
     }
 
-    inner class CategoryHolder(val binding: CategoryItemBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class CategoryHolder(val binding: CategoryItemBinding) : androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root)
 
     interface CategoryItemClickListener {
         fun onCategoryItemClicked(categoryName: String)

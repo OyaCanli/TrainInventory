@@ -2,19 +2,12 @@ package com.canli.oya.traininventoryroom.ui
 
 import android.Manifest
 import android.app.Activity.RESULT_OK
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v4.content.FileProvider
-import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -22,6 +15,12 @@ import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.adapters.CustomSpinAdapter
 import com.canli.oya.traininventoryroom.data.BrandEntry
@@ -35,7 +34,7 @@ import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 import java.io.File
 import java.io.IOException
 
-class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSelectedListener {
+class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private lateinit var binding: FragmentAddTrainBinding
 
@@ -73,8 +72,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         fun warnForUnsavedChanges(shouldWarn: Boolean)
     }
 
-    // Override onAttach to make sure that the container activity has implemented the callback
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         // This makes sure that the host activity has implemented the callback interface
         // If not, it throws an exception
@@ -83,7 +81,6 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         } catch (e: ClassCastException) {
             throw ClassCastException(context.toString() + " must implement UnsavedChangesListener")
         }
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -219,17 +216,17 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater!!.inflate(R.menu.menu_with_save, menu)
+        inflater.inflate(R.menu.menu_with_save, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        val id = item!!.itemId
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
         if (id == R.id.action_save) {
             saveTrain()
         } else if (id == android.R.id.home) {
-            activity!!.onBackPressed()
+            activity?.onBackPressed()
         }
         return super.onOptionsItemSelected(item)
     }

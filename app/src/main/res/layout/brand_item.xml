@@ -12,7 +12,7 @@
             type="com.canli.oya.traininventoryroom.adapters.BrandAdapter.BrandItemClickListener" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/half_margin"
@@ -96,5 +96,5 @@
             android:contentDescription="@string/cd_edit_icon"
             app:srcCompat="@drawable/ic_edit_colored"
             android:onClick="@{(theView) ->  brandItemClick.onBrandItemClicked(theView, brand)}" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

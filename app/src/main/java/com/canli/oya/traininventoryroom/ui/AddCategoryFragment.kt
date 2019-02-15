@@ -1,22 +1,20 @@
 package com.canli.oya.traininventoryroom.ui
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
-import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentTransaction
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProviders
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddCategoryBinding
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 
 
-class AddCategoryFragment : Fragment() {
+class AddCategoryFragment : androidx.fragment.app.Fragment() {
 
     private var binding: FragmentAddCategoryBinding? = null
     private var mViewModel: MainViewModel? = null
@@ -44,7 +42,7 @@ class AddCategoryFragment : Fragment() {
 
         //Remove the fragment
         val parentFrag = parentFragment
-        val currentInstance: Fragment?
+        val currentInstance: androidx.fragment.app.Fragment?
         if (parentFrag is AddTrainFragment) {
             currentInstance = fragmentManager!!.findFragmentById(R.id.childFragContainer)
         } else {
@@ -59,7 +57,7 @@ class AddCategoryFragment : Fragment() {
         }
 
         fragmentManager!!.beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                .setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                 .remove(currentInstance!!)
                 .commit()
 

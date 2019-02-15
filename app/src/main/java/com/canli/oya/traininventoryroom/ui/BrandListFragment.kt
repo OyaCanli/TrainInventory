@@ -1,31 +1,26 @@
 package com.canli.oya.traininventoryroom.ui
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
-import android.databinding.DataBindingUtil
 import android.net.Uri
 import android.os.Bundle
-import android.support.design.widget.CoordinatorLayout
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.adapters.BrandAdapter
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentBrandlistBinding
 import com.canli.oya.traininventoryroom.utils.*
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
+import com.google.android.material.snackbar.Snackbar
 
-class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener {
+class BrandListFragment : androidx.fragment.app.Fragment(), BrandAdapter.BrandItemClickListener {
 
     private var brands: List<BrandEntry>? = null
     private var adapter: BrandAdapter? = null
@@ -47,8 +42,8 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener {
         setHasOptionsMenu(true)
 
         adapter = BrandAdapter(this)
-        binding.included.list.layoutManager = LinearLayoutManager(activity)
-        binding.included.list.itemAnimator = DefaultItemAnimator()
+        binding.included.list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity)
+        binding.included.list.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
         binding.included.list.adapter = adapter
 
         return binding.root
@@ -72,13 +67,13 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener {
         })
         activity!!.title = getString(R.string.all_brands)
 
-        val coordinator = activity!!.findViewById<CoordinatorLayout>(R.id.coordinator)
+        val coordinator = activity!!.findViewById<androidx.coordinatorlayout.widget.CoordinatorLayout>(R.id.coordinator)
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+            override fun onMove(recyclerView: androidx.recyclerview.widget.RecyclerView, viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, target: androidx.recyclerview.widget.RecyclerView.ViewHolder): Boolean {
                 return false
             }
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            override fun onSwiped(viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
 
                 //First take a backup of the brand to erase
@@ -115,13 +110,13 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener {
                 .commit()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater!!.inflate(R.menu.menu_add_item, menu)
+        inflater.inflate(R.menu.menu_add_item, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item!!.itemId == R.id.action_add) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_add) {
             openAddBrandFragment()
         }
         return super.onOptionsItemSelected(item)
