@@ -14,10 +14,10 @@ interface TrainDao {
     fun getChosenTrain(id: Int): LiveData<TrainEntry>
 
     @Query("SELECT 1 FROM trains WHERE brandName = :brandName")
-    fun isThisBrandUsed(brandName: String): Boolean
+    suspend fun isThisBrandUsed(brandName: String): Boolean
 
     @Query("SELECT 1 FROM trains WHERE categoryName = :categoryName")
-    fun isThisCategoryUsed(categoryName: String): Boolean
+    suspend fun isThisCategoryUsed(categoryName: String): Boolean
 
     @Query("SELECT * FROM trains WHERE brandName = :brandName")
     fun getTrainsFromThisBrand(brandName: String): LiveData<List<TrainEntry>>
@@ -26,14 +26,14 @@ interface TrainDao {
     fun getTrainsFromThisCategory(categoryName: String): LiveData<List<TrainEntry>>
 
     @Query("SELECT * FROM trains WHERE (trainName LIKE '%' || :query || '%') " + "OR (modelReference LIKE '%' || :query || '%') OR (description LIKE '%' || :query || '%')")
-    fun searchInTrains(query: String): List<TrainEntry>
+    suspend fun searchInTrains(query: String): List<TrainEntry>
 
     @Insert
-    fun insertTrain(train: TrainEntry)
+    suspend fun insertTrain(train: TrainEntry)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateTrainInfo(train: TrainEntry)
+    suspend fun updateTrainInfo(train: TrainEntry)
 
     @Delete
-    fun deleteTrain(train: TrainEntry)
+    suspend fun deleteTrain(train: TrainEntry)
 }

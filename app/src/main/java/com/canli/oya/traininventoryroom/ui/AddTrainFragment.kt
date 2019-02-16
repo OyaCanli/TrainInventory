@@ -64,7 +64,7 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
         }
     }
 
-    private val mDialogClickListener = DialogInterface.OnClickListener { dialog, item -> mUsersChoice = item }
+    private val mDialogClickListener = DialogInterface.OnClickListener { _, item -> mUsersChoice = item }
 
     interface UnsavedChangesListener {
         fun warnForUnsavedChanges(shouldWarn: Boolean)

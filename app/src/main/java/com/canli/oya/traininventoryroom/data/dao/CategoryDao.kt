@@ -11,9 +11,9 @@ interface CategoryDao {
     val allCategories: LiveData<List<String>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCategory(category: CategoryEntry)
+    suspend fun insertCategory(category: CategoryEntry)
 
     @Delete
-    fun deleteCategory(category: CategoryEntry)
+    suspend fun deleteCategory(category: CategoryEntry)
 
 }

@@ -30,7 +30,7 @@ data class TrainEntry(
 @Entity(tableName = "brands", indices = [Index(value = ["brandName"], unique = true)])
 data class BrandEntry(
         @PrimaryKey(autoGenerate = true) var brandId: Int = 0,
-        var brandName: String? = null,
+        var brandName: String,
         var brandLogoUri: String? = null,
         var webUrl: String? = null)
 

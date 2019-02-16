@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.view.*
 import android.view.animation.AnimationUtils
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -18,11 +19,21 @@ import com.canli.oya.traininventoryroom.databinding.FragmentBrandlistBinding
 import com.canli.oya.traininventoryroom.utils.*
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.coroutines.CoroutineContext
 
-class BrandListFragment : androidx.fragment.app.Fragment(), BrandAdapter.BrandItemClickListener {
+class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, CoroutineScope {
 
-    private var brands: List<BrandEntry>? = null
+    private lateinit var brandListJob: Job
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + brandListJob
+
+    private lateinit var brands: List<BrandEntry>
     private lateinit var adapter: BrandAdapter
 
     private lateinit var binding: FragmentBrandlistBinding
@@ -40,6 +51,8 @@ class BrandListFragment : androidx.fragment.app.Fragment(), BrandAdapter.BrandIt
                 inflater, R.layout.fragment_brandlist, container, false)
 
         setHasOptionsMenu(true)
+
+        brandListJob = Job()
 
         adapter = BrandAdapter(this)
         binding.included.list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity)
@@ -77,20 +90,18 @@ class BrandListFragment : androidx.fragment.app.Fragment(), BrandAdapter.BrandIt
                 val position = viewHolder.adapterPosition
 
                 //First take a backup of the brand to erase
-                val brandToErase = brands?.get(position)
+                val brandToErase = brands[position]
 
-                AppExecutors.instance.diskIO().execute {
+                launch {
                     //Check whether this brand is used in trains table.
-                    if (mViewModel.isThisBrandUsed(brandToErase?.brandName!!)) {
+                    val isUsed = mViewModel.isThisBrandUsed(brandToErase.brandName)
+                    if (isUsed) {
                         // If it is used, show a warning and don't let the user delete this
-                        activity?.runOnUiThread {
-                            context?.toast( R.string.cannot_erase_brand)
-                            adapter.notifyDataSetChanged()
-                        }
+                        context?.toast(R.string.cannot_erase_brand)
+                        adapter.notifyDataSetChanged()
                     } else {
                         //If it is not used delete the brand
                         mViewModel.deleteBrand(brandToErase)
-
                         //Show a snack bar for undoing delete
                         val snackbar = Snackbar
                                 .make(coordinator, R.string.brand_deleted, Snackbar.LENGTH_INDEFINITE)
@@ -136,8 +147,10 @@ class BrandListFragment : androidx.fragment.app.Fragment(), BrandAdapter.BrandIt
         val args = Bundle()
         args.putString(INTENT_REQUEST_CODE, EDIT_CASE)
         addBrandFrag.arguments = args
-        childFragmentManager.transaction { setCustomAnimations(R.anim.translate_from_top, 0)
-                    .replace(R.id.brandlist_addFrag_container, addBrandFrag) }
+        childFragmentManager.transaction {
+            setCustomAnimations(R.anim.translate_from_top, 0)
+                    .replace(R.id.brandlist_addFrag_container, addBrandFrag)
+        }
     }
 
     private fun showTrainsFromThisBrand(clickedBrand: BrandEntry) {
@@ -146,9 +159,11 @@ class BrandListFragment : androidx.fragment.app.Fragment(), BrandAdapter.BrandIt
         args.putString(INTENT_REQUEST_CODE, TRAINS_OF_BRAND)
         args.putString(BRAND_NAME, clickedBrand.brandName)
         trainListFrag.arguments = args
-        fragmentManager?.transaction { replace(R.id.container, trainListFrag)
-                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                .addToBackStack(null) }
+        fragmentManager?.transaction {
+            replace(R.id.container, trainListFrag)
+                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                    .addToBackStack(null)
+        }
     }
 
     private fun openWebSite(clickedBrand: BrandEntry) {

@@ -5,6 +5,7 @@ import android.view.*
 import android.view.animation.AnimationUtils
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -16,12 +17,22 @@ import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.utils.*
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
-class TrainListFragment : androidx.fragment.app.Fragment(), TrainAdapter.TrainItemClickListener {
+class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, CoroutineScope {
 
     private val mViewModel by lazy {
         ViewModelProviders.of(requireActivity()).get(MainViewModel::class.java)
     }
+
+    private lateinit var trainListJob: Job
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + trainListJob
 
     private lateinit var binding: FragmentListBinding
     private lateinit var mAdapter: TrainAdapter
@@ -60,7 +71,7 @@ class TrainListFragment : androidx.fragment.app.Fragment(), TrainAdapter.TrainIt
             val requestType = bundle.getString(INTENT_REQUEST_CODE)
             when (requestType) {
                 TRAINS_OF_BRAND -> {
-                    val brandName = bundle.getString(BRAND_NAME)
+                    val brandName= bundle.getString(BRAND_NAME) ?: return
                     activity?.title = getString(R.string.trains_of_the_brand, brandName)
                     mViewModel.getTrainsFromThisBrand(brandName).observe(this@TrainListFragment, Observer { trainEntries ->
                         if (trainEntries == null || trainEntries.isEmpty()) {
@@ -75,7 +86,7 @@ class TrainListFragment : androidx.fragment.app.Fragment(), TrainAdapter.TrainIt
                     })
                 }
                 TRAINS_OF_CATEGORY -> {
-                    val categoryName = bundle.getString(CATEGORY_NAME)
+                    val categoryName = bundle.getString(CATEGORY_NAME) ?: return
                     activity?.title = getString(R.string.all_from_this_Category, categoryName)
                     mViewModel.getTrainsFromThisCategory(categoryName).observe(this@TrainListFragment, Observer { trainEntries ->
                         if (trainEntries.isNullOrEmpty()) {
@@ -141,12 +152,10 @@ class TrainListFragment : androidx.fragment.app.Fragment(), TrainAdapter.TrainIt
             mAdapter.trainList = filteredTrains
             mAdapter.notifyDataSetChanged()
         } else {
-            AppExecutors.instance.diskIO().execute {
+            launch{
                 filteredTrains = mViewModel.searchInTrains(query)
-                activity!!.runOnUiThread {
-                    mAdapter.trainList = filteredTrains
-                    mAdapter.notifyDataSetChanged()
-                }
+                mAdapter.trainList = filteredTrains
+                mAdapter.notifyDataSetChanged()
             }
         }
     }

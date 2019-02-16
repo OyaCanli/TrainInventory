@@ -12,14 +12,12 @@ object InjectorUtils {
 
     fun provideTrainRepo(context: Context): TrainRepository {
         val db = TrainDatabase.getInstance(context)
-        val executors = AppExecutors.instance
-        return TrainRepository.getInstance(db, executors)
+        return TrainRepository.getInstance(db)
     }
 
     fun provideBrandRepo(context: Context): BrandRepository {
         val db = TrainDatabase.getInstance(context)
-        val executors = AppExecutors.instance
-        return BrandRepository.getInstance(db, executors)
+        return BrandRepository.getInstance(db)
     }
 
     fun provideCategoryRepo(context: Context): CategoryRepository {

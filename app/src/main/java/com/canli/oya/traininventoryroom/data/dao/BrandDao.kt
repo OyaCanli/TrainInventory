@@ -14,11 +14,11 @@ interface BrandDao {
     fun getChosenBrand(id: Int): LiveData<BrandEntry>
 
     @Insert
-    fun insertBrand(brand: BrandEntry)
+    suspend fun insertBrand(brand: BrandEntry)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateBrandInfo(brand: BrandEntry)
+    suspend fun updateBrandInfo(brand: BrandEntry)
 
     @Delete
-    fun deleteBrand(brand: BrandEntry)
+    suspend fun deleteBrand(brand: BrandEntry)
 }

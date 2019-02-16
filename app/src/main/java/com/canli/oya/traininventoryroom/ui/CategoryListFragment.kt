@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import android.view.animation.AnimationUtils
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -15,14 +16,24 @@ import com.canli.oya.traininventoryroom.databinding.FragmentBrandlistBinding
 import com.canli.oya.traininventoryroom.utils.*
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
-class CategoryListFragment : androidx.fragment.app.Fragment(), CategoryAdapter.CategoryItemClickListener {
+class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListener, CoroutineScope {
 
     private lateinit var binding: FragmentBrandlistBinding
 
     private val mViewModel by lazy {
         ViewModelProviders.of(requireActivity()).get(MainViewModel::class.java)
     }
+
+    private lateinit var categoryListJob: Job
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + categoryListJob
 
     private lateinit var mAdapter: CategoryAdapter
     private var mCategories: List<String> = emptyList()
@@ -39,7 +50,7 @@ class CategoryListFragment : androidx.fragment.app.Fragment(), CategoryAdapter.C
 
         mAdapter = CategoryAdapter(this)
 
-        with(binding.included.list){
+        with(binding.included.list) {
             layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity)
             itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
             adapter = mAdapter
@@ -59,7 +70,7 @@ class CategoryListFragment : androidx.fragment.app.Fragment(), CategoryAdapter.C
                 val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
                 binding.included.emptyImage.startAnimation(animation)
             } else {
-                mAdapter.categoryList =categoryEntries
+                mAdapter.categoryList = categoryEntries
                 mCategories = categoryEntries
                 binding.included.isEmpty = false
             }
@@ -81,14 +92,13 @@ class CategoryListFragment : androidx.fragment.app.Fragment(), CategoryAdapter.C
                 val categoryToErase = CategoryEntry(mCategories[position])
 
                 //Remove the category from the database
-                AppExecutors.instance.diskIO().execute {
+                launch {
                     //First check whether this category is used by trains table
-                    if (mViewModel.isThisCategoryUsed(categoryToErase.categoryName)) {
+                    val isUsed = mViewModel.isThisCategoryUsed(categoryToErase.categoryName)
+                    if (isUsed) {
                         // If it is used, show a warning and don't let user delete this
-                        activity?.runOnUiThread {
-                            context?.toast(R.string.cannot_erase_category)
-                            mAdapter.notifyDataSetChanged()
-                        }
+                        context?.toast(R.string.cannot_erase_category)
+                        mAdapter.notifyDataSetChanged()
                     } else {
                         //If it is not used, erase the category
                         mViewModel.deleteCategory(categoryToErase)
@@ -120,8 +130,10 @@ class CategoryListFragment : androidx.fragment.app.Fragment(), CategoryAdapter.C
 
     private fun openAddCategoryFragment() {
         val addCatFrag = AddCategoryFragment()
-        childFragmentManager.transaction { setCustomAnimations(R.anim.translate_from_top, 0)
-                .replace(R.id.brandlist_addFrag_container, addCatFrag) }
+        childFragmentManager.transaction {
+            setCustomAnimations(R.anim.translate_from_top, 0)
+                    .replace(R.id.brandlist_addFrag_container, addCatFrag)
+        }
     }
 
     override fun onCategoryItemClicked(categoryName: String) {
@@ -130,9 +142,11 @@ class CategoryListFragment : androidx.fragment.app.Fragment(), CategoryAdapter.C
         args.putString(INTENT_REQUEST_CODE, TRAINS_OF_CATEGORY)
         args.putString(CATEGORY_NAME, categoryName)
         trainListFrag.arguments = args
-        fragmentManager?.transaction { replace(R.id.container, trainListFrag)
-                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                .addToBackStack(null)}
+        fragmentManager?.transaction {
+            replace(R.id.container, trainListFrag)
+                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                    .addToBackStack(null)
+        }
     }
 
 }

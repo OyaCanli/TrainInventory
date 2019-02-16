@@ -1,12 +1,10 @@
 package com.canli.oya.traininventoryroom.data.repositories
 
 import androidx.lifecycle.LiveData
-
 import com.canli.oya.traininventoryroom.data.TrainDatabase
 import com.canli.oya.traininventoryroom.data.TrainEntry
-import com.canli.oya.traininventoryroom.utils.AppExecutors
 
-class TrainRepository private constructor(private val mDatabase: TrainDatabase, private val mExecutors: AppExecutors) {
+class TrainRepository private constructor(private val mDatabase: TrainDatabase) {
     val trainList: LiveData<List<TrainEntry>>
 
     init {
@@ -17,16 +15,16 @@ class TrainRepository private constructor(private val mDatabase: TrainDatabase, 
         return mDatabase.trainDao().allTrains
     }
 
-    fun insertTrain(train: TrainEntry) {
-        mExecutors.diskIO().execute { mDatabase.trainDao().insertTrain(train) }
+    suspend fun insertTrain(train: TrainEntry) {
+        mDatabase.trainDao().insertTrain(train)
     }
 
-    fun updateTrain(train: TrainEntry) {
-        mExecutors.diskIO().execute { mDatabase.trainDao().updateTrainInfo(train) }
+    suspend fun updateTrain(train: TrainEntry) {
+        mDatabase.trainDao().updateTrainInfo(train)
     }
 
-    fun deleteTrain(train: TrainEntry) {
-        mExecutors.diskIO().execute { mDatabase.trainDao().deleteTrain(train) }
+    suspend fun deleteTrain(train: TrainEntry) {
+        mDatabase.trainDao().deleteTrain(train)
     }
 
     fun getTrainsFromThisBrand(brandName: String): LiveData<List<TrainEntry>> {
@@ -37,7 +35,7 @@ class TrainRepository private constructor(private val mDatabase: TrainDatabase, 
         return mDatabase.trainDao().getTrainsFromThisCategory(category)
     }
 
-    fun searchInTrains(query: String): List<TrainEntry> {
+    suspend fun searchInTrains(query: String): List<TrainEntry> {
         return mDatabase.trainDao().searchInTrains(query)
     }
 
@@ -45,9 +43,9 @@ class TrainRepository private constructor(private val mDatabase: TrainDatabase, 
 
         private var sInstance: TrainRepository? = null
 
-        fun getInstance(database: TrainDatabase, executors: AppExecutors): TrainRepository {
+        fun getInstance(database: TrainDatabase): TrainRepository {
             return sInstance ?: synchronized(TrainRepository::class.java) {
-                sInstance ?: TrainRepository(database, executors).also { sInstance = it }
+                sInstance ?: TrainRepository(database).also { sInstance = it }
             }
         }
     }

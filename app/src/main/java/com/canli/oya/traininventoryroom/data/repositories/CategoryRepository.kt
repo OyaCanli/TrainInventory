@@ -3,7 +3,6 @@ package com.canli.oya.traininventoryroom.data.repositories
 import androidx.lifecycle.LiveData
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.utils.AppExecutors
 
 class CategoryRepository private constructor(private val mDatabase: TrainDatabase) {
     val categoryList: LiveData<List<String>>
@@ -16,15 +15,15 @@ class CategoryRepository private constructor(private val mDatabase: TrainDatabas
         return mDatabase.categoryDao().allCategories
     }
 
-    fun insertCategory(category: CategoryEntry) {
-        AppExecutors.instance.diskIO().execute { mDatabase.categoryDao().insertCategory(category) }
+    suspend fun insertCategory(category: CategoryEntry) {
+       mDatabase.categoryDao().insertCategory(category)
     }
 
-    fun deleteCategory(category: CategoryEntry) {
-        AppExecutors.instance.diskIO().execute { mDatabase.categoryDao().deleteCategory(category) }
+    suspend fun deleteCategory(category: CategoryEntry) {
+        mDatabase.categoryDao().deleteCategory(category)
     }
 
-    fun isThisCategoryUsed(category: String): Boolean {
+    suspend fun isThisCategoryUsed(category: String): Boolean {
         return mDatabase.trainDao().isThisCategoryUsed(category)
     }
 

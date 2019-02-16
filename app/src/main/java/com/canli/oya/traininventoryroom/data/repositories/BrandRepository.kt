@@ -3,9 +3,8 @@ package com.canli.oya.traininventoryroom.data.repositories
 import androidx.lifecycle.LiveData
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.utils.AppExecutors
 
-class BrandRepository private constructor(private val mDatabase: TrainDatabase, private val mExecutors: AppExecutors) {
+class BrandRepository private constructor(private val mDatabase: TrainDatabase) {
     val brandList: LiveData<List<BrandEntry>>
 
     init {
@@ -16,19 +15,19 @@ class BrandRepository private constructor(private val mDatabase: TrainDatabase, 
         return mDatabase.brandDao().allBrands
     }
 
-    fun insertBrand(brand: BrandEntry) {
-        mExecutors.diskIO().execute { mDatabase.brandDao().insertBrand(brand) }
+    suspend fun insertBrand(brand: BrandEntry) {
+        mDatabase.brandDao().insertBrand(brand)
     }
 
-    fun updateBrand(brand: BrandEntry) {
-        mExecutors.diskIO().execute { mDatabase.brandDao().updateBrandInfo(brand) }
+    suspend fun updateBrand(brand: BrandEntry) {
+        mDatabase.brandDao().updateBrandInfo(brand)
     }
 
-    fun deleteBrand(brand: BrandEntry) {
-        mExecutors.diskIO().execute { mDatabase.brandDao().deleteBrand(brand) }
+    suspend fun deleteBrand(brand: BrandEntry) {
+        mDatabase.brandDao().deleteBrand(brand)
     }
 
-    fun isThisBrandUsed(brandName: String): Boolean {
+    suspend fun isThisBrandUsed(brandName: String): Boolean {
         return mDatabase.trainDao().isThisBrandUsed(brandName)
     }
 
@@ -36,9 +35,9 @@ class BrandRepository private constructor(private val mDatabase: TrainDatabase, 
 
         private var sInstance: BrandRepository? = null
 
-        fun getInstance(database: TrainDatabase, executors: AppExecutors): BrandRepository {
+        fun getInstance(database: TrainDatabase): BrandRepository {
             return sInstance ?: synchronized(BrandRepository::class.java) {
-                    sInstance ?: BrandRepository(database, executors)
+                    sInstance ?: BrandRepository(database)
                             .also { sInstance = it }
             }
 

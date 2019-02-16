@@ -10,6 +10,7 @@ import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.repositories.BrandRepository
 import com.canli.oya.traininventoryroom.data.repositories.CategoryRepository
 import com.canli.oya.traininventoryroom.data.repositories.TrainRepository
+import kotlinx.coroutines.*
 
 class MainViewModel : ViewModel() {
 
@@ -23,6 +24,9 @@ class MainViewModel : ViewModel() {
     private lateinit var mTrainRepo: TrainRepository
     private lateinit var mBrandRepo: BrandRepository
     private lateinit var mCategoryRepo: CategoryRepository
+
+    private val viewModelJob = Job()
+    private val viewModelScope = CoroutineScope(Dispatchers.IO + viewModelJob)
 
     private val mChosenBrand = MutableLiveData<BrandEntry>()
 
@@ -38,15 +42,15 @@ class MainViewModel : ViewModel() {
     }
 
     fun insertTrain(train: TrainEntry) {
-        mTrainRepo.insertTrain(train)
+        viewModelScope.launch {mTrainRepo.insertTrain(train)}
     }
 
     fun updateTrain(train: TrainEntry) {
-        mTrainRepo.updateTrain(train)
+        viewModelScope.launch {mTrainRepo.updateTrain(train)}
     }
 
     fun deleteTrain(train: TrainEntry) {
-        mTrainRepo.deleteTrain(train)
+        viewModelScope.launch {mTrainRepo.deleteTrain(train)}
     }
 
     ////////////// BRAND LIST //////////////////
@@ -63,18 +67,18 @@ class MainViewModel : ViewModel() {
     }
 
     fun insertBrand(brand: BrandEntry) {
-        mBrandRepo.insertBrand(brand)
+        viewModelScope.launch {mBrandRepo.insertBrand(brand)}
     }
 
-    fun deleteBrand(brand: BrandEntry) {
+    suspend fun deleteBrand(brand: BrandEntry) {
         mBrandRepo.deleteBrand(brand)
     }
 
     fun updateBrand(brand: BrandEntry) {
-        mBrandRepo.updateBrand(brand)
+        viewModelScope.launch {mBrandRepo.updateBrand(brand)}
     }
 
-    fun isThisBrandUsed(brandName: String): Boolean {
+    suspend fun isThisBrandUsed(brandName: String): Boolean {
         return mBrandRepo.isThisBrandUsed(brandName)
     }
 
@@ -88,14 +92,14 @@ class MainViewModel : ViewModel() {
     }
 
     fun deleteCategory(category: CategoryEntry) {
-        mCategoryRepo.deleteCategory(category)
+        viewModelScope.launch {mCategoryRepo.deleteCategory(category)}
     }
 
     fun insertCategory(category: CategoryEntry) {
-        mCategoryRepo.insertCategory(category)
+        viewModelScope.launch { mCategoryRepo.insertCategory(category)}
     }
 
-    fun isThisCategoryUsed(category: String): Boolean {
+    suspend fun isThisCategoryUsed(category: String): Boolean {
         return mCategoryRepo.isThisCategoryUsed(category)
     }
 
@@ -108,7 +112,13 @@ class MainViewModel : ViewModel() {
         return mTrainRepo.getTrainsFromThisCategory(category)
     }
 
-    fun searchInTrains(query: String): List<TrainEntry> {
-        return mTrainRepo.searchInTrains(query)
+    suspend fun searchInTrains(query: String): List<TrainEntry> {
+        val searchResults = viewModelScope.async {mTrainRepo.searchInTrains(query)  }
+        return searchResults.await()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel()
     }
 }
