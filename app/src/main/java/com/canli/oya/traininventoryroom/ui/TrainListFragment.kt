@@ -5,8 +5,11 @@ import android.view.*
 import android.view.animation.AnimationUtils
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.adapters.TrainAdapter
 import com.canli.oya.traininventoryroom.data.TrainEntry
@@ -36,9 +39,12 @@ class TrainListFragment : androidx.fragment.app.Fragment(), TrainAdapter.TrainIt
 
         //Set recycler view
         mAdapter = TrainAdapter(this)
-        binding.list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity)
-        binding.list.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
-        binding.list.adapter = mAdapter
+
+        with(binding.list){
+            layoutManager = LinearLayoutManager(activity)
+            itemAnimator = DefaultItemAnimator()
+            adapter = mAdapter
+        }
 
         return binding.root
     }
@@ -55,7 +61,7 @@ class TrainListFragment : androidx.fragment.app.Fragment(), TrainAdapter.TrainIt
             when (requestType) {
                 TRAINS_OF_BRAND -> {
                     val brandName = bundle.getString(BRAND_NAME)
-                    activity!!.title = getString(R.string.trains_of_the_brand, brandName)
+                    activity?.title = getString(R.string.trains_of_the_brand, brandName)
                     mViewModel.getTrainsFromThisBrand(brandName).observe(this@TrainListFragment, Observer { trainEntries ->
                         if (trainEntries == null || trainEntries.isEmpty()) {
                             binding.isEmpty = true
@@ -70,7 +76,7 @@ class TrainListFragment : androidx.fragment.app.Fragment(), TrainAdapter.TrainIt
                 }
                 TRAINS_OF_CATEGORY -> {
                     val categoryName = bundle.getString(CATEGORY_NAME)
-                    activity!!.title = getString(R.string.all_from_this_Category, categoryName)
+                    activity?.title = getString(R.string.all_from_this_Category, categoryName)
                     mViewModel.getTrainsFromThisCategory(categoryName).observe(this@TrainListFragment, Observer { trainEntries ->
                         if (trainEntries.isNullOrEmpty()) {
                             binding.isEmpty = true
@@ -85,7 +91,7 @@ class TrainListFragment : androidx.fragment.app.Fragment(), TrainAdapter.TrainIt
                 }
                 else -> {
                     //If the list is going to be use for showing all trains, which is the default behaviour
-                    activity!!.title = getString(R.string.all_trains)
+                    activity?.title = getString(R.string.all_trains)
                     mViewModel.trainList?.observe(this@TrainListFragment, Observer { trainEntries ->
                         if (trainEntries.isNullOrEmpty()) {
                             binding.isEmpty = true
@@ -107,12 +113,9 @@ class TrainListFragment : androidx.fragment.app.Fragment(), TrainAdapter.TrainIt
         val args = Bundle()
         args.putInt(TRAIN_ID, trainId)
         trainDetailsFrag.arguments = args
-        val fm = fragmentManager
-        fm!!.beginTransaction()
-                .replace(R.id.container, trainDetailsFrag)
+        fragmentManager?.transaction { replace(R.id.container, trainDetailsFrag)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                .addToBackStack(null)
-                .commit()
+                .addToBackStack(null) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -157,12 +160,9 @@ class TrainListFragment : androidx.fragment.app.Fragment(), TrainAdapter.TrainIt
 
     private fun openAddTrainFragment() {
         val addTrainFragment = AddTrainFragment()
-        val fm = fragmentManager
-        fm?.beginTransaction()
-                ?.replace(R.id.container, addTrainFragment)
-                ?.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                ?.addToBackStack(null)
-                ?.commit()
+        fragmentManager?.transaction { replace(R.id.container, addTrainFragment)
+                setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                addToBackStack(null) }
     }
 
     private fun animateTrainLogo() {

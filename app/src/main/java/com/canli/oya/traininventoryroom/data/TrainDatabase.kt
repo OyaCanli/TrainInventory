@@ -25,7 +25,7 @@ abstract class TrainDatabase : RoomDatabase() {
 
         fun getInstance(context: Context): TrainDatabase {
             return sInstance ?: synchronized(this) {
-                    Room.databaseBuilder(context.applicationContext,
+                    sInstance ?: Room.databaseBuilder(context.applicationContext,
                             TrainDatabase::class.java, TrainDatabase.DATABASE_NAME)
                             .build()
                             .also { sInstance = it }

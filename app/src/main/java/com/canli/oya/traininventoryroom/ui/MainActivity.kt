@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ActivityMainBinding
 import com.canli.oya.traininventoryroom.utils.ALL_TRAIN
@@ -121,16 +122,15 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
     }
 
-    fun setMenuItemChecked(currentFrag: androidx.fragment.app.Fragment?) {
+    private fun setMenuItemChecked(currentFrag: Fragment?) {
         /*If user navigates with back button, active menu item doesn't adapt itself.
         We need to set it checked programmatically.*/
-        if (currentFrag is BrandListFragment) {
-            binding.navigation.menu.getItem(1).isChecked = true
-        } else if (currentFrag is CategoryListFragment) {
-            binding.navigation.menu.getItem(0).isChecked = true
-        } else {
-            binding.navigation.menu.getItem(2).isChecked = true
+        val itemNo = when (currentFrag) {
+            is CategoryListFragment -> 0
+            is BrandListFragment -> 1
+            else -> 2
         }
+        binding.navigation.menu.getItem(itemNo).isChecked = true
     }
 
     override fun onBackPressed() {
@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             thereAreUnsavedChanges = false
             onBackPressed()
         }
-        builder.setNegativeButton(R.string.keep_editing) { dialog, id ->
+        builder.setNegativeButton(R.string.keep_editing) { dialog, _ ->
             // User clicked the "Keep editing" button, so dismiss the dialog
             // and continue editing
             dialog?.dismiss()

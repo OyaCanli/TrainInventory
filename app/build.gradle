@@ -56,5 +56,12 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
+    //Data binding
     kapt "androidx.databinding:databinding-common:$gradle_version"
+
+    //Timber
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    //Kotlin
+    implementation 'androidx.fragment:fragment-ktx:1.0.0'
 }

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.databinding.BrandItemBinding
+import com.canli.oya.traininventoryroom.databinding.ItemBrandBinding
 
 class BrandAdapter internal constructor(
         private val mClickListener: BrandItemClickListener)
@@ -20,7 +20,7 @@ class BrandAdapter internal constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BrandViewHolder {
         val binding = DataBindingUtil
-                .inflate<BrandItemBinding>(LayoutInflater.from(parent.context), R.layout.brand_item,
+                .inflate<ItemBrandBinding>(LayoutInflater.from(parent.context), R.layout.item_brand,
                         parent, false)
         binding.brandItemClick = mClickListener
         return BrandViewHolder(binding)
@@ -36,7 +36,7 @@ class BrandAdapter internal constructor(
         return brandList?.size ?: 0
     }
 
-    inner class BrandViewHolder(val binding: BrandItemBinding) : androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root)
+    inner class BrandViewHolder(val binding: ItemBrandBinding) : androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root)
 
     interface BrandItemClickListener {
         fun onBrandItemClicked(view: View, clickedBrand: BrandEntry)

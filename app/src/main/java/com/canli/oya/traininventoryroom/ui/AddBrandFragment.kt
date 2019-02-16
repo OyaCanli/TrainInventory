@@ -18,6 +18,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_CLOSE
+import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
@@ -40,11 +42,10 @@ class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener 
     private var mContext: Context? = null
     private var mBrandId: Int = 0
 
-    private var pickImageDialog: AlertDialog? = null
-    private var mTempPhotoPath: String? = null
+    private lateinit var mTempPhotoPath: String
     private var mLogoUri: Uri? = null
     private var mUsersChoice: Int = 0
-    private var isUpdateCase: Boolean = false
+    private var isEditCase: Boolean = false
 
     private val mDialogClickListener = DialogInterface.OnClickListener { _, item -> mUsersChoice = item }
 
@@ -70,17 +71,15 @@ class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (arguments?.containsKey(INTENT_REQUEST_CODE) == true) { //This is the "edit" case
-            isUpdateCase = true
+            isEditCase = true
+            binding.isEdit = true
             mViewModel.chosenBrand.observe(this@AddBrandFragment, Observer { brandEntry ->
-                brandEntry?.let { populateFields(it)
-                        .also { mBrandId = brandEntry.brandId }}
+                brandEntry?.let {
+                    binding.chosenBrand = it
+                    mBrandId = it.brandId
+                }
             })
         }
-    }
-
-    private fun populateFields(brand: BrandEntry?) {
-        binding.chosenBrand = brand
-        binding.isEdit = true
     }
 
     override fun onClick(v: View) {
@@ -95,22 +94,18 @@ class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener 
 
     private fun saveBrand() {
         //Get brand name from edit text
-        val brandName = binding.addBrandEditBrandName.text.toString().trim { it <= ' ' }
-
+        val brandName = binding.addBrandEditBrandName.text?.toString()?.trim()
         //Get web address from edit text
-        val webAddress = binding.addBrandEditWeb.text.toString().trim { it <= ' ' }
+        val webAddress = binding.addBrandEditWeb.text?.toString()?.trim()
 
         //If there is a uri for logo image, parse it to string
         var imagePath: String? = null
-        if (mLogoUri != null) {
-            imagePath = mLogoUri.toString()
-        }
+        mLogoUri?.let { imagePath = mLogoUri.toString() }
 
-        if (isUpdateCase) {
+        if (isEditCase) {
             //Construct a new BrandEntry object from this data with ID included
             val brandToUpdate = BrandEntry(mBrandId, brandName, imagePath, webAddress)
             mViewModel.updateBrand(brandToUpdate)
-
         } else {
             //Construct a new BrandEntry object from this data (without ID)
             val newBrand = BrandEntry(brandName = brandName, brandLogoUri = imagePath, webUrl = webAddress)
@@ -122,55 +117,50 @@ class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener 
 
         //Remove fragment
         val parentFrag = parentFragment
-        val currentInstance: androidx.fragment.app.Fragment?
-        if (parentFrag is AddTrainFragment) {
-            currentInstance = fragmentManager?.findFragmentById(R.id.childFragContainer)
-        } else {
-            currentInstance = fragmentManager?.findFragmentById(R.id.brandlist_addFrag_container)
+        val containerID = if (parentFrag is AddTrainFragment) R.id.childFragContainer
+                            else R.id.brandlist_addFrag_container
+        val currentInstance = fragmentManager?.findFragmentById(containerID)
+
+        //Clear focus and hide soft keyboard
+        val focusedView = activity?.currentFocus
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        focusedView?.clearFocus()
+        imm.hideSoftInputFromWindow(focusedView?.windowToken, 0)
+
+        fragmentManager?.transaction {
+            setTransition(TRANSIT_FRAGMENT_CLOSE)
+            remove(currentInstance!!)
         }
-
-        //
-        val focusedView = activity!!.currentFocus
-        if (focusedView != null) {
-            focusedView.clearFocus()
-            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(focusedView.windowToken, 0)
-        }
-
-        fragmentManager!!.beginTransaction()
-                .setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-                .remove(currentInstance!!)
-                .commit()
-
     }
 
     private fun openImageDialog() {
-
         //Opens a dialog which lets the user choose either adding a photo from gallery or taking a new picture.
-        val dialogOptions = activity!!.resources.getStringArray(R.array.dialog_options)
-        val builder = AlertDialog.Builder(activity!!)
-        builder.setTitle(R.string.add_image_from)
-        builder.setSingleChoiceItems(dialogOptions, -1, mDialogClickListener)
-        builder.setPositiveButton(R.string.ok) { _, _ ->
-            when (mUsersChoice) {
-                0 -> {
-                    if (ContextCompat.checkSelfPermission(activity!!,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        // If you do not have permission, request it
-                        this@AddBrandFragment.requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                                REQUEST_STORAGE_PERMISSION)
-                    } else {
-                        // Launch the camera if the permission exists
-                        openCamera()
-                    }
+        val dialogOptions = resources.getStringArray(R.array.dialog_options)
+        val builder = AlertDialog.Builder(requireContext())
+        with(builder) {
+            setTitle(R.string.add_image_from)
+            setSingleChoiceItems(dialogOptions, -1, mDialogClickListener)
+            setPositiveButton(R.string.ok) { _, _ ->
+                when (mUsersChoice) {
+                    0 -> if (needsPermission()) requestPermission()
+                    else openCamera()
+                    1 -> openGallery()
                 }
-                1 -> openGallery()
             }
+            setNegativeButton(R.string.cancel) { _, _ -> }
+            create()
+            show()
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, id -> }
-        pickImageDialog = builder.create()
-        pickImageDialog!!.show()
+
     }
+
+    //Check whether permission is already given or not
+    private fun needsPermission() = ContextCompat.checkSelfPermission(activity!!,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+
+    // If you do not have permission, request it
+    private fun requestPermission() = this@AddBrandFragment.requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            REQUEST_STORAGE_PERMISSION)
 
     private fun openGallery() {
         val intent = Intent()
@@ -194,10 +184,8 @@ class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener 
 
             // Continue only if the File was successfully created
             if (photoFile != null) {
-
                 // Get the path of the temporary file
                 mTempPhotoPath = photoFile.absolutePath
-
                 mLogoUri = FileProvider.getUriForFile(activity!!,
                         FILE_PROVIDER_AUTHORITY,
                         photoFile)
@@ -209,21 +197,24 @@ class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        pickImageDialog?.dismiss()
-        if (requestCode == REQUEST_IMAGE_CAPTURE) {
-            if (resultCode == RESULT_OK) {
-                Glide.with(mContext!!)
-                        .load(mLogoUri)
-                        .into(binding.addBrandImage)
-            } else {
-                BitmapUtils.deleteImageFile(mContext!!, mTempPhotoPath!!)
+
+        when (requestCode) {
+            REQUEST_IMAGE_CAPTURE -> {
+                if (resultCode == RESULT_OK) {
+                    Glide.with(mContext!!)
+                            .load(mLogoUri)
+                            .into(binding.addBrandImage)
+                } else {
+                    BitmapUtils.deleteImageFile(mContext!!, mTempPhotoPath)
+                }
             }
-        } else if (requestCode == PICK_IMAGE_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                mLogoUri = data?.data
-                Glide.with(mContext!!)
-                        .load(mLogoUri)
-                        .into(binding.addBrandImage)
+            PICK_IMAGE_REQUEST -> {
+                if (resultCode == RESULT_OK) {
+                    mLogoUri = data?.data
+                    Glide.with(mContext!!)
+                            .load(mLogoUri)
+                            .into(binding.addBrandImage)
+                }
             }
         }
     }
@@ -233,37 +224,19 @@ class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener 
         // Called when you request permission to read and write to external storage
         when (requestCode) {
             REQUEST_STORAGE_PERMISSION -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // If you get permission, launch the camera
                     openCamera()
                 } else {
                     // If you do not get permission, show a Toast
-                    Toast.makeText(activity, R.string.permission_denied, Toast.LENGTH_SHORT).show()
+                    context?.toast(R.string.permission_denied)
                 }
             }
         }
     }
 
-
     override fun onDetach() {
         super.onDetach()
         mContext = null
     }
-
-    /*override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation {
-        return if (!enter && parentFragment is BrandListFragment) dummyAnimation
-                else super.onCreateAnimation(transit, enter, nextAnim)
-    }
-
-    companion object {
-
-        *//*This is for solving the weird behaviour of child fragments during exit.
-    I found this solution from this SO entry and adapted to my case:
-    https://stackoverflow.com/questions/14900738/nested-fragments-disappear-during-transition-animation*//*
-        private val dummyAnimation = AlphaAnimation(1f, 1f)
-
-        init {
-            dummyAnimation.duration = 500
-        }
-    }*/
 }

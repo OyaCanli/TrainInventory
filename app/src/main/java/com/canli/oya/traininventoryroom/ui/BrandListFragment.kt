@@ -4,11 +4,10 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.*
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -19,11 +18,12 @@ import com.canli.oya.traininventoryroom.databinding.FragmentBrandlistBinding
 import com.canli.oya.traininventoryroom.utils.*
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
+import timber.log.Timber
 
 class BrandListFragment : androidx.fragment.app.Fragment(), BrandAdapter.BrandItemClickListener {
 
     private var brands: List<BrandEntry>? = null
-    private var adapter: BrandAdapter? = null
+    private lateinit var adapter: BrandAdapter
 
     private lateinit var binding: FragmentBrandlistBinding
 
@@ -60,12 +60,12 @@ class BrandListFragment : androidx.fragment.app.Fragment(), BrandAdapter.BrandIt
                 val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
                 binding.included.emptyImage.startAnimation(animation)
             } else {
-                adapter?.brandList = brandEntries
+                adapter.brandList = brandEntries
                 brands = brandEntries
                 binding.included.isEmpty = false
             }
         })
-        activity!!.title = getString(R.string.all_brands)
+        activity?.title = getString(R.string.all_brands)
 
         val coordinator = activity!!.findViewById<androidx.coordinatorlayout.widget.CoordinatorLayout>(R.id.coordinator)
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -83,9 +83,9 @@ class BrandListFragment : androidx.fragment.app.Fragment(), BrandAdapter.BrandIt
                     //Check whether this brand is used in trains table.
                     if (mViewModel.isThisBrandUsed(brandToErase?.brandName!!)) {
                         // If it is used, show a warning and don't let the user delete this
-                        activity!!.runOnUiThread {
-                            Toast.makeText(activity, R.string.cannot_erase_brand, Toast.LENGTH_LONG).show()
-                            adapter!!.notifyDataSetChanged()
+                        activity?.runOnUiThread {
+                            context?.toast( R.string.cannot_erase_brand)
+                            adapter.notifyDataSetChanged()
                         }
                     } else {
                         //If it is not used delete the brand
@@ -124,15 +124,9 @@ class BrandListFragment : androidx.fragment.app.Fragment(), BrandAdapter.BrandIt
 
     override fun onBrandItemClicked(view: View, clickedBrand: BrandEntry) {
         when (view.id) {
-            R.id.brand_item_web_icon -> {
-                openWebSite(clickedBrand)
-            }
-            R.id.brand_item_train_icon -> {
-                showTrainsFromThisBrand(clickedBrand)
-            }
-            R.id.brand_item_edit_icon -> {
-                editBrand(clickedBrand)
-            }
+            R.id.brand_item_web_icon -> openWebSite(clickedBrand)
+            R.id.brand_item_train_icon -> showTrainsFromThisBrand(clickedBrand)
+            R.id.brand_item_edit_icon -> editBrand(clickedBrand)
         }
     }
 
@@ -142,10 +136,8 @@ class BrandListFragment : androidx.fragment.app.Fragment(), BrandAdapter.BrandIt
         val args = Bundle()
         args.putString(INTENT_REQUEST_CODE, EDIT_CASE)
         addBrandFrag.arguments = args
-        childFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.translate_from_top, 0)
-                .replace(R.id.brandlist_addFrag_container, addBrandFrag)
-                .commit()
+        childFragmentManager.transaction { setCustomAnimations(R.anim.translate_from_top, 0)
+                    .replace(R.id.brandlist_addFrag_container, addBrandFrag) }
     }
 
     private fun showTrainsFromThisBrand(clickedBrand: BrandEntry) {
@@ -154,11 +146,9 @@ class BrandListFragment : androidx.fragment.app.Fragment(), BrandAdapter.BrandIt
         args.putString(INTENT_REQUEST_CODE, TRAINS_OF_BRAND)
         args.putString(BRAND_NAME, clickedBrand.brandName)
         trainListFrag.arguments = args
-        fragmentManager!!.beginTransaction()
-                .replace(R.id.container, trainListFrag)
+        fragmentManager?.transaction { replace(R.id.container, trainListFrag)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                .addToBackStack(null)
-                .commit()
+                .addToBackStack(null) }
     }
 
     private fun openWebSite(clickedBrand: BrandEntry) {
@@ -168,12 +158,12 @@ class BrandListFragment : androidx.fragment.app.Fragment(), BrandAdapter.BrandIt
             try {
                 webUri = Uri.parse(urlString)
             } catch (e: Exception) {
-                Log.e("BrandListFragment", e.toString())
+                Timber.e(e.toString())
             }
 
             val webIntent = Intent(Intent.ACTION_VIEW)
             webIntent.data = webUri
-            if (webIntent.resolveActivity(activity!!.packageManager) != null) {
+            if (webIntent.resolveActivity(requireActivity().packageManager) != null) {
                 startActivity(webIntent)
             }
         }

@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.databinding.CategoryItemBinding
+import com.canli.oya.traininventoryroom.databinding.ItemCategoryBinding
 
 class CategoryAdapter internal constructor(private val mClickListener: CategoryItemClickListener) : androidx.recyclerview.widget.RecyclerView.Adapter<CategoryAdapter.CategoryHolder>() {
 
@@ -16,7 +16,7 @@ class CategoryAdapter internal constructor(private val mClickListener: CategoryI
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryHolder {
         val binding = DataBindingUtil
-                .inflate<CategoryItemBinding>(LayoutInflater.from(parent.context), R.layout.category_item,
+                .inflate<ItemCategoryBinding>(LayoutInflater.from(parent.context), R.layout.item_category,
                         parent, false)
         binding.categoryItemClick = mClickListener
         return CategoryHolder(binding)
@@ -32,7 +32,7 @@ class CategoryAdapter internal constructor(private val mClickListener: CategoryI
         return categoryList?.size ?: 0
     }
 
-    inner class CategoryHolder(val binding: CategoryItemBinding) : androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root)
+    inner class CategoryHolder(val binding: ItemCategoryBinding) : androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root)
 
     interface CategoryItemClickListener {
         fun onCategoryItemClicked(categoryName: String)

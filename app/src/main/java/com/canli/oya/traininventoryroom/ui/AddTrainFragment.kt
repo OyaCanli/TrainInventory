@@ -44,14 +44,13 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
 
     private var mChosenCategory: String? = null
     private var mChosenBrand: String? = null
-    private var pickImageDialog: AlertDialog? = null
     private var mTempPhotoPath: String? = null
     private var mImageUri: String? = null
     private var mUsersChoice: Int = 0
     private var mCategoryList: MutableList<String> = mutableListOf()
     private var mBrandList: MutableList<BrandEntry> = mutableListOf()
     private var mTrainId: Int = 0
-    private var mCallback: UnsavedChangesListener? = null
+    private lateinit var mCallback: UnsavedChangesListener
     private var mChosenTrain: TrainEntry? = null
     private var isEdit: Boolean = false
     private var brandsLoaded: Boolean = false
@@ -60,9 +59,8 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
     private val mTextWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-
         override fun afterTextChanged(s: Editable) {
-            mCallback?.warnForUnsavedChanges(true)
+            mCallback.warnForUnsavedChanges(true)
         }
     }
 
@@ -77,9 +75,9 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
         // This makes sure that the host activity has implemented the callback interface
         // If not, it throws an exception
         try {
-            mCallback = context as UnsavedChangesListener?
+            mCallback = context as UnsavedChangesListener
         } catch (e: ClassCastException) {
-            throw ClassCastException(context.toString() + " must implement UnsavedChangesListener")
+            throw ClassCastException("$context must implement UnsavedChangesListener")
         }
     }
 
@@ -100,13 +98,11 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val database = TrainDatabase.getInstance(activity!!.applicationContext)
-
         mViewModel.loadBrandList(InjectorUtils.provideBrandRepo(requireContext()))
         mViewModel.loadCategoryList(InjectorUtils.provideCategoryRepo(requireContext()))
 
         //Set brand spinner
-        val brandAdapter = CustomSpinAdapter(activity!!, mBrandList)
+        val brandAdapter = CustomSpinAdapter(requireContext(), mBrandList)
         binding.brandSpinner.adapter = brandAdapter
         binding.brandSpinner.onItemSelectedListener = this
         mViewModel.brandList?.observe(this@AddTrainFragment, Observer { brandEntries ->
@@ -120,7 +116,7 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
         })
 
         //Set category spinner
-        val categoryAdapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, mCategoryList!!)
+        val categoryAdapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, mCategoryList)
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.categorySpinner.adapter = categoryAdapter
         binding.categorySpinner.onItemSelectedListener = this
@@ -134,13 +130,13 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
             }
         })
 
-        val bundle = arguments
         //"Edit" case
-        if (bundle != null && bundle.containsKey(TRAIN_ID)) {
-            activity!!.title = getString(R.string.edit_train)
+        if (arguments?.containsKey(TRAIN_ID) == true) {
+            activity?.title = getString(R.string.edit_train)
             isEdit = true
-            mTrainId = bundle.getInt(TRAIN_ID)
+            mTrainId = arguments?.getInt(TRAIN_ID) ?: 0
             //This view model is instantiated only in edit mode. It contains the chosen train. It is attached to this fragment
+            val database = TrainDatabase.getInstance(requireContext())
             val factory = ChosenTrainFactory(database, mTrainId)
             val viewModel = ViewModelProviders.of(this, factory).get(ChosenTrainViewModel::class.java)
             viewModel.chosenTrain.observe(this, Observer { trainEntry ->
@@ -156,7 +152,7 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
 
             setTouchListenersToEditTexts()
         } else { //This is the "add" case
-            activity!!.title = getString(R.string.add_train)
+            activity?.title = getString(R.string.add_train)
             binding.executePendingBindings()
             isEdit = false
             setChangeListenersToEdittexts()
@@ -248,7 +244,7 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
     }
 
     private fun saveTrain() {
-        val quantityToParse = binding.editQuantity.text.toString().trim { it <= ' ' }
+        val quantityToParse = binding.editQuantity.text.toString().trim()
         //Quantity can be null. But if it is not null it should be a positive integer
         var quantity = 0
         if (!TextUtils.isEmpty(quantityToParse)) {
@@ -259,17 +255,16 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
                     return
                 }
             } catch (nfe: NumberFormatException) {
-                Toast.makeText(activity, R.string.quantity_should_be_positive, Toast.LENGTH_SHORT).show()
+                context?.toast(R.string.quantity_should_be_positive)
                 return
             }
-
         }
-        val reference = binding.editReference.text.toString().trim { it <= ' ' }
-        val trainName = binding.editTrainName.text.toString().trim { it <= ' ' }
-        val description = binding.editTrainDescription.text.toString().trim { it <= ' ' }
-        val location = binding.editLocationNumber.text.toString().trim { it <= ' ' } + "-" +
-                binding.editLocationLetter.text.toString().trim { it <= ' ' }
-        val scale = binding.editScale.text.toString().trim { it <= ' ' }
+        val reference = binding.editReference.text.toString().trim()
+        val trainName = binding.editTrainName.text.toString().trim()
+        val description = binding.editTrainDescription.text.toString().trim()
+        val location = binding.editLocationNumber.text.toString().trim()
+                binding.editLocationLetter.text.toString().trim()
+        val scale = binding.editScale.text.toString().trim()
 
         if (mTrainId == 0) {
             //If this is a new train
@@ -283,35 +278,36 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
             mViewModel.updateTrain(trainToUpdate)
         }
         //After adding the train, go back to where user come from.
-        mCallback!!.warnForUnsavedChanges(false)
-        activity!!.onBackPressed()
+        mCallback.warnForUnsavedChanges(false)
+        activity?.onBackPressed()
     }
 
     private fun openImageDialog() {
         val dialogOptions = activity!!.resources.getStringArray(R.array.dialog_options)
-        val builder = AlertDialog.Builder(activity!!)
-        builder.setTitle(R.string.add_image_from)
-        builder.setSingleChoiceItems(dialogOptions, -1, mDialogClickListener)
-        builder.setPositiveButton(R.string.ok) { dialog, which ->
-            when (mUsersChoice) {
-                0 -> {
-                    if (ContextCompat.checkSelfPermission(activity!!,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        // If you do not have permission, request it
-                        this@AddTrainFragment.requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                                REQUEST_STORAGE_PERMISSION)
-                    } else {
-                        // Launch the camera if the permission exists
-                        openCamera()
-                    }
+        val builder = AlertDialog.Builder(requireContext())
+        with(builder){
+            setTitle(R.string.add_image_from)
+            setSingleChoiceItems(dialogOptions, -1, mDialogClickListener)
+            setPositiveButton(R.string.ok) { _, _ ->
+                when (mUsersChoice) {
+                    0 -> if (needsPermission()) requestPermission()
+                    else openCamera()
+                    1 -> openGallery()
                 }
-                1 -> openGallery()
             }
+            setNegativeButton(R.string.cancel) { _, _ -> }
+            create()
+            show()
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, id -> }
-        pickImageDialog = builder.create()
-        pickImageDialog!!.show()
     }
+
+    //Check whether permission is already given or not
+    private fun needsPermission() = ContextCompat.checkSelfPermission(activity!!,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+
+    // If you do not have permission, request it
+    private fun requestPermission() = this@AddTrainFragment.requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            REQUEST_STORAGE_PERMISSION)
 
     private fun openGallery() {
         val intent = Intent()
@@ -335,7 +331,6 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
 
             // Continue only if the File was successfully created
             if (photoFile != null) {
-
                 // Get the path of the temporary file
                 mTempPhotoPath = photoFile.absolutePath
 
@@ -351,7 +346,7 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        pickImageDialog!!.dismiss()
+
         if (requestCode == REQUEST_IMAGE_CAPTURE) {
             if (resultCode == RESULT_OK) {
                 GlideApp.with(this@AddTrainFragment)
@@ -415,7 +410,7 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
 
     override fun onDetach() {
         super.onDetach()
-        mCallback!!.warnForUnsavedChanges(false)
+        mCallback.warnForUnsavedChanges(false)
     }
 
     private fun setChangeListenersToEdittexts() {
@@ -430,8 +425,8 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
     }
 
     private fun setTouchListenersToEditTexts() {
-        val touchListener = View.OnTouchListener { v, event ->
-            mCallback!!.warnForUnsavedChanges(true)
+        val touchListener = View.OnTouchListener { _, _ ->
+            mCallback.warnForUnsavedChanges(true)
             false
         }
 

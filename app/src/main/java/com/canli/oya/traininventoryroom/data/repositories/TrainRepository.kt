@@ -47,7 +47,7 @@ class TrainRepository private constructor(private val mDatabase: TrainDatabase, 
 
         fun getInstance(database: TrainDatabase, executors: AppExecutors): TrainRepository {
             return sInstance ?: synchronized(TrainRepository::class.java) {
-                TrainRepository(database, executors).also { sInstance = it }
+                sInstance ?: TrainRepository(database, executors).also { sInstance = it }
             }
         }
     }

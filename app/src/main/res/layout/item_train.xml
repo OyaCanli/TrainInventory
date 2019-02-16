@@ -12,7 +12,7 @@
             name="trainItemClick"
             type="com.canli.oya.traininventoryroom.adapters.TrainAdapter.TrainItemClickListener" />
 
-        <import type="com.canli.oya.traininventoryroom.utils.DataBindingUtils" />
+        <import type="com.canli.oya.traininventoryroom.utils.BindingUtils" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -87,7 +87,7 @@
             app:layout_constraintBaseline_toBaselineOf="@+id/train_item_train_name"
             app:layout_constraintStart_toEndOf="@+id/train_item_train_name"
             tools:text="(Vagon)"
-            android:text="@{DataBindingUtils.encloseInParanthesis(train.categoryName)}"/>
+            android:text="@{BindingUtils.encloseInParanthesis(train.categoryName)}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,7 +1,5 @@
 package com.canli.oya.traininventoryroom.utils
 
-
-
     //Request codes:
     const val REQUEST_IMAGE_CAPTURE = 1
     const val REQUEST_STORAGE_PERMISSION = 2

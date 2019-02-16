@@ -38,7 +38,7 @@ class BrandRepository private constructor(private val mDatabase: TrainDatabase, 
 
         fun getInstance(database: TrainDatabase, executors: AppExecutors): BrandRepository {
             return sInstance ?: synchronized(BrandRepository::class.java) {
-                    BrandRepository(database, executors)
+                    sInstance ?: BrandRepository(database, executors)
                             .also { sInstance = it }
             }
 

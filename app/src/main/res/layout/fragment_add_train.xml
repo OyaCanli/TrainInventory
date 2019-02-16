@@ -8,7 +8,7 @@
             name="chosenTrain"
             type="com.canli.oya.traininventoryroom.data.TrainEntry" />
 
-        <import type="com.canli.oya.traininventoryroom.utils.DataBindingUtils" />
+        <import type="com.canli.oya.traininventoryroom.utils.BindingUtils" />
     </data>
 
     <ScrollView
@@ -182,7 +182,7 @@
                 android:background="@drawable/location_background"
                 android:hint="@string/hint_location_number"
                 android:inputType="textCapCharacters"
-                android:text="@{DataBindingUtils.splitLocation(chosenTrain.location)[1]}"
+                android:text="@{BindingUtils.splitLocation(chosenTrain.location)[1]}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/textView11"
@@ -201,7 +201,7 @@
                 android:ems="10"
                 android:hint="@string/hint_location_letter"
                 android:inputType="number"
-                android:text="@{DataBindingUtils.splitLocation(chosenTrain.location)[0]}"
+                android:text="@{BindingUtils.splitLocation(chosenTrain.location)[0]}"
                 app:layout_constraintBottom_toBottomOf="@+id/editLocationLetter"
                 app:layout_constraintEnd_toStartOf="@+id/textView11"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -217,7 +217,7 @@
                 android:layout_marginRight="@dimen/margin_standard"
                 android:background="@drawable/rounded_add_button"
                 android:contentDescription="@string/cd_add_category_button"
-                android:src="@drawable/ic_baseline_add"
+                app:srcCompat="@drawable/ic_baseline_add"
                 app:layout_constraintBottom_toBottomOf="@+id/categorySpinner"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/categorySpinner" />
@@ -230,7 +230,7 @@
                 android:layout_marginRight="@dimen/margin_standard"
                 android:background="@drawable/rounded_add_button"
                 android:contentDescription="@string/cd_add_brand_button"
-                android:src="@drawable/ic_baseline_add"
+                app:srcCompat="@drawable/ic_baseline_add"
                 app:layout_constraintBottom_toBottomOf="@+id/brandSpinner"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/brandSpinner" />

@@ -3,8 +3,8 @@ package com.canli.oya.traininventoryroom.ui
 import android.os.Bundle
 import android.view.*
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -39,9 +39,11 @@ class CategoryListFragment : androidx.fragment.app.Fragment(), CategoryAdapter.C
 
         mAdapter = CategoryAdapter(this)
 
-        binding.included.list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity)
-        binding.included.list.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
-        binding.included.list.adapter = mAdapter
+        with(binding.included.list){
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity)
+            itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
+            adapter = mAdapter
+        }
 
         return binding.root
     }
@@ -63,7 +65,7 @@ class CategoryListFragment : androidx.fragment.app.Fragment(), CategoryAdapter.C
             }
         })
 
-        activity!!.title = getString(R.string.all_categories)
+        activity?.title = getString(R.string.all_categories)
 
         //This part is for providing swipe-to-delete functionality, as well as a snack bar to undo deleting
         val coordinator = activity!!.findViewById<androidx.coordinatorlayout.widget.CoordinatorLayout>(R.id.coordinator)
@@ -83,8 +85,8 @@ class CategoryListFragment : androidx.fragment.app.Fragment(), CategoryAdapter.C
                     //First check whether this category is used by trains table
                     if (mViewModel.isThisCategoryUsed(categoryToErase.categoryName)) {
                         // If it is used, show a warning and don't let user delete this
-                        activity!!.runOnUiThread {
-                            Toast.makeText(activity, R.string.cannot_erase_category, Toast.LENGTH_LONG).show()
+                        activity?.runOnUiThread {
+                            context?.toast(R.string.cannot_erase_category)
                             mAdapter.notifyDataSetChanged()
                         }
                     } else {
@@ -118,10 +120,8 @@ class CategoryListFragment : androidx.fragment.app.Fragment(), CategoryAdapter.C
 
     private fun openAddCategoryFragment() {
         val addCatFrag = AddCategoryFragment()
-        childFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.translate_from_top, 0)
-                .replace(R.id.brandlist_addFrag_container, addCatFrag)
-                .commit()
+        childFragmentManager.transaction { setCustomAnimations(R.anim.translate_from_top, 0)
+                .replace(R.id.brandlist_addFrag_container, addCatFrag) }
     }
 
     override fun onCategoryItemClicked(categoryName: String) {
@@ -130,12 +130,9 @@ class CategoryListFragment : androidx.fragment.app.Fragment(), CategoryAdapter.C
         args.putString(INTENT_REQUEST_CODE, TRAINS_OF_CATEGORY)
         args.putString(CATEGORY_NAME, categoryName)
         trainListFrag.arguments = args
-        val fm = fragmentManager
-        fm!!.beginTransaction()
-                .replace(R.id.container, trainListFrag)
+        fragmentManager?.transaction { replace(R.id.container, trainListFrag)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                .addToBackStack(null)
-                .commit()
+                .addToBackStack(null)}
     }
 
 }

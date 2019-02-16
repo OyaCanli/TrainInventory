@@ -1,4 +1,4 @@
-@file:JvmName("DataBindingUtils")
+@file:JvmName("BindingUtils")
 
 package com.canli.oya.traininventoryroom.utils
 

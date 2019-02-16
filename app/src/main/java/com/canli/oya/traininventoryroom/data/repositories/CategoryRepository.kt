@@ -34,7 +34,7 @@ class CategoryRepository private constructor(private val mDatabase: TrainDatabas
 
         fun getInstance(database: TrainDatabase): CategoryRepository {
             return sInstance ?: synchronized(CategoryRepository::class.java) {
-                CategoryRepository(database).also { sInstance = it }
+                sInstance ?: CategoryRepository(database).also { sInstance = it }
             }
         }
     }
