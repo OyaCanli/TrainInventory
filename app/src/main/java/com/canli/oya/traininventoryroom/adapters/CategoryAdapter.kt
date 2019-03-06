@@ -6,7 +6,7 @@ import androidx.databinding.DataBindingUtil
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ItemCategoryBinding
 
-class CategoryAdapter internal constructor(private val mClickListener: CategoryItemClickListener) : androidx.recyclerview.widget.RecyclerView.Adapter<CategoryAdapter.CategoryHolder>() {
+class CategoryAdapter (private val mClickListener: CategoryItemClickListener) : androidx.recyclerview.widget.RecyclerView.Adapter<CategoryAdapter.CategoryHolder>() {
 
     var categoryList: List<String>? = null
         set(value) {

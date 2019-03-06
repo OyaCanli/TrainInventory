@@ -2,12 +2,9 @@ package com.canli.oya.traininventoryroom.viewmodel
 
 import android.app.Application
 import android.content.Context
-import androidx.databinding.adapters.AdapterViewBindingAdapter
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.canli.oya.traininventoryroom.R
-
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.data.TrainEntry
@@ -28,12 +25,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val viewModelJob = Job()
     private val viewModelScope = CoroutineScope(Dispatchers.IO + viewModelJob)
 
-    private val newTrainWithNulls: TrainEntry by lazy {
-        TrainEntry(trainName = null, modelReference = null,
-                brandName = brandList?.value?.get(0)?.brandName, categoryName = categoryList?.value?.get(0),
-                imageUri = null, description = null, location = null, scale = null)
-    }
-
     init {
         val context: Context = application.applicationContext
         mTrainRepo = provideTrainRepo(context)
@@ -44,42 +35,17 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     /////////// TRAIN LIST /////////////
 
     var trainList: LiveData<List<TrainEntry>>? = null
+        get() {
+            return field ?: mTrainRepo.trainList.also { field = it }
+        }
         private set
 
-    fun loadTrainList(trainRepo: TrainRepository) {
-        if (trainList == null) {
-            trainList = trainRepo.trainList
-        }
-    }
-
-    lateinit var chosenTrain: TrainEntry
-    lateinit var trainBeingModified: TrainEntry
-
-    var isEdit: Boolean = false
-        set(value) {
-            field = value
-            trainBeingModified = if (value) chosenTrain else newTrainWithNulls
-        }
-
-    fun insertTrain(train: TrainEntry) {
-        viewModelScope.launch { mTrainRepo.insertTrain(train) }
-    }
-
-    fun updateTrain(train: TrainEntry) {
-        viewModelScope.launch { mTrainRepo.updateTrain(train) }
+    fun getChosenTrain(trainId : Int): LiveData<TrainEntry> {
+        return mTrainRepo.getChosenTrain(trainId)
     }
 
     fun deleteTrain(train: TrainEntry) {
         viewModelScope.launch { mTrainRepo.deleteTrain(train) }
-    }
-
-    var spinnerListener = AdapterViewBindingAdapter.OnItemSelected { spinner, _, position, _ ->
-        //the listener is attached to both spinners.
-        //when statement differentiate which spinners is selected
-        when (spinner.id) {
-            R.id.brandSpinner -> trainBeingModified.brandName = brandList?.value?.get(position)?.brandName
-            R.id.categorySpinner -> trainBeingModified.categoryName = categoryList?.value?.get(position)
-        }
     }
 
     ////////////// BRAND LIST //////////////////

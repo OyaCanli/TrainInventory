@@ -20,7 +20,7 @@ abstract class TrainDatabase : RoomDatabase() {
 
     companion object {
 
-        private const val DATABASE_NAME = "inventory"
+        private const val DATABASE_NAME = "train_inventory"
         @Volatile private var sInstance: TrainDatabase? = null
 
         fun getInstance(context: Context): TrainDatabase {

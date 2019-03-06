@@ -2,11 +2,16 @@
 
 package com.canli.oya.traininventoryroom.utils
 
-fun splitLocation(location: String?): List<String>? {
-    return if (location.isNullOrBlank()) null
-            else location.split("-")
+fun encloseInParenthesis(category: String?): String? {
+    return category?.let {"($it)"}
 }
 
-fun encloseInParanthesis(category: String?): String? {
-    return if(category == null) null else "($category)"
+fun attachLocationString(locationRow: String?, locationColumn : String?) : String? {
+    val row = locationRow ?: ""
+    val column = locationColumn ?: ""
+    return if(row.isNotBlank() && column.isNotBlank()){
+        "$row - $column"
+    } else {
+        "$row $column"
+    }
 }

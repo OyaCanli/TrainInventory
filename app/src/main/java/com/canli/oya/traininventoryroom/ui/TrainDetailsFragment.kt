@@ -5,11 +5,12 @@ import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.transaction
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentTrainDetailsBinding
-import com.canli.oya.traininventoryroom.utils.IS_EDIT
+import com.canli.oya.traininventoryroom.utils.TRAIN_ID
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 
 class TrainDetailsFragment : androidx.fragment.app.Fragment() {
@@ -19,6 +20,7 @@ class TrainDetailsFragment : androidx.fragment.app.Fragment() {
     private val mViewModel by lazy {
         ViewModelProviders.of(requireActivity()).get(MainViewModel::class.java)
     }
+    private var trainId = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
@@ -31,12 +33,16 @@ class TrainDetailsFragment : androidx.fragment.app.Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mChosenTrain = mViewModel.chosenTrain
-        activity?.title = mChosenTrain.trainName
-        binding.chosenTrain = mChosenTrain
-        binding.executePendingBindings()
+        trainId = arguments?.getInt(TRAIN_ID) ?: 0
+        mViewModel.getChosenTrain(trainId).observe(this, Observer { trainEntry ->
+            trainEntry?.let {
+                mChosenTrain = it
+                activity?.title = it.trainName
+                binding.chosenTrain = it
+                binding.executePendingBindings()
+            }
+        })
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -51,7 +57,7 @@ class TrainDetailsFragment : androidx.fragment.app.Fragment() {
             R.id.action_edit -> {
                 val addTrainFrag = AddTrainFragment()
                 val args = Bundle()
-                args.putBoolean(IS_EDIT, true)
+                args.putInt(TRAIN_ID, trainId)
                 addTrainFrag.arguments = args
                 fragmentManager?.transaction {  replace(R.id.container, addTrainFrag)
                         .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)

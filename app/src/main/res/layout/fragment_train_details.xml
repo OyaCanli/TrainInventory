@@ -7,6 +7,8 @@
         <variable
             name="chosenTrain"
             type="com.canli.oya.traininventoryroom.data.TrainEntry" />
+
+        <import type="com.canli.oya.traininventoryroom.utils.BindingUtils" />
     </data>
 
     <ScrollView
@@ -129,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_standard"
                 android:layout_marginLeft="@dimen/margin_standard"
-                android:text="@{chosenTrain.location}"
+                android:text="@{BindingUtils.attachLocationString(chosenTrain.locationRow, chosenTrain.locationColumn)}"
                 app:layout_constraintBaseline_toBaselineOf="@+id/textView18"
                 app:layout_constraintStart_toEndOf="@+id/textView18"
                 tools:text="1-D" />

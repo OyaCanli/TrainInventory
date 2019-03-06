@@ -4,13 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.databinding.ItemBrandBinding
 
-class BrandAdapter internal constructor(
-        private val mClickListener: BrandItemClickListener)
-    : androidx.recyclerview.widget.RecyclerView.Adapter<BrandAdapter.BrandViewHolder>() {
+class BrandAdapter(private val mClickListener: BrandItemClickListener)
+    : RecyclerView.Adapter<BrandAdapter.BrandViewHolder>() {
 
     var brandList: List<BrandEntry>? = null
         set(value) {

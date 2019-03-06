@@ -32,7 +32,6 @@ class BrandRepository private constructor(private val mDatabase: TrainDatabase) 
                     sInstance ?: BrandRepository(database)
                             .also { sInstance = it }
             }
-
         }
     }
 }

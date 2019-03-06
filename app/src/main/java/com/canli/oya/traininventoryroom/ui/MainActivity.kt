@@ -2,48 +2,31 @@ package com.canli.oya.traininventoryroom.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.transaction
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ActivityMainBinding
 import com.canli.oya.traininventoryroom.utils.ALL_TRAIN
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
-import com.canli.oya.traininventoryroom.utils.UNSAVED_CHANGES
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import timber.log.Timber
 
 
-class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener, AddTrainFragment.UnsavedChangesListener, androidx.fragment.app.FragmentManager.OnBackStackChangedListener {
+class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener {
 
     private lateinit var binding: ActivityMainBinding
-    private var thereAreUnsavedChanges: Boolean = false
-    private lateinit var fm: androidx.fragment.app.FragmentManager
-    private var mTrainListFragment: TrainListFragment? = null
-    private var mBrandListFragment: BrandListFragment? = null
-    private var mCategoryListFragment: CategoryListFragment? = null
+    private lateinit var fm: FragmentManager
 
-    private val trainListFragment: TrainListFragment
-        get() {
-            return mTrainListFragment ?: TrainListFragment().also{mTrainListFragment = it}
-        }
+    private val trainListFragment by lazy { TrainListFragment() }
+    private val brandListFragment by lazy { BrandListFragment() }
+    private val categoryListFragment by lazy { CategoryListFragment() }
 
-    private val brandListFragment: BrandListFragment
-        get() {
-            return mBrandListFragment ?: BrandListFragment().also{mBrandListFragment = it}
-        }
-
-    private val categoryListFragment: CategoryListFragment
-        get() {
-            if (mCategoryListFragment == null) {
-                mCategoryListFragment = CategoryListFragment()
-            }
-            return mCategoryListFragment ?: CategoryListFragment().also { mCategoryListFragment = it }
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,10 +41,10 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         //Bring the train list fragment at the launch of activity
         if (savedInstanceState == null) {
-            fm.beginTransaction()
-                    .setCustomAnimations(0, android.R.animator.fade_out)
-                    .add(R.id.container, categoryListFragment)
-                    .commit()
+            fm.transaction {
+                setCustomAnimations(0, android.R.animator.fade_out)
+                    .add(R.id.container, CategoryListFragment())
+            }
         }
     }
 
@@ -71,27 +54,27 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         val currentFrag = fm.findFragmentById(R.id.container)
 
         val id = item.itemId
-        switch@ when (id){
+        when (id){
             R.id.trains -> {
                 if (currentFrag is TrainListFragment) {
                     currentFrag.scrollToTop()
-                    return@switch
+                    return true
                 }
-                val trainListFrag = trainListFragment
+                Timber.d("After return")
                 val args = Bundle()
                 args.putString(INTENT_REQUEST_CODE, ALL_TRAIN)
-                trainListFrag.arguments = args
-                ft.replace(R.id.container, trainListFrag)
+                trainListFragment.arguments = args
+                ft.replace(R.id.container, trainListFragment)
             }
             R.id.brands -> {
                 if (currentFrag is BrandListFragment) {
-                    return@switch
+                    return true
                 }
                 ft.replace(R.id.container, brandListFragment)
             }
             R.id.categories -> {
                 if (currentFrag is CategoryListFragment) {
-                    return@switch
+                    return true
                 }
                 ft.replace(R.id.container, categoryListFragment)
             }
@@ -114,12 +97,12 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     private fun clearFocusAndHideKeyboard() {
         //This is for closing soft keyboard if user navigates to another fragment while keyboard was open
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         val focusedView = this.currentFocus
-        if (focusedView != null) {
-            focusedView.clearFocus()
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(focusedView.windowToken, 0)
-        }
+       focusedView?.run {
+           clearFocus()
+           imm.hideSoftInputFromWindow(this.windowToken, 0)
+       }
     }
 
     private fun setMenuItemChecked(currentFrag: Fragment?) {
@@ -135,35 +118,11 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     override fun onBackPressed() {
         val currentFrag = supportFragmentManager.findFragmentById(R.id.container)
-        if (thereAreUnsavedChanges && currentFrag is AddTrainFragment) {
-            showUnsavedChangesDialog()
+        if (currentFrag is AddTrainFragment) {
+            currentFrag.onBackClicked()
         } else {
             super.onBackPressed()
         }
-    }
-
-    private fun showUnsavedChangesDialog() {
-        //If user clicks back when there are unsaved changes in AddTrainFragment, warn user with a dialog.
-        val builder = AlertDialog.Builder(this)
-        builder.setMessage(R.string.unsaved_changes_warning)
-        builder.setPositiveButton(getString(R.string.discard_changes)) { _, _ ->
-            //Changes will be discarded
-            thereAreUnsavedChanges = false
-            onBackPressed()
-        }
-        builder.setNegativeButton(R.string.keep_editing) { dialog, _ ->
-            // User clicked the "Keep editing" button, so dismiss the dialog
-            // and continue editing
-            dialog?.dismiss()
-        }
-
-        // Create and show the AlertDialog
-        val alertDialog = builder.create()
-        alertDialog.show()
-    }
-
-    override fun warnForUnsavedChanges(shouldWarn: Boolean) {
-        thereAreUnsavedChanges = shouldWarn
     }
 
     override fun onBackStackChanged() {
@@ -171,10 +130,5 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         val currentFrag = fm.findFragmentById(R.id.container)
         setMenuItemChecked(currentFrag)
         hideOrShowBottomNavigation(currentFrag)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
-        super.onSaveInstanceState(outState, outPersistentState)
-        outState.putBoolean(UNSAVED_CHANGES, thereAreUnsavedChanges)
     }
 }

@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.canli.oya.traininventoryroom.viewmodel.MainViewModel" />
+            type="com.canli.oya.traininventoryroom.viewmodel.AddTrainViewModel" />
 
         <import type="com.canli.oya.traininventoryroom.utils.BindingUtils" />
     </data>
@@ -31,7 +31,6 @@
             <Spinner
                 android:id="@+id/categorySpinner"
                 style="@style/editTextStyle"
-                android:onItemSelected="@{viewModel.spinnerListener}"
                 android:layout_margin="@dimen/margin_standard"
                 app:layout_constraintEnd_toStartOf="@+id/addTrain_addCategoryBtn"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -53,7 +52,6 @@
                 android:layout_marginTop="@dimen/margin_standard"
                 android:layout_marginEnd="@dimen/margin_standard"
                 android:layout_marginRight="@dimen/margin_standard"
-                android:onItemSelected="@{viewModel.spinnerListener}"
                 app:layout_constraintEnd_toStartOf="@+id/addTrain_addBrandBtn"
                 app:layout_constraintStart_toEndOf="@+id/barrier"
                 app:layout_constraintTop_toBottomOf="@+id/categorySpinner" />
@@ -182,9 +180,9 @@
                 android:layout_marginTop="@dimen/margin_standard"
                 android:layout_marginBottom="@dimen/large_margin"
                 android:background="@drawable/location_background"
-                android:hint="@string/hint_location_number"
+                android:hint="@string/hint_location_letter"
                 android:inputType="textCapCharacters"
-                android:text="@{BindingUtils.splitLocation(viewModel.trainBeingModified.location)[1]}"
+                android:text="@={viewModel.trainBeingModified.locationColumn}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/textView11"
@@ -201,9 +199,9 @@
                 android:layout_marginRight="@dimen/half_margin"
                 android:background="@drawable/location_background"
                 android:ems="10"
-                android:hint="@string/hint_location_letter"
+                android:hint="@string/hint_location_number"
                 android:inputType="number"
-                android:text="@{BindingUtils.splitLocation(viewModel.trainBeingModified.location)[0]}"
+                android:text="@={viewModel.trainBeingModified.locationRow}"
                 app:layout_constraintBottom_toBottomOf="@+id/editLocationLetter"
                 app:layout_constraintEnd_toStartOf="@+id/textView11"
                 app:layout_constraintHorizontal_bias="0.5"

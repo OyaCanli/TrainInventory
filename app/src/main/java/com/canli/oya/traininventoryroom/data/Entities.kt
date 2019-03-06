@@ -18,12 +18,13 @@ data class TrainEntry(
         @PrimaryKey(autoGenerate = true) var trainId: Int = 0,
         var trainName: String? = null,
         var modelReference: String? = null,
-        var brandName: String?,
-        var categoryName: String?,
+        var brandName: String? = null,
+        var categoryName: String? = null,
         var quantity: Int = 0,
         var imageUri: String? = null,
         var description: String? = null,
-        var location: String? = null,
+        var locationRow: String? = null,
+        var locationColumn: String? = null,
         var scale: String? = null)
 
 

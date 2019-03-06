@@ -63,8 +63,6 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mViewModel.loadTrainList(provideTrainRepo(requireContext()))
-
         val bundle = arguments
         //If the list will be used for showing selected trains
         if (bundle != null && bundle.containsKey(INTENT_REQUEST_CODE)) {
@@ -119,9 +117,12 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
         }
     }
 
-    override fun onListItemClick(chosenTrain: TrainEntry) {
-        mViewModel.chosenTrain = chosenTrain
-        fragmentManager?.transaction { replace(R.id.container, TrainDetailsFragment())
+    override fun onListItemClick(trainId: Int) {
+        val trainDetailsFrag = TrainDetailsFragment()
+        val args = Bundle()
+        args.putInt(TRAIN_ID, trainId)
+        trainDetailsFrag.arguments = args
+        fragmentManager?.transaction { replace(R.id.container, trainDetailsFrag)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .addToBackStack(null) }
     }
@@ -165,8 +166,11 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
     }
 
     private fun openAddTrainFragment() {
-        val addTrainFragment = AddTrainFragment()
-        fragmentManager?.transaction { replace(R.id.container, addTrainFragment)
+        val addTrainFrag = AddTrainFragment()
+        val args = Bundle()
+        args.putBoolean(IS_EDIT, false)
+        addTrainFrag.arguments = args
+        fragmentManager?.transaction { replace(R.id.container, addTrainFrag)
                 setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 addToBackStack(null) }
     }

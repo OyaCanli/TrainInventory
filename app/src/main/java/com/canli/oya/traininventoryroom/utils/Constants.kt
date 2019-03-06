@@ -17,16 +17,4 @@ package com.canli.oya.traininventoryroom.utils
     const val TRAINS_OF_CATEGORY = "trainsOfCategory"
     const val CATEGORY_NAME = "categoryName"
 
-    //keys for saving during rotation
-    const val NAME_ET = "nameEditText"
-    const val MODEL_ET = "modelEditText"
-    const val DESCRIPTION_ET = "descriptionEditText"
-    const val LOCATION_NUMBER_ET = "locationNumberEditText"
-    const val LOCATION_LETTER_ET = "locationLetterEditText"
-    const val QUANTITY_ET = "quantityEditText"
-    const val SCALE_ET = "scaleEditText"
-    const val BRAND_SPINNER_POSITION = "brandSpinnerPosition"
-    const val CATEGORY_SPINNER_POSITION = "categorySpinnerPosition"
-    const val IMAGE_URL = "imageUrl"
-    const val UNSAVED_CHANGES = "unsavedChanges"
 

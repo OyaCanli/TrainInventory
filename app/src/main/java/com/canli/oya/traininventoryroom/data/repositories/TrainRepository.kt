@@ -5,6 +5,7 @@ import com.canli.oya.traininventoryroom.data.TrainDatabase
 import com.canli.oya.traininventoryroom.data.TrainEntry
 
 class TrainRepository private constructor(private val mDatabase: TrainDatabase) {
+
     val trainList: LiveData<List<TrainEntry>>
 
     init {
@@ -13,6 +14,10 @@ class TrainRepository private constructor(private val mDatabase: TrainDatabase) 
 
     private fun loadTrains(): LiveData<List<TrainEntry>> {
         return mDatabase.trainDao().allTrains
+    }
+
+    fun getChosenTrain(trainId : Int): LiveData<TrainEntry> {
+        return mDatabase.trainDao().getChosenTrain(trainId)
     }
 
     suspend fun insertTrain(train: TrainEntry) {
