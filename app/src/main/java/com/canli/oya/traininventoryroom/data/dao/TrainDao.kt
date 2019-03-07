@@ -14,10 +14,10 @@ interface TrainDao {
     fun getChosenTrain(id: Int): LiveData<TrainEntry>
 
     @Query("SELECT 1 FROM trains WHERE brandName = :brandName")
-    suspend fun isThisBrandUsed(brandName: String): Boolean
+    fun isThisBrandUsed(brandName: String): Boolean
 
     @Query("SELECT 1 FROM trains WHERE categoryName = :categoryName")
-    suspend fun isThisCategoryUsed(categoryName: String): Boolean
+    fun isThisCategoryUsed(categoryName: String): Boolean
 
     @Query("SELECT * FROM trains WHERE brandName = :brandName")
     fun getTrainsFromThisBrand(brandName: String): LiveData<List<TrainEntry>>

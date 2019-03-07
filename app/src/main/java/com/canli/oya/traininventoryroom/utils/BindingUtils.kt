@@ -7,6 +7,6 @@ fun splitLocation(location: String?): List<String>? {
             else location.split("-")
 }
 
-fun encloseInParanthesis(category: String): String {
-    return "($category)"
+fun encloseInParanthesis(category: String?): String? {
+    return if(category == null) null else "($category)"
 }

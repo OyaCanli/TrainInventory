@@ -4,22 +4,19 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
+import androidx.fragment.app.transaction
 import androidx.lifecycle.ViewModelProviders
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentTrainDetailsBinding
-import com.canli.oya.traininventoryroom.utils.InjectorUtils
-import com.canli.oya.traininventoryroom.utils.TRAIN_ID
-import com.canli.oya.traininventoryroom.viewmodel.ChosenTrainViewModel
+import com.canli.oya.traininventoryroom.utils.IS_EDIT
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 
 class TrainDetailsFragment : androidx.fragment.app.Fragment() {
 
     private lateinit var binding: FragmentTrainDetailsBinding
-    private var mChosenTrain: TrainEntry? = null
-    private var mTrainId: Int = 0
-    private val mainViewModel by lazy {
+    private lateinit var mChosenTrain: TrainEntry
+    private val mViewModel by lazy {
         ViewModelProviders.of(requireActivity()).get(MainViewModel::class.java)
     }
 
@@ -34,23 +31,12 @@ class TrainDetailsFragment : androidx.fragment.app.Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mTrainId = arguments?.getInt(TRAIN_ID) ?: 0
-
-        val factory = InjectorUtils.provideChosenTrainFactory(requireContext(), mTrainId)
-        val viewModel = ViewModelProviders.of(this, factory).get(ChosenTrainViewModel::class.java)
-        viewModel.chosenTrain.observe(this, Observer { trainEntry ->
-            trainEntry?.let {
-                populateUI(it)
-                mChosenTrain = it
-            }
-        })
-    }
-
-    private fun populateUI(chosenTrain: TrainEntry) {
-        activity?.title = chosenTrain.trainName
-        binding.chosenTrain = chosenTrain
+        mChosenTrain = mViewModel.chosenTrain
+        activity?.title = mChosenTrain.trainName
+        binding.chosenTrain = mChosenTrain
         binding.executePendingBindings()
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -65,14 +51,11 @@ class TrainDetailsFragment : androidx.fragment.app.Fragment() {
             R.id.action_edit -> {
                 val addTrainFrag = AddTrainFragment()
                 val args = Bundle()
-                args.putInt(TRAIN_ID, mTrainId)
+                args.putBoolean(IS_EDIT, true)
                 addTrainFrag.arguments = args
-                val fm = fragmentManager
-                fm!!.beginTransaction()
-                        .replace(R.id.container, addTrainFrag)
+                fragmentManager?.transaction {  replace(R.id.container, addTrainFrag)
                         .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                        .addToBackStack(null)
-                        .commit()
+                        .addToBackStack(null)}
             }
         }
         return super.onOptionsItemSelected(item)
@@ -90,7 +73,7 @@ class TrainDetailsFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun deleteTrain() {
-        mainViewModel.deleteTrain(mChosenTrain!!)
+        mViewModel.deleteTrain(mChosenTrain)
         fragmentManager?.popBackStack()
     }
 

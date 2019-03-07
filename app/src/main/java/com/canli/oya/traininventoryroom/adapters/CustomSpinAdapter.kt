@@ -11,14 +11,14 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.utils.GlideApp
 
-class CustomSpinAdapter(private val mContext: Context, private val mBrandList: List<BrandEntry>) : BaseAdapter() {
+class CustomSpinAdapter(private val mContext: Context, var mBrandList: List<BrandEntry>?) : BaseAdapter() {
 
     override fun getCount(): Int {
-        return mBrandList.size
+        return mBrandList?.size ?: 0
     }
 
-    override fun getItem(position: Int): BrandEntry {
-        return mBrandList[position]
+    override fun getItem(position: Int): BrandEntry? {
+        return mBrandList?.get(position)
     }
 
     override fun getItemId(position: Int): Long {
@@ -36,8 +36,8 @@ class CustomSpinAdapter(private val mContext: Context, private val mBrandList: L
         val brandName = convertView!!.findViewById<TextView>(R.id.spin_item_brand_name)
         val logo = convertView.findViewById<ImageView>(R.id.spin_item_logo)
 
-        brandName.text = currentBrand.brandName
-        val imageUri = currentBrand.brandLogoUri
+        brandName.text = currentBrand?.brandName
+        val imageUri = currentBrand?.brandLogoUri
         if (imageUri == null) {
             logo.visibility = View.GONE
         } else {

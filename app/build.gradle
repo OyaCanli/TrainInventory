@@ -67,4 +67,8 @@ dependencies {
 
     //Timber
     implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    //Anko
+    implementation "org.jetbrains.anko:anko-commons:$rootProject.anko_version"
+    implementation "org.jetbrains.anko:anko-design:$rootProject.anko_version"
 }

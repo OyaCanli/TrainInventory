@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="chosenTrain"
-            type="com.canli.oya.traininventoryroom.data.TrainEntry" />
+            name="viewModel"
+            type="com.canli.oya.traininventoryroom.viewmodel.MainViewModel" />
 
         <import type="com.canli.oya.traininventoryroom.utils.BindingUtils" />
     </data>
@@ -31,6 +31,7 @@
             <Spinner
                 android:id="@+id/categorySpinner"
                 style="@style/editTextStyle"
+                android:onItemSelected="@{viewModel.spinnerListener}"
                 android:layout_margin="@dimen/margin_standard"
                 app:layout_constraintEnd_toStartOf="@+id/addTrain_addCategoryBtn"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -52,6 +53,7 @@
                 android:layout_marginTop="@dimen/margin_standard"
                 android:layout_marginEnd="@dimen/margin_standard"
                 android:layout_marginRight="@dimen/margin_standard"
+                android:onItemSelected="@{viewModel.spinnerListener}"
                 app:layout_constraintEnd_toStartOf="@+id/addTrain_addBrandBtn"
                 app:layout_constraintStart_toEndOf="@+id/barrier"
                 app:layout_constraintTop_toBottomOf="@+id/categorySpinner" />
@@ -68,7 +70,7 @@
                 style="@style/editTextStyle"
                 android:hint="@string/hint_reference"
                 android:inputType="textCapCharacters"
-                android:text="@{chosenTrain.modelReference}"
+                android:text="@={viewModel.trainBeingModified.modelReference}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.466"
                 app:layout_constraintStart_toEndOf="@+id/barrier"
@@ -86,7 +88,7 @@
                 style="@style/editTextStyle"
                 android:hint="@string/hint_train_name"
                 android:inputType="textCapWords"
-                android:text="@{chosenTrain.trainName}"
+                android:text="@={viewModel.trainBeingModified.trainName}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/barrier"
                 app:layout_constraintTop_toBottomOf="@+id/editReference" />
@@ -103,7 +105,7 @@
                 style="@style/editTextStyle"
                 android:hint="@string/hint_quantity"
                 android:inputType="number"
-                android:text="@{String.valueOf(chosenTrain.quantity)}"
+                android:text="@{String.valueOf(viewModel.trainBeingModified.quantity)}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.483"
                 app:layout_constraintStart_toEndOf="@+id/barrier"
@@ -126,7 +128,7 @@
                 android:layout_marginTop="@dimen/margin_standard"
                 android:layout_marginEnd="@dimen/half_margin"
                 android:contentDescription="@string/cd_details_gallery_icon"
-                app:imageUrl="@{chosenTrain.imageUri}"
+                app:imageUrl="@{viewModel.trainBeingModified.imageUri}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editTrainDescription" />
@@ -156,7 +158,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_train_description"
                 android:inputType="textMultiLine"
-                android:text="@{chosenTrain.description}"
+                android:text="@={viewModel.trainBeingModified.description}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView7" />
@@ -182,7 +184,7 @@
                 android:background="@drawable/location_background"
                 android:hint="@string/hint_location_number"
                 android:inputType="textCapCharacters"
-                android:text="@{BindingUtils.splitLocation(chosenTrain.location)[1]}"
+                android:text="@{BindingUtils.splitLocation(viewModel.trainBeingModified.location)[1]}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/textView11"
@@ -201,7 +203,7 @@
                 android:ems="10"
                 android:hint="@string/hint_location_letter"
                 android:inputType="number"
-                android:text="@{BindingUtils.splitLocation(chosenTrain.location)[0]}"
+                android:text="@{BindingUtils.splitLocation(viewModel.trainBeingModified.location)[0]}"
                 app:layout_constraintBottom_toBottomOf="@+id/editLocationLetter"
                 app:layout_constraintEnd_toStartOf="@+id/textView11"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -269,7 +271,7 @@
                 android:ems="10"
                 android:hint="@string/hint_train_scale"
                 android:inputType="textPersonName"
-                android:text="@{chosenTrain.scale}"
+                android:text="@={viewModel.trainBeingModified.scale}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/barrier"
                 app:layout_constraintTop_toBottomOf="@+id/editTrainName" />

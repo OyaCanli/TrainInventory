@@ -11,18 +11,21 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.adapters.BrandAdapter
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentBrandlistBinding
-import com.canli.oya.traininventoryroom.utils.*
+import com.canli.oya.traininventoryroom.utils.BRAND_NAME
+import com.canli.oya.traininventoryroom.utils.EDIT_CASE
+import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
+import com.canli.oya.traininventoryroom.utils.TRAINS_OF_BRAND
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import org.jetbrains.anko.design.indefiniteSnackbar
+import org.jetbrains.anko.toast
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
@@ -34,7 +37,7 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
         get() = Dispatchers.Main + brandListJob
 
     private lateinit var brands: List<BrandEntry>
-    private lateinit var adapter: BrandAdapter
+    private lateinit var mAdapter: BrandAdapter
 
     private lateinit var binding: FragmentBrandlistBinding
 
@@ -54,10 +57,12 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
 
         brandListJob = Job()
 
-        adapter = BrandAdapter(this)
-        binding.included.list.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity)
-        binding.included.list.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
-        binding.included.list.adapter = adapter
+        mAdapter = BrandAdapter(this)
+        with(binding.included.list){
+            layoutManager = LinearLayoutManager(activity)
+            itemAnimator = DefaultItemAnimator()
+            adapter = mAdapter
+        }
 
         return binding.root
     }
@@ -65,22 +70,24 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mViewModel.loadBrandList(InjectorUtils.provideBrandRepo(requireContext()))
         mViewModel.brandList?.observe(this@BrandListFragment, Observer { brandEntries ->
             if (brandEntries.isNullOrEmpty()) {
-                binding.included.isEmpty = true
-                binding.included.emptyMessage = getString(R.string.no_brands_found)
                 val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
-                binding.included.emptyImage.startAnimation(animation)
+                with(binding.included){
+                    isEmpty = true
+                    emptyMessage = getString(R.string.no_brands_found)
+                    emptyImage.startAnimation(animation)
+                }
             } else {
-                adapter.brandList = brandEntries
+                Timber.d("list size : ${brandEntries.size}")
+                mAdapter.brandList = brandEntries
                 brands = brandEntries
                 binding.included.isEmpty = false
             }
         })
         activity?.title = getString(R.string.all_brands)
 
-        val coordinator = activity!!.findViewById<androidx.coordinatorlayout.widget.CoordinatorLayout>(R.id.coordinator)
+        val coordinator = activity?.findViewById<androidx.coordinatorlayout.widget.CoordinatorLayout>(R.id.coordinator)
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(recyclerView: androidx.recyclerview.widget.RecyclerView, viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, target: androidx.recyclerview.widget.RecyclerView.ViewHolder): Boolean {
                 return false
@@ -94,19 +101,18 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
 
                 launch {
                     //Check whether this brand is used in trains table.
-                    val isUsed = mViewModel.isThisBrandUsed(brandToErase.brandName)
+                    val isUsed = withContext(Dispatchers.IO) { mViewModel.isThisBrandUsed(brandToErase.brandName)}
+                    Timber.d("isUsed : $isUsed")
                     if (isUsed) {
                         // If it is used, show a warning and don't let the user delete this
                         context?.toast(R.string.cannot_erase_brand)
-                        adapter.notifyDataSetChanged()
+                        mAdapter.notifyDataSetChanged()
                     } else {
                         //If it is not used delete the brand
                         mViewModel.deleteBrand(brandToErase)
                         //Show a snack bar for undoing delete
-                        val snackbar = Snackbar
-                                .make(coordinator, R.string.brand_deleted, Snackbar.LENGTH_INDEFINITE)
-                                .setAction(R.string.undo) { mViewModel.insertBrand(brandToErase) }
-                        snackbar.show()
+                        coordinator?.indefiniteSnackbar(R.string.brand_deleted, R.string.brand_deleted) {
+                            mViewModel.insertBrand(brandToErase) }
                     }
                 }
             }
@@ -115,10 +121,10 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
 
     private fun openAddBrandFragment() {
         val addBrandFrag = AddBrandFragment()
-        childFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.translate_from_top, 0)
-                .replace(R.id.brandlist_addFrag_container, addBrandFrag)
-                .commit()
+        childFragmentManager.transaction {
+            setCustomAnimations(R.anim.translate_from_top, 0)
+                    .replace(R.id.brandlist_addFrag_container, addBrandFrag)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -182,6 +188,11 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
                 startActivity(webIntent)
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        brandListJob.cancel()
     }
 }
 

@@ -24,7 +24,7 @@
         android:layout_marginTop="@dimen/half_margin"
         android:background="@drawable/train_item_background"
         android:padding="@dimen/half_padding"
-        android:onClick="@{() ->  trainItemClick.onListItemClick(train.trainId)}">
+        android:onClick="@{() ->  trainItemClick.onListItemClick(train)}">
 
         <TextView
             android:id="@+id/train_item_train_name"

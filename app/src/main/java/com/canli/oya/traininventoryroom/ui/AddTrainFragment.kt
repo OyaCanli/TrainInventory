@@ -12,29 +12,35 @@ import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.*
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.adapters.CustomSpinAdapter
 import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
 import com.canli.oya.traininventoryroom.utils.*
-import com.canli.oya.traininventoryroom.viewmodel.ChosenTrainFactory
-import com.canli.oya.traininventoryroom.viewmodel.ChosenTrainViewModel
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import org.jetbrains.anko.toast
 import java.io.File
 import java.io.IOException
+import kotlin.coroutines.CoroutineContext
 
-class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener, AdapterView.OnItemSelectedListener {
+class AddTrainFragment : Fragment(), View.OnClickListener, CoroutineScope{
+
+    private lateinit var addTrainJob: Job
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + addTrainJob
 
     private lateinit var binding: FragmentAddTrainBinding
 
@@ -42,20 +48,13 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
         ViewModelProviders.of(requireActivity()).get(MainViewModel::class.java)
     }
 
-    private var mChosenCategory: String? = null
-    private var mChosenBrand: String? = null
     private var mTempPhotoPath: String? = null
     private var mImageUri: String? = null
     private var mUsersChoice: Int = 0
-    private var mCategoryList: MutableList<String> = mutableListOf()
-    private var mBrandList: MutableList<BrandEntry> = mutableListOf()
-    private var mTrainId: Int = 0
+
     private lateinit var mCallback: UnsavedChangesListener
-    private var mChosenTrain: TrainEntry? = null
     private var isEdit: Boolean = false
-    private var brandsLoaded: Boolean = false
-    private var categoryLoaded: Boolean = false
-    private var trainLoaded: Boolean = false
+
     private val mTextWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
@@ -65,10 +64,6 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
     }
 
     private val mDialogClickListener = DialogInterface.OnClickListener { _, item -> mUsersChoice = item }
-
-    interface UnsavedChangesListener {
-        fun warnForUnsavedChanges(shouldWarn: Boolean)
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -87,10 +82,23 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
 
         setHasOptionsMenu(true)
 
+        addTrainJob = Job()
+
         //Set click listener on buttons
         binding.addTrainAddBrandBtn.setOnClickListener(this)
         binding.addTrainAddCategoryBtn.setOnClickListener(this)
         binding.productDetailsGalleryImage.setOnClickListener(this)
+
+        //"Edit" case
+        if (arguments?.getBoolean(IS_EDIT) == true) {
+            activity?.title = getString(R.string.edit_train)
+            isEdit = true
+            setTouchListenersToEditTexts()
+        } else { //This is the "add" case
+            activity?.title = getString(R.string.add_train)
+            isEdit = false
+            setChangeListenersToEdittexts()
+        }
 
         return binding.root
     }
@@ -98,117 +106,59 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mViewModel.loadBrandList(InjectorUtils.provideBrandRepo(requireContext()))
-        mViewModel.loadCategoryList(InjectorUtils.provideCategoryRepo(requireContext()))
+        binding.viewModel = mViewModel
+        mViewModel.isEdit = isEdit
 
         //Set brand spinner
-        val brandAdapter = CustomSpinAdapter(requireContext(), mBrandList)
+        val brandAdapter = CustomSpinAdapter(requireContext(), null)
         binding.brandSpinner.adapter = brandAdapter
-        binding.brandSpinner.onItemSelectedListener = this
         mViewModel.brandList?.observe(this@AddTrainFragment, Observer { brandEntries ->
-            if(!brandEntries.isNullOrEmpty()){
-                mBrandList.clear()
-                mBrandList.addAll(brandEntries)
+            if (!brandEntries.isNullOrEmpty()) {
+                brandAdapter.mBrandList = brandEntries
                 brandAdapter.notifyDataSetChanged()
-                brandsLoaded = true
-                setSpinners()
+                setBrandSpinner(brandEntries)
             }
         })
 
         //Set category spinner
-        val categoryAdapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, mCategoryList)
+        val categoryList = ArrayList<String>()
+        val categoryAdapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, categoryList)
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.categorySpinner.adapter = categoryAdapter
-        binding.categorySpinner.onItemSelectedListener = this
         mViewModel.categoryList?.observe(this@AddTrainFragment, Observer { categoryEntries ->
-            if(!categoryEntries.isNullOrEmpty()){
-                mCategoryList.clear()
-                mCategoryList.addAll(categoryEntries)
+            if (!categoryEntries.isNullOrEmpty()) {
+                categoryList.clear()
+                categoryList.addAll(categoryEntries)
                 categoryAdapter.notifyDataSetChanged()
-                categoryLoaded = true
-                setSpinners()
+                setCategorySpinner(categoryEntries)
             }
         })
+    }
 
-        //"Edit" case
-        if (arguments?.containsKey(TRAIN_ID) == true) {
-            activity?.title = getString(R.string.edit_train)
-            isEdit = true
-            mTrainId = arguments?.getInt(TRAIN_ID) ?: 0
-            //This view model is instantiated only in edit mode. It contains the chosen train. It is attached to this fragment
-            val database = TrainDatabase.getInstance(requireContext())
-            val factory = ChosenTrainFactory(database, mTrainId)
-            val viewModel = ViewModelProviders.of(this, factory).get(ChosenTrainViewModel::class.java)
-            viewModel.chosenTrain.observe(this, Observer { trainEntry ->
-                binding.chosenTrain = trainEntry
-                binding.executePendingBindings()
-                mChosenTrain = trainEntry
-                trainLoaded = true
-                setSpinners()
-                if (savedInstanceState != null) {
-                    restoreState(savedInstanceState)
-                }
-            })
-
-            setTouchListenersToEditTexts()
-        } else { //This is the "add" case
-            activity?.title = getString(R.string.add_train)
-            binding.executePendingBindings()
-            isEdit = false
-            setChangeListenersToEdittexts()
+    private fun setCategorySpinner(categoryList : List<String>) {
+        //Set category spinner
+        mViewModel.trainBeingModified.categoryName?.let{
+            binding.categorySpinner.setSelection(categoryList.indexOf(it))
         }
     }
 
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        if (savedInstanceState != null && !isEdit) {
-            restoreState(savedInstanceState)
-        }
-    }
-
-    private fun restoreState(savedInstanceState: Bundle) {
-        binding.brandSpinner.setSelection(savedInstanceState.getInt(BRAND_SPINNER_POSITION))
-        binding.categorySpinner.setSelection(savedInstanceState.getInt(CATEGORY_SPINNER_POSITION))
-        mImageUri = savedInstanceState.getString(IMAGE_URL)
-        GlideApp.with(this@AddTrainFragment)
-                .load(mImageUri)
-                .placeholder(R.drawable.ic_gallery)
-                .into(binding.productDetailsGalleryImage)
-        binding.editTrainName.setText(savedInstanceState.getString(NAME_ET))
-        binding.editTrainDescription.setText(savedInstanceState.getString(DESCRIPTION_ET))
-        binding.editReference.setText(savedInstanceState.getString(MODEL_ET))
-        binding.editQuantity.setText(savedInstanceState.getString(QUANTITY_ET))
-        binding.editLocationLetter.setText(savedInstanceState.getString(LOCATION_LETTER_ET))
-        binding.editLocationNumber.setText(savedInstanceState.getString(LOCATION_NUMBER_ET))
-        binding.editScale.setText(savedInstanceState.getString(SCALE_ET))
-    }
-
-    private fun setSpinners() {
-        if (trainLoaded && categoryLoaded && brandsLoaded) {
-            //Set category spinner
-            binding.categorySpinner.setSelection(mCategoryList.indexOf(mChosenTrain!!.categoryName))
-            //Set brand spinner
-            var brandIndex = 0
-            for (i in mBrandList.indices) {
-                if (mBrandList[i].brandName == mChosenTrain!!.brandName) {
-                    brandIndex = i
-                }
+    private fun setBrandSpinner(brandList : List<BrandEntry>) {
+        //Set brand spinner
+        var brandIndex = 0
+        for (i in brandList.indices) {
+            if (brandList[i].brandName == mViewModel.trainBeingModified.brandName) {
+                brandIndex = i
+                break
             }
-            binding.brandSpinner.setSelection(brandIndex)
         }
+        binding.brandSpinner.setSelection(brandIndex)
     }
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.addTrain_addBrandBtn -> {
-                insertAddBrandFragment()
-            }
-            R.id.addTrain_addCategoryBtn -> {
-                insertAddCategoryFragment()
-            }
-            R.id.product_details_gallery_image -> {
-                openImageDialog()
-            }
+            R.id.addTrain_addBrandBtn -> insertAddBrandFragment()
+            R.id.addTrain_addCategoryBtn -> insertAddCategoryFragment()
+            R.id.product_details_gallery_image -> openImageDialog()
         }
     }
 
@@ -218,64 +168,65 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        if (id == R.id.action_save) {
-            saveTrain()
-        } else if (id == android.R.id.home) {
-            activity?.onBackPressed()
+        when(item.itemId) {
+            R.id.action_save -> saveTrain()
+            android.R.id.home -> activity?.onBackPressed()
         }
         return super.onOptionsItemSelected(item)
     }
 
     private fun insertAddCategoryFragment() {
-        val addCatFrag = AddCategoryFragment()
-        childFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.translate_from_top, 0)
-                .replace(R.id.childFragContainer, addCatFrag)
-                .commit()
+        childFragmentManager.transaction {
+            setCustomAnimations(R.anim.translate_from_top, 0)
+                    .replace(R.id.childFragContainer, AddCategoryFragment())
+        }
     }
 
     private fun insertAddBrandFragment() {
-        val addBrandFrag = AddBrandFragment()
-        childFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.translate_from_top, 0)
-                .replace(R.id.childFragContainer, addBrandFrag)
-                .commit()
+        childFragmentManager.transaction {
+            setCustomAnimations(R.anim.translate_from_top, 0)
+                    .replace(R.id.childFragContainer, AddBrandFragment())
+        }
     }
 
     private fun saveTrain() {
+        ///////////////////// DATA VERIFICATION ////////////////////////
         val quantityToParse = binding.editQuantity.text.toString().trim()
         //Quantity can be null. But if it is not null it should be a positive integer
-        var quantity = 0
+        val quantity : Int
         if (!TextUtils.isEmpty(quantityToParse)) {
             try {
                 quantity = Integer.valueOf(quantityToParse)
                 if (quantity < 0) {
-                    Toast.makeText(activity, R.string.quantity_should_be_positive, Toast.LENGTH_SHORT).show()
+                    context?.toast(R.string.quantity_should_be_positive)
                     return
+                } else {
+                    mViewModel.trainBeingModified.quantity = quantity
                 }
             } catch (nfe: NumberFormatException) {
                 context?.toast(R.string.quantity_should_be_positive)
                 return
             }
         }
-        val reference = binding.editReference.text.toString().trim()
-        val trainName = binding.editTrainName.text.toString().trim()
-        val description = binding.editTrainDescription.text.toString().trim()
-        val location = binding.editLocationNumber.text.toString().trim()
-                binding.editLocationLetter.text.toString().trim()
-        val scale = binding.editScale.text.toString().trim()
 
-        if (mTrainId == 0) {
-            //If this is a new train
-            val newTrain = TrainEntry(trainName = trainName, modelReference = reference,
-                    brandName = mChosenBrand, categoryName = mChosenCategory, quantity = quantity,
-                    imageUri = mImageUri, description = description, location = location, scale = scale)
-            mViewModel.insertTrain(newTrain)
+        //Train name cannot be empty
+        if(mViewModel.trainBeingModified.trainName == null){
+            context?.toast("Train name cannot be empty")
+            return
+        }
+
+        //Scale cannot be empty
+        if(mViewModel.trainBeingModified.scale == null){
+            context?.toast("Scale cannot be empty")
+            return
+        }
+
+        ///////////// SAVE //////////////////
+        if (!isEdit) {
+            mViewModel.insertTrain(mViewModel.trainBeingModified)
         } else {
             //If this is a train that already exist
-            val trainToUpdate = TrainEntry(mTrainId, trainName, reference, mChosenBrand, mChosenCategory, quantity, mImageUri, description, location, scale)
-            mViewModel.updateTrain(trainToUpdate)
+            mViewModel.updateTrain(mViewModel.trainBeingModified)
         }
         //After adding the train, go back to where user come from.
         mCallback.warnForUnsavedChanges(false)
@@ -285,7 +236,7 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
     private fun openImageDialog() {
         val dialogOptions = activity!!.resources.getStringArray(R.array.dialog_options)
         val builder = AlertDialog.Builder(requireContext())
-        with(builder){
+        with(builder) {
             setTitle(R.string.add_image_from)
             setSingleChoiceItems(dialogOptions, -1, mDialogClickListener)
             setPositiveButton(R.string.ok) { _, _ ->
@@ -358,8 +309,8 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
             }
         } else if (requestCode == PICK_IMAGE_REQUEST) {
             if (resultCode == RESULT_OK) {
-                val imageUri = data!!.data
-                mImageUri = imageUri!!.toString()
+                val imageUri = data?.data
+                mImageUri = imageUri?.toString()
                 GlideApp.with(this@AddTrainFragment)
                         .load(mImageUri)
                         .placeholder(R.drawable.ic_gallery)
@@ -378,34 +329,14 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
                     openCamera()
                 } else {
                     // If you do not get permission, show a Toast
-                    Toast.makeText(activity, "Permission denied", Toast.LENGTH_SHORT).show()
+                    context?.toast(getString(R.string.permission_denied))
                 }
             }
         }
     }
 
-    override fun onItemSelected(spinner: AdapterView<*>, view: View, position: Int, id: Long) {
-        if (spinner.id == R.id.brandSpinner) {
-            mChosenBrand = mBrandList[position].brandName
-        } else {
-            mChosenCategory = mCategoryList[position]
-        }
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>) {}
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(NAME_ET, binding.editTrainName.text.toString())
-        outState.putString(DESCRIPTION_ET, binding.editTrainDescription.text.toString())
-        outState.putString(MODEL_ET, binding.editReference.text.toString())
-        outState.putString(QUANTITY_ET, binding.editQuantity.text.toString())
-        outState.putString(SCALE_ET, binding.editScale.text.toString())
-        outState.putString(LOCATION_NUMBER_ET, binding.editLocationNumber.text.toString())
-        outState.putString(LOCATION_LETTER_ET, binding.editLocationLetter.text.toString())
-        outState.putInt(BRAND_SPINNER_POSITION, binding.brandSpinner.selectedItemPosition)
-        outState.putInt(CATEGORY_SPINNER_POSITION, binding.categorySpinner.selectedItemPosition)
-        outState.putString(IMAGE_URL, mImageUri)
+    interface UnsavedChangesListener {
+        fun warnForUnsavedChanges(shouldWarn: Boolean)
     }
 
     override fun onDetach() {
@@ -429,7 +360,6 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
             mCallback.warnForUnsavedChanges(true)
             false
         }
-
         //Set change listeners on edit texts
         binding.editReference.setOnTouchListener(touchListener)
         binding.editTrainName.setOnTouchListener(touchListener)
@@ -447,6 +377,7 @@ class AddTrainFragment : androidx.fragment.app.Fragment(), View.OnClickListener,
         } else {
             removeTouchListeners()
         }
+        addTrainJob.cancel()
     }
 
     private fun removeTextWatchers() {

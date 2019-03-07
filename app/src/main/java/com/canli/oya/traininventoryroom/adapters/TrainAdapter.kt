@@ -36,6 +36,6 @@ class TrainAdapter internal constructor(private val mClickListener: TrainItemCli
     inner class TrainViewHolder(val binding: ItemTrainBinding) : androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root)
 
     interface TrainItemClickListener {
-        fun onListItemClick(trainId: Int)
+        fun onListItemClick(chosenTrain: TrainEntry)
     }
 }

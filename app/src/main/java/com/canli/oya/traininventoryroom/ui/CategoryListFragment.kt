@@ -8,18 +8,20 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.adapters.CategoryAdapter
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentBrandlistBinding
-import com.canli.oya.traininventoryroom.utils.*
+import com.canli.oya.traininventoryroom.utils.CATEGORY_NAME
+import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
+import com.canli.oya.traininventoryroom.utils.TRAINS_OF_CATEGORY
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import org.jetbrains.anko.design.indefiniteSnackbar
+import org.jetbrains.anko.toast
 import kotlin.coroutines.CoroutineContext
 
 class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListener, CoroutineScope {
@@ -48,11 +50,13 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
 
         setHasOptionsMenu(true)
 
+        categoryListJob = Job()
+
         mAdapter = CategoryAdapter(this)
 
         with(binding.included.list) {
-            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity)
-            itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
+            layoutManager = LinearLayoutManager(activity)
+            itemAnimator = DefaultItemAnimator()
             adapter = mAdapter
         }
 
@@ -62,7 +66,6 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mViewModel.loadCategoryList(InjectorUtils.provideCategoryRepo(requireContext()))
         mViewModel.categoryList?.observe(this@CategoryListFragment, Observer { categoryEntries ->
             if (categoryEntries.isNullOrEmpty()) {
                 binding.included.isEmpty = true
@@ -94,7 +97,7 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
                 //Remove the category from the database
                 launch {
                     //First check whether this category is used by trains table
-                    val isUsed = mViewModel.isThisCategoryUsed(categoryToErase.categoryName)
+                    val isUsed = withContext(Dispatchers.IO){mViewModel.isThisCategoryUsed(categoryToErase.categoryName)}
                     if (isUsed) {
                         // If it is used, show a warning and don't let user delete this
                         context?.toast(R.string.cannot_erase_category)
@@ -103,13 +106,9 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
                         //If it is not used, erase the category
                         mViewModel.deleteCategory(categoryToErase)
                         //Show a snack bar for undoing delete
-                        val snackbar = Snackbar
-                                .make(coordinator, R.string.category_deleted, Snackbar.LENGTH_INDEFINITE)
-                                .setAction(R.string.undo) {
-                                    //If UNDO is clicked, add the item back in the database
-                                    mViewModel.insertCategory(categoryToErase)
-                                }
-                        snackbar.show()
+                        coordinator?.indefiniteSnackbar(R.string.category_deleted, R.string.undo){
+                            mViewModel.insertCategory(categoryToErase)
+                        }
                     }
                 }
             }
@@ -147,6 +146,11 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
                     .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                     .addToBackStack(null)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        categoryListJob.cancel()
     }
 
 }
