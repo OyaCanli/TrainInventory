@@ -4,14 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="isEmpty"
-            type="boolean"/>
+        <variable name="uiState"
+            type="com.canli.oya.traininventoryroom.utils.UIState"/>
 
-        <import type="android.view.View"/>
-
-        <variable
-            name="emptyMessage"
-            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,7 +22,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:scrollbars="vertical"
-            android:visibility= "@{isEmpty ? View.GONE : View.VISIBLE}"
+            app:visible= "@{uiState.showList}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -41,7 +36,7 @@
             android:layout_marginEnd="@dimen/margin_standard"
             android:layout_marginStart="@dimen/margin_standard"
             android:layout_marginTop="@dimen/margin_standard"
-            android:visibility= "@{isEmpty ? View.VISIBLE : View.GONE}"
+            app:visible= "@{uiState.showEmpty}"
             android:contentDescription="@string/cd_empty_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -58,12 +53,24 @@
             android:layout_marginStart="@dimen/large_margin"
             android:layout_marginTop="@dimen/margin_standard"
             android:gravity="center"
-            android:text="@{emptyMessage}"
             android:textSize="18sp"
-            android:visibility= "@{isEmpty ? View.VISIBLE : View.GONE}"
+            android:text="@{uiState.emptyMessage}"
+            app:visible= "@{uiState.showEmpty}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/empty_image" />
+
+        <ProgressBar
+            android:id="@+id/loading_indicator"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_standard"
+            app:visible="@{uiState.showLoading}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.adapters.CategoryAdapter
 import com.canli.oya.traininventoryroom.data.CategoryEntry
-import com.canli.oya.traininventoryroom.databinding.FragmentBrandlistBinding
+import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
 import com.canli.oya.traininventoryroom.utils.CATEGORY_NAME
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
 import com.canli.oya.traininventoryroom.utils.TRAINS_OF_CATEGORY
@@ -26,7 +26,7 @@ import kotlin.coroutines.CoroutineContext
 
 class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListener, CoroutineScope {
 
-    private lateinit var binding: FragmentBrandlistBinding
+    private lateinit var binding: BrandCategoryList
 
     private val mViewModel by lazy {
         ViewModelProviders.of(requireActivity()).get(MainViewModel::class.java)
@@ -46,7 +46,7 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_brandlist, container, false)
+                inflater, R.layout.fragment_list_with_framelayout, container, false)
 
         setHasOptionsMenu(true)
 
@@ -66,16 +66,17 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        binding.included.uiState = mViewModel.categoryListUiState
+
         mViewModel.categoryList?.observe(this@CategoryListFragment, Observer { categoryEntries ->
             if (categoryEntries.isNullOrEmpty()) {
-                binding.included.isEmpty = true
-                binding.included.emptyMessage = getString(R.string.no_categories_found)
+                mViewModel.categoryListUiState.showEmpty = true
                 val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
                 binding.included.emptyImage.startAnimation(animation)
             } else {
                 mAdapter.categoryList = categoryEntries
                 mCategories = categoryEntries
-                binding.included.isEmpty = false
+                mViewModel.categoryListUiState.showList = true
             }
         })
 

@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.adapters.BrandAdapter
 import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.databinding.FragmentBrandlistBinding
+import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
 import com.canli.oya.traininventoryroom.utils.BRAND_NAME
 import com.canli.oya.traininventoryroom.utils.EDIT_CASE
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
@@ -39,7 +39,7 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
     private lateinit var brands: List<BrandEntry>
     private lateinit var mAdapter: BrandAdapter
 
-    private lateinit var binding: FragmentBrandlistBinding
+    private lateinit var binding: BrandCategoryList
 
     private val mViewModel by lazy {
         ViewModelProviders.of(requireActivity()).get(MainViewModel::class.java)
@@ -51,7 +51,7 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_brandlist, container, false)
+                inflater, R.layout.fragment_list_with_framelayout, container, false)
 
         setHasOptionsMenu(true)
 
@@ -70,19 +70,18 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        binding.included.uiState = mViewModel.brandListUiState
+
         mViewModel.brandList?.observe(this@BrandListFragment, Observer { brandEntries ->
             if (brandEntries.isNullOrEmpty()) {
+                mViewModel.brandListUiState.showEmpty = true
                 val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
-                with(binding.included){
-                    isEmpty = true
-                    emptyMessage = getString(R.string.no_brands_found)
-                    emptyImage.startAnimation(animation)
-                }
+                binding.included.emptyImage.startAnimation(animation)
             } else {
                 Timber.d("list size : ${brandEntries.size}")
                 mAdapter.brandList = brandEntries
                 brands = brandEntries
-                binding.included.isEmpty = false
+                mViewModel.brandListUiState.showList = true
             }
         })
         activity?.title = getString(R.string.all_brands)

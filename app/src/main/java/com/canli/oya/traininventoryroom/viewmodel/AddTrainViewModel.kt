@@ -17,6 +17,9 @@ class AddTrainViewModel (private val trainRepo: TrainRepository, val trainId: In
     var chosenTrain : TrainEntry? = null
     var trainBeingModified : TrainEntry? = null
         set(value) {
+            /*Since we'll need to check for modifications and compare trainBeingModified
+            to initial chosenTrain, we need to pass a copy of it. If we give a direct reference,
+            they will seem to be the same instance and equality check always returns true.*/
             field = value?.copy()
         }
 

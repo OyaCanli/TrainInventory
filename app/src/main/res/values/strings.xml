@@ -33,7 +33,7 @@
     <string name="scale">Scale:</string>
     <string name="edit_train">Edit Train</string>
     <string name="no_train_for_this_brand">No trains found for this brand</string>
-    <string name="no_items_for_this_category">No items found for this category</string>
+    <string name="no_train_for_this_category">No items found for this category</string>
     <string name="cannot_erase_category">This category is used by some trains. You cannot erase this category</string>
     <string name="cannot_erase_brand">This brand is used by some trains. You cannot erase this brand</string>
     <string name="cd_product_image">image of the train</string>

@@ -63,6 +63,8 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        binding.uiState = mViewModel.trainListUiState
+
         val bundle = arguments
         //If the list will be used for showing selected trains
         if (bundle != null && bundle.containsKey(INTENT_REQUEST_CODE)) {
@@ -72,14 +74,14 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
                     val brandName= bundle.getString(BRAND_NAME) ?: return
                     activity?.title = getString(R.string.trains_of_the_brand, brandName)
                     mViewModel.getTrainsFromThisBrand(brandName).observe(this@TrainListFragment, Observer { trainEntries ->
-                        if (trainEntries == null || trainEntries.isEmpty()) {
-                            binding.isEmpty = true
-                            binding.emptyMessage = getString(R.string.no_train_for_this_brand)
+                        if (trainEntries.isNullOrEmpty()) {
+                            mViewModel.trainListUiState.emptyMessage = getString(R.string.no_train_for_this_brand)
+                            mViewModel.trainListUiState.showEmpty = true
                             animateTrainLogo()
                         } else {
-                            binding.isEmpty = false
                             mAdapter.trainList = trainEntries
                             mTrainList = trainEntries
+                            mViewModel.trainListUiState.showList = true
                         }
                     })
                 }
@@ -88,13 +90,13 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
                     activity?.title = getString(R.string.all_from_this_Category, categoryName)
                     mViewModel.getTrainsFromThisCategory(categoryName).observe(this@TrainListFragment, Observer { trainEntries ->
                         if (trainEntries.isNullOrEmpty()) {
-                            binding.isEmpty = true
-                            binding.emptyMessage = getString(R.string.no_items_for_this_category)
+                            mViewModel.trainListUiState.emptyMessage = getString(R.string.no_train_for_this_category)
+                            mViewModel.trainListUiState.showEmpty = true
                             animateTrainLogo()
                         } else {
-                            binding.isEmpty = false
                             mAdapter.trainList = trainEntries
                             mTrainList = trainEntries
+                            mViewModel.trainListUiState.showList = true
                         }
                     })
                 }
@@ -103,13 +105,13 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
                     activity?.title = getString(R.string.all_trains)
                     mViewModel.trainList?.observe(this@TrainListFragment, Observer { trainEntries ->
                         if (trainEntries.isNullOrEmpty()) {
-                            binding.isEmpty = true
-                            binding.emptyMessage = getString(R.string.no_trains_found)
+                            mViewModel.trainListUiState.emptyMessage = getString(R.string.no_trains_found)
+                            mViewModel.trainListUiState.showEmpty = true
                             animateTrainLogo()
                         } else {
-                            binding.isEmpty = false
                             mAdapter.trainList = trainEntries
                             mTrainList = trainEntries
+                            mViewModel.trainListUiState.showList = true
                         }
                     })
                 }
