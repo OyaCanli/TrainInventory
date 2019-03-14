@@ -46,7 +46,7 @@ class TrainRepository private constructor(private val mDatabase: TrainDatabase) 
 
     companion object {
 
-        private var sInstance: TrainRepository? = null
+        @Volatile private var sInstance: TrainRepository? = null
 
         fun getInstance(database: TrainDatabase): TrainRepository {
             return sInstance ?: synchronized(TrainRepository::class.java) {

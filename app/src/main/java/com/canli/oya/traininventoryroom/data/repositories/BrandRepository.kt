@@ -25,7 +25,7 @@ class BrandRepository private constructor(private val mDatabase: TrainDatabase) 
 
     companion object {
 
-        private var sInstance: BrandRepository? = null
+        @Volatile private var sInstance: BrandRepository? = null
 
         fun getInstance(database: TrainDatabase): BrandRepository {
             return sInstance ?: synchronized(BrandRepository::class.java) {

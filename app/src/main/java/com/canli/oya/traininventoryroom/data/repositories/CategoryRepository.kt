@@ -21,7 +21,7 @@ class CategoryRepository private constructor(private val mDatabase: TrainDatabas
 
     companion object {
 
-        private var sInstance: CategoryRepository? = null
+        @Volatile private var sInstance: CategoryRepository? = null
 
         fun getInstance(database: TrainDatabase): CategoryRepository {
             return sInstance ?: synchronized(CategoryRepository::class.java) {
