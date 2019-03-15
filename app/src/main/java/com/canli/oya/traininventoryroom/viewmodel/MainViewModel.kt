@@ -45,7 +45,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         private set
 
     fun getChosenTrain(trainId : Int): LiveData<TrainEntry> {
-        return mTrainRepo.getChosenTrain(trainId)
+        return mTrainRepo.getChosenTrainLiveData(trainId)
     }
 
     fun deleteTrain(train: TrainEntry) {
@@ -57,7 +57,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     var brandList: LiveData<List<BrandEntry>>?  = null
         get() {
-            return field ?: mBrandRepo.getBrandList().also { field = it }
+            return field ?: mBrandRepo.getAllBrands().also { field = it }
         }
         private set
 
@@ -91,7 +91,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     var categoryList: LiveData<List<String>>?  = null
         get() {
-            return field ?: mCategoryRepo.getCategoryList().also { field = it }
+            return field ?: mCategoryRepo.getAllCategories().also { field = it }
         }
         private set
 

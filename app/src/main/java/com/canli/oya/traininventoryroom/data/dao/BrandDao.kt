@@ -10,6 +10,9 @@ interface BrandDao {
     @get:Query("SELECT * FROM brands")
     val allBrands: LiveData<List<BrandEntry>>
 
+    @Query("SELECT * FROM brands")
+    suspend fun getBrandList() : List<BrandEntry>
+
     @Query("SELECT * FROM brands WHERE brandId = :id")
     fun getChosenBrand(id: Int): LiveData<BrandEntry>
 

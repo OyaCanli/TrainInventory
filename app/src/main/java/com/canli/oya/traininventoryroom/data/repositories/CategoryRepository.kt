@@ -5,7 +5,9 @@ import com.canli.oya.traininventoryroom.data.TrainDatabase
 
 class CategoryRepository private constructor(private val mDatabase: TrainDatabase) {
 
-    fun getCategoryList() = mDatabase.categoryDao().allCategories
+    fun getAllCategories() = mDatabase.categoryDao().allCategories
+
+    suspend fun getCategoryList() = mDatabase.categoryDao().getCategoryList()
 
     suspend fun insertCategory(category: CategoryEntry) {
        mDatabase.categoryDao().insertCategory(category)

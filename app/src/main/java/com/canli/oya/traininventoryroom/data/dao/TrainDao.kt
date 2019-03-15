@@ -11,7 +11,10 @@ interface TrainDao {
     val allTrains: LiveData<List<TrainEntry>>
 
     @Query("SELECT * FROM trains WHERE trainId = :id")
-    fun getChosenTrain(id: Int): LiveData<TrainEntry>
+    fun getChosenTrainLiveData(id: Int): LiveData<TrainEntry>
+
+    @Query("SELECT * FROM trains WHERE trainId = :id")
+    suspend fun getChosenTrain(id: Int): TrainEntry
 
     @Query("SELECT 1 FROM trains WHERE brandName = :brandName")
     fun isThisBrandUsed(brandName: String): Boolean

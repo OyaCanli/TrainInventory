@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.view.*
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -27,21 +26,11 @@ import com.canli.oya.traininventoryroom.utils.*
 import com.canli.oya.traininventoryroom.viewmodel.AddTrainFactory
 import com.canli.oya.traininventoryroom.viewmodel.AddTrainViewModel
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import org.jetbrains.anko.toast
-import timber.log.Timber
 import java.io.File
 import java.io.IOException
-import kotlin.coroutines.CoroutineContext
 
-class AddTrainFragment : Fragment(), View.OnClickListener, CoroutineScope, AdapterView.OnItemSelectedListener {
-
-    private lateinit var addTrainJob: Job
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + addTrainJob
+class AddTrainFragment : Fragment(), View.OnClickListener{
 
     private lateinit var binding: FragmentAddTrainBinding
 
@@ -69,8 +58,6 @@ class AddTrainFragment : Fragment(), View.OnClickListener, CoroutineScope, Adapt
 
         setHasOptionsMenu(true)
 
-        addTrainJob = Job()
-
         //Set click listener on buttons
         binding.addTrainAddBrandBtn.setOnClickListener(this)
         binding.addTrainAddCategoryBtn.setOnClickListener(this)
@@ -92,31 +79,18 @@ class AddTrainFragment : Fragment(), View.OnClickListener, CoroutineScope, Adapt
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val factory = AddTrainFactory(provideTrainRepo(requireContext()), trainId)
+        val factory = AddTrainFactory(requireActivity().application, trainId)
         addViewModel = ViewModelProviders.of(this, factory).get(AddTrainViewModel::class.java)
-        val chosenTrainLiveData = mainViewModel.getChosenTrain(trainId)
-        chosenTrainLiveData.observe(this, Observer { chosenTrain ->
-            chosenTrain?.let {
-                Timber.d("chosen train: $chosenTrain")
-                addViewModel.trainBeingModified = it
-                addViewModel.chosenTrain = it
-                binding.invalidateAll()
-                chosenTrainLiveData.removeObservers(this)
-            }
-        })
-
         binding.viewModel = addViewModel
 
         //Set brand spinner
         val brandAdapter = CustomSpinAdapter(requireContext(), null)
         binding.brandSpinner.adapter = brandAdapter
-        binding.brandSpinner.onItemSelectedListener = this
         mainViewModel.brandList?.observe(this@AddTrainFragment, Observer { brandEntries ->
             if (!brandEntries.isNullOrEmpty()) {
                 brandAdapter.mBrandList = brandEntries
                 brandAdapter.notifyDataSetChanged()
                 mBrandList = brandEntries
-                setBrandSpinner(brandEntries)
             }
         })
 
@@ -125,35 +99,14 @@ class AddTrainFragment : Fragment(), View.OnClickListener, CoroutineScope, Adapt
         val categoryAdapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, categoryList)
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.categorySpinner.adapter = categoryAdapter
-        binding.categorySpinner.onItemSelectedListener = this
         mainViewModel.categoryList?.observe(this@AddTrainFragment, Observer { categoryEntries ->
             if (!categoryEntries.isNullOrEmpty()) {
                 categoryList.clear()
                 categoryList.addAll(categoryEntries)
                 categoryAdapter.notifyDataSetChanged()
                 mCategoryList = categoryEntries
-                setCategorySpinner(categoryEntries)
             }
         })
-    }
-
-    private fun setCategorySpinner(categoryList: List<String>) {
-        //Set category spinner
-        addViewModel.trainBeingModified?.categoryName?.let {
-            binding.categorySpinner.setSelection(categoryList.indexOf(it))
-        }
-    }
-
-    private fun setBrandSpinner(brandList: List<BrandEntry>) {
-        //Set brand spinner
-        var brandIndex = 0
-        for (i in brandList.indices) {
-            if (brandList[i].brandName == addViewModel.trainBeingModified?.brandName) {
-                brandIndex = i
-                break
-            }
-        }
-        binding.brandSpinner.setSelection(brandIndex)
     }
 
     override fun onClick(v: View) {
@@ -175,18 +128,6 @@ class AddTrainFragment : Fragment(), View.OnClickListener, CoroutineScope, Adapt
             android.R.id.home -> activity?.onBackPressed()
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onItemSelected(spinner: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        //the listener is attached to both spinners.
-        //when statement differentiate which spinners is selected
-        when (spinner?.id) {
-            R.id.brandSpinner -> addViewModel.trainBeingModified?.brandName = mBrandList?.get(position)?.brandName
-            R.id.categorySpinner -> addViewModel.trainBeingModified?.categoryName = mCategoryList?.get(position)
-        }
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {
     }
 
     private fun insertAddCategoryFragment() {
@@ -215,7 +156,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, CoroutineScope, Adapt
                     context?.toast(R.string.quantity_should_be_positive)
                     return
                 } else {
-                    addViewModel.trainBeingModified?.quantity = quantity
+                    addViewModel.trainBeingModified.get()?.quantity = quantity
                 }
             } catch (nfe: NumberFormatException) {
                 context?.toast(R.string.quantity_should_be_positive)
@@ -224,13 +165,13 @@ class AddTrainFragment : Fragment(), View.OnClickListener, CoroutineScope, Adapt
         }
 
         //Train name cannot be empty
-        if (addViewModel.trainBeingModified?.trainName == null) {
+        if (addViewModel.trainBeingModified.get()?.trainName == null) {
             context?.toast("Train name cannot be empty")
             return
         }
 
         //Scale cannot be empty
-        if (addViewModel.trainBeingModified?.scale == null) {
+        if (addViewModel.trainBeingModified.get()?.scale == null) {
             context?.toast("Scale cannot be empty")
             return
         }
@@ -309,7 +250,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, CoroutineScope, Adapt
 
         if (requestCode == REQUEST_IMAGE_CAPTURE) {
             if (resultCode == RESULT_OK) {
-                addViewModel.trainBeingModified?.imageUri = mImageUri
+                addViewModel.trainBeingModified.get()?.imageUri = mImageUri
                 binding.invalidateAll()
             } else {
                 BitmapUtils.deleteImageFile(activity!!, mTempPhotoPath!!)
@@ -318,7 +259,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, CoroutineScope, Adapt
             if (resultCode == RESULT_OK) {
                 val imageUri = data?.data
                 mImageUri = imageUri?.toString()
-                addViewModel.trainBeingModified?.imageUri = mImageUri
+                addViewModel.trainBeingModified.get()?.imageUri = mImageUri
                 binding.invalidateAll()
             }
         }
@@ -339,11 +280,6 @@ class AddTrainFragment : Fragment(), View.OnClickListener, CoroutineScope, Adapt
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        addTrainJob.cancel()
-    }
-
     fun onBackClicked(){
         if(addViewModel.isChanged){
             showUnsavedChangesDialog()
@@ -352,7 +288,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, CoroutineScope, Adapt
         }
     }
 
-    fun showUnsavedChangesDialog() {
+    private fun showUnsavedChangesDialog() {
         //If user clicks back when there are unsaved changes in AddTrainFragment, warn user with a dialog.
         val builder = AlertDialog.Builder(requireContext())
         with(builder) {

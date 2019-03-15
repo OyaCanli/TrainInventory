@@ -5,7 +5,9 @@ import com.canli.oya.traininventoryroom.data.TrainDatabase
 
 class BrandRepository private constructor(private val mDatabase: TrainDatabase) {
 
-    fun getBrandList() = mDatabase.brandDao().allBrands
+    fun getAllBrands() = mDatabase.brandDao().allBrands
+
+    suspend fun getBrandList() = mDatabase.brandDao().getBrandList()
 
     suspend fun insertBrand(brand: BrandEntry) {
         mDatabase.brandDao().insertBrand(brand)

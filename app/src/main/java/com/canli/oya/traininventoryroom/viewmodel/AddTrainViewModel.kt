@@ -1,48 +1,61 @@
 package com.canli.oya.traininventoryroom.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.databinding.ObservableField
+import androidx.databinding.adapters.AdapterViewBindingAdapter
+import androidx.lifecycle.AndroidViewModel
+import com.canli.oya.traininventoryroom.R
+import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.TrainEntry
+import com.canli.oya.traininventoryroom.data.repositories.BrandRepository
+import com.canli.oya.traininventoryroom.data.repositories.CategoryRepository
 import com.canli.oya.traininventoryroom.data.repositories.TrainRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import com.canli.oya.traininventoryroom.utils.provideBrandRepo
+import com.canli.oya.traininventoryroom.utils.provideCategoryRepo
+import com.canli.oya.traininventoryroom.utils.provideTrainRepo
+import kotlinx.coroutines.*
 import timber.log.Timber
 
-class AddTrainViewModel (private val trainRepo: TrainRepository, val trainId: Int) : ViewModel() {
+class AddTrainViewModel(application: Application, val trainId: Int) : AndroidViewModel(application) {
 
     private val viewModelJob = Job()
     private val viewModelScope = CoroutineScope(Dispatchers.IO + viewModelJob)
 
-    var chosenTrain : TrainEntry? = null
-    var trainBeingModified : TrainEntry? = null
-        set(value) {
-            /*Since we'll need to check for modifications and compare trainBeingModified
-            to initial chosenTrain, we need to pass a copy of it. If we give a direct reference,
-            they will seem to be the same instance and equality check always returns true.*/
-            field = value?.copy()
-        }
+    private val trainRepo: TrainRepository = provideTrainRepo(application)
+    private val brandRepo: BrandRepository = provideBrandRepo(application)
+    private val categoryRepo: CategoryRepository = provideCategoryRepo(application)
 
-    private val emptyTrainObject: TrainEntry by lazy {
-        TrainEntry().also { Timber.d("new instance of empty train") }
-    }
+    var chosenTrain: TrainEntry? = null
+    val trainBeingModified = ObservableField<TrainEntry>()
+    private lateinit var emptyTrainObject : TrainEntry
+
+    var brandList: List<BrandEntry>? = null
+    var categoryList: List<String>? = null
 
     var isEdit: Boolean = false
 
     init {
-        if(trainId > 0){ //Edit case
-            isEdit = true
-        } else { //Add case
-            trainBeingModified = emptyTrainObject
-            isEdit = false
+        isEdit = trainId > 0
+        if (isEdit) {
+            viewModelScope.launch {
+                chosenTrain = trainRepo.getChosenTrain(trainId)
+                trainBeingModified.set(chosenTrain?.copy())
+            }
+        }
+        viewModelScope.launch {
+            val brandListToBe = async { brandRepo.getBrandList()}
+            val categoryListToBe = async { categoryRepo.getCategoryList()}
+            brandList = brandListToBe.await()
+            categoryList = categoryListToBe.await()
+            initializeEmptyTrainObject()
         }
     }
 
     fun saveTrain() {
         if (!isEdit) {
-            trainBeingModified?.let { insertTrain(it) }
+            trainBeingModified.get()?.let { insertTrain(it) }
         } else {
-            trainBeingModified?.let { updateTrain(it) }
+            trainBeingModified.get()?.let { updateTrain(it) }
         }
     }
 
@@ -51,17 +64,42 @@ class AddTrainViewModel (private val trainRepo: TrainRepository, val trainId: In
     }
 
     private fun updateTrain(train: TrainEntry) {
-        viewModelScope.launch {trainRepo.updateTrain(train) }
+        viewModelScope.launch { trainRepo.updateTrain(train) }
     }
 
     var isChanged : Boolean = false
-        get() = if(isEdit) trainBeingModified != chosenTrain
-        else trainBeingModified != emptyTrainObject
+        get() = if(isEdit) trainBeingModified.get() != chosenTrain
+        else trainBeingModified.get() != emptyTrainObject
         private set
 
+    var spinnerListener = AdapterViewBindingAdapter.OnItemSelected { spinner, _, position, _ ->
+        //the listener is attached to both spinners.
+        //when statement differentiate which spinners is selected
+        when (spinner?.id) {
+            R.id.brandSpinner -> trainBeingModified.get()?.brandName = brandList?.get(position)?.brandName
+            R.id.categorySpinner -> trainBeingModified.get()?.categoryName = categoryList?.get(position)
+        }
+    }
+
+    private fun initializeEmptyTrainObject(){
+        emptyTrainObject =  TrainEntry(brandName = brandList?.get(0)?.brandName, categoryName = categoryList?.get(0))
+        if(!isEdit) trainBeingModified.set(emptyTrainObject.copy())
+    }
+
+    fun brandToPosition(brandName : String?): Int {
+        //Set brand spinner
+        val index = brandList?.indexOfFirst{ it.brandName == brandName } ?: 0
+        Timber.d("index: $index")
+        return index
+    }
+
+    fun categoryToPosition(categoryName : String?) : Int {
+        return categoryList?.indexOf(categoryName) ?: 0
+    }
 
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()
     }
+
 }

@@ -16,7 +16,11 @@ class TrainRepository private constructor(private val mDatabase: TrainDatabase) 
         return mDatabase.trainDao().allTrains
     }
 
-    fun getChosenTrain(trainId : Int): LiveData<TrainEntry> {
+    fun getChosenTrainLiveData(trainId : Int): LiveData<TrainEntry> {
+        return mDatabase.trainDao().getChosenTrainLiveData(trainId)
+    }
+
+    suspend fun getChosenTrain(trainId : Int): TrainEntry {
         return mDatabase.trainDao().getChosenTrain(trainId)
     }
 

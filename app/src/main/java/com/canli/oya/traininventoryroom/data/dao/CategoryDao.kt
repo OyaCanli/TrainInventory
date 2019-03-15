@@ -10,6 +10,9 @@ interface CategoryDao {
     @get:Query("SELECT * FROM categories")
     val allCategories: LiveData<List<String>>
 
+    @Query("SELECT * FROM categories")
+    suspend fun getCategoryList() : List<String>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCategory(category: CategoryEntry)
 
