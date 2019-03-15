@@ -51,7 +51,7 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
         //Set recycler view
         mAdapter = TrainAdapter(this)
 
-        with(binding.list){
+        with(binding.list) {
             layoutManager = LinearLayoutManager(activity)
             itemAnimator = DefaultItemAnimator()
             adapter = mAdapter
@@ -65,57 +65,46 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
 
         binding.uiState = mViewModel.trainListUiState
 
-        val bundle = arguments
-        //If the list will be used for showing selected trains
-        if (bundle != null && bundle.containsKey(INTENT_REQUEST_CODE)) {
-            val requestType = bundle.getString(INTENT_REQUEST_CODE)
+        arguments?.run {
+            val requestType = this.getString(INTENT_REQUEST_CODE)
             when (requestType) {
+                //If the list will be used for showing trains from a specific brand
                 TRAINS_OF_BRAND -> {
-                    val brandName= bundle.getString(BRAND_NAME) ?: return
+                    val brandName = this.getString(BRAND_NAME) ?: return
                     activity?.title = getString(R.string.trains_of_the_brand, brandName)
                     mViewModel.getTrainsFromThisBrand(brandName).observe(this@TrainListFragment, Observer { trainEntries ->
-                        if (trainEntries.isNullOrEmpty()) {
-                            mViewModel.trainListUiState.emptyMessage = getString(R.string.no_train_for_this_brand)
-                            mViewModel.trainListUiState.showEmpty = true
-                            animateTrainLogo()
-                        } else {
-                            mAdapter.trainList = trainEntries
-                            mTrainList = trainEntries
-                            mViewModel.trainListUiState.showList = true
-                        }
+                        evaluateResults(trainEntries, getString(R.string.no_train_for_this_brand))
                     })
                 }
+                //If the list will be used for showing trains from a specific category
                 TRAINS_OF_CATEGORY -> {
-                    val categoryName = bundle.getString(CATEGORY_NAME) ?: return
+                    val categoryName = this.getString(CATEGORY_NAME) ?: return
                     activity?.title = getString(R.string.all_from_this_Category, categoryName)
                     mViewModel.getTrainsFromThisCategory(categoryName).observe(this@TrainListFragment, Observer { trainEntries ->
-                        if (trainEntries.isNullOrEmpty()) {
-                            mViewModel.trainListUiState.emptyMessage = getString(R.string.no_train_for_this_category)
-                            mViewModel.trainListUiState.showEmpty = true
-                            animateTrainLogo()
-                        } else {
-                            mAdapter.trainList = trainEntries
-                            mTrainList = trainEntries
-                            mViewModel.trainListUiState.showList = true
-                        }
+                        evaluateResults(trainEntries, getString(R.string.no_train_for_this_category))
                     })
                 }
                 else -> {
                     //If the list is going to be use for showing all trains, which is the default behaviour
                     activity?.title = getString(R.string.all_trains)
                     mViewModel.trainList?.observe(this@TrainListFragment, Observer { trainEntries ->
-                        if (trainEntries.isNullOrEmpty()) {
-                            mViewModel.trainListUiState.emptyMessage = getString(R.string.no_trains_found)
-                            mViewModel.trainListUiState.showEmpty = true
-                            animateTrainLogo()
-                        } else {
-                            mAdapter.trainList = trainEntries
-                            mTrainList = trainEntries
-                            mViewModel.trainListUiState.showList = true
-                        }
+                        evaluateResults(trainEntries, getString(R.string.no_trains_found))
                     })
                 }
             }
+        }
+    }
+
+
+    private fun evaluateResults(trainEntries: List<TrainEntry>?, message: String) {
+        if (trainEntries.isNullOrEmpty()) {
+            mViewModel.trainListUiState.emptyMessage = message
+            mViewModel.trainListUiState.showEmpty = true
+            animateTrainLogo()
+        } else {
+            mAdapter.trainList = trainEntries
+            mTrainList = trainEntries
+            mViewModel.trainListUiState.showList = true
         }
     }
 
@@ -124,9 +113,11 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
         val args = Bundle()
         args.putInt(TRAIN_ID, trainId)
         trainDetailsFrag.arguments = args
-        fragmentManager?.transaction { replace(R.id.container, trainDetailsFrag)
-                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                .addToBackStack(null) }
+        fragmentManager?.transaction {
+            replace(R.id.container, trainDetailsFrag)
+                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                    .addToBackStack(null)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -152,7 +143,7 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
             mAdapter.trainList = filteredTrains
             mAdapter.notifyDataSetChanged()
         } else {
-            launch{
+            launch {
                 filteredTrains = mViewModel.searchInTrains(query)
                 mAdapter.trainList = filteredTrains
                 mAdapter.notifyDataSetChanged()
@@ -172,9 +163,11 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
         val args = Bundle()
         args.putBoolean(IS_EDIT, false)
         addTrainFrag.arguments = args
-        fragmentManager?.transaction { replace(R.id.container, addTrainFrag)
-                setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                addToBackStack(null) }
+        fragmentManager?.transaction {
+            replace(R.id.container, addTrainFrag)
+            setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+            addToBackStack(null)
+        }
     }
 
     private fun animateTrainLogo() {
