@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.databinding.ObservableField
 import androidx.databinding.adapters.AdapterViewBindingAdapter
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.TrainEntry
@@ -13,13 +14,12 @@ import com.canli.oya.traininventoryroom.data.repositories.TrainRepository
 import com.canli.oya.traininventoryroom.utils.provideBrandRepo
 import com.canli.oya.traininventoryroom.utils.provideCategoryRepo
 import com.canli.oya.traininventoryroom.utils.provideTrainRepo
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class AddTrainViewModel(application: Application, val trainId: Int) : AndroidViewModel(application) {
-
-    private val viewModelJob = Job()
-    private val viewModelScope = CoroutineScope(Dispatchers.IO + viewModelJob)
 
     private val trainRepo: TrainRepository = provideTrainRepo(application)
     private val brandRepo: BrandRepository = provideBrandRepo(application)
@@ -37,12 +37,12 @@ class AddTrainViewModel(application: Application, val trainId: Int) : AndroidVie
     init {
         isEdit = trainId > 0
         if (isEdit) {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 chosenTrain = trainRepo.getChosenTrain(trainId)
                 trainBeingModified.set(chosenTrain?.copy())
             }
         }
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val brandListToBe = async { brandRepo.getBrandList()}
             val categoryListToBe = async { categoryRepo.getCategoryList()}
             brandList = brandListToBe.await()
@@ -97,9 +97,5 @@ class AddTrainViewModel(application: Application, val trainId: Int) : AndroidVie
         return categoryList?.indexOf(categoryName) ?: 0
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        viewModelJob.cancel()
-    }
 
 }

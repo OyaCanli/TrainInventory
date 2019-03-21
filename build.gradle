@@ -8,7 +8,7 @@ buildscript {
         supportLibVersion = '1.1.0-alpha02'
         materialVersion = '1.1.0-alpha04'
         roomVersion = '2.1.0-alpha04'
-        lifecycleVersion = '2.1.0-alpha02'
+        lifecycleVersion = '2.1.0-alpha03'
         glideVersion = '4.8.0'
         coroutinesVersion = '1.1.1'
         anko_version = '0.10.8'

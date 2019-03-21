@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.CategoryEntry
@@ -16,7 +17,9 @@ import com.canli.oya.traininventoryroom.utils.UIState
 import com.canli.oya.traininventoryroom.utils.provideBrandRepo
 import com.canli.oya.traininventoryroom.utils.provideCategoryRepo
 import com.canli.oya.traininventoryroom.utils.provideTrainRepo
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -25,9 +28,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val mCategoryRepo: CategoryRepository
 
     val context: Context = application.applicationContext
-
-    private val viewModelJob = Job()
-    private val viewModelScope = CoroutineScope(Dispatchers.IO + viewModelJob)
 
     init {
         mTrainRepo = provideTrainRepo(context)
@@ -49,7 +49,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun deleteTrain(train: TrainEntry) {
-        viewModelScope.launch { mTrainRepo.deleteTrain(train) }
+        viewModelScope.launch(Dispatchers.IO) { mTrainRepo.deleteTrain(train) }
     }
 
     ////////////// BRAND LIST //////////////////
@@ -71,7 +71,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun insertBrand(brand: BrandEntry) {
-        viewModelScope.launch { mBrandRepo.insertBrand(brand) }
+        viewModelScope.launch(Dispatchers.IO) { mBrandRepo.insertBrand(brand) }
     }
 
     suspend fun deleteBrand(brand: BrandEntry) {
@@ -79,7 +79,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun updateBrand(brand: BrandEntry) {
-        viewModelScope.launch { mBrandRepo.updateBrand(brand) }
+        viewModelScope.launch(Dispatchers.IO) { mBrandRepo.updateBrand(brand) }
     }
 
     fun isThisBrandUsed(brandName: String): Boolean {
@@ -96,11 +96,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         private set
 
     fun deleteCategory(category: CategoryEntry) {
-        viewModelScope.launch { mCategoryRepo.deleteCategory(category) }
+        viewModelScope.launch(Dispatchers.IO) { mCategoryRepo.deleteCategory(category) }
     }
 
     fun insertCategory(category: CategoryEntry) {
-        viewModelScope.launch { mCategoryRepo.insertCategory(category) }
+        viewModelScope.launch(Dispatchers.IO) { mCategoryRepo.insertCategory(category) }
     }
 
     fun isThisCategoryUsed(category: String): Boolean {
@@ -119,11 +119,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     suspend fun searchInTrains(query: String): List<TrainEntry> {
         val searchResults = viewModelScope.async { mTrainRepo.searchInTrains(query) }
         return searchResults.await()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        viewModelJob.cancel()
     }
 }
 

@@ -56,6 +56,8 @@ dependencies {
 
     //ViewModel and liveData
     implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycleVersion"
+
     kapt "androidx.lifecycle:lifecycle-compiler:$rootProject.lifecycleVersion"
 
     //Glide
