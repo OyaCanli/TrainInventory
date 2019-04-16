@@ -26,9 +26,17 @@ class CustomSpinAdapter(private val mContext: Context, var mBrandList: List<Bran
     }
 
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
+        return createViewFromResource(view, parent, position, R.layout.item_spinner)
+    }
+
+    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+        return createViewFromResource(convertView, parent, position, R.layout.item_spinner_dropdown)
+    }
+
+    private fun createViewFromResource(view: View?, parent: ViewGroup, position: Int, resource : Int): View {
         var convertView = view
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_spinner, parent, false)
+            convertView = LayoutInflater.from(mContext).inflate(resource, parent, false)
         }
 
         val currentBrand = getItem(position)

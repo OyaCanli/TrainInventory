@@ -290,7 +290,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener{
 
     private fun showUnsavedChangesDialog() {
         //If user clicks back when there are unsaved changes in AddTrainFragment, warn user with a dialog.
-        val builder = AlertDialog.Builder(requireContext())
+        val builder = AlertDialog.Builder(requireContext(), R.style.alert_dialog_style)
         with(builder) {
             setMessage(R.string.unsaved_changes_warning)
             setPositiveButton(getString(R.string.discard_changes)) { _, _ ->

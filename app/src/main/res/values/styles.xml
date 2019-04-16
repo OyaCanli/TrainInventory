@@ -7,8 +7,9 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@color/window_background</item>
-        <item name="android:textColorPrimary">@color/colorPrimaryDark</item>
-        <item name="android:textColorTertiary">@color/colorPrimaryDark</item>
+        <item name="android:textColorPrimary">@color/cream</item>
+        <item name="android:textColorTertiary">@color/cream</item>
+        <item name="android:textSize">@dimen/normalTextSize</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -36,7 +37,7 @@
 
     <style name="buttonStyle">
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:background">@color/window_background</item>
         <item name="android:paddingStart">@dimen/half_padding</item>
         <item name="android:paddingLeft">@dimen/half_padding</item>
         <item name="android:paddingEnd">@dimen/half_padding</item>
@@ -52,7 +53,13 @@
         <item name="android:layout_marginRight">16dp</item>
         <item name="android:layout_marginStart">16dp</item>
         <item name="android:layout_marginTop">16dp</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="alert_dialog_style" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:textColorPrimary">@color/cream</item>
     </style>
 
 </resources>

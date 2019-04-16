@@ -17,7 +17,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/train_item_background"
+        android:background="@drawable/rounded_background"
         android:layout_marginTop="@dimen/margin_standard">
 
         <TextView
@@ -27,6 +27,7 @@
             android:layout_marginLeft="@dimen/margin_standard"
             android:layout_marginStart="@dimen/margin_standard"
             android:text="@string/brand_name"
+            android:textColor="@color/colorPrimaryDark"
             app:layout_constraintBaseline_toBaselineOf="@+id/addBrand_editBrandName"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -42,6 +43,7 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:text="@{isEdit ? chosenBrand.brandName : null}"
+            android:textColor="@color/colorPrimaryDark"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView8"
             app:layout_constraintTop_toTopOf="parent" />
@@ -54,6 +56,7 @@
             android:layout_marginEnd="@dimen/margin_standard"
             android:layout_marginRight="@dimen/margin_standard"
             android:text="@string/add_logo"
+            android:textColor="@color/colorPrimaryDark"
             app:layout_constraintEnd_toStartOf="@+id/addBrand_editBrandName"
             app:layout_constraintTop_toTopOf="@+id/addBrand_image" />
 
@@ -67,7 +70,8 @@
             android:contentDescription="@string/cd_brand_logo_edit"
             app:layout_constraintStart_toStartOf="@+id/addBrand_editBrandName"
             app:layout_constraintTop_toBottomOf="@+id/addBrand_editWeb"
-            app:imageUrl="@{isEdit ? chosenBrand.brandLogoUri : null}"/>
+            app:imageUrl="@{chosenBrand.brandLogoUri}"
+            app:placeholder="@{@drawable/ic_gallery_dark}"/>
 
         <Button
             android:id="@+id/addBrand_saveBtn"
@@ -93,6 +97,7 @@
             android:layout_marginTop="@dimen/half_margin"
             android:ems="10"
             android:inputType="textEmailAddress"
+            android:textColor="@color/colorPrimaryDark"
             android:text="@{isEdit ? chosenBrand.webUrl : null}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView8"
@@ -106,6 +111,7 @@
             android:layout_marginEnd="@dimen/margin_standard"
             android:layout_marginRight="@dimen/margin_standard"
             android:text="@string/website"
+            android:textColor="@color/colorPrimaryDark"
             app:layout_constraintBaseline_toBaselineOf="@+id/addBrand_editWeb"
             app:layout_constraintEnd_toStartOf="@+id/addBrand_editWeb" />
     </androidx.constraintlayout.widget.ConstraintLayout>

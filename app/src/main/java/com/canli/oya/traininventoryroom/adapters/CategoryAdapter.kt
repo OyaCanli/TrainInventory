@@ -3,10 +3,11 @@ package com.canli.oya.traininventoryroom.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ItemCategoryBinding
 
-class CategoryAdapter (private val mClickListener: CategoryItemClickListener) : androidx.recyclerview.widget.RecyclerView.Adapter<CategoryAdapter.CategoryHolder>() {
+class CategoryAdapter (private val mClickListener: CategoryItemClickListener) : RecyclerView.Adapter<CategoryAdapter.CategoryHolder>() {
 
     var categoryList: List<String>? = null
         set(value) {
@@ -26,13 +27,14 @@ class CategoryAdapter (private val mClickListener: CategoryItemClickListener) : 
         val currentCategory = categoryList?.get(position)
         holder.binding.categoryName = currentCategory
         holder.binding.executePendingBindings()
+        holder.binding.categoryItemNumber.text = "${position+1}."
     }
 
     override fun getItemCount(): Int {
         return categoryList?.size ?: 0
     }
 
-    inner class CategoryHolder(val binding: ItemCategoryBinding) : androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root)
+    inner class CategoryHolder(val binding: ItemCategoryBinding) : RecyclerView.ViewHolder(binding.root)
 
     interface CategoryItemClickListener {
         fun onCategoryItemClicked(categoryName: String)

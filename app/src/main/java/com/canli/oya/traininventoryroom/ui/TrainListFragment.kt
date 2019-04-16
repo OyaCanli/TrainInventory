@@ -1,5 +1,6 @@
 package com.canli.oya.traininventoryroom.ui
 
+import android.graphics.drawable.ShapeDrawable
 import android.os.Bundle
 import android.view.*
 import android.view.animation.AnimationUtils
@@ -10,6 +11,7 @@ import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.adapters.TrainAdapter
@@ -50,10 +52,16 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
 
         //Set recycler view
         mAdapter = TrainAdapter(this)
+        val divider = DividerItemDecoration(requireActivity(), LinearLayoutManager.VERTICAL)
+        divider.setDrawable(ShapeDrawable().apply {
+            intrinsicHeight = resources.getDimensionPixelOffset(R.dimen.divider_height)
+            paint.color = resources.getColor(R.color.divider_color)
+        })
 
         with(binding.list) {
             layoutManager = LinearLayoutManager(activity)
             itemAnimator = DefaultItemAnimator()
+            addItemDecoration(divider)
             adapter = mAdapter
         }
 

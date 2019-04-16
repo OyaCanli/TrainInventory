@@ -19,9 +19,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_standard"
-            android:background="@drawable/train_item_background"
-            android:padding="@dimen/padding_standard">
+            android:layout_margin="@dimen/margin_standard">
 
             <ImageView
                 android:id="@+id/details_image"
@@ -32,6 +30,7 @@
                 android:layout_marginTop="@dimen/half_margin"
                 android:contentDescription="@string/cd_chosen_train_image"
                 app:imageUrl="@{chosenTrain.imageUri}"
+                app:placeholder="@{@drawable/ic_gallery_dark}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,6 +39,7 @@
                 style="@style/details_plain_text"
                 android:text="@{chosenTrain.trainName}"
                 android:textStyle="bold"
+                android:textColor="@color/colorAccent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/details_image"
                 app:layout_constraintTop_toTopOf="parent"
@@ -58,7 +58,6 @@
                 android:id="@+id/details_reference"
                 style="@style/details_plain_text"
                 android:text="@{chosenTrain.modelReference}"
-                android:textColor="@color/colorPrimary"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/details_image"
@@ -84,6 +83,7 @@
                 android:layout_marginTop="@dimen/margin_standard"
                 android:layout_marginEnd="@dimen/margin_standard"
                 android:layout_marginRight="@dimen/margin_standard"
+                style="@style/details_plain_text"
                 android:text="@{chosenTrain.description}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

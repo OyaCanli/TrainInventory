@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_standard"
-        android:background="@drawable/train_item_background">
+        android:background="@drawable/rounded_background">
 
         <EditText
             android:id="@+id/addCategory_editCatName"
@@ -20,7 +20,8 @@
             android:layout_marginTop="@dimen/margin_standard"
             android:ems="10"
             android:hint="@string/category_name"
-            android:inputType="textPersonName"
+            android:inputType="textCapWords"
+            android:textColor="@color/colorPrimaryDark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/addCategory_saveBtn"
             app:layout_constraintStart_toStartOf="parent"

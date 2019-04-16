@@ -30,6 +30,7 @@ class BrandAdapter(private val mClickListener: BrandItemClickListener)
         val currentBrand = brandList?.get(position)
         holder.binding.brand = currentBrand
         holder.binding.executePendingBindings()
+        holder.binding.brandItemNumber.text = "${position+1}."
     }
 
     override fun getItemCount(): Int {
