@@ -25,8 +25,8 @@
                 android:id="@+id/textView10"
                 style="@style/FieldStyle"
                 android:text="@string/category"
-                app:layout_constraintBottom_toBottomOf="@id/categorySpinner"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/categorySpinner" />
 
             <Spinner
                 android:id="@+id/categorySpinner"
@@ -42,7 +42,6 @@
             <TextView
                 android:id="@+id/textView5"
                 style="@style/FieldStyle"
-                android:layout_marginTop="8dp"
                 android:text="@string/brand"
                 app:layout_constraintBottom_toBottomOf="@+id/brandSpinner"
                 app:layout_constraintStart_toStartOf="parent"
@@ -51,10 +50,10 @@
             <Spinner
                 android:id="@+id/brandSpinner"
                 style="@style/editTextStyle"
-                android:selectedItemPosition="@{viewModel.brandToPosition(viewModel.trainBeingModified.brandName)}"
-                android:onItemSelected="@{viewModel.spinnerListener}"
                 android:layout_marginTop="@dimen/margin_standard"
                 android:layout_marginEnd="@dimen/margin_standard"
+                android:onItemSelected="@{viewModel.spinnerListener}"
+                android:selectedItemPosition="@{viewModel.brandToPosition(viewModel.trainBeingModified.brandName)}"
                 app:layout_constraintEnd_toStartOf="@+id/addTrain_addBrandBtn"
                 app:layout_constraintStart_toEndOf="@+id/barrier"
                 app:layout_constraintTop_toBottomOf="@+id/categorySpinner" />
@@ -183,6 +182,7 @@
                 android:layout_marginBottom="@dimen/large_margin"
                 android:background="@drawable/location_background"
                 android:hint="@string/hint_location_letter"
+                android:textColorHint="@color/divider_color"
                 android:inputType="textCapCharacters"
                 android:text="@={viewModel.trainBeingModified.locationColumn}"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -201,6 +201,7 @@
                 android:ems="10"
                 android:hint="@string/hint_location_number"
                 android:inputType="number"
+                android:textColorHint="@color/divider_color"
                 android:text="@={viewModel.trainBeingModified.locationRow}"
                 app:layout_constraintBottom_toBottomOf="@+id/editLocationLetter"
                 app:layout_constraintEnd_toStartOf="@+id/textView11"

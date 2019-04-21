@@ -28,9 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/half_margin"
             android:layout_marginTop="@dimen/half_margin"
-            android:fontFamily="sans-serif-black"
-            android:textColor="@color/colorAccent"
-            android:textSize="@dimen/largeTextSize"
+            style="@style/name_style"
             app:layout_constraintStart_toEndOf="@+id/product_item_image"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Train name"
@@ -45,6 +43,7 @@
             app:layout_constraintStart_toEndOf="@+id/product_item_image"
             app:layout_constraintTop_toBottomOf="@+id/train_item_train_name"
             tools:text="Brand name"
+            android:textSize="@dimen/normalTextSize"
             android:text="@{train.brandName}"/>
 
         <ImageView
@@ -58,7 +57,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:imageUrl="@{train.imageUri}"
-            app:placeholder="@{@drawable/ic_gallery_dark}"
+            app:placeholder="@{@drawable/ic_gallery_light}"
             android:contentDescription="@string/cd_product_image"/>
 
         <TextView
@@ -70,6 +69,7 @@
             app:layout_constraintStart_toEndOf="@+id/product_item_image"
             app:layout_constraintTop_toBottomOf="@+id/train_item_brand"
             tools:text="reference"
+            android:textSize="@dimen/normalTextSize"
             android:text="@{train.modelReference}"/>
 
         <TextView
@@ -81,6 +81,7 @@
             app:layout_constraintBaseline_toBaselineOf="@+id/train_item_train_name"
             app:layout_constraintStart_toEndOf="@+id/train_item_train_name"
             tools:text="(Vagon)"
+            android:textSize="@dimen/normalTextSize"
             android:text="@{BindingUtils.encloseInParenthesis(train.categoryName)}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -9,7 +9,7 @@
         <item name="android:windowBackground">@color/window_background</item>
         <item name="android:textColorPrimary">@color/cream</item>
         <item name="android:textColorTertiary">@color/cream</item>
-        <item name="android:textSize">@dimen/normalTextSize</item>
+        <item name="android:fontFamily">roboto</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -25,6 +25,7 @@
         <item name="android:layout_marginLeft">@dimen/margin_standard</item>
         <item name="android:layout_marginTop">@dimen/half_margin</item>
         <item name="android:ems">10</item>
+        <item name="android:textColorHint">@color/divider_color</item>
     </style>
 
     <style name="FieldStyle">
@@ -33,6 +34,7 @@
         <item name="android:layout_marginStart">@dimen/margin_standard</item>
         <item name="android:layout_marginLeft">@dimen/margin_standard</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorAccent</item>
     </style>
 
     <style name="buttonStyle">
@@ -60,6 +62,13 @@
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:background">@color/colorPrimary</item>
         <item name="android:textColorPrimary">@color/cream</item>
+    </style>
+
+    <style name="name_style">
+        <item name="android:fontFamily">serif-monospace</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/largeTextSize</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
 </resources>

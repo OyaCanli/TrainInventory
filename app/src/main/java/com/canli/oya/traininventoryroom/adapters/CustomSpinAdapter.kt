@@ -14,11 +14,11 @@ import com.canli.oya.traininventoryroom.utils.GlideApp
 class CustomSpinAdapter(private val mContext: Context, var mBrandList: List<BrandEntry>?) : BaseAdapter() {
 
     override fun getCount(): Int {
-        return mBrandList?.size ?: 0
+        return mBrandList?.size?.plus(1) ?: 1
     }
 
     override fun getItem(position: Int): BrandEntry? {
-        return mBrandList?.get(position)
+        return if(position == 0) null else mBrandList?.get(position-1)
     }
 
     override fun getItemId(position: Int): Long {
@@ -34,26 +34,28 @@ class CustomSpinAdapter(private val mContext: Context, var mBrandList: List<Bran
     }
 
     private fun createViewFromResource(view: View?, parent: ViewGroup, position: Int, resource : Int): View {
-        var convertView = view
-        if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(resource, parent, false)
-        }
+        val convertView = view ?: LayoutInflater.from(mContext).inflate(resource, parent, false)
+
+        val brandNameTv = convertView.findViewById<TextView>(R.id.spin_item_brand_name)
+        val logoImage = convertView.findViewById<ImageView>(R.id.spin_item_logo)
 
         val currentBrand = getItem(position)
 
-        val brandName = convertView!!.findViewById<TextView>(R.id.spin_item_brand_name)
-        val logo = convertView.findViewById<ImageView>(R.id.spin_item_logo)
-
-        brandName.text = currentBrand?.brandName
-        val imageUri = currentBrand?.brandLogoUri
-        if (imageUri == null) {
-            logo.visibility = View.GONE
+        if(currentBrand == null){
+            brandNameTv.text = "--Select brand--"
+            logoImage.visibility = View.GONE
         } else {
-            logo.visibility = View.VISIBLE
-            GlideApp.with(mContext)
-                    .load(imageUri)
-                    .centerCrop()
-                    .into(logo)
+            brandNameTv.text = currentBrand.brandName
+            val imageUri = currentBrand.brandLogoUri
+            if (imageUri == null) {
+                logoImage.visibility = View.GONE
+            } else {
+                logoImage.visibility = View.VISIBLE
+                GlideApp.with(mContext)
+                        .load(imageUri)
+                        .centerCrop()
+                        .into(logoImage)
+            }
         }
 
         return convertView

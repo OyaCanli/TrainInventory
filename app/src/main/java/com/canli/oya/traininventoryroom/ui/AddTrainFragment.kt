@@ -40,9 +40,6 @@ class AddTrainFragment : Fragment(), View.OnClickListener{
 
     private lateinit var addViewModel: AddTrainViewModel
 
-    private var mBrandList: List<BrandEntry>? = null
-    private var mCategoryList: List<String>? = null
-
     private var mTempPhotoPath: String? = null
     private var mImageUri: String? = null
     private var mUsersChoice: Int = 0
@@ -90,21 +87,23 @@ class AddTrainFragment : Fragment(), View.OnClickListener{
             if (!brandEntries.isNullOrEmpty()) {
                 brandAdapter.mBrandList = brandEntries
                 brandAdapter.notifyDataSetChanged()
-                mBrandList = brandEntries
+                addViewModel.brandList = brandEntries
             }
         })
 
         //Set category spinner
         val categoryList = ArrayList<String>()
+        categoryList.add("--Select category--")
         val categoryAdapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, categoryList)
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.categorySpinner.adapter = categoryAdapter
         mainViewModel.categoryList?.observe(this@AddTrainFragment, Observer { categoryEntries ->
             if (!categoryEntries.isNullOrEmpty()) {
                 categoryList.clear()
+                categoryList.add("--Select category--")
                 categoryList.addAll(categoryEntries)
                 categoryAdapter.notifyDataSetChanged()
-                mCategoryList = categoryEntries
+                addViewModel.categoryList = categoryList
             }
         })
     }
@@ -145,7 +144,54 @@ class AddTrainFragment : Fragment(), View.OnClickListener{
     }
 
     private fun saveTrain() {
-        ///////////////////// DATA VALIDATION ////////////////////////
+
+        // DATA VALIDATION
+        if (!quantityIsValid()) return
+        if (trainNameIsEmpty()) return
+        if (brandNameIsEmpty()) return
+        if (categoryNameIsEmpty()) return
+        if (scaleIsEmpty()) return
+
+        // SAVE
+        addViewModel.saveTrain()
+
+        //After adding the train, go back to where user come from.
+        fragmentManager?.popBackStack()
+    }
+
+    private fun scaleIsEmpty(): Boolean {
+        if (addViewModel.trainBeingModified.get()?.scale == null) {
+            context?.toast("Scale cannot be empty")
+            return true
+        }
+        return false
+    }
+
+    private fun brandNameIsEmpty() : Boolean {
+        if(addViewModel.trainBeingModified.get()?.brandName == null){
+            context?.toast("Brand name cannot be empty")
+            return true
+        }
+        return false
+    }
+
+    private fun categoryNameIsEmpty() : Boolean {
+        if(addViewModel.trainBeingModified.get()?.categoryName == null){
+            context?.toast("Category name cannot be empty")
+            return true
+        }
+        return false
+    }
+
+    private fun trainNameIsEmpty(): Boolean {
+        if (addViewModel.trainBeingModified.get()?.trainName == null) {
+            context?.toast("Train name cannot be empty")
+            return true
+        }
+        return false
+    }
+
+    private fun quantityIsValid(): Boolean {
         val quantityToParse = binding.editQuantity.text.toString().trim()
         //Quantity can be null. But if it is not null it should be a positive integer
         val quantity: Int
@@ -154,33 +200,16 @@ class AddTrainFragment : Fragment(), View.OnClickListener{
                 quantity = Integer.valueOf(quantityToParse)
                 if (quantity < 0) {
                     context?.toast(R.string.quantity_should_be_positive)
-                    return
+                    return false
                 } else {
                     addViewModel.trainBeingModified.get()?.quantity = quantity
                 }
             } catch (nfe: NumberFormatException) {
                 context?.toast(R.string.quantity_should_be_positive)
-                return
+                return false
             }
         }
-
-        //Train name cannot be empty
-        if (addViewModel.trainBeingModified.get()?.trainName == null) {
-            context?.toast("Train name cannot be empty")
-            return
-        }
-
-        //Scale cannot be empty
-        if (addViewModel.trainBeingModified.get()?.scale == null) {
-            context?.toast("Scale cannot be empty")
-            return
-        }
-
-        ///////// SAVE ///////
-        addViewModel.saveTrain()
-
-        //After adding the train, go back to where user come from.
-        fragmentManager?.popBackStack()
+        return true
     }
 
     private fun openImageDialog() {

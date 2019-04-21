@@ -32,9 +32,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        //Set toolbar
-        setSupportActionBar(binding.toolbar)
-
         binding.navigation.setOnNavigationItemSelectedListener(this)
         fm = supportFragmentManager
         fm.addOnBackStackChangedListener(this)

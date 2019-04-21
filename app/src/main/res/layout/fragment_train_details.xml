@@ -18,28 +18,28 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_standard">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/details_image"
                 android:layout_width="@dimen/train_details_image_width"
                 android:layout_height="@dimen/train_details_image_height"
-                android:layout_marginStart="@dimen/half_margin"
-                android:layout_marginLeft="@dimen/half_margin"
-                android:layout_marginTop="@dimen/half_margin"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:contentDescription="@string/cd_chosen_train_image"
                 app:imageUrl="@{chosenTrain.imageUri}"
-                app:placeholder="@{@drawable/ic_gallery_dark}"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:placeholder="@{@drawable/ic_gallery_light}" />
 
             <TextView
                 android:id="@+id/details_product_name"
                 style="@style/details_plain_text"
                 android:text="@{chosenTrain.trainName}"
-                android:textStyle="bold"
                 android:textColor="@color/colorAccent"
+                android:textSize="24sp"
+                android:fontFamily="serif-monospace"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/details_image"
                 app:layout_constraintTop_toTopOf="parent"
@@ -76,26 +76,24 @@
 
             <TextView
                 android:id="@+id/details_description"
+                style="@style/details_plain_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/half_margin"
-                android:layout_marginLeft="@dimen/half_margin"
-                android:layout_marginTop="@dimen/margin_standard"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="@dimen/margin_standard"
-                android:layout_marginRight="@dimen/margin_standard"
-                style="@style/details_plain_text"
                 android:text="@{chosenTrain.description}"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/details_image"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/textView14"
+                app:layout_constraintTop_toTopOf="@+id/barrier2"
                 tools:text="c'est piece est un petit peu abime au niveau des attaches.." />
 
             <TextView
                 android:id="@+id/textView16"
+                style="@style/details_plain_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/half_margin"
-                android:layout_marginLeft="@dimen/half_margin"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="@dimen/margin_standard"
                 android:text="@string/quantity"
                 android:textStyle="bold"
@@ -104,21 +102,23 @@
 
             <TextView
                 android:id="@+id/details_quantity"
-                android:layout_width="wrap_content"
+                style="@style/details_plain_text"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_standard"
-                android:layout_marginLeft="@dimen/margin_standard"
+                android:layout_marginEnd="16dp"
                 android:text="@{String.valueOf(chosenTrain.quantity)}"
                 app:layout_constraintBaseline_toBaselineOf="@+id/textView16"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/textView16"
                 tools:text="1" />
 
             <TextView
                 android:id="@+id/textView18"
+                style="@style/details_plain_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/half_margin"
-                android:layout_marginLeft="@dimen/half_margin"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="@dimen/margin_standard"
                 android:text="@string/location"
                 android:textStyle="bold"
@@ -127,21 +127,23 @@
 
             <TextView
                 android:id="@+id/details_location"
-                android:layout_width="wrap_content"
+                style="@style/details_plain_text"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_standard"
-                android:layout_marginLeft="@dimen/margin_standard"
+                android:layout_marginEnd="16dp"
                 android:text="@{BindingUtils.attachLocationString(chosenTrain.locationRow, chosenTrain.locationColumn)}"
                 app:layout_constraintBaseline_toBaselineOf="@+id/textView18"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/textView18"
                 tools:text="1-D" />
 
             <TextView
                 android:id="@+id/textView13"
+                style="@style/details_plain_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/half_margin"
-                android:layout_marginLeft="@dimen/half_margin"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="@dimen/margin_standard"
                 android:text="@string/scale"
                 android:textStyle="bold"
@@ -150,14 +152,35 @@
 
             <TextView
                 android:id="@+id/details_scale"
-                android:layout_width="wrap_content"
+                style="@style/details_plain_text"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_standard"
-                android:layout_marginLeft="@dimen/margin_standard"
+                android:layout_marginEnd="16dp"
                 android:text="@{chosenTrain.scale}"
                 app:layout_constraintBaseline_toBaselineOf="@+id/textView13"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/textView13"
                 tools:text="3M" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="details_category,details_image"
+                tools:layout_editor_absoluteY="447dp" />
+
+            <TextView
+                android:id="@+id/textView14"
+                style="@style/details_plain_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/description"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/barrier2" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>

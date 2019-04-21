@@ -195,6 +195,8 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
             if (webIntent.resolveActivity(requireActivity().packageManager) != null) {
                 startActivity(webIntent)
             }
+        } else {
+            context?.toast("You haven't provided a web site for this brand. Click edit icon to add one.")
         }
     }
 

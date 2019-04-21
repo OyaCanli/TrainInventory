@@ -15,7 +15,7 @@
     <dimen name="add_train_add_button_height">30dp</dimen>
     <dimen name="product_item_image_dim">100dp</dimen>
     <dimen name="brand_item_logo_dim">60dp</dimen>
-    <dimen name="brand_item_icon_dim">32dp</dimen>
+    <dimen name="brand_item_icon_dim">50dp</dimen>
     <dimen name="edit_train_image_height">100dp</dimen>
     <dimen name="spinner_brand_logo_dim">40dp</dimen>
 

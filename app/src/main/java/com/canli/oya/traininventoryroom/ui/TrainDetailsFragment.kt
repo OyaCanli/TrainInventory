@@ -68,7 +68,7 @@ class TrainDetailsFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun openAlertDialogForDelete() {
-        val builder = AlertDialog.Builder(activity!!, R.style.Theme_AppCompat_DayNight_Dialog)
+        val builder = AlertDialog.Builder(activity!!, R.style.alert_dialog_style)
         with(builder){
             setMessage(R.string.do_you_want_to_delete)
             setPositiveButton(R.string.yes_delete) { _, _ -> deleteTrain() }

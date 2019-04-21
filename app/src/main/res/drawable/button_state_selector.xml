@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:id="@+id/buttonPressed">
+        <shape android:shape="oval">
+            <solid android:color="@color/ripple_color"/>
+        </shape>
+    </item>
+    <item android:state_pressed="false" android:id="@+id/buttonNotPressed">
+        <shape android:shape="oval">
+            <solid android:color="@color/window_background"/>
+        </shape>
+    </item>
+</selector>

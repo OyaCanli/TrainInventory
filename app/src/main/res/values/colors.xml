@@ -6,9 +6,7 @@
     <color name="window_background">#575c62</color>
     <color name="yellow">#F2C14E</color>
     <color name="bot_nav_inactive_color">#DDFFFFFF</color>
-
-    <color name="grey">#2a2c2e</color>
-    <color name="blue">#0d9cfa</color>
     <color name="cream">#e6e0d9</color>
     <color name="divider_color">#7b838d</color>
+    <color name="ripple_color">#BB7b838d</color>
 </resources>

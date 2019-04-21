@@ -22,12 +22,10 @@ import timber.log.Timber
 class AddTrainViewModel(application: Application, val trainId: Int) : AndroidViewModel(application) {
 
     private val trainRepo: TrainRepository = provideTrainRepo(application)
-    private val brandRepo: BrandRepository = provideBrandRepo(application)
-    private val categoryRepo: CategoryRepository = provideCategoryRepo(application)
 
     var chosenTrain: TrainEntry? = null
     val trainBeingModified = ObservableField<TrainEntry>()
-    private lateinit var emptyTrainObject : TrainEntry
+    private val emptyTrainObject = TrainEntry()
 
     var brandList: List<BrandEntry>? = null
     var categoryList: List<String>? = null
@@ -41,13 +39,8 @@ class AddTrainViewModel(application: Application, val trainId: Int) : AndroidVie
                 chosenTrain = trainRepo.getChosenTrain(trainId)
                 trainBeingModified.set(chosenTrain?.copy())
             }
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            val brandListToBe = async { brandRepo.getBrandList()}
-            val categoryListToBe = async { categoryRepo.getCategoryList()}
-            brandList = brandListToBe.await()
-            categoryList = categoryListToBe.await()
-            initializeEmptyTrainObject()
+        } else {
+            trainBeingModified.set(TrainEntry())
         }
     }
 
@@ -76,25 +69,26 @@ class AddTrainViewModel(application: Application, val trainId: Int) : AndroidVie
         //the listener is attached to both spinners.
         //when statement differentiate which spinners is selected
         when (spinner?.id) {
-            R.id.brandSpinner -> trainBeingModified.get()?.brandName = brandList?.get(position)?.brandName
-            R.id.categorySpinner -> trainBeingModified.get()?.categoryName = categoryList?.get(position)
+            R.id.brandSpinner -> {
+                trainBeingModified.get()?.brandName = if(position == 0) null else brandList?.get(position-1)?.brandName
+            }
+            R.id.categorySpinner -> {
+                trainBeingModified.get()?.categoryName = if(position == 0) null else categoryList?.get(position)
+            }
         }
-    }
-
-    private fun initializeEmptyTrainObject(){
-        emptyTrainObject =  TrainEntry(brandName = brandList?.get(0)?.brandName, categoryName = categoryList?.get(0))
-        if(!isEdit) trainBeingModified.set(emptyTrainObject.copy())
     }
 
     fun brandToPosition(brandName : String?): Int {
         //Set brand spinner
-        val index = brandList?.indexOfFirst{ it.brandName == brandName } ?: 0
-        Timber.d("index: $index")
+        val index = if(brandName == null) 0
+                    else brandList?.indexOfFirst{it.brandName == brandName}?.plus(1) ?: 0
+        Timber.d("index: $index, brandName : $brandName, brandlist size: ${brandList?.size}")
         return index
     }
 
     fun categoryToPosition(categoryName : String?) : Int {
-        return categoryList?.indexOf(categoryName) ?: 0
+        return if(categoryName == null) 0
+                else categoryList?.indexOf(categoryName) ?: 0
     }
 
 

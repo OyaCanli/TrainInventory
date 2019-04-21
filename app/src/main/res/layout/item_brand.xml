@@ -25,10 +25,8 @@
             android:layout_marginTop="@dimen/half_margin"
             android:layout_marginEnd="@dimen/margin_standard"
             android:gravity="center_vertical"
+            style="@style/name_style"
             android:text="@{brand.brandName}"
-            android:textColor="@color/colorAccent"
-            android:textSize="@dimen/largeTextSize"
-            android:fontFamily="sans-serif-black"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/brand_item_logo"
             app:layout_constraintStart_toEndOf="@+id/brand_item_number"
@@ -58,24 +56,28 @@
             android:layout_marginBottom="@dimen/half_margin"
             android:contentDescription="@string/cd_web_icon_fror_brands"
             android:onClick="@{(theView) ->  brandItemClick.onBrandItemClicked(theView, brand)}"
-            android:padding="@dimen/small_padding"
+            android:padding="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/brand_item_train_icon"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/brand_item_brandName"
-            app:srcCompat="@drawable/link_symbol" />
+            app:srcCompat="@drawable/ic_link"
+            android:background="@drawable/button_state_selector"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"/>
 
         <ImageView
             android:id="@+id/brand_item_train_icon"
             android:layout_width="@dimen/brand_item_icon_dim"
             android:layout_height="@dimen/brand_item_icon_dim"
+            android:padding="@dimen/half_padding"
             app:layout_constraintEnd_toStartOf="@+id/brand_item_edit_icon"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/brand_item_web_icon"
             app:layout_constraintTop_toTopOf="@+id/brand_item_web_icon"
             android:contentDescription="@string/cd_train_icon_for_brands"
             app:srcCompat="@drawable/ic_train_list_item"
+            android:background="@drawable/button_state_selector"
             android:onClick="@{(theView) ->  brandItemClick.onBrandItemClicked(theView, brand)}"
             />
 
@@ -84,13 +86,15 @@
             android:layout_width="@dimen/brand_item_icon_dim"
             android:layout_height="@dimen/brand_item_icon_dim"
             android:layout_marginEnd="@dimen/margin_standard"
+            android:padding="@dimen/half_padding"
             android:contentDescription="@string/cd_edit_icon"
             android:onClick="@{(theView) ->  brandItemClick.onBrandItemClicked(theView, brand)}"
             app:layout_constraintEnd_toStartOf="@+id/brand_item_logo"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/brand_item_train_icon"
             app:layout_constraintTop_toTopOf="@+id/brand_item_train_icon"
-            app:srcCompat="@drawable/ic_edit_colored" />
+            app:srcCompat="@drawable/ic_edit_colored"
+            android:background="@drawable/button_state_selector"/>
 
         <TextView
             android:id="@+id/brand_item_number"
@@ -98,10 +102,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/half_margin"
             android:layout_marginTop="@dimen/half_margin"
-            android:textSize="@dimen/largeTextSize"
-            android:textStyle="italic"
+            android:textSize="@dimen/normalTextSize"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBaseline_toBaselineOf="@id/brand_item_brandName"
             tools:text="1." />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

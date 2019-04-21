@@ -22,27 +22,27 @@
             android:id="@+id/category_item_category_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dime n/margin_standard"
+            android:layout_marginStart="@dimen/margin_standard"
             android:text="@{categoryName}"
-            android:fontFamily="sans-serif-black"
-            android:textSize="@dimen/largeTextSize"
-            android:textColor="@color/colorAccent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/category_item_train_icon"
             app:layout_constraintStart_toEndOf="@+id/category_item_number"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Vagon" />
+            tools:text="Vagon"
+            style="@style/name_style" />
 
         <ImageView
             android:id="@+id/category_item_train_icon"
             android:layout_width="@dimen/brand_item_icon_dim"
             android:layout_height="@dimen/brand_item_icon_dim"
             android:layout_marginEnd="@dimen/margin_standard"
+            android:padding="@dimen/half_padding"
             android:onClick="@{() ->  categoryItemClick.onCategoryItemClicked(categoryName)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_train_list_item"
+            android:src="@drawable/ic_train_list_item"
+            android:background="@drawable/button_state_selector"
             android:contentDescription="@string/cd_category_item_train_btn"/>
 
         <TextView
@@ -50,12 +50,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/half_margin"
-            android:textSize="@dimen/largeTextSize"
-            android:textStyle="italic"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:textSize="@dimen/normalTextSize"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="1."/>
+            app:layout_constraintBaseline_toBaselineOf="@+id/category_item_category_name"
+            tools:text="1." />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

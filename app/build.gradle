@@ -10,7 +10,7 @@ android {
     }
     defaultConfig {
         applicationId "com.canli.oya.traininventoryroom"
-        minSdkVersion 17
+        minSdkVersion 21
         targetSdkVersion rootProject.ext.compileSdkVersion
         versionCode 1
         versionName "1.0"
