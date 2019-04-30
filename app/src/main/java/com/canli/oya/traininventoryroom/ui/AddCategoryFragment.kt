@@ -14,6 +14,7 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddCategoryBinding
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
+import org.jetbrains.anko.toast
 
 
 class AddCategoryFragment : androidx.fragment.app.Fragment() {
@@ -35,6 +36,10 @@ class AddCategoryFragment : androidx.fragment.app.Fragment() {
 
     private fun saveCategory() {
         val categoryName = binding.addCategoryEditCatName.text.toString().trim()
+        if (categoryName.isNullOrBlank()) {
+            context?.toast(getString(R.string.category_cannot_be_empty))
+            return
+        }
         val newCategory = CategoryEntry(categoryName)
         //Insert the category by the intermediance of view model
         mViewModel.insertCategory(newCategory)
@@ -42,7 +47,7 @@ class AddCategoryFragment : androidx.fragment.app.Fragment() {
         //Remove the fragment
         val parentFrag = parentFragment
         val containerID = if (parentFrag is AddTrainFragment) R.id.childFragContainer
-                            else R.id.brandlist_addFrag_container
+        else R.id.brandlist_addFrag_container
         val currentInstance = fragmentManager?.findFragmentById(containerID)
 
         //Clear focus and hide soft keyboard

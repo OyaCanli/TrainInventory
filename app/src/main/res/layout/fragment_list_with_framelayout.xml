@@ -21,7 +21,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <include
-            android:id="@+id/included"
+            android:id="@+id/included_list"
             layout="@layout/fragment_list"
             android:layout_width="0dp"
             android:layout_height="0dp"

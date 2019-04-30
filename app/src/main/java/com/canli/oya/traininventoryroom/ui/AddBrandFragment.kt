@@ -94,8 +94,13 @@ class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener 
     }
 
     private fun saveBrand() {
-        //Get brand name from edit text
+        //Get brand name from edit text and verify it is not empty
         val brandName = binding.addBrandEditBrandName.text?.toString()?.trim()
+        if(brandName.isNullOrBlank()){
+            context?.toast(getString(R.string.brand_cannot_be_empty))
+            return
+        }
+
         //Get web address from edit text
         val webAddress = binding.addBrandEditWeb.text?.toString()?.trim()
 

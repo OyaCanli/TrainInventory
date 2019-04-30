@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
 import android.view.animation.AnimationUtils
+import android.widget.FrameLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
@@ -66,7 +67,7 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
             paint.color = resources.getColor(R.color.divider_color)
         })
 
-        with(binding.included.list){
+        with(binding.includedList.list){
             layoutManager = LinearLayoutManager(activity)
             itemAnimator = DefaultItemAnimator()
             addItemDecoration(divider)
@@ -79,15 +80,15 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        binding.included.uiState = mViewModel.brandListUiState
+        binding.includedList.uiState = mViewModel.brandListUiState
 
         mViewModel.brandList?.observe(this@BrandListFragment, Observer { brandEntries ->
             if (brandEntries.isNullOrEmpty()) {
                 mViewModel.brandListUiState.showEmpty = true
                 val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
-                binding.included.emptyImage.startAnimation(animation)
+                binding.includedList.emptyImage.startAnimation(animation)
             } else {
-                Timber.d("list size : ${brandEntries.size}")
+                Timber.d("fragment_list size : ${brandEntries.size}")
                 mAdapter.brandList = brandEntries
                 brands = brandEntries
                 mViewModel.brandListUiState.showList = true
@@ -95,7 +96,7 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
         })
         activity?.title = getString(R.string.all_brands)
 
-        val coordinator = activity?.findViewById<androidx.coordinatorlayout.widget.CoordinatorLayout>(R.id.coordinator)
+        val rootView = activity!!.findViewById<FrameLayout>(R.id.container)
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(recyclerView: androidx.recyclerview.widget.RecyclerView, viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, target: androidx.recyclerview.widget.RecyclerView.ViewHolder): Boolean {
                 return false
@@ -119,12 +120,12 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
                         //If it is not used delete the brand
                         mViewModel.deleteBrand(brandToErase)
                         //Show a snack bar for undoing delete
-                        coordinator?.indefiniteSnackbar(R.string.brand_deleted, R.string.brand_deleted) {
+                        rootView?.indefiniteSnackbar(R.string.brand_deleted, R.string.undo) {
                             mViewModel.insertBrand(brandToErase) }
                     }
                 }
             }
-        }).attachToRecyclerView(binding.included.list)
+        }).attachToRecyclerView(binding.includedList.list)
     }
 
     private fun openAddBrandFragment() {

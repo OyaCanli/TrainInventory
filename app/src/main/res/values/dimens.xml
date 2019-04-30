@@ -18,6 +18,7 @@
     <dimen name="brand_item_icon_dim">50dp</dimen>
     <dimen name="edit_train_image_height">100dp</dimen>
     <dimen name="spinner_brand_logo_dim">40dp</dimen>
+    <dimen name="save_button_size">50dp</dimen>
 
     <!-- Text sizes -->
     <dimen name="normalTextSize">16sp</dimen>
@@ -25,4 +26,7 @@
     <dimen name="dashTextSize">40sp</dimen>
 
     <dimen name="divider_height">1dp</dimen>
+    <dimen name="details_image_dropdown">300dp</dimen>
+    <dimen name="bottom_navigation_height">60dp</dimen>
+    <dimen name="elevation">5dp</dimen>
 </resources>

@@ -7,9 +7,9 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@color/window_background</item>
-        <item name="android:textColorPrimary">@color/cream</item>
-        <item name="android:textColorTertiary">@color/cream</item>
-        <item name="android:fontFamily">roboto</item>
+        <item name="android:textColorPrimary">@color/textColorLight</item>
+        <item name="android:textColorTertiary">@color/textColorLight</item>
+        <item name="android:fontFamily">@font/source_sans_pro</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -38,37 +38,62 @@
     </style>
 
     <style name="buttonStyle">
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:background">@color/window_background</item>
+        <item name="android:background">@drawable/ic_tick</item>
         <item name="android:paddingStart">@dimen/half_padding</item>
         <item name="android:paddingLeft">@dimen/half_padding</item>
         <item name="android:paddingEnd">@dimen/half_padding</item>
         <item name="android:paddingRight">@dimen/half_padding</item>
-        <item name="android:foreground">?selectableItemBackground</item>
+        <item name="android:layout_height">@dimen/save_button_size</item>
+        <item name="android:layout_width">@dimen/save_button_size</item>
+        <item name="android:foreground">?selectableItemBackgroundBorderless</item>
     </style>
 
     <style name="details_plain_text">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginEnd">16dp</item>
-        <item name="android:layout_marginLeft">16dp</item>
-        <item name="android:layout_marginRight">16dp</item>
         <item name="android:layout_marginStart">16dp</item>
         <item name="android:layout_marginTop">16dp</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">@dimen/normalTextSize</item>
     </style>
 
     <style name="alert_dialog_style" parent="Theme.AppCompat.DayNight.Dialog.Alert">
         <item name="android:textColor">@color/colorAccent</item>
-        <item name="android:background">@color/colorPrimary</item>
-        <item name="android:textColorPrimary">@color/cream</item>
+        <item name="android:background">@color/window_background</item>
+        <item name="android:textColorPrimary">@color/textColorLight</item>
+        <item name="textColorAlertDialogListItem">@color/textColorLight</item>
+        <item name="android:textColorSecondary">@color/textColorLight</item>
     </style>
 
     <style name="name_style">
-        <item name="android:fontFamily">serif-monospace</item>
-        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:textSize">@dimen/largeTextSize</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="active_menu_item">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="inactive_menu_item">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="collapsed_style">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="expanded_style">
+        <item name="android:textSize">26sp</item>
+    </style>
+
+    <style name="yellow_descriptive_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/margin_standard</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/normalTextSize</item>
     </style>
 
 </resources>

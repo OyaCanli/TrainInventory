@@ -20,7 +20,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.adapters.CustomSpinAdapter
-import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
 import com.canli.oya.traininventoryroom.utils.*
 import com.canli.oya.traininventoryroom.viewmodel.AddTrainFactory
@@ -214,7 +213,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener{
 
     private fun openImageDialog() {
         val dialogOptions = activity!!.resources.getStringArray(R.array.dialog_options)
-        val builder = AlertDialog.Builder(requireContext())
+        val builder = AlertDialog.Builder(requireContext(), R.style.alert_dialog_style)
         with(builder) {
             setTitle(R.string.add_image_from)
             setSingleChoiceItems(dialogOptions, -1, mDialogClickListener)

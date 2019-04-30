@@ -4,6 +4,7 @@ import android.graphics.drawable.ShapeDrawable
 import android.os.Bundle
 import android.view.*
 import android.view.animation.AnimationUtils
+import android.widget.FrameLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
@@ -61,7 +62,7 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
             paint.color = resources.getColor(R.color.divider_color)
         })
 
-        with(binding.included.list) {
+        with(binding.includedList.list) {
             layoutManager = LinearLayoutManager(activity)
             itemAnimator = DefaultItemAnimator()
             addItemDecoration(divider)
@@ -74,13 +75,13 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        binding.included.uiState = mViewModel.categoryListUiState
+        binding.includedList.uiState = mViewModel.categoryListUiState
 
         mViewModel.categoryList?.observe(this@CategoryListFragment, Observer { categoryEntries ->
             if (categoryEntries.isNullOrEmpty()) {
                 mViewModel.categoryListUiState.showEmpty = true
                 val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
-                binding.included.emptyImage.startAnimation(animation)
+                binding.includedList.emptyImage.startAnimation(animation)
             } else {
                 mAdapter.categoryList = categoryEntries
                 mCategories = categoryEntries
@@ -91,7 +92,7 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
         activity?.title = getString(R.string.all_categories)
 
         //This part is for providing swipe-to-delete functionality, as well as a snack bar to undo deleting
-        val coordinator = activity!!.findViewById<androidx.coordinatorlayout.widget.CoordinatorLayout>(R.id.coordinator)
+        val rootView = activity!!.findViewById<FrameLayout>(R.id.container)
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(recyclerView: androidx.recyclerview.widget.RecyclerView, viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, target: androidx.recyclerview.widget.RecyclerView.ViewHolder): Boolean {
                 return false
@@ -115,13 +116,13 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
                         //If it is not used, erase the category
                         mViewModel.deleteCategory(categoryToErase)
                         //Show a snack bar for undoing delete
-                        coordinator?.indefiniteSnackbar(R.string.category_deleted, R.string.undo){
+                        rootView?.indefiniteSnackbar(R.string.category_deleted, R.string.undo){
                             mViewModel.insertCategory(categoryToErase)
                         }
                     }
                 }
             }
-        }).attachToRecyclerView(binding.included.list)
+        }).attachToRecyclerView(binding.includedList.list)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

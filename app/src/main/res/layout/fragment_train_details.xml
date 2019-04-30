@@ -4,183 +4,188 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="androidx.lifecycle.LiveData" />
+
+        <import type="com.canli.oya.traininventoryroom.data.TrainEntry" />
+
         <variable
             name="chosenTrain"
-            type="com.canli.oya.traininventoryroom.data.TrainEntry" />
+            type="LiveData&lt;TrainEntry>" />
 
         <import type="com.canli.oya.traininventoryroom.utils.BindingUtils" />
     </data>
 
     <ScrollView
-        android:id="@+id/details_scroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbarStyle="insideOverlay">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/details_image"
-                android:layout_width="@dimen/train_details_image_width"
-                android:layout_height="@dimen/train_details_image_height"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:id="@+id/train_image"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/details_image_dropdown"
                 android:contentDescription="@string/cd_chosen_train_image"
+                android:scaleType="centerCrop"
                 app:imageUrl="@{chosenTrain.imageUri}"
+                app:layout_collapseMode="parallax"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:placeholder="@{@drawable/ic_gallery_light}" />
+                app:placeholder="@{@drawable/ic_gallery_light}"
+                tools:src="@drawable/ic_train" />
 
             <TextView
-                android:id="@+id/details_product_name"
-                style="@style/details_plain_text"
-                android:text="@{chosenTrain.trainName}"
-                android:textColor="@color/colorAccent"
-                android:textSize="24sp"
-                android:fontFamily="serif-monospace"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/details_image"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Train name" />
+                android:id="@+id/textView15"
+                android:text="@string/brand"
+                app:layout_constraintBaseline_toBaselineOf="@+id/details_brand"
+                app:layout_constraintStart_toStartOf="parent"
+                style="@style/yellow_descriptive_text" />
 
             <TextView
                 android:id="@+id/details_brand"
                 style="@style/details_plain_text"
+                android:layout_marginStart="16dp"
                 android:text="@{chosenTrain.brandName}"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/details_image"
-                app:layout_constraintTop_toBottomOf="@+id/details_product_name"
+                app:layout_constraintStart_toEndOf="@id/barrier2"
+                app:layout_constraintTop_toBottomOf="@id/train_image"
                 tools:text="Brand Name" />
+
+            <TextView
+                android:id="@+id/textView17"
+                style="@style/yellow_descriptive_text"
+                android:text="@string/reference"
+                app:layout_constraintBaseline_toBaselineOf="@+id/details_reference"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/details_reference"
                 style="@style/details_plain_text"
+                android:layout_marginStart="16dp"
                 android:text="@{chosenTrain.modelReference}"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/details_image"
+                app:layout_constraintStart_toEndOf="@+id/barrier2"
                 app:layout_constraintTop_toBottomOf="@+id/details_brand"
                 tools:text="Reference" />
 
             <TextView
+                android:id="@+id/textView19"
+                style="@style/yellow_descriptive_text"
+                android:text="@string/category"
+                app:layout_constraintBaseline_toBaselineOf="@+id/details_category"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
                 android:id="@+id/details_category"
                 style="@style/details_plain_text"
+                android:layout_marginStart="16dp"
                 android:text="@{chosenTrain.categoryName}"
                 android:textStyle="italic"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/details_image"
+                app:layout_constraintStart_toEndOf="@+id/barrier2"
                 app:layout_constraintTop_toBottomOf="@+id/details_reference"
                 tools:text="Category" />
+
+            <TextView
+                android:id="@+id/textView14"
+                style="@style/yellow_descriptive_text"
+                android:text="@string/description"
+                app:layout_constraintBottom_toBottomOf="@+id/details_description"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/details_description" />
 
             <TextView
                 android:id="@+id/details_description"
                 style="@style/details_plain_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="@dimen/margin_standard"
                 android:text="@{chosenTrain.description}"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/textView14"
-                app:layout_constraintTop_toTopOf="@+id/barrier2"
+                app:layout_constraintStart_toEndOf="@+id/barrier2"
+                app:layout_constraintTop_toBottomOf="@+id/details_category"
                 tools:text="c'est piece est un petit peu abime au niveau des attaches.." />
 
             <TextView
                 android:id="@+id/textView16"
-                style="@style/details_plain_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="@dimen/margin_standard"
+                style="@style/yellow_descriptive_text"
                 android:text="@string/quantity"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/details_description" />
+                app:layout_constraintBaseline_toBaselineOf="@+id/details_quantity"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/details_quantity"
                 style="@style/details_plain_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_standard"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="@{String.valueOf(chosenTrain.quantity)}"
-                app:layout_constraintBaseline_toBaselineOf="@+id/textView16"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView16"
+                app:layout_constraintStart_toEndOf="@+id/barrier2"
+                app:layout_constraintTop_toBottomOf="@+id/details_description"
                 tools:text="1" />
 
             <TextView
-                android:id="@+id/textView18"
-                style="@style/details_plain_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="@dimen/margin_standard"
-                android:text="@string/location"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView13" />
-
-            <TextView
-                android:id="@+id/details_location"
-                style="@style/details_plain_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_standard"
-                android:layout_marginEnd="16dp"
-                android:text="@{BindingUtils.attachLocationString(chosenTrain.locationRow, chosenTrain.locationColumn)}"
-                app:layout_constraintBaseline_toBaselineOf="@+id/textView18"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView18"
-                tools:text="1-D" />
-
-            <TextView
                 android:id="@+id/textView13"
-                style="@style/details_plain_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="@dimen/margin_standard"
+                style="@style/yellow_descriptive_text"
                 android:text="@string/scale"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView16" />
+                app:layout_constraintBaseline_toBaselineOf="@+id/details_scale"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/details_scale"
                 style="@style/details_plain_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_standard"
-                android:layout_marginEnd="16dp"
                 android:text="@{chosenTrain.scale}"
-                app:layout_constraintBaseline_toBaselineOf="@+id/textView13"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView13"
+                app:layout_constraintStart_toEndOf="@+id/barrier2"
+                app:layout_constraintTop_toBottomOf="@+id/details_quantity"
                 tools:text="3M" />
+
+            <TextView
+                android:id="@+id/textView18"
+                style="@style/yellow_descriptive_text"
+                android:text="@string/location"
+                app:layout_constraintBaseline_toBaselineOf="@+id/details_location"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/details_location"
+                style="@style/details_plain_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@{BindingUtils.attachLocationString(chosenTrain.locationRow, chosenTrain.locationColumn)}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/barrier2"
+                app:layout_constraintTop_toBottomOf="@+id/details_scale"
+                tools:text="1-D" />
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrier2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:barrierDirection="bottom"
-                app:constraint_referenced_ids="details_category,details_image"
-                tools:layout_editor_absoluteY="447dp" />
+                app:barrierDirection="right"
+                app:constraint_referenced_ids="textView15,textView14,textView17,textView19,textView16,textView13,textView18"
+                tools:layout_editor_absoluteX="411dp" />
 
-            <TextView
-                android:id="@+id/textView14"
-                style="@style/details_plain_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="@string/description"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/barrier2" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </ScrollView>
 </layout>

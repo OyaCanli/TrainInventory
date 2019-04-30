@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         fm = supportFragmentManager
         fm.addOnBackStackChangedListener(this)
 
-        //Bring the train list fragment at the launch of activity
+        //Bring the train fragment_list fragment at the launch of activity
         if (savedInstanceState == null) {
             fm.transaction {
                 setCustomAnimations(0, android.R.animator.fade_out)

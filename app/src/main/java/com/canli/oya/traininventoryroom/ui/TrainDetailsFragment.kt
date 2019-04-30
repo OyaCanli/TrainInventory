@@ -34,12 +34,13 @@ class TrainDetailsFragment : androidx.fragment.app.Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         trainId = arguments?.getInt(TRAIN_ID) ?: 0
-        mViewModel.getChosenTrain(trainId).observe(this, Observer { trainEntry ->
+        val chosenTrainLiveData = mViewModel.getChosenTrain(trainId)
+        binding.chosenTrain = chosenTrainLiveData
+        binding.lifecycleOwner = viewLifecycleOwner
+        chosenTrainLiveData.observe(this, Observer { trainEntry ->
             trainEntry?.let {
                 mChosenTrain = it
                 activity?.title = it.trainName
-                binding.chosenTrain = it
-                binding.executePendingBindings()
             }
         })
     }

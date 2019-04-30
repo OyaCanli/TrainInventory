@@ -2,5 +2,5 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
        <item android:color="?attr/colorPrimaryDark" android:state_enabled="false"/>
     <item android:color="@color/colorAccent" android:state_checked="true"/>
-    <item android:color="@color/bot_nav_inactive_color"/>
+    <item android:color="@color/textColorLight"/>
 </selector>

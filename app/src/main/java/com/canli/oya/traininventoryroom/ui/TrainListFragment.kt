@@ -76,7 +76,7 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
         arguments?.run {
             val requestType = this.getString(INTENT_REQUEST_CODE)
             when (requestType) {
-                //If the list will be used for showing trains from a specific brand
+                //If the fragment_list will be used for showing trains from a specific brand
                 TRAINS_OF_BRAND -> {
                     val brandName = this.getString(BRAND_NAME) ?: return
                     activity?.title = getString(R.string.trains_of_the_brand, brandName)
@@ -84,7 +84,7 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
                         evaluateResults(trainEntries, getString(R.string.no_train_for_this_brand))
                     })
                 }
-                //If the list will be used for showing trains from a specific category
+                //If the fragment_list will be used for showing trains from a specific category
                 TRAINS_OF_CATEGORY -> {
                     val categoryName = this.getString(CATEGORY_NAME) ?: return
                     activity?.title = getString(R.string.all_from_this_Category, categoryName)
@@ -93,7 +93,7 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
                     })
                 }
                 else -> {
-                    //If the list is going to be use for showing all trains, which is the default behaviour
+                    //If the fragment_list is going to be use for showing all trains, which is the default behaviour
                     activity?.title = getString(R.string.all_trains)
                     mViewModel.trainList?.observe(this@TrainListFragment, Observer { trainEntries ->
                         evaluateResults(trainEntries, getString(R.string.no_trains_found))
@@ -132,7 +132,7 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_search_and_add, menu)
         val searchView = menu.findItem(R.id.action_search).actionView as SearchView
-        //added filter to list (dynamic change input text)
+        //added filter to fragment_list (dynamic change input text)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 return false

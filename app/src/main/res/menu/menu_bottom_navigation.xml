@@ -6,7 +6,7 @@
 
     <item
         android:id="@+id/categories"
-        android:title="@string/category"
+        android:title="@string/categories"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_category"/>
 
