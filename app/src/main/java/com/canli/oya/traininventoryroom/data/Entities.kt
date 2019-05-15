@@ -1,12 +1,15 @@
 package com.canli.oya.traininventoryroom.data
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.ForeignKey.RESTRICT
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @Entity(tableName = "trains",
         foreignKeys = [ForeignKey(entity = BrandEntry::class,
                 parentColumns = ["brandName"], childColumns = ["brandName"],
@@ -25,7 +28,7 @@ data class TrainEntry(
         var description: String? = null,
         var locationRow: String? = null,
         var locationColumn: String? = null,
-        var scale: String? = null)
+        var scale: String? = null) : Parcelable
 
 
 @Entity(tableName = "brands", indices = [Index(value = ["brandName"], unique = true)])

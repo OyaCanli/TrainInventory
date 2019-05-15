@@ -8,6 +8,7 @@ package com.canli.oya.traininventoryroom.utils
 
     //Intent extras:
     const val TRAIN_ID = "trainId"
+    const val CHOSEN_TRAIN = "chosenTrain"
     const val INTENT_REQUEST_CODE = "intentRequestCode"
     const val ALL_TRAIN = "allTrains"
     const val IS_EDIT = "isEdit"

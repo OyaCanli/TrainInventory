@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentTrainDetailsBinding
+import com.canli.oya.traininventoryroom.utils.CHOSEN_TRAIN
 import com.canli.oya.traininventoryroom.utils.TRAIN_ID
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 
@@ -58,9 +59,9 @@ class TrainDetailsFragment : androidx.fragment.app.Fragment() {
             R.id.action_edit -> {
                 val addTrainFrag = AddTrainFragment()
                 val args = Bundle()
-                args.putInt(TRAIN_ID, trainId)
+                args.putParcelable(CHOSEN_TRAIN, mChosenTrain)
                 addTrainFrag.arguments = args
-                fragmentManager?.transaction {  replace(R.id.container, addTrainFrag)
+                fragmentManager?.transaction { replace(R.id.container, addTrainFrag)
                         .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                         .addToBackStack(null)}
             }

@@ -110,11 +110,11 @@ class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener 
 
         if (isEditCase) {
             //Construct a new BrandEntry object from this data with ID included
-            val brandToUpdate = BrandEntry(mBrandId, brandName!!, imagePath, webAddress)
+            val brandToUpdate = BrandEntry(mBrandId, brandName, imagePath, webAddress)
             mViewModel.updateBrand(brandToUpdate)
         } else {
             //Construct a new BrandEntry object from this data (without ID)
-            val newBrand = BrandEntry(brandName = brandName!!, brandLogoUri = imagePath, webUrl = webAddress)
+            val newBrand = BrandEntry(brandName = brandName, brandLogoUri = imagePath, webUrl = webAddress)
             //Insert to database in a background thread
             mViewModel.insertBrand(newBrand)
         }

@@ -20,10 +20,6 @@ class TrainRepository private constructor(private val mDatabase: TrainDatabase) 
         return mDatabase.trainDao().getChosenTrainLiveData(trainId)
     }
 
-    suspend fun getChosenTrain(trainId : Int): TrainEntry {
-        return mDatabase.trainDao().getChosenTrain(trainId)
-    }
-
     suspend fun insertTrain(train: TrainEntry) {
         mDatabase.trainDao().insertTrain(train)
     }

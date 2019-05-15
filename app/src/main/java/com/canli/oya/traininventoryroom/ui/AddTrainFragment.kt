@@ -20,6 +20,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.adapters.CustomSpinAdapter
+import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
 import com.canli.oya.traininventoryroom.utils.*
 import com.canli.oya.traininventoryroom.viewmodel.AddTrainFactory
@@ -43,8 +44,9 @@ class AddTrainFragment : Fragment(), View.OnClickListener{
     private var mImageUri: String? = null
     private var mUsersChoice: Int = 0
 
-    private var trainId: Int = -1
     private var isEdit: Boolean = false
+
+    var chosenTrain : TrainEntry? = null
 
     private val mDialogClickListener = DialogInterface.OnClickListener { _, item -> mUsersChoice = item }
 
@@ -59,15 +61,8 @@ class AddTrainFragment : Fragment(), View.OnClickListener{
         binding.addTrainAddCategoryBtn.setOnClickListener(this)
         binding.productDetailsGalleryImage.setOnClickListener(this)
 
-        //"Edit" case
-        trainId = arguments?.getInt(TRAIN_ID) ?: -1
-        if (trainId > 0) {
-            activity?.title = getString(R.string.edit_train)
-            isEdit = true
-        } else { //This is the "add" case
-            activity?.title = getString(R.string.add_train)
-            isEdit = false
-        }
+        activity?.title = if(isEdit) getString(R.string.edit_train)
+                            else getString(R.string.add_train)
 
         return binding.root
     }
@@ -75,22 +70,17 @@ class AddTrainFragment : Fragment(), View.OnClickListener{
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val factory = AddTrainFactory(requireActivity().application, trainId)
+        chosenTrain = arguments?.getParcelable(CHOSEN_TRAIN)
+
+        val factory = AddTrainFactory(requireActivity().application, chosenTrain)
         addViewModel = ViewModelProviders.of(this, factory).get(AddTrainViewModel::class.java)
         binding.viewModel = addViewModel
 
-        //Set brand spinner
-        val brandAdapter = CustomSpinAdapter(requireContext(), null)
-        binding.brandSpinner.adapter = brandAdapter
-        mainViewModel.brandList?.observe(this@AddTrainFragment, Observer { brandEntries ->
-            if (!brandEntries.isNullOrEmpty()) {
-                brandAdapter.mBrandList = brandEntries
-                brandAdapter.notifyDataSetChanged()
-                addViewModel.brandList = brandEntries
-            }
-        })
+        setBrandSpinner()
+        setCategorySpinner()
+    }
 
-        //Set category spinner
+    private fun setCategorySpinner() {
         val categoryList = ArrayList<String>()
         categoryList.add("--Select category--")
         val categoryAdapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, categoryList)
@@ -103,6 +93,22 @@ class AddTrainFragment : Fragment(), View.OnClickListener{
                 categoryList.addAll(categoryEntries)
                 categoryAdapter.notifyDataSetChanged()
                 addViewModel.categoryList = categoryList
+                val index = categoryList.indexOf(chosenTrain?.categoryName)
+                binding.categorySpinner.setSelection(index)
+            }
+        })
+    }
+
+    private fun setBrandSpinner() {
+        val brandAdapter = CustomSpinAdapter(requireContext(), null)
+        binding.brandSpinner.adapter = brandAdapter
+        mainViewModel.brandList?.observe(this@AddTrainFragment, Observer { brandEntries ->
+            if (!brandEntries.isNullOrEmpty()) {
+                brandAdapter.mBrandList = brandEntries
+                brandAdapter.notifyDataSetChanged()
+                addViewModel.brandList = brandEntries
+                val index = brandEntries.indexOfFirst { it.brandName == chosenTrain?.brandName }.plus(1)
+                binding.brandSpinner.setSelection(index)
             }
         })
     }
