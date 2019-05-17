@@ -3,38 +3,48 @@ package com.canli.oya.traininventoryroom.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ItemCategoryBinding
 
-class CategoryAdapter (private val mClickListener: CategoryItemClickListener) : RecyclerView.Adapter<CategoryAdapter.CategoryHolder>() {
+class CategoryAdapter (private val clickListener: CategoryItemClickListener) : ListAdapter<String, CategoryAdapter.ViewHolder>(CategoryDiffCallback()) {
 
-    var categoryList: List<String>? = null
-        set(value) {
-            field = value
-            notifyDataSetChanged()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder.from(parent)
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position), position, clickListener)
+
+    class ViewHolder(val binding: ItemCategoryBinding) : RecyclerView.ViewHolder(binding.root){
+
+        fun bind(currentCategory: String?, position: Int, listener : CategoryItemClickListener) {
+            binding.categoryName = currentCategory
+            binding.categoryItemNumber.text = "${position + 1}."
+            binding.categoryItemClick = listener
+            binding.executePendingBindings()
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryHolder {
-        val binding = DataBindingUtil
-                .inflate<ItemCategoryBinding>(LayoutInflater.from(parent.context), R.layout.item_category,
-                        parent, false)
-        binding.categoryItemClick = mClickListener
-        return CategoryHolder(binding)
+        companion object {
+            fun from(parent: ViewGroup): ViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = DataBindingUtil.inflate<ItemCategoryBinding>(layoutInflater, R.layout.item_category,
+                                parent, false)
+                return ViewHolder(binding)
+            }
+        }
     }
-
-    override fun onBindViewHolder(holder: CategoryHolder, position: Int) {
-        val currentCategory = categoryList?.get(position)
-        holder.binding.categoryName = currentCategory
-        holder.binding.executePendingBindings()
-        holder.binding.categoryItemNumber.text = "${position+1}."
-    }
-
-    override fun getItemCount() = categoryList?.size ?: 0
-
-    inner class CategoryHolder(val binding: ItemCategoryBinding) : RecyclerView.ViewHolder(binding.root)
 
     interface CategoryItemClickListener {
         fun onCategoryItemClicked(categoryName: String)
+    }
+}
+
+class CategoryDiffCallback : DiffUtil.ItemCallback<String>(){
+    override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+        return oldItem == newItem
+    }
+
+    override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+        return oldItem == newItem
     }
 }

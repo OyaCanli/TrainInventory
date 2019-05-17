@@ -4,40 +4,51 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.databinding.ItemBrandBinding
 
-class BrandAdapter(private val mClickListener: BrandItemClickListener)
-    : RecyclerView.Adapter<BrandAdapter.BrandViewHolder>() {
+class BrandAdapter(private val clickListener: BrandItemClickListener)
+    : ListAdapter<BrandEntry, BrandAdapter.ViewHolder>(BrandDiffCallback()) {
 
-    var brandList: List<BrandEntry>? = null
-        set(value) {
-            field = value
-            notifyDataSetChanged()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder.from(parent)
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position), clickListener, position)
+
+    class ViewHolder(val binding: ItemBrandBinding) : RecyclerView.ViewHolder(binding.root){
+
+        fun bind(currentBrand: BrandEntry, listener : BrandItemClickListener, position : Int){
+            binding.brand = currentBrand
+            binding.brandItemClick = listener
+            binding.brandItemNumber.text = "${position+1}."
+            binding.executePendingBindings()
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BrandViewHolder {
-        val binding = DataBindingUtil
-                .inflate<ItemBrandBinding>(LayoutInflater.from(parent.context), R.layout.item_brand,
-                        parent, false)
-        binding.brandItemClick = mClickListener
-        return BrandViewHolder(binding)
+        companion object {
+            fun from(parent: ViewGroup): ViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = DataBindingUtil
+                        .inflate<ItemBrandBinding>(layoutInflater, R.layout.item_brand,
+                                parent, false)
+                return ViewHolder(binding)
+            }
+        }
     }
-
-    override fun onBindViewHolder(holder: BrandViewHolder, position: Int) {
-        val currentBrand = brandList?.get(position)
-        holder.binding.brand = currentBrand
-        holder.binding.executePendingBindings()
-        holder.binding.brandItemNumber.text = "${position+1}."
-    }
-
-    override fun getItemCount() = brandList?.size ?: 0
-
-    inner class BrandViewHolder(val binding: ItemBrandBinding) : androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root)
 
     interface BrandItemClickListener {
         fun onBrandItemClicked(view: View, clickedBrand: BrandEntry)
+    }
+}
+
+class BrandDiffCallback : DiffUtil.ItemCallback<BrandEntry>() {
+    override fun areItemsTheSame(oldItem: BrandEntry, newItem: BrandEntry): Boolean {
+        return oldItem.brandId == newItem.brandId
+    }
+
+    override fun areContentsTheSame(oldItem: BrandEntry, newItem: BrandEntry): Boolean {
+        return oldItem == newItem
     }
 }

@@ -110,7 +110,7 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
             mViewModel.trainListUiState.showEmpty = true
             animateTrainLogo()
         } else {
-            mAdapter.trainList = trainEntries
+            mAdapter.submitList(trainEntries)
             mTrainList = trainEntries
             mViewModel.trainListUiState.showList = true
         }
@@ -148,12 +148,12 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
     private fun filterTrains(query: String?) {
         if (query == null || "" == query) {
             filteredTrains = mTrainList
-            mAdapter.trainList = filteredTrains
+            mAdapter.submitList(filteredTrains)
             mAdapter.notifyDataSetChanged()
         } else {
             launch {
                 filteredTrains = mViewModel.searchInTrains(query)
-                mAdapter.trainList = filteredTrains
+                mAdapter.submitList(filteredTrains)
                 mAdapter.notifyDataSetChanged()
             }
         }

@@ -24,7 +24,7 @@ import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
 import com.canli.oya.traininventoryroom.utils.*
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 import kotlinx.coroutines.*
-import org.jetbrains.anko.design.indefiniteSnackbar
+import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.toast
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
@@ -86,7 +86,7 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
                 binding.includedList.emptyImage.startAnimation(animation)
             } else {
                 Timber.d("fragment_list size : ${brandEntries.size}")
-                mAdapter.brandList = brandEntries
+                mAdapter.submitList(brandEntries)
                 brands = brandEntries
                 mViewModel.brandListUiState.showList = true
             }
@@ -108,7 +108,6 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
                 launch {
                     //Check whether this brand is used in trains table.
                     val isUsed = withContext(Dispatchers.IO) { mViewModel.isThisBrandUsed(brandToErase.brandName)}
-                    Timber.d("isUsed : $isUsed")
                     if (isUsed) {
                         // If it is used, show a warning and don't let the user delete this
                         context.toast(R.string.cannot_erase_brand)
@@ -117,7 +116,7 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
                         //If it is not used delete the brand
                         mViewModel.deleteBrand(brandToErase)
                         //Show a snack bar for undoing delete
-                        rootView?.indefiniteSnackbar(R.string.brand_deleted, R.string.undo) {
+                        rootView?.longSnackbar(R.string.brand_deleted, R.string.undo) {
                             mViewModel.insertBrand(brandToErase) }
                     }
                 }
@@ -194,7 +193,7 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
                 startActivity(webIntent)
             }
         } else {
-            context?.toast("You haven't provided a web site for this brand. Click edit icon to add one.")
+            context?.toast(getString(R.string.no_website_warning))
         }
     }
 

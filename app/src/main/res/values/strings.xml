@@ -72,4 +72,6 @@
     <string name="permission_denied">Permission denied</string>
     <string name="category_cannot_be_empty">Category name cannot be empty</string>
     <string name="brand_cannot_be_empty">Brand name cannot be empty</string>
+    <string name="are_you_sure_you_want_to_delete_this_category">Are you sure you want to delete this category?</string>
+    <string name="no_website_warning">You haven\'t provided a web site for this brand. Click edit icon to add one.</string>
 </resources>

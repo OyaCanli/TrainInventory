@@ -84,7 +84,7 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
                 val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
                 binding.includedList.emptyImage.startAnimation(animation)
             } else {
-                mAdapter.categoryList = categoryEntries
+                mAdapter.submitList(categoryEntries)
                 mCategories = categoryEntries
                 mViewModel.categoryListUiState.showList = true
             }
