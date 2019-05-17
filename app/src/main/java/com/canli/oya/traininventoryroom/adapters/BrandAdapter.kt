@@ -33,9 +33,7 @@ class BrandAdapter(private val mClickListener: BrandItemClickListener)
         holder.binding.brandItemNumber.text = "${position+1}."
     }
 
-    override fun getItemCount(): Int {
-        return brandList?.size ?: 0
-    }
+    override fun getItemCount() = brandList?.size ?: 0
 
     inner class BrandViewHolder(val binding: ItemBrandBinding) : androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root)
 

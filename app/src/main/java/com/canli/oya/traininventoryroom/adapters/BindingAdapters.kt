@@ -17,10 +17,6 @@ fun setImageUrl(view: ImageView, url: String?, placeHolder: Drawable) {
 }
 
 @BindingAdapter("visible")
-fun setVisible(view: View, visible: Boolean) {
-    if (visible) {
-        view.visibility = View.VISIBLE
-    } else {
-        view.visibility = View.GONE
-    }
+fun View.setVisible(visible: Boolean) {
+    visibility = if (visible) View.VISIBLE else View.GONE
 }

@@ -3,11 +3,12 @@ package com.canli.oya.traininventoryroom.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.ItemTrainBinding
 
-class TrainAdapter (private val mClickListener: TrainItemClickListener) : androidx.recyclerview.widget.RecyclerView.Adapter<TrainAdapter.TrainViewHolder>() {
+class TrainAdapter (private val mClickListener: TrainItemClickListener) : RecyclerView.Adapter<TrainAdapter.TrainViewHolder>() {
 
     var trainList: List<TrainEntry>? = null
         set(value) {
@@ -29,11 +30,9 @@ class TrainAdapter (private val mClickListener: TrainItemClickListener) : androi
         holder.binding.executePendingBindings()
     }
 
-    override fun getItemCount(): Int {
-        return trainList?.size ?: 0
-    }
+    override fun getItemCount() = trainList?.size ?: 0
 
-    inner class TrainViewHolder(val binding: ItemTrainBinding) : androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root)
+    inner class TrainViewHolder(val binding: ItemTrainBinding) : RecyclerView.ViewHolder(binding.root)
 
     interface TrainItemClickListener {
         fun onListItemClick(trainId: Int)

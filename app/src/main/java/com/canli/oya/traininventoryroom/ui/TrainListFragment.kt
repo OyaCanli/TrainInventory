@@ -80,7 +80,7 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
                 TRAINS_OF_BRAND -> {
                     val brandName = this.getString(BRAND_NAME) ?: return
                     activity?.title = getString(R.string.trains_of_the_brand, brandName)
-                    mViewModel.getTrainsFromThisBrand(brandName).observe(this@TrainListFragment, Observer { trainEntries ->
+                    mViewModel.getTrainsFromThisBrand(brandName).observe(viewLifecycleOwner, Observer { trainEntries ->
                         evaluateResults(trainEntries, getString(R.string.no_train_for_this_brand))
                     })
                 }
@@ -88,14 +88,14 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
                 TRAINS_OF_CATEGORY -> {
                     val categoryName = this.getString(CATEGORY_NAME) ?: return
                     activity?.title = getString(R.string.all_from_this_Category, categoryName)
-                    mViewModel.getTrainsFromThisCategory(categoryName).observe(this@TrainListFragment, Observer { trainEntries ->
+                    mViewModel.getTrainsFromThisCategory(categoryName).observe(viewLifecycleOwner, Observer { trainEntries ->
                         evaluateResults(trainEntries, getString(R.string.no_train_for_this_category))
                     })
                 }
                 else -> {
                     //If the fragment_list is going to be use for showing all trains, which is the default behaviour
                     activity?.title = getString(R.string.all_trains)
-                    mViewModel.trainList?.observe(this@TrainListFragment, Observer { trainEntries ->
+                    mViewModel.trainList?.observe(viewLifecycleOwner, Observer { trainEntries ->
                         evaluateResults(trainEntries, getString(R.string.no_trains_found))
                     })
                 }

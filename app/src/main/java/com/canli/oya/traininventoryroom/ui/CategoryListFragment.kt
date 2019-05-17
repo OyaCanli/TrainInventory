@@ -20,10 +20,11 @@ import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
 import com.canli.oya.traininventoryroom.utils.CATEGORY_NAME
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
+import com.canli.oya.traininventoryroom.utils.SwipeToDeleteCallback
 import com.canli.oya.traininventoryroom.utils.TRAINS_OF_CATEGORY
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 import kotlinx.coroutines.*
-import org.jetbrains.anko.design.indefiniteSnackbar
+import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.toast
 import kotlin.coroutines.CoroutineContext
 
@@ -77,7 +78,7 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
 
         binding.includedList.uiState = mViewModel.categoryListUiState
 
-        mViewModel.categoryList?.observe(this@CategoryListFragment, Observer { categoryEntries ->
+        mViewModel.categoryList?.observe(viewLifecycleOwner, Observer { categoryEntries ->
             if (categoryEntries.isNullOrEmpty()) {
                 mViewModel.categoryListUiState.showEmpty = true
                 val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
@@ -93,11 +94,8 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
 
         //This part is for providing swipe-to-delete functionality, as well as a snack bar to undo deleting
         val rootView = activity!!.findViewById<FrameLayout>(R.id.container)
-        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            override fun onMove(recyclerView: androidx.recyclerview.widget.RecyclerView, viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, target: androidx.recyclerview.widget.RecyclerView.ViewHolder): Boolean {
-                return false
-            }
 
+        ItemTouchHelper(object : SwipeToDeleteCallback(requireContext()) {
             override fun onSwiped(viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
 
@@ -110,13 +108,13 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
                     val isUsed = withContext(Dispatchers.IO){mViewModel.isThisCategoryUsed(categoryToErase.categoryName)}
                     if (isUsed) {
                         // If it is used, show a warning and don't let user delete this
-                        context?.toast(R.string.cannot_erase_category)
+                        context.toast(R.string.cannot_erase_category)
                         mAdapter.notifyDataSetChanged()
                     } else {
                         //If it is not used, erase the category
                         mViewModel.deleteCategory(categoryToErase)
                         //Show a snack bar for undoing delete
-                        rootView?.indefiniteSnackbar(R.string.category_deleted, R.string.undo){
+                        rootView?.longSnackbar(R.string.category_deleted, R.string.undo){
                             mViewModel.insertCategory(categoryToErase)
                         }
                     }

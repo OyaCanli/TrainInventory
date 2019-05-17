@@ -30,9 +30,7 @@ class CategoryAdapter (private val mClickListener: CategoryItemClickListener) : 
         holder.binding.categoryItemNumber.text = "${position+1}."
     }
 
-    override fun getItemCount(): Int {
-        return categoryList?.size ?: 0
-    }
+    override fun getItemCount() = categoryList?.size ?: 0
 
     inner class CategoryHolder(val binding: ItemCategoryBinding) : RecyclerView.ViewHolder(binding.root)
 

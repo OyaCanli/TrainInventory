@@ -21,10 +21,7 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.adapters.BrandAdapter
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
-import com.canli.oya.traininventoryroom.utils.BRAND_NAME
-import com.canli.oya.traininventoryroom.utils.EDIT_CASE
-import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
-import com.canli.oya.traininventoryroom.utils.TRAINS_OF_BRAND
+import com.canli.oya.traininventoryroom.utils.*
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 import kotlinx.coroutines.*
 import org.jetbrains.anko.design.indefiniteSnackbar
@@ -82,7 +79,7 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
 
         binding.includedList.uiState = mViewModel.brandListUiState
 
-        mViewModel.brandList?.observe(this@BrandListFragment, Observer { brandEntries ->
+        mViewModel.brandList?.observe(viewLifecycleOwner, Observer { brandEntries ->
             if (brandEntries.isNullOrEmpty()) {
                 mViewModel.brandListUiState.showEmpty = true
                 val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
@@ -97,7 +94,7 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
         activity?.title = getString(R.string.all_brands)
 
         val rootView = activity!!.findViewById<FrameLayout>(R.id.container)
-        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        ItemTouchHelper(object : SwipeToDeleteCallback(requireContext()) {
             override fun onMove(recyclerView: androidx.recyclerview.widget.RecyclerView, viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, target: androidx.recyclerview.widget.RecyclerView.ViewHolder): Boolean {
                 return false
             }
@@ -114,7 +111,7 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
                     Timber.d("isUsed : $isUsed")
                     if (isUsed) {
                         // If it is used, show a warning and don't let the user delete this
-                        context?.toast(R.string.cannot_erase_brand)
+                        context.toast(R.string.cannot_erase_brand)
                         mAdapter.notifyDataSetChanged()
                     } else {
                         //If it is not used delete the brand
