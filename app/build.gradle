@@ -52,7 +52,7 @@ dependencies {
 
     //Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.fragment:fragment-ktx:1.0.0'
+    implementation 'androidx.fragment:fragment-ktx:1.1.0'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutinesVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.coroutinesVersion"
 
@@ -80,4 +80,12 @@ dependencies {
     //Anko
     implementation "org.jetbrains.anko:anko-commons:$rootProject.anko_version"
     implementation "org.jetbrains.anko:anko-design:$rootProject.anko_version"
+
+    //Dagger
+    implementation "com.google.dagger:dagger:$rootProject.dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$rootProject.dagger_version"
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$rootProject.dagger_version"
+    compileOnly 'javax.annotation:jsr250-api:1.0'
+    kapt "com.google.dagger:dagger-android-processor:$rootProject.dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$rootProject.dagger_version"
 }

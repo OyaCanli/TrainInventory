@@ -1,39 +1,27 @@
 package com.canli.oya.traininventoryroom.data.repositories
 
 import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.data.TrainDatabase
+import com.canli.oya.traininventoryroom.data.datasources.BrandDataSource
 
-class BrandRepository private constructor(private val mDatabase: TrainDatabase) {
+class BrandRepository(private val brandDataSource: BrandDataSource) {
 
-    fun getAllBrands() = mDatabase.brandDao().allBrands
+    fun getAllBrands() = brandDataSource.getAllBrands()
 
-    suspend fun getBrandList() = mDatabase.brandDao().getBrandList()
+    suspend fun getBrandList() = brandDataSource.getBrandList()
 
     suspend fun insertBrand(brand: BrandEntry) {
-        mDatabase.brandDao().insertBrand(brand)
+        brandDataSource.insertBrand(brand)
     }
 
     suspend fun updateBrand(brand: BrandEntry) {
-        mDatabase.brandDao().updateBrandInfo(brand)
+        brandDataSource.updateBrand(brand)
     }
 
     suspend fun deleteBrand(brand: BrandEntry) {
-        mDatabase.brandDao().deleteBrand(brand)
+        brandDataSource.deleteBrand(brand)
     }
 
     fun isThisBrandUsed(brandName: String): Boolean {
-        return mDatabase.trainDao().isThisBrandUsed(brandName)
-    }
-
-    companion object {
-
-        @Volatile private var sInstance: BrandRepository? = null
-
-        fun getInstance(database: TrainDatabase): BrandRepository {
-            return sInstance ?: synchronized(BrandRepository::class.java) {
-                    sInstance ?: BrandRepository(database)
-                            .also { sInstance = it }
-            }
-        }
+        return brandDataSource.isThisBrandUsed(brandName)
     }
 }

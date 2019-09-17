@@ -40,7 +40,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     var trainList: LiveData<List<TrainEntry>>? = null
         get() {
-            return field ?: mTrainRepo.trainList.also { field = it }
+            return field ?: mTrainRepo.getAllTrains().also { field = it }
         }
         private set
 

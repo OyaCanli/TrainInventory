@@ -1,58 +1,48 @@
 package com.canli.oya.traininventoryroom.data.repositories
 
 import androidx.lifecycle.LiveData
-import com.canli.oya.traininventoryroom.data.TrainDatabase
 import com.canli.oya.traininventoryroom.data.TrainEntry
+import com.canli.oya.traininventoryroom.data.datasources.BrandDataSource
+import com.canli.oya.traininventoryroom.data.datasources.CategoryDataSource
+import com.canli.oya.traininventoryroom.data.datasources.TrainDataSource
 
-class TrainRepository private constructor(private val mDatabase: TrainDatabase) {
+class TrainRepository(private val trainDataSource: TrainDataSource,
+                                          private val categoryDataSource: CategoryDataSource,
+                                          private val brandDataSource: BrandDataSource) {
 
-    val trainList: LiveData<List<TrainEntry>>
-
-    init {
-        trainList = loadTrains()
-    }
-
-    private fun loadTrains(): LiveData<List<TrainEntry>> {
-        return mDatabase.trainDao().allTrains
+    fun getAllTrains(): LiveData<List<TrainEntry>> {
+        return trainDataSource.getAllTrains()
     }
 
     fun getChosenTrainLiveData(trainId : Int): LiveData<TrainEntry> {
-        return mDatabase.trainDao().getChosenTrainLiveData(trainId)
+        return trainDataSource.getChosenTrainLiveData(trainId)
     }
 
     suspend fun insertTrain(train: TrainEntry) {
-        mDatabase.trainDao().insertTrain(train)
+        trainDataSource.insertTrain(train)
     }
 
     suspend fun updateTrain(train: TrainEntry) {
-        mDatabase.trainDao().updateTrainInfo(train)
+        trainDataSource.updateTrain(train)
     }
 
     suspend fun deleteTrain(train: TrainEntry) {
-        mDatabase.trainDao().deleteTrain(train)
+        trainDataSource.deleteTrain(train)
     }
 
     fun getTrainsFromThisBrand(brandName: String): LiveData<List<TrainEntry>> {
-        return mDatabase.trainDao().getTrainsFromThisBrand(brandName)
+        return trainDataSource.getTrainsFromThisBrand(brandName)
     }
 
     fun getTrainsFromThisCategory(category: String): LiveData<List<TrainEntry>> {
-        return mDatabase.trainDao().getTrainsFromThisCategory(category)
+        return trainDataSource.getTrainsFromThisCategory(category)
     }
 
     suspend fun searchInTrains(query: String): List<TrainEntry> {
-        return mDatabase.trainDao().searchInTrains(query)
+        return trainDataSource.searchInTrains(query)
     }
 
-    companion object {
+    fun getAllBrands() = brandDataSource.getAllBrands()
 
-        @Volatile private var sInstance: TrainRepository? = null
-
-        fun getInstance(database: TrainDatabase): TrainRepository {
-            return sInstance ?: synchronized(TrainRepository::class.java) {
-                sInstance ?: TrainRepository(database).also { sInstance = it }
-            }
-        }
-    }
-
+    fun getAllCategories() = categoryDataSource.getAllCategories()
 }

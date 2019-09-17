@@ -1,26 +1,25 @@
 package com.canli.oya.traininventoryroom.viewmodel
 
-import android.app.Application
+
 import androidx.databinding.ObservableField
 import androidx.databinding.adapters.AdapterViewBindingAdapter
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.repositories.TrainRepository
-import com.canli.oya.traininventoryroom.utils.provideTrainRepo
 import kotlinx.coroutines.launch
 
-class AddTrainViewModel(application: Application, private val chosenTrain: TrainEntry?) : AndroidViewModel(application) {
-
-    private val trainRepo: TrainRepository = provideTrainRepo(application)
+class AddTrainViewModel(private val trainRepo: TrainRepository,
+        private val chosenTrain: TrainEntry?) : ViewModel() {
 
     val trainBeingModified = ObservableField<TrainEntry>()
     private val emptyTrainObject = TrainEntry()
 
-    var brandList: List<BrandEntry>? = null
-    var categoryList: List<String>? = null
+    var brandList: LiveData<List<BrandEntry>> = trainRepo.getAllBrands()
+    var categoryList: LiveData<List<String>> = trainRepo.getAllCategories()
 
     var isEdit: Boolean
 
@@ -55,10 +54,10 @@ class AddTrainViewModel(application: Application, private val chosenTrain: Train
         //when statement differentiate which spinners is selected
         when (spinner?.id) {
             R.id.brandSpinner -> {
-                trainBeingModified.get()?.brandName = if (position == 0) null else brandList?.get(position - 1)?.brandName
+                trainBeingModified.get()?.brandName = if (position == 0) null else brandList.value?.get(position-1)?.brandName
             }
             R.id.categorySpinner -> {
-                trainBeingModified.get()?.categoryName = if (position == 0) null else categoryList?.get(position)
+                trainBeingModified.get()?.categoryName = if (position == 0) null else categoryList.value?.get(position-1)
             }
         }
     }

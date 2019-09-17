@@ -1,35 +1,23 @@
 package com.canli.oya.traininventoryroom.data.repositories
 
 import com.canli.oya.traininventoryroom.data.CategoryEntry
-import com.canli.oya.traininventoryroom.data.TrainDatabase
+import com.canli.oya.traininventoryroom.data.datasources.CategoryDataSource
 
-class CategoryRepository private constructor(private val mDatabase: TrainDatabase) {
+class CategoryRepository(private val categoryDataSource: CategoryDataSource) {
 
-    fun getAllCategories() = mDatabase.categoryDao().allCategories
+    fun getAllCategories() = categoryDataSource.getAllCategories()
 
-    suspend fun getCategoryList() = mDatabase.categoryDao().getCategoryList()
+    suspend fun getCategoryList() = categoryDataSource.getCategoryList()
 
     suspend fun insertCategory(category: CategoryEntry) {
-       mDatabase.categoryDao().insertCategory(category)
+        categoryDataSource.insertCategory(category)
     }
 
     suspend fun deleteCategory(category: CategoryEntry) {
-        mDatabase.categoryDao().deleteCategory(category)
+        categoryDataSource.deleteCategory(category)
     }
 
     fun isThisCategoryUsed(category: String): Boolean {
-        return mDatabase.trainDao().isThisCategoryUsed(category)
+        return categoryDataSource.isThisCategoryUsed(category)
     }
-
-    companion object {
-
-        @Volatile private var sInstance: CategoryRepository? = null
-
-        fun getInstance(database: TrainDatabase): CategoryRepository {
-            return sInstance ?: synchronized(CategoryRepository::class.java) {
-                sInstance ?: CategoryRepository(database).also { sInstance = it }
-            }
-        }
-    }
-
 }
