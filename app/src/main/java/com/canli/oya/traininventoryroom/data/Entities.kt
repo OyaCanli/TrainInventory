@@ -30,6 +30,13 @@ data class TrainEntry(
         var locationColumn: String? = null,
         var scale: String? = null) : Parcelable
 
+data class TrainMinimal(val trainId: Int = 0,
+                        val trainName: String? = null,
+                        val modelReference: String? = null,
+                        val brandName: String? = null,
+                        val categoryName: String? = null,
+                        val imageUri: String? = null)
+
 
 @Entity(tableName = "brands", indices = [Index(value = ["brandName"], unique = true)])
 data class BrandEntry(

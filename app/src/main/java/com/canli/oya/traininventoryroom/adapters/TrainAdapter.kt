@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.TrainEntry
+import com.canli.oya.traininventoryroom.data.TrainMinimal
 import com.canli.oya.traininventoryroom.databinding.ItemTrainBinding
 
-class TrainAdapter (private val clickListener: TrainItemClickListener) : ListAdapter<TrainEntry, TrainAdapter.ViewHolder>(TrainDiffCallback()) {
+class TrainAdapter (private val clickListener: TrainItemClickListener) : ListAdapter<TrainMinimal, TrainAdapter.ViewHolder>(TrainDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder.from(parent)
 
@@ -18,7 +18,7 @@ class TrainAdapter (private val clickListener: TrainItemClickListener) : ListAda
 
     class ViewHolder private constructor (val binding: ItemTrainBinding) : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(currentTrain : TrainEntry, listener: TrainItemClickListener){
+        fun bind(currentTrain : TrainMinimal, listener: TrainItemClickListener){
             binding.train = currentTrain
             binding.executePendingBindings()
             binding.trainItemClick = listener
@@ -40,13 +40,13 @@ class TrainAdapter (private val clickListener: TrainItemClickListener) : ListAda
     }
 }
 
-class TrainDiffCallback : DiffUtil.ItemCallback<TrainEntry>() {
+class TrainDiffCallback : DiffUtil.ItemCallback<TrainMinimal>() {
 
-    override fun areItemsTheSame(oldItem: TrainEntry, newItem: TrainEntry): Boolean {
+    override fun areItemsTheSame(oldItem: TrainMinimal, newItem: TrainMinimal): Boolean {
         return oldItem.trainId == newItem.trainId
     }
 
-    override fun areContentsTheSame(oldItem: TrainEntry, newItem: TrainEntry): Boolean {
+    override fun areContentsTheSame(oldItem: TrainMinimal, newItem: TrainMinimal): Boolean {
         return oldItem == newItem
     }
 

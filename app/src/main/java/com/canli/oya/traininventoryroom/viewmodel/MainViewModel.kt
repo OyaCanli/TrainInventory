@@ -10,6 +10,7 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.data.TrainEntry
+import com.canli.oya.traininventoryroom.data.TrainMinimal
 import com.canli.oya.traininventoryroom.data.repositories.BrandRepository
 import com.canli.oya.traininventoryroom.data.repositories.CategoryRepository
 import com.canli.oya.traininventoryroom.data.repositories.TrainRepository
@@ -39,7 +40,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     /////////// TRAIN LIST /////////////
     var trainListUiState : UIState = UIState(context.resources.getString(R.string.no_trains_found))
 
-    var trainList: Flowable<List<TrainEntry>> = mTrainRepo.getAllTrains()
+    var trainList = mTrainRepo.getAllTrains()
 
     fun getChosenTrain(trainId : Int): Flowable<TrainEntry> = mTrainRepo.getChosenTrainLiveData(trainId)
 
@@ -95,11 +96,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     ///////////// SEARCH //////////////////////////
-    fun getTrainsFromThisBrand(brandName: String): Flowable<List<TrainEntry>> = mTrainRepo.getTrainsFromThisBrand(brandName)
+    fun getTrainsFromThisBrand(brandName: String) = mTrainRepo.getTrainsFromThisBrand(brandName)
 
-    fun getTrainsFromThisCategory(category: String): Flowable<List<TrainEntry>> = mTrainRepo.getTrainsFromThisCategory(category)
+    fun getTrainsFromThisCategory(category: String) = mTrainRepo.getTrainsFromThisCategory(category)
 
-    suspend fun searchInTrains(query: String): List<TrainEntry> {
+    suspend fun searchInTrains(query: String): List<TrainMinimal> {
         val searchResults = viewModelScope.async { mTrainRepo.searchInTrains(query) }
         return searchResults.await()
     }

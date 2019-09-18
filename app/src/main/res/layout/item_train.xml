@@ -6,7 +6,7 @@
     <data>
         <variable
             name="train"
-            type="com.canli.oya.traininventoryroom.data.TrainEntry"/>
+            type="com.canli.oya.traininventoryroom.data.TrainMinimal"/>
 
         <variable
             name="trainItemClick"

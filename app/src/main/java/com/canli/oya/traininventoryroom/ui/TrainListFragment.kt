@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.adapters.TrainAdapter
-import com.canli.oya.traininventoryroom.data.TrainEntry
+import com.canli.oya.traininventoryroom.data.TrainMinimal
 import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.utils.*
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
@@ -39,8 +39,8 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
 
     private lateinit var binding: FragmentListBinding
     private lateinit var mAdapter: TrainAdapter
-    private var mTrainList: List<TrainEntry> = emptyList()
-    private var filteredTrains: List<TrainEntry> = emptyList()
+    private var mTrainList: List<TrainMinimal> = emptyList()
+    private var filteredTrains: List<TrainMinimal> = emptyList()
 
     private val disposable = CompositeDisposable()
 
@@ -137,7 +137,7 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
     }
 
 
-    private fun evaluateResults(trainEntries: List<TrainEntry>?, message: String) {
+    private fun evaluateResults(trainEntries: List<TrainMinimal>?, message: String) {
         if (trainEntries.isNullOrEmpty()) {
             mViewModel.trainListUiState.emptyMessage = message
             mViewModel.trainListUiState.showEmpty = true
