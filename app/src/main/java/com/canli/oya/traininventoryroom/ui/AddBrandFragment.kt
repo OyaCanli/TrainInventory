@@ -19,9 +19,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_CLOSE
-import androidx.fragment.app.transaction
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
@@ -36,9 +36,7 @@ class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener 
 
     private lateinit var binding: FragmentAddBrandBinding
 
-    private val mViewModel by lazy {
-        ViewModelProviders.of(requireActivity()).get(MainViewModel::class.java)
-    }
+    private val mViewModel by activityViewModels<MainViewModel>()
 
     private var mContext: Context? = null
     private var mBrandId: Int = 0
@@ -133,7 +131,7 @@ class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener 
         focusedView?.clearFocus()
         imm.hideSoftInputFromWindow(focusedView?.windowToken, 0)
 
-        fragmentManager?.transaction {
+        fragmentManager?.commit {
             setTransition(TRANSIT_FRAGMENT_CLOSE)
             remove(currentInstance!!)
         }

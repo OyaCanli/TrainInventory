@@ -6,7 +6,7 @@ buildscript {
         gradle_version = '3.5.0'
         compileSdkVersion = 28
         supportLibVersion = '1.1.0'
-        materialVersion = '1.1.0-alpha06'
+        materialVersion = '1.1.0-alpha10'
         roomVersion = '2.1.0-alpha04'
         lifecycleVersion = '2.2.0-alpha04'
         glideVersion = '4.9.0'

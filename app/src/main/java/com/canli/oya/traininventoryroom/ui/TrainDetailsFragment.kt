@@ -4,24 +4,27 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.transaction
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentTrainDetailsBinding
 import com.canli.oya.traininventoryroom.utils.CHOSEN_TRAIN
 import com.canli.oya.traininventoryroom.utils.TRAIN_ID
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
 class TrainDetailsFragment : androidx.fragment.app.Fragment() {
 
     private lateinit var binding: FragmentTrainDetailsBinding
     private lateinit var mChosenTrain: TrainEntry
-    private val mViewModel by lazy {
-        ViewModelProviders.of(requireActivity()).get(MainViewModel::class.java)
-    }
+    private val mViewModel by activityViewModels<MainViewModel>()
     private var trainId = 0
+
+    private val disposable = CompositeDisposable()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
@@ -35,15 +38,23 @@ class TrainDetailsFragment : androidx.fragment.app.Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         trainId = arguments?.getInt(TRAIN_ID) ?: 0
-        val chosenTrainLiveData = mViewModel.getChosenTrain(trainId)
-        binding.chosenTrain = chosenTrainLiveData
-        binding.lifecycleOwner = viewLifecycleOwner
-        chosenTrainLiveData.observe(viewLifecycleOwner, Observer { trainEntry ->
-            trainEntry?.let {
-                mChosenTrain = it
-                activity?.title = it.trainName
-            }
-        })
+
+        disposable.add(mViewModel.getChosenTrain(trainId).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        //onNext
+                        {trainEntry ->
+                            trainEntry?.let {
+                                binding.chosenTrain = it
+                                mChosenTrain = it
+                                activity?.title = it.trainName
+                            }
+                        },
+                        // onError
+                        { error ->
+                            Timber.e("Unable to get trains for this category ${error.message}")
+                        })
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -61,7 +72,7 @@ class TrainDetailsFragment : androidx.fragment.app.Fragment() {
                 val args = Bundle()
                 args.putParcelable(CHOSEN_TRAIN, mChosenTrain)
                 addTrainFrag.arguments = args
-                fragmentManager?.transaction { replace(R.id.container, addTrainFrag)
+                fragmentManager?.commit { replace(R.id.container, addTrainFrag)
                         .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                         .addToBackStack(null)}
             }
@@ -83,6 +94,13 @@ class TrainDetailsFragment : androidx.fragment.app.Fragment() {
     private fun deleteTrain() {
         mViewModel.deleteTrain(mChosenTrain)
         fragmentManager?.popBackStack()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        // clear all the subscription
+        disposable.clear()
     }
 
 }

@@ -7,9 +7,8 @@ import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.transaction
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -23,18 +22,20 @@ import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
 import com.canli.oya.traininventoryroom.utils.SwipeToDeleteCallback
 import com.canli.oya.traininventoryroom.utils.TRAINS_OF_CATEGORY
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.*
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.toast
+import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListener, CoroutineScope {
 
     private lateinit var binding: BrandCategoryList
 
-    private val mViewModel by lazy {
-        ViewModelProviders.of(requireActivity()).get(MainViewModel::class.java)
-    }
+    private val mViewModel by activityViewModels<MainViewModel>()
 
     private lateinit var categoryListJob: Job
 
@@ -43,6 +44,8 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
 
     private lateinit var mAdapter: CategoryAdapter
     private var mCategories: List<String> = emptyList()
+
+    private val disposable = CompositeDisposable()
 
     init {
         retainInstance = true
@@ -78,17 +81,27 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
 
         binding.includedList.uiState = mViewModel.categoryListUiState
 
-        mViewModel.categoryList?.observe(viewLifecycleOwner, Observer { categoryEntries ->
-            if (categoryEntries.isNullOrEmpty()) {
-                mViewModel.categoryListUiState.showEmpty = true
-                val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
-                binding.includedList.emptyImage.startAnimation(animation)
-            } else {
-                mAdapter.submitList(categoryEntries)
-                mCategories = categoryEntries
-                mViewModel.categoryListUiState.showList = true
-            }
-        })
+        disposable.add(mViewModel.categoryList.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        // onNext
+                        { categoryEntries ->
+                            if (categoryEntries.isNullOrEmpty()) {
+                                mViewModel.categoryListUiState.showEmpty = true
+                                val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
+                                binding.includedList.emptyImage.startAnimation(animation)
+                            } else {
+                                mAdapter.submitList(categoryEntries)
+                                mCategories = categoryEntries
+                                mViewModel.categoryListUiState.showList = true
+                            }
+                        },
+                        // onError
+                        { error ->
+                            Timber.e("Unable to get category list ${error.message}")
+                        }
+                )
+        )
 
         activity?.title = getString(R.string.all_categories)
 
@@ -105,7 +118,7 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
                 //Remove the category from the database
                 launch {
                     //First check whether this category is used by trains table
-                    val isUsed = withContext(Dispatchers.IO){mViewModel.isThisCategoryUsed(categoryToErase.categoryName)}
+                    val isUsed = withContext(Dispatchers.IO) { mViewModel.isThisCategoryUsed(categoryToErase.categoryName) }
                     if (isUsed) {
                         // If it is used, show a warning and don't let user delete this
                         context.toast(R.string.cannot_erase_category)
@@ -114,7 +127,7 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
                         //If it is not used, erase the category
                         mViewModel.deleteCategory(categoryToErase)
                         //Show a snack bar for undoing delete
-                        rootView?.longSnackbar(R.string.category_deleted, R.string.undo){
+                        rootView?.longSnackbar(R.string.category_deleted, R.string.undo) {
                             mViewModel.insertCategory(categoryToErase)
                         }
                     }
@@ -137,7 +150,7 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
 
     private fun openAddCategoryFragment() {
         val addCatFrag = AddCategoryFragment()
-        childFragmentManager.transaction {
+        childFragmentManager.commit {
             setCustomAnimations(R.anim.translate_from_top, 0)
                     .replace(R.id.brandlist_addFrag_container, addCatFrag)
         }
@@ -149,7 +162,7 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
         args.putString(INTENT_REQUEST_CODE, TRAINS_OF_CATEGORY)
         args.putString(CATEGORY_NAME, categoryName)
         trainListFrag.arguments = args
-        fragmentManager?.transaction {
+        fragmentManager?.commit {
             replace(R.id.container, trainListFrag)
                     .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                     .addToBackStack(null)
@@ -159,6 +172,13 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
     override fun onDestroyView() {
         super.onDestroyView()
         categoryListJob.cancel()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        // clear all the subscription
+        disposable.clear()
     }
 
 }

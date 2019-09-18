@@ -32,7 +32,6 @@
                 android:id="@+id/categorySpinner"
                 style="@style/editTextStyle"
                 android:layout_margin="@dimen/margin_standard"
-                android:onItemSelected="@{viewModel.spinnerListener}"
                 app:layout_constraintEnd_toStartOf="@+id/addTrain_addCategoryBtn"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@+id/barrier"
@@ -51,7 +50,6 @@
                 style="@style/editTextStyle"
                 android:layout_marginTop="@dimen/margin_standard"
                 android:layout_marginEnd="@dimen/margin_standard"
-                android:onItemSelected="@{viewModel.spinnerListener}"
                 app:layout_constraintEnd_toStartOf="@+id/addTrain_addBrandBtn"
                 app:layout_constraintStart_toEndOf="@+id/barrier"
                 app:layout_constraintTop_toBottomOf="@+id/categorySpinner" />

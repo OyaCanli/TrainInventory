@@ -1,18 +1,14 @@
 package com.canli.oya.traininventoryroom.data.datasources
 
-import androidx.lifecycle.LiveData
 import com.canli.oya.traininventoryroom.data.TrainDatabase
 import com.canli.oya.traininventoryroom.data.TrainEntry
+import io.reactivex.Flowable
 
 class TrainDataSource(private val database: TrainDatabase) {
 
-    fun getAllTrains(): LiveData<List<TrainEntry>> {
-        return database.trainDao().allTrains
-    }
+    fun getAllTrains()=  database.trainDao().allTrains
 
-    fun getChosenTrainLiveData(trainId : Int): LiveData<TrainEntry> {
-        return database.trainDao().getChosenTrainLiveData(trainId)
-    }
+    fun getChosenTrainLiveData(trainId : Int) = database.trainDao().getChosenTrainLiveData(trainId)
 
     suspend fun insertTrain(train: TrainEntry) {
         database.trainDao().insertTrain(train)
@@ -26,11 +22,11 @@ class TrainDataSource(private val database: TrainDatabase) {
         database.trainDao().deleteTrain(train)
     }
 
-    fun getTrainsFromThisBrand(brandName: String): LiveData<List<TrainEntry>> {
+    fun getTrainsFromThisBrand(brandName: String): Flowable<List<TrainEntry>> {
         return database.trainDao().getTrainsFromThisBrand(brandName)
     }
 
-    fun getTrainsFromThisCategory(category: String): LiveData<List<TrainEntry>> {
+    fun getTrainsFromThisCategory(category: String): Flowable<List<TrainEntry>> {
         return database.trainDao().getTrainsFromThisCategory(category)
     }
 

@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_CLOSE
-import androidx.fragment.app.transaction
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddCategoryBinding
@@ -20,9 +20,9 @@ import org.jetbrains.anko.toast
 class AddCategoryFragment : androidx.fragment.app.Fragment() {
 
     private lateinit var binding: FragmentAddCategoryBinding
-    private val mViewModel by lazy {
-        ViewModelProviders.of(requireActivity()).get(MainViewModel::class.java)
-    }
+
+    private val mViewModel by activityViewModels<MainViewModel>()
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
@@ -36,7 +36,7 @@ class AddCategoryFragment : androidx.fragment.app.Fragment() {
 
     private fun saveCategory() {
         val categoryName = binding.addCategoryEditCatName.text.toString().trim()
-        if (categoryName.isNullOrBlank()) {
+        if (categoryName.isBlank()) {
             context?.toast(getString(R.string.category_cannot_be_empty))
             return
         }
@@ -56,7 +56,7 @@ class AddCategoryFragment : androidx.fragment.app.Fragment() {
         focusedView?.clearFocus()
         imm.hideSoftInputFromWindow(focusedView?.windowToken, 0)
 
-        fragmentManager?.transaction {
+        fragmentManager?.commit {
             setTransition(TRANSIT_FRAGMENT_CLOSE)
             remove(currentInstance!!)
         }

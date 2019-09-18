@@ -9,26 +9,31 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.view.*
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.transaction
-import androidx.lifecycle.Observer
+import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.adapters.CustomSpinAdapter
+import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
 import com.canli.oya.traininventoryroom.utils.*
 import com.canli.oya.traininventoryroom.viewmodel.AddTrainViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.toast
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 
-class AddTrainFragment : Fragment(), View.OnClickListener{
+class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private lateinit var binding: FragmentAddTrainBinding
 
@@ -40,7 +45,15 @@ class AddTrainFragment : Fragment(), View.OnClickListener{
 
     private var isEdit: Boolean = false
 
-    var chosenTrain : TrainEntry? = null
+    var chosenTrain: TrainEntry? = null
+
+    private var brandList: List<BrandEntry> = ArrayList()
+    private var categoryList: ArrayList<String> = ArrayList()
+
+    private val disposable = CompositeDisposable()
+
+    private lateinit var categoryAdapter: ArrayAdapter<String>
+    private lateinit var brandAdapter : CustomSpinAdapter
 
     private val mDialogClickListener = DialogInterface.OnClickListener { _, item -> mUsersChoice = item }
 
@@ -55,8 +68,11 @@ class AddTrainFragment : Fragment(), View.OnClickListener{
         binding.addTrainAddCategoryBtn.setOnClickListener(this)
         binding.productDetailsGalleryImage.setOnClickListener(this)
 
-        activity?.title = if(isEdit) getString(R.string.edit_train)
-                            else getString(R.string.add_train)
+        binding.categorySpinner.onItemSelectedListener = this
+        binding.brandSpinner.onItemSelectedListener = this
+
+        activity?.title = if (isEdit) getString(R.string.edit_train)
+        else getString(R.string.add_train)
 
         return binding.root
     }
@@ -71,37 +87,63 @@ class AddTrainFragment : Fragment(), View.OnClickListener{
 
         setBrandSpinner()
         setCategorySpinner()
+        getAndObserveCategories()
+        getAndObserveBrands()
     }
 
     private fun setCategorySpinner() {
-        val categoryList = ArrayList<String>()
         categoryList.add("--Select category--")
-        val categoryAdapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, categoryList)
+        categoryAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, categoryList)
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.categorySpinner.adapter = categoryAdapter
-        addViewModel.categoryList.observe(this@AddTrainFragment, Observer { categoryEntries ->
-            if (!categoryEntries.isNullOrEmpty()) {
-                categoryList.clear()
-                categoryList.add("--Select category--")
-                categoryList.addAll(categoryEntries)
-                categoryAdapter.notifyDataSetChanged()
-                val index = categoryList.indexOf(chosenTrain?.categoryName)
-                binding.categorySpinner.setSelection(index)
-            }
-        })
+    }
+
+    private fun getAndObserveCategories() {
+        disposable.add(addViewModel.categoryList.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        //onNext
+                        { categoryEntries ->
+                            if (!categoryEntries.isNullOrEmpty()) {
+                                categoryList.clear()
+                                categoryList.add("--Select category--")
+                                categoryList.addAll(categoryEntries)
+                                categoryAdapter.notifyDataSetChanged()
+                                val index = categoryList.indexOf(chosenTrain?.categoryName)
+                                binding.categorySpinner.setSelection(index)
+                            }
+                        },
+                        //onError
+                        { error ->
+                            Timber.e("Unable to get category list ${error.message}")
+                        })
+        )
     }
 
     private fun setBrandSpinner() {
-        val brandAdapter = CustomSpinAdapter(requireContext(), null)
+        brandAdapter = CustomSpinAdapter(requireContext(), null)
         binding.brandSpinner.adapter = brandAdapter
-        addViewModel.brandList.observe(this@AddTrainFragment, Observer { brandEntries ->
-            if (!brandEntries.isNullOrEmpty()) {
-                brandAdapter.mBrandList = brandEntries
-                brandAdapter.notifyDataSetChanged()
-                val index = brandEntries.indexOfFirst { it.brandName == chosenTrain?.brandName }.plus(1)
-                binding.brandSpinner.setSelection(index)
-            }
-        })
+    }
+
+    private fun getAndObserveBrands() {
+        disposable.add(addViewModel.brandList.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        // onNext
+                        { brandEntries ->
+                            if (!brandEntries.isNullOrEmpty()) {
+                                brandAdapter.mBrandList = brandEntries
+                                brandAdapter.notifyDataSetChanged()
+                                brandList = brandEntries
+                                val index = brandEntries.indexOfFirst { it.brandName == chosenTrain?.brandName }.plus(1)
+                                binding.brandSpinner.setSelection(index)
+                            }
+                        },
+                        // onError
+                        { error ->
+                            Timber.e("Unable to get brand list ${error.message}")
+                        })
+        )
     }
 
     override fun onClick(v: View) {
@@ -126,14 +168,14 @@ class AddTrainFragment : Fragment(), View.OnClickListener{
     }
 
     private fun insertAddCategoryFragment() {
-        childFragmentManager.transaction {
+        childFragmentManager.commit {
             setCustomAnimations(R.anim.translate_from_top, 0)
                     .replace(R.id.childFragContainer, AddCategoryFragment())
         }
     }
 
     private fun insertAddBrandFragment() {
-        childFragmentManager.transaction {
+        childFragmentManager.commit {
             setCustomAnimations(R.anim.translate_from_top, 0)
                     .replace(R.id.childFragContainer, AddBrandFragment())
         }
@@ -163,16 +205,16 @@ class AddTrainFragment : Fragment(), View.OnClickListener{
         return false
     }
 
-    private fun brandNameIsEmpty() : Boolean {
-        if(addViewModel.trainBeingModified.get()?.brandName == null){
+    private fun brandNameIsEmpty(): Boolean {
+        if (addViewModel.trainBeingModified.get()?.brandName == null) {
             context?.toast("Brand name cannot be empty")
             return true
         }
         return false
     }
 
-    private fun categoryNameIsEmpty() : Boolean {
-        if(addViewModel.trainBeingModified.get()?.categoryName == null){
+    private fun categoryNameIsEmpty(): Boolean {
+        if (addViewModel.trainBeingModified.get()?.categoryName == null) {
             context?.toast("Category name cannot be empty")
             return true
         }
@@ -305,8 +347,8 @@ class AddTrainFragment : Fragment(), View.OnClickListener{
         }
     }
 
-    fun onBackClicked(){
-        if(addViewModel.isChanged){
+    fun onBackClicked() {
+        if (addViewModel.isChanged) {
             showUnsavedChangesDialog()
         } else {
             fragmentManager?.popBackStack()
@@ -330,5 +372,29 @@ class AddTrainFragment : Fragment(), View.OnClickListener{
             create()
             show()
         }
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+
+    }
+
+    override fun onItemSelected(spinner: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        //the listener is attached to both spinners.
+        //when statement differentiate which spinners is selected
+        when (spinner?.id) {
+            R.id.brandSpinner -> {
+                addViewModel.trainBeingModified.get()?.brandName = if (position == 0) null else brandList[position-1].brandName
+            }
+            R.id.categorySpinner -> {
+                addViewModel.trainBeingModified.get()?.categoryName = if (position == 0) null else categoryList[position]
+            }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        // clear all the subscription
+        disposable.clear()
     }
 }

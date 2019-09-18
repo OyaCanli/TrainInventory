@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.transaction
+import androidx.fragment.app.commit
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ActivityMainBinding
 import com.canli.oya.traininventoryroom.utils.ALL_TRAIN
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         //Bring the train fragment_list fragment at the launch of activity
         if (savedInstanceState == null) {
-            fm.transaction {
+            fm.commit {
                 setCustomAnimations(0, android.R.animator.fade_out)
                     .add(R.id.container, CategoryListFragment())
             }

@@ -17,6 +17,7 @@ import com.canli.oya.traininventoryroom.utils.UIState
 import com.canli.oya.traininventoryroom.utils.provideBrandRepo
 import com.canli.oya.traininventoryroom.utils.provideCategoryRepo
 import com.canli.oya.traininventoryroom.utils.provideTrainRepo
+import io.reactivex.Flowable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -38,15 +39,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     /////////// TRAIN LIST /////////////
     var trainListUiState : UIState = UIState(context.resources.getString(R.string.no_trains_found))
 
-    var trainList: LiveData<List<TrainEntry>>? = null
-        get() {
-            return field ?: mTrainRepo.getAllTrains().also { field = it }
-        }
-        private set
+    var trainList: Flowable<List<TrainEntry>> = mTrainRepo.getAllTrains()
 
-    fun getChosenTrain(trainId : Int): LiveData<TrainEntry> {
-        return mTrainRepo.getChosenTrainLiveData(trainId)
-    }
+    fun getChosenTrain(trainId : Int): Flowable<TrainEntry> = mTrainRepo.getChosenTrainLiveData(trainId)
 
     fun deleteTrain(train: TrainEntry) {
         viewModelScope.launch(Dispatchers.IO) { mTrainRepo.deleteTrain(train) }
@@ -55,11 +50,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     ////////////// BRAND LIST //////////////////
     var brandListUiState : UIState = UIState(context.resources.getString(R.string.no_brands_found))
 
-    var brandList: LiveData<List<BrandEntry>>?  = null
-        get() {
-            return field ?: mBrandRepo.getAllBrands().also { field = it }
-        }
-        private set
+    var brandList: Flowable<List<BrandEntry>> = mBrandRepo.getAllBrands()
 
     private val mChosenBrand = MutableLiveData<BrandEntry>()
 
@@ -89,11 +80,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     //////////////// CATEGORY LIST //////////////////
     var categoryListUiState = UIState(context.resources.getString(R.string.no_categories_found))
 
-    var categoryList: LiveData<List<String>>?  = null
-        get() {
-            return field ?: mCategoryRepo.getAllCategories().also { field = it }
-        }
-        private set
+    var categoryList: Flowable<List<String>> = mCategoryRepo.getAllCategories()
 
     fun deleteCategory(category: CategoryEntry) {
         viewModelScope.launch(Dispatchers.IO) { mCategoryRepo.deleteCategory(category) }
@@ -108,13 +95,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     ///////////// SEARCH //////////////////////////
-    fun getTrainsFromThisBrand(brandName: String): LiveData<List<TrainEntry>> {
-        return mTrainRepo.getTrainsFromThisBrand(brandName)
-    }
+    fun getTrainsFromThisBrand(brandName: String): Flowable<List<TrainEntry>> = mTrainRepo.getTrainsFromThisBrand(brandName)
 
-    fun getTrainsFromThisCategory(category: String): LiveData<List<TrainEntry>> {
-        return mTrainRepo.getTrainsFromThisCategory(category)
-    }
+    fun getTrainsFromThisCategory(category: String): Flowable<List<TrainEntry>> = mTrainRepo.getTrainsFromThisCategory(category)
 
     suspend fun searchInTrains(query: String): List<TrainEntry> {
         val searchResults = viewModelScope.async { mTrainRepo.searchInTrains(query) }

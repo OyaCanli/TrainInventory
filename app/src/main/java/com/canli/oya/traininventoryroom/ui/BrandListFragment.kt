@@ -10,9 +10,9 @@ import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
 import androidx.fragment.app.transaction
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -23,6 +23,9 @@ import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
 import com.canli.oya.traininventoryroom.utils.*
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.*
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.toast
@@ -41,9 +44,9 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
 
     private lateinit var binding: BrandCategoryList
 
-    private val mViewModel by lazy {
-        ViewModelProviders.of(requireActivity()).get(MainViewModel::class.java)
-    }
+    private val disposable = CompositeDisposable()
+
+    private val mViewModel by activityViewModels<MainViewModel>()
 
     init {
         retainInstance = true
@@ -64,7 +67,7 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
             paint.color = resources.getColor(R.color.divider_color)
         })
 
-        with(binding.includedList.list){
+        with(binding.includedList.list) {
             layoutManager = LinearLayoutManager(activity)
             itemAnimator = DefaultItemAnimator()
             addItemDecoration(divider)
@@ -79,18 +82,29 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
 
         binding.includedList.uiState = mViewModel.brandListUiState
 
-        mViewModel.brandList?.observe(viewLifecycleOwner, Observer { brandEntries ->
-            if (brandEntries.isNullOrEmpty()) {
-                mViewModel.brandListUiState.showEmpty = true
-                val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
-                binding.includedList.emptyImage.startAnimation(animation)
-            } else {
-                Timber.d("fragment_list size : ${brandEntries.size}")
-                mAdapter.submitList(brandEntries)
-                brands = brandEntries
-                mViewModel.brandListUiState.showList = true
-            }
-        })
+        disposable.add(mViewModel.brandList.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        // onNext
+                        { brandEntries ->
+                            if (brandEntries.isNullOrEmpty()) {
+                                mViewModel.brandListUiState.showEmpty = true
+                                val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
+                                binding.includedList.emptyImage.startAnimation(animation)
+                            } else {
+                                Timber.d("fragment_list size : ${brandEntries.size}")
+                                mAdapter.submitList(brandEntries)
+                                brands = brandEntries
+                                mViewModel.brandListUiState.showList = true
+                            }
+                        },
+                        // onError
+                        { error ->
+                            Timber.e("Unable to get brand list ${error.message}")
+
+                        }
+                ))
+
         activity?.title = getString(R.string.all_brands)
 
         val rootView = activity!!.findViewById<FrameLayout>(R.id.container)
@@ -107,7 +121,7 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
 
                 launch {
                     //Check whether this brand is used in trains table.
-                    val isUsed = withContext(Dispatchers.IO) { mViewModel.isThisBrandUsed(brandToErase.brandName)}
+                    val isUsed = withContext(Dispatchers.IO) { mViewModel.isThisBrandUsed(brandToErase.brandName) }
                     if (isUsed) {
                         // If it is used, show a warning and don't let the user delete this
                         context.toast(R.string.cannot_erase_brand)
@@ -117,7 +131,8 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
                         mViewModel.deleteBrand(brandToErase)
                         //Show a snack bar for undoing delete
                         rootView?.longSnackbar(R.string.brand_deleted, R.string.undo) {
-                            mViewModel.insertBrand(brandToErase) }
+                            mViewModel.insertBrand(brandToErase)
+                        }
                     }
                 }
             }
@@ -126,7 +141,7 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
 
     private fun openAddBrandFragment() {
         val addBrandFrag = AddBrandFragment()
-        childFragmentManager.transaction {
+        childFragmentManager.commit {
             setCustomAnimations(R.anim.translate_from_top, 0)
                     .replace(R.id.brandlist_addFrag_container, addBrandFrag)
         }
@@ -170,7 +185,7 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
         args.putString(INTENT_REQUEST_CODE, TRAINS_OF_BRAND)
         args.putString(BRAND_NAME, clickedBrand.brandName)
         trainListFrag.arguments = args
-        fragmentManager?.transaction {
+        fragmentManager?.commit {
             replace(R.id.container, trainListFrag)
                     .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                     .addToBackStack(null)
@@ -200,6 +215,13 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
     override fun onDestroyView() {
         super.onDestroyView()
         brandListJob.cancel()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        // clear all the subscription
+        disposable.clear()
     }
 }
 

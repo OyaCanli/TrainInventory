@@ -4,14 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
-        <import type="androidx.lifecycle.LiveData" />
-
-        <import type="com.canli.oya.traininventoryroom.data.TrainEntry" />
-
         <variable
             name="chosenTrain"
-            type="LiveData&lt;TrainEntry>" />
+            type="com.canli.oya.traininventoryroom.data.TrainEntry" />
 
         <import type="com.canli.oya.traininventoryroom.utils.BindingUtils" />
     </data>
