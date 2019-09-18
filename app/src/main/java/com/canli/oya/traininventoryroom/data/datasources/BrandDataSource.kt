@@ -10,15 +10,15 @@ class BrandDataSource(val database: TrainDatabase) {
     suspend fun getBrandList() = database.brandDao().getBrandList()
 
     suspend fun insertBrand(brand: BrandEntry) {
-        database.brandDao().insertBrand(brand)
+        database.brandDao().insert(brand)
     }
 
     suspend fun updateBrand(brand: BrandEntry) {
-        database.brandDao().updateBrandInfo(brand)
+        database.brandDao().update(brand)
     }
 
     suspend fun deleteBrand(brand: BrandEntry) {
-        database.brandDao().deleteBrand(brand)
+        database.brandDao().delete(brand)
     }
 
     fun isThisBrandUsed(brandName: String): Boolean {

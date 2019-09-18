@@ -10,11 +10,11 @@ class CategoryDataSource(val database: TrainDatabase) {
     suspend fun getCategoryList() = database.categoryDao().getCategoryList()
 
     suspend fun insertCategory(category: CategoryEntry) {
-        database.categoryDao().insertCategory(category)
+        database.categoryDao().insert(category)
     }
 
     suspend fun deleteCategory(category: CategoryEntry) {
-        database.categoryDao().deleteCategory(category)
+        database.categoryDao().delete(category)
     }
 
     fun isThisCategoryUsed(category: String): Boolean {

@@ -11,15 +11,15 @@ class TrainDataSource(private val database: TrainDatabase) {
     fun getChosenTrainLiveData(trainId : Int) = database.trainDao().getChosenTrainLiveData(trainId)
 
     suspend fun insertTrain(train: TrainEntry) {
-        database.trainDao().insertTrain(train)
+        database.trainDao().insert(train)
     }
 
     suspend fun updateTrain(train: TrainEntry) {
-        database.trainDao().updateTrainInfo(train)
+        database.trainDao().update(train)
     }
 
     suspend fun deleteTrain(train: TrainEntry) {
-        database.trainDao().deleteTrain(train)
+        database.trainDao().delete(train)
     }
 
     fun getTrainsFromThisBrand(brandName: String): Flowable<List<TrainEntry>> {

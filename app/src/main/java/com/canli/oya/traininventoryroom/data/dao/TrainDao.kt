@@ -1,11 +1,12 @@
 package com.canli.oya.traininventoryroom.data.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Query
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import io.reactivex.Flowable
 
 @Dao
-interface TrainDao {
+interface TrainDao : BaseDao<TrainEntry>{
 
     @get:Query("SELECT * FROM trains")
     val allTrains: Flowable<List<TrainEntry>>
@@ -28,12 +29,4 @@ interface TrainDao {
     @Query("SELECT * FROM trains WHERE (trainName LIKE '%' || :query || '%') " + "OR (modelReference LIKE '%' || :query || '%') OR (description LIKE '%' || :query || '%')")
     suspend fun searchInTrains(query: String): List<TrainEntry>
 
-    @Insert
-    suspend fun insertTrain(train: TrainEntry)
-
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updateTrainInfo(train: TrainEntry)
-
-    @Delete
-    suspend fun deleteTrain(train: TrainEntry)
 }
