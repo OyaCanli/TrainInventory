@@ -1,36 +1,28 @@
 package com.canli.oya.traininventoryroom.ui
 
-import android.Manifest
-import android.app.Activity.RESULT_OK
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_CLOSE
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
+import com.aminography.choosephotohelper.ChoosePhotoHelper
+import com.aminography.choosephotohelper.callback.ChoosePhotoCallback
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddBrandBinding
-import com.canli.oya.traininventoryroom.utils.*
+import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 import org.jetbrains.anko.toast
-import java.io.File
-import java.io.IOException
 
 class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener {
 
@@ -41,12 +33,19 @@ class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener 
     private var mContext: Context? = null
     private var mBrandId: Int = 0
 
-    private lateinit var mTempPhotoPath: String
     private var mLogoUri: Uri? = null
-    private var mUsersChoice: Int = 0
     private var isEditCase: Boolean = false
 
-    private val mDialogClickListener = DialogInterface.OnClickListener { _, item -> mUsersChoice = item }
+    private val choosePhotoHelper by lazy {
+        ChoosePhotoHelper.with(this)
+                .asUri()
+                .build(ChoosePhotoCallback {
+                    Glide.with(this)
+                            .load(it)
+                            .into(binding.addBrandImage)
+                    mLogoUri = it
+                })
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -87,7 +86,7 @@ class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener 
             saveBrand()
         } else {
             //If add photo is clicked
-            openImageDialog()
+            choosePhotoHelper.showChooser()
         }
     }
 
@@ -137,106 +136,16 @@ class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener 
         }
     }
 
-    private fun openImageDialog() {
-        //Opens a dialog which lets the user choose either adding a photo from gallery or taking a new picture.
-        val dialogOptions = resources.getStringArray(R.array.dialog_options)
-        val builder = AlertDialog.Builder(requireContext())
-        with(builder) {
-            setTitle(R.string.add_image_from)
-            setSingleChoiceItems(dialogOptions, -1, mDialogClickListener)
-            setPositiveButton(R.string.ok) { _, _ ->
-                when (mUsersChoice) {
-                    0 -> if (needsPermission()) requestPermission()
-                    else openCamera()
-                    1 -> openGallery()
-                }
-            }
-            setNegativeButton(R.string.cancel) { _, _ -> }
-            create()
-            show()
-        }
-
-    }
-
-    //Check whether permission is already given or not
-    private fun needsPermission() = ContextCompat.checkSelfPermission(activity!!,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-
-    // If you do not have permission, request it
-    private fun requestPermission() = this@AddBrandFragment.requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-            REQUEST_STORAGE_PERMISSION)
-
-    private fun openGallery() {
-        val intent = Intent()
-        // Show only images, no videos or anything else
-        intent.type = "image/*"
-        intent.action = Intent.ACTION_GET_CONTENT
-        // Always show the chooser (if there are multiple options available)
-        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_picture)), PICK_IMAGE_REQUEST)
-    }
-
-    private fun openCamera() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (takePictureIntent.resolveActivity(activity!!.packageManager) != null) {
-            // Create the File where the photo should go
-            var photoFile: File? = null
-            try {
-                photoFile = BitmapUtils.createImageFile(activity!!)
-            } catch (ex: IOException) {
-                ex.printStackTrace()
-            }
-
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                // Get the path of the temporary file
-                mTempPhotoPath = photoFile.absolutePath
-                mLogoUri = FileProvider.getUriForFile(activity!!,
-                        FILE_PROVIDER_AUTHORITY,
-                        photoFile)
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mLogoUri)
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-            }
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-        when (requestCode) {
-            REQUEST_IMAGE_CAPTURE -> {
-                if (resultCode == RESULT_OK) {
-                    Glide.with(mContext!!)
-                            .load(mLogoUri)
-                            .into(binding.addBrandImage)
-                } else {
-                    BitmapUtils.deleteImageFile(mContext!!, mTempPhotoPath)
-                }
-            }
-            PICK_IMAGE_REQUEST -> {
-                if (resultCode == RESULT_OK) {
-                    mLogoUri = data?.data
-                    Glide.with(mContext!!)
-                            .load(mLogoUri)
-                            .into(binding.addBrandImage)
-                }
-            }
-        }
+        choosePhotoHelper.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>,
                                             grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // Called when you request permission to read and write to external storage
-        when (requestCode) {
-            REQUEST_STORAGE_PERMISSION -> {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // If you get permission, launch the camera
-                    openCamera()
-                } else {
-                    // If you do not get permission, show a Toast
-                    context?.toast(R.string.permission_denied)
-                }
-            }
-        }
+        choosePhotoHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onDetach() {

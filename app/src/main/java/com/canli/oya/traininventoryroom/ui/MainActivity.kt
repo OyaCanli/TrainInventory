@@ -15,7 +15,6 @@ import com.canli.oya.traininventoryroom.databinding.ActivityMainBinding
 import com.canli.oya.traininventoryroom.utils.ALL_TRAIN
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import timber.log.Timber
 
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener {
@@ -50,14 +49,12 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         val ft = fm.beginTransaction()
         val currentFrag = fm.findFragmentById(R.id.container)
 
-        val id = item.itemId
-        when (id){
+        when (item.itemId){
             R.id.trains -> {
                 if (currentFrag is TrainListFragment) {
                     currentFrag.scrollToTop()
                     return true
                 }
-                Timber.d("After return")
                 val args = Bundle()
                 args.putString(INTENT_REQUEST_CODE, ALL_TRAIN)
                 trainListFragment.arguments = args

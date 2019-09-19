@@ -42,7 +42,7 @@ class CustomSpinAdapter(private val mContext: Context, var mBrandList: List<Bran
         val currentBrand = getItem(position)
 
         if(currentBrand == null){
-            brandNameTv.text = "--Select brand--"
+            brandNameTv.text = mContext.getString(R.string.select_brand)
             logoImage.visibility = View.GONE
         } else {
             brandNameTv.text = currentBrand.brandName

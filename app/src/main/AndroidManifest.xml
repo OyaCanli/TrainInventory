@@ -7,8 +7,6 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <application
         android:name=".utils.TrainApplication"
         android:allowBackup="true"
@@ -28,15 +26,6 @@
             </intent-filter>
         </activity>
 
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="com.canli.oya.traininventoryroom.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

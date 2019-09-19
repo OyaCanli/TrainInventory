@@ -1,47 +1,40 @@
 package com.canli.oya.traininventoryroom.ui
 
-import android.Manifest
-import android.app.Activity.RESULT_OK
-import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.TextUtils
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
+import com.aminography.choosephotohelper.ChoosePhotoHelper
+import com.aminography.choosephotohelper.callback.ChoosePhotoCallback
+import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.adapters.CustomSpinAdapter
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
-import com.canli.oya.traininventoryroom.utils.*
+import com.canli.oya.traininventoryroom.utils.CHOSEN_TRAIN
+import com.canli.oya.traininventoryroom.utils.provideAddTrainFactory
 import com.canli.oya.traininventoryroom.viewmodel.AddTrainViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.toast
 import timber.log.Timber
-import java.io.File
-import java.io.IOException
 
-class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSelectedListener {
+
+class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSelectedListener, ChoosePhotoCallback<Uri> {
 
     private lateinit var binding: FragmentAddTrainBinding
 
     private lateinit var addViewModel: AddTrainViewModel
-
-    private var mTempPhotoPath: String? = null
-    private var mImageUri: String? = null
-    private var mUsersChoice: Int = 0
 
     private var isEdit: Boolean = false
 
@@ -53,9 +46,13 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     private val disposable = CompositeDisposable()
 
     private lateinit var categoryAdapter: ArrayAdapter<String>
-    private lateinit var brandAdapter : CustomSpinAdapter
+    private lateinit var brandAdapter: CustomSpinAdapter
 
-    private val mDialogClickListener = DialogInterface.OnClickListener { _, item -> mUsersChoice = item }
+    private val choosePhotoHelper by lazy {
+        ChoosePhotoHelper.with(this)
+                .asUri()
+                .build(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
@@ -92,7 +89,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     }
 
     private fun setCategorySpinner() {
-        categoryList.add("--Select category--")
+        categoryList.add(getString(R.string.select_category))
         categoryAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, categoryList)
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.categorySpinner.adapter = categoryAdapter
@@ -106,7 +103,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
                         { categoryEntries ->
                             if (!categoryEntries.isNullOrEmpty()) {
                                 categoryList.clear()
-                                categoryList.add("--Select category--")
+                                categoryList.add(getString(R.string.select_category))
                                 categoryList.addAll(categoryEntries)
                                 categoryAdapter.notifyDataSetChanged()
                                 val index = categoryList.indexOf(chosenTrain?.categoryName)
@@ -150,7 +147,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         when (v.id) {
             R.id.addTrain_addBrandBtn -> insertAddBrandFragment()
             R.id.addTrain_addCategoryBtn -> insertAddCategoryFragment()
-            R.id.product_details_gallery_image -> openImageDialog()
+            R.id.product_details_gallery_image -> choosePhotoHelper.showChooser()
         }
     }
 
@@ -181,6 +178,13 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         }
     }
 
+    override fun onChoose(photoUri: Uri?) {
+        Glide.with(this)
+                .load(photoUri)
+                .into(binding.productDetailsGalleryImage)
+        addViewModel.trainBeingModified.get()?.imageUri = photoUri.toString()
+    }
+
     private fun saveTrain() {
 
         // DATA VALIDATION
@@ -199,7 +203,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
 
     private fun scaleIsEmpty(): Boolean {
         if (addViewModel.trainBeingModified.get()?.scale == null) {
-            context?.toast("Scale cannot be empty")
+            context?.toast(getString(R.string.scale_cant_be_empty))
             return true
         }
         return false
@@ -207,7 +211,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
 
     private fun brandNameIsEmpty(): Boolean {
         if (addViewModel.trainBeingModified.get()?.brandName == null) {
-            context?.toast("Brand name cannot be empty")
+            context?.toast(getString(R.string.brand_name_empty))
             return true
         }
         return false
@@ -215,7 +219,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
 
     private fun categoryNameIsEmpty(): Boolean {
         if (addViewModel.trainBeingModified.get()?.categoryName == null) {
-            context?.toast("Category name cannot be empty")
+            context?.toast(getString(R.string.category_name_empty))
             return true
         }
         return false
@@ -223,7 +227,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
 
     private fun trainNameIsEmpty(): Boolean {
         if (addViewModel.trainBeingModified.get()?.trainName == null) {
-            context?.toast("Train name cannot be empty")
+            context?.toast(getString(R.string.train_name_empty))
             return true
         }
         return false
@@ -250,101 +254,15 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         return true
     }
 
-    private fun openImageDialog() {
-        val dialogOptions = activity!!.resources.getStringArray(R.array.dialog_options)
-        val builder = AlertDialog.Builder(requireContext(), R.style.alert_dialog_style)
-        with(builder) {
-            setTitle(R.string.add_image_from)
-            setSingleChoiceItems(dialogOptions, -1, mDialogClickListener)
-            setPositiveButton(R.string.ok) { _, _ ->
-                when (mUsersChoice) {
-                    0 -> if (needsPermission()) requestPermission()
-                    else openCamera()
-                    1 -> openGallery()
-                }
-            }
-            setNegativeButton(R.string.cancel) { _, _ -> }
-            create()
-            show()
-        }
-    }
-
-    //Check whether permission is already given or not
-    private fun needsPermission() = ContextCompat.checkSelfPermission(activity!!,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-
-    // If you do not have permission, request it
-    private fun requestPermission() = this@AddTrainFragment.requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-            REQUEST_STORAGE_PERMISSION)
-
-    private fun openGallery() {
-        val intent = Intent()
-        // Show only images, no videos or anything else
-        intent.type = "image/*"
-        intent.action = Intent.ACTION_GET_CONTENT
-        // Always show the chooser (if there are multiple options available)
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST)
-    }
-
-    private fun openCamera() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (takePictureIntent.resolveActivity(activity!!.packageManager) != null) {
-            // Create the File where the photo should go
-            var photoFile: File? = null
-            try {
-                photoFile = BitmapUtils.createImageFile(activity!!)
-            } catch (ex: IOException) {
-                ex.printStackTrace()
-            }
-
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                // Get the path of the temporary file
-                mTempPhotoPath = photoFile.absolutePath
-
-                val imageUri = FileProvider.getUriForFile(activity!!,
-                        FILE_PROVIDER_AUTHORITY,
-                        photoFile)
-                mImageUri = imageUri.toString()
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-            }
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == REQUEST_IMAGE_CAPTURE) {
-            if (resultCode == RESULT_OK) {
-                addViewModel.trainBeingModified.get()?.imageUri = mImageUri
-                binding.invalidateAll()
-            } else {
-                BitmapUtils.deleteImageFile(activity!!, mTempPhotoPath!!)
-            }
-        } else if (requestCode == PICK_IMAGE_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                val imageUri = data?.data
-                mImageUri = imageUri?.toString()
-                addViewModel.trainBeingModified.get()?.imageUri = mImageUri
-                binding.invalidateAll()
-            }
-        }
+        choosePhotoHelper.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // Called when you request permission to read and write to external storage
-        when (requestCode) {
-            REQUEST_STORAGE_PERMISSION -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // If you get permission, launch the camera
-                    openCamera()
-                } else {
-                    // If you do not get permission, show a Toast
-                    context?.toast(getString(R.string.permission_denied))
-                }
-            }
-        }
+        choosePhotoHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     fun onBackClicked() {
@@ -375,7 +293,6 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-
     }
 
     override fun onItemSelected(spinner: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -383,7 +300,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         //when statement differentiate which spinners is selected
         when (spinner?.id) {
             R.id.brandSpinner -> {
-                addViewModel.trainBeingModified.get()?.brandName = if (position == 0) null else brandList[position-1].brandName
+                addViewModel.trainBeingModified.get()?.brandName = if (position == 0) null else brandList[position - 1].brandName
             }
             R.id.categorySpinner -> {
                 addViewModel.trainBeingModified.get()?.categoryName = if (position == 0) null else categoryList[position]

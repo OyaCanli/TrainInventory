@@ -75,4 +75,10 @@
     <string name="hint_location_number">ligne de la place qui est un numéro</string>
     <string name="are_you_sure_you_want_to_delete_this_category">Etes-vous sure que vous voulez supprimer cette catégorie?</string>
     <string name="no_website_warning">Vous n\'avez pas ajouté une addresse web pour cette marque. Appuyer l\'icon modifier pour la changer.</string>
+    <string name="select_category">--Choississez une catégorie--</string>
+    <string name="select_brand">--Choississez une marque--</string>
+    <string name="scale_cant_be_empty">Scale cannot be empty</string>
+    <string name="brand_name_empty">Brand name cannot be empty</string>
+    <string name="category_name_empty">Category name cannot be empty</string>
+    <string name="train_name_empty">Train name cannot be empty</string>
 </resources>
