@@ -1,5 +1,6 @@
 package com.canli.oya.traininventoryroom.ui
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -10,21 +11,22 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_CLOSE
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
-import com.aminography.choosephotohelper.ChoosePhotoHelper
-import com.aminography.choosephotohelper.callback.ChoosePhotoCallback
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddBrandBinding
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
 import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
+import com.github.dhaval2404.imagepicker.ImagePicker
 import org.jetbrains.anko.toast
+import timber.log.Timber
 
-class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener {
+class AddBrandFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentAddBrandBinding
 
@@ -36,16 +38,6 @@ class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener 
     private var mLogoUri: Uri? = null
     private var isEditCase: Boolean = false
 
-    private val choosePhotoHelper by lazy {
-        ChoosePhotoHelper.with(this)
-                .asUri()
-                .build(ChoosePhotoCallback {
-                    Glide.with(this)
-                            .load(it)
-                            .into(binding.addBrandImage)
-                    mLogoUri = it
-                })
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -86,7 +78,11 @@ class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener 
             saveBrand()
         } else {
             //If add photo is clicked
-            choosePhotoHelper.showChooser()
+            ImagePicker.with(this)
+                    .crop(1f, 1f)	    		//Crop Square image(Optional)
+                    .compress(1024)			//Final image size will be less than 1 MB(Optional)
+                    .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
+                    .start()
         }
     }
 
@@ -138,18 +134,23 @@ class AddBrandFragment : androidx.fragment.app.Fragment(), View.OnClickListener 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        choosePhotoHelper.onActivityResult(requestCode, resultCode, data)
-    }
+        if (resultCode == Activity.RESULT_OK) {
+            // File object will not be null for RESULT_OK
+            val file = ImagePicker.getFile(data)
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>,
-                                            grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        // Called when you request permission to read and write to external storage
-        choosePhotoHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)
+            Timber.e("Path:${file?.absolutePath}")
+
+            Glide.with(this)
+                    .load(file)
+                    .into(binding.addBrandImage)
+            mLogoUri = Uri.fromFile(file)
+        }
+
     }
 
     override fun onDetach() {
         super.onDetach()
         mContext = null
     }
+
 }

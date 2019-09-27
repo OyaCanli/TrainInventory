@@ -10,4 +10,8 @@
     <color name="divider_color">#7b838d</color>
     <color name="ripple_color">#BB7b838d</color>
 
+    <color name="ucrop_color_toolbar">@color/colorPrimary</color>
+    <color name="ucrop_color_statusbar">@color/colorPrimaryDark</color>
+    <color name="ucrop_color_widget_active">@color/colorAccent</color>
+
 </resources>

@@ -1,5 +1,6 @@
 package com.canli.oya.traininventoryroom.ui
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -12,8 +13,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
-import com.aminography.choosephotohelper.ChoosePhotoHelper
-import com.aminography.choosephotohelper.callback.ChoosePhotoCallback
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.adapters.CustomSpinAdapter
@@ -23,6 +22,7 @@ import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
 import com.canli.oya.traininventoryroom.utils.CHOSEN_TRAIN
 import com.canli.oya.traininventoryroom.utils.provideAddTrainFactory
 import com.canli.oya.traininventoryroom.viewmodel.AddTrainViewModel
+import com.github.dhaval2404.imagepicker.ImagePicker
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -30,7 +30,7 @@ import org.jetbrains.anko.toast
 import timber.log.Timber
 
 
-class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSelectedListener, ChoosePhotoCallback<Uri> {
+class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private lateinit var binding: FragmentAddTrainBinding
 
@@ -48,11 +48,6 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     private lateinit var categoryAdapter: ArrayAdapter<String>
     private lateinit var brandAdapter: CustomSpinAdapter
 
-    private val choosePhotoHelper by lazy {
-        ChoosePhotoHelper.with(this)
-                .asUri()
-                .build(this)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
@@ -147,7 +142,13 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         when (v.id) {
             R.id.addTrain_addBrandBtn -> insertAddBrandFragment()
             R.id.addTrain_addCategoryBtn -> insertAddCategoryFragment()
-            R.id.product_details_gallery_image -> choosePhotoHelper.showChooser()
+            R.id.product_details_gallery_image -> {
+                ImagePicker.with(this)
+                        .crop(1f, 1f)	    		//Crop Square image(Optional)
+                        .compress(1024)			//Final image size will be less than 1 MB(Optional)
+                        .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
+                        .start()
+            }
         }
     }
 
@@ -176,13 +177,6 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
             setCustomAnimations(R.anim.translate_from_top, 0)
                     .replace(R.id.childFragContainer, AddBrandFragment())
         }
-    }
-
-    override fun onChoose(photoUri: Uri?) {
-        Glide.with(this)
-                .load(photoUri)
-                .into(binding.productDetailsGalleryImage)
-        addViewModel.trainBeingModified.get()?.imageUri = photoUri.toString()
     }
 
     private fun saveTrain() {
@@ -256,13 +250,17 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        choosePhotoHelper.onActivityResult(requestCode, resultCode, data)
-    }
+        if (resultCode == Activity.RESULT_OK) {
+            // File object will not be null for RESULT_OK
+            val file = ImagePicker.getFile(data)
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        // Called when you request permission to read and write to external storage
-        choosePhotoHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)
+            Timber.d("Path:${file?.absolutePath}")
+
+            Glide.with(this)
+                    .load(file)
+                    .into(binding.productDetailsGalleryImage)
+            addViewModel.trainBeingModified.get()?.imageUri = Uri.fromFile(file).toString()
+        }
     }
 
     fun onBackClicked() {

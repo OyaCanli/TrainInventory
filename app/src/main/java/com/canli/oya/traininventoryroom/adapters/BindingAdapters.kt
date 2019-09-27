@@ -8,12 +8,12 @@ import com.canli.oya.traininventoryroom.utils.GlideApp
 
 
 @BindingAdapter("imageUrl", "placeholder")
-fun setImageUrl(view: ImageView, url: String?, placeHolder: Drawable) {
-    GlideApp.with(view.context)
+fun ImageView.setImageWithGlide(url: String?, placeHolder: Drawable) {
+    GlideApp.with(context)
             .load(url)
             .centerCrop()
             .placeholder(placeHolder)
-            .into(view)
+            .into(this)
 }
 
 @BindingAdapter("visible")
