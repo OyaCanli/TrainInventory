@@ -7,6 +7,7 @@ import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -46,6 +47,8 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
     private var mCategories: List<String> = emptyList()
 
     private val disposable = CompositeDisposable()
+
+    var addCategoryFragVisible = false
 
     init {
         retainInstance = true
@@ -143,16 +146,32 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_add) {
-            openAddCategoryFragment()
+            if(!addCategoryFragVisible) {
+                openAddCategoryFragment()
+                addCategoryFragVisible = true
+                item.setIcon(R.drawable.ic_cancel)
+            } else {
+                removeAddCategoryFragment()
+                addCategoryFragVisible = false
+                item.setIcon(R.drawable.ic_add_light)
+            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun removeAddCategoryFragment() {
+        val childFrag = childFragmentManager.findFragmentById(R.id.list_addFrag_container)
+        childFragmentManager.commit {
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+            remove(childFrag!!)
+        }
     }
 
     private fun openAddCategoryFragment() {
         val addCatFrag = AddCategoryFragment()
         childFragmentManager.commit {
             setCustomAnimations(R.anim.translate_from_top, 0)
-                    .replace(R.id.brandlist_addFrag_container, addCatFrag)
+                    .replace(R.id.list_addFrag_container, addCatFrag)
         }
     }
 

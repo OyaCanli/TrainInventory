@@ -12,9 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_CLOSE
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
@@ -114,22 +112,12 @@ class AddBrandFragment : Fragment(), View.OnClickListener {
 
         Toast.makeText(activity, R.string.brand_Saved, Toast.LENGTH_SHORT).show()
 
-        //Remove fragment
-        val parentFrag = parentFragment
-        val containerID = if (parentFrag is AddTrainFragment) R.id.childFragContainer
-                            else R.id.brandlist_addFrag_container
-        val currentInstance = fragmentManager?.findFragmentById(containerID)
-
         //Clear focus and hide soft keyboard
+        binding.addBrandEditBrandName.text = null
         val focusedView = activity?.currentFocus
-        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm                                                                                                              = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         focusedView?.clearFocus()
         imm.hideSoftInputFromWindow(focusedView?.windowToken, 0)
-
-        fragmentManager?.commit {
-            setTransition(TRANSIT_FRAGMENT_CLOSE)
-            remove(currentInstance!!)
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

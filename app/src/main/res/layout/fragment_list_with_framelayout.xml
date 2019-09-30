@@ -9,7 +9,7 @@
         android:layout_height="match_parent">
 
         <FrameLayout
-            android:id="@+id/brandlist_addFrag_container"
+            android:id="@+id/list_addFrag_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_standard"
@@ -28,7 +28,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/brandlist_addFrag_container" />
+            app:layout_constraintTop_toBottomOf="@id/list_addFrag_container" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
