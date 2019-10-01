@@ -38,7 +38,7 @@ class AddCategoryFragment : Fragment() {
             context?.toast(getString(R.string.category_cannot_be_empty))
             return
         }
-        val newCategory = CategoryEntry(categoryName)
+        val newCategory = CategoryEntry(categoryName = categoryName)
         //Insert the category by the intermediance of view model
         mViewModel.insertCategory(newCategory)
 

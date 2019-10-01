@@ -99,7 +99,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
                             if (!categoryEntries.isNullOrEmpty()) {
                                 categoryList.clear()
                                 categoryList.add(getString(R.string.select_category))
-                                categoryList.addAll(categoryEntries)
+                                categoryList.addAll(categoryEntries.map { categoryEntry -> categoryEntry.categoryName})
                                 categoryAdapter.notifyDataSetChanged()
                                 val index = categoryList.indexOf(chosenTrain?.categoryName)
                                 binding.categorySpinner.setSelection(index)

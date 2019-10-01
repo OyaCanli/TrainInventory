@@ -9,7 +9,7 @@ import com.canli.oya.traininventoryroom.data.dao.CategoryDao
 import com.canli.oya.traininventoryroom.data.dao.TrainDao
 
 @Database(entities = [TrainEntry::class, BrandEntry::class, CategoryEntry::class],
-        version = 1, exportSchema = false)
+        version = 2, exportSchema = false)
 abstract class TrainDatabase : RoomDatabase() {
 
     abstract fun trainDao(): TrainDao
@@ -26,7 +26,8 @@ abstract class TrainDatabase : RoomDatabase() {
         fun getInstance(context: Context): TrainDatabase {
             return sInstance ?: synchronized(this) {
                     sInstance ?: Room.databaseBuilder(context.applicationContext,
-                            TrainDatabase::class.java, TrainDatabase.DATABASE_NAME)
+                            TrainDatabase::class.java, DATABASE_NAME)
+                            .fallbackToDestructiveMigration()
                             .build()
                             .also { sInstance = it }
                 }

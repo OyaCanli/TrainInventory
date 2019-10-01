@@ -15,8 +15,8 @@ class AddTrainViewModel(private val trainDataSource: TrainDataSource,
 
     val trainBeingModified = ObservableField<TrainEntry>()
 
-    val brandList: Flowable<List<BrandEntry>> = brandDataSource.getAllBrands()
-    val categoryList: Flowable<List<String>> = categoryDataSource.getAllCategories()
+    val brandList = brandDataSource.getAllBrands()
+    val categoryList : Flowable<List<CategoryEntry>> = categoryDataSource.getAllCategories()
 
     var isEdit: Boolean
 

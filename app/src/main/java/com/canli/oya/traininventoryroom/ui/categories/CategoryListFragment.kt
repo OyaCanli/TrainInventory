@@ -43,7 +43,7 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
         get() = Dispatchers.Main + categoryListJob
 
     private lateinit var mAdapter: CategoryAdapter
-    private var mCategories: List<String> = emptyList()
+    private var mCategories: List<CategoryEntry> = emptyList()
 
     private val disposable = CompositeDisposable()
 
@@ -115,7 +115,7 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
                 val position = viewHolder.adapterPosition
 
                 //First take a backup of the category to erase
-                val categoryToErase = CategoryEntry(mCategories[position])
+                val categoryToErase = mCategories[position]
 
                 //Remove the category from the database
                 launch {

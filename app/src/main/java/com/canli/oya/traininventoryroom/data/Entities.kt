@@ -46,6 +46,7 @@ data class BrandEntry(
         var webUrl: String? = null)
 
 
-@Entity(tableName = "categories")
-data class CategoryEntry(@field:PrimaryKey
-                         var categoryName: String)
+@Entity(tableName = "categories", indices = [Index(value = ["categoryName"], unique = true)])
+data class CategoryEntry(
+        @field:PrimaryKey(autoGenerate = true) var categoryId : Int = 0,
+        var categoryName: String)

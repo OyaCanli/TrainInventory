@@ -7,9 +7,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.canli.oya.traininventoryroom.R
+import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.databinding.ItemCategoryBinding
 
-class CategoryAdapter (private val clickListener: CategoryItemClickListener) : ListAdapter<String, CategoryAdapter.ViewHolder>(CategoryDiffCallback()) {
+class CategoryAdapter (private val clickListener: CategoryItemClickListener) : ListAdapter<CategoryEntry, CategoryAdapter.ViewHolder>(CategoryDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder.from(parent)
 
@@ -17,8 +18,8 @@ class CategoryAdapter (private val clickListener: CategoryItemClickListener) : L
 
     class ViewHolder(val binding: ItemCategoryBinding) : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(currentCategory: String?, position: Int, listener : CategoryItemClickListener) {
-            binding.categoryName = currentCategory
+        fun bind(currentCategory: CategoryEntry, position: Int, listener : CategoryItemClickListener) {
+            binding.category = currentCategory
             binding.categoryItemNumber.text = "${position + 1}."
             binding.categoryItemClick = listener
             binding.executePendingBindings()
@@ -39,12 +40,12 @@ class CategoryAdapter (private val clickListener: CategoryItemClickListener) : L
     }
 }
 
-class CategoryDiffCallback : DiffUtil.ItemCallback<String>(){
-    override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+class CategoryDiffCallback : DiffUtil.ItemCallback<CategoryEntry>(){
+    override fun areItemsTheSame(oldItem: CategoryEntry, newItem: CategoryEntry): Boolean {
         return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+    override fun areContentsTheSame(oldItem: CategoryEntry, newItem: CategoryEntry): Boolean {
         return oldItem == newItem
     }
 }

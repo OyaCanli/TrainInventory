@@ -9,7 +9,6 @@ import com.canli.oya.traininventoryroom.data.CategoryDataSource
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.utils.UIState
 import com.canli.oya.traininventoryroom.utils.provideCategoryDataSource
-import io.reactivex.Flowable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -21,7 +20,7 @@ class CategoryViewModel(application: Application) : AndroidViewModel(application
 
     var categoryListUiState = UIState(context.resources.getString(R.string.no_categories_found))
 
-    var categoryList: Flowable<List<String>> = dataSource.getAllCategories()
+    var categoryList = dataSource.getAllCategories()
 
     fun deleteCategory(category: CategoryEntry) {
         viewModelScope.launch(Dispatchers.IO) { dataSource.deleteCategory(category) }

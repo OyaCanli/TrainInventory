@@ -4,8 +4,6 @@ class CategoryDataSource(val database: TrainDatabase) {
 
     fun getAllCategories() = database.categoryDao().allCategories
 
-    suspend fun getCategoryList() = database.categoryDao().getCategoryList()
-
     suspend fun insertCategory(category: CategoryEntry) {
         database.categoryDao().insert(category)
     }

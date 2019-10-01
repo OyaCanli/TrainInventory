@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="categoryName"
-            type="String" />
+            name="category"
+            type="com.canli.oya.traininventoryroom.data.CategoryEntry" />
 
         <variable
             name="categoryItemClick"
@@ -64,7 +64,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_standard"
-                android:text="@{categoryName}"
+                android:text="@{category.categoryName}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/category_item_train_icon"
                 app:layout_constraintStart_toEndOf="@+id/category_item_number"
@@ -78,7 +78,7 @@
                 android:layout_marginEnd="@dimen/margin_standard"
                 android:background="@drawable/button_state_selector"
                 android:contentDescription="@string/cd_category_item_train_btn"
-                android:onClick="@{() ->  categoryItemClick.onCategoryItemClicked(categoryName)}"
+                android:onClick="@{() ->  categoryItemClick.onCategoryItemClicked(category.categoryName)}"
                 android:padding="@dimen/half_padding"
                 android:src="@drawable/ic_train_list_item"
                 app:layout_constraintBottom_toBottomOf="parent"

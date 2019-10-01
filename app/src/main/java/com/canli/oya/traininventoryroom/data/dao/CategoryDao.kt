@@ -9,9 +9,6 @@ import io.reactivex.Flowable
 interface CategoryDao : BaseDao<CategoryEntry> {
 
     @get:Query("SELECT * FROM categories")
-    val allCategories: Flowable<List<String>>
-
-    @Query("SELECT * FROM categories")
-    suspend fun getCategoryList() : List<String>
+    val allCategories: Flowable<List<CategoryEntry>>
 
 }
