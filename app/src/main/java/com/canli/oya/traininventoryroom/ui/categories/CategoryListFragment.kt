@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.ui
+package com.canli.oya.traininventoryroom.ui.categories
 
 import android.graphics.drawable.ShapeDrawable
 import android.os.Bundle
@@ -8,21 +8,20 @@ import android.widget.FrameLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.adapters.CategoryAdapter
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
+import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
 import com.canli.oya.traininventoryroom.utils.CATEGORY_NAME
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
 import com.canli.oya.traininventoryroom.utils.SwipeToDeleteCallback
 import com.canli.oya.traininventoryroom.utils.TRAINS_OF_CATEGORY
-import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -36,7 +35,7 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
 
     private lateinit var binding: BrandCategoryList
 
-    private val mViewModel by activityViewModels<MainViewModel>()
+    private val mViewModel by viewModels<CategoryViewModel>()
 
     private lateinit var categoryListJob: Job
 

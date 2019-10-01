@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.ui
+package com.canli.oya.traininventoryroom.ui.categories
 
 import android.content.Context
 import android.os.Bundle
@@ -8,11 +8,10 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddCategoryBinding
-import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 import org.jetbrains.anko.toast
 
 
@@ -20,7 +19,7 @@ class AddCategoryFragment : Fragment() {
 
     private lateinit var binding: FragmentAddCategoryBinding
 
-    private val mViewModel by activityViewModels<MainViewModel>()
+    private val mViewModel by viewModels<CategoryViewModel>()
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

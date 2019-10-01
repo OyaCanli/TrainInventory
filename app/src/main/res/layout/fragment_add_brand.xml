@@ -10,7 +10,7 @@
             name="isEdit"
             type="boolean" />
 
-        <import type="com.canli.oya.traininventoryroom.ui.AddBrandFragment" />
+        <import type="com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment" />
 
     </data>
 

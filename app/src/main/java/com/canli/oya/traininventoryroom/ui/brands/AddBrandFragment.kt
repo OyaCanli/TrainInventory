@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.ui
+package com.canli.oya.traininventoryroom.ui.brands
 
 import android.app.Activity
 import android.content.Context
@@ -12,14 +12,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddBrandBinding
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
-import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 import com.github.dhaval2404.imagepicker.ImagePicker
 import org.jetbrains.anko.toast
 import timber.log.Timber
@@ -28,7 +27,7 @@ class AddBrandFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentAddBrandBinding
 
-    private val mViewModel by activityViewModels<MainViewModel>()
+    private val mViewModel by viewModels<BrandViewModel>()
 
     private var mContext: Context? = null
     private var mBrandId: Int = 0

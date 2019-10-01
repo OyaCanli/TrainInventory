@@ -11,7 +11,7 @@
 
         <variable
             name="categoryItemClick"
-            type="com.canli.oya.traininventoryroom.adapters.CategoryAdapter.CategoryItemClickListener" />
+            type="com.canli.oya.traininventoryroom.ui.categories.CategoryAdapter.CategoryItemClickListener" />
     </data>
 
     <FrameLayout

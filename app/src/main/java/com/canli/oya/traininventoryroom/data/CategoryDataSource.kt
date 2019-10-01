@@ -1,7 +1,4 @@
-package com.canli.oya.traininventoryroom.data.datasources
-
-import com.canli.oya.traininventoryroom.data.CategoryEntry
-import com.canli.oya.traininventoryroom.data.TrainDatabase
+package com.canli.oya.traininventoryroom.data
 
 class CategoryDataSource(val database: TrainDatabase) {
 

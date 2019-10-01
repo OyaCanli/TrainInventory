@@ -1,10 +1,9 @@
-package com.canli.oya.traininventoryroom.adapters
+package com.canli.oya.traininventoryroom.utils
 
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import com.canli.oya.traininventoryroom.utils.GlideApp
 
 
 @BindingAdapter("imageUrl", "placeholder")

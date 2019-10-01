@@ -1,8 +1,5 @@
-package com.canli.oya.traininventoryroom.data.datasources
+package com.canli.oya.traininventoryroom.data
 
-import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.data.TrainEntry
-import com.canli.oya.traininventoryroom.data.TrainMinimal
 import io.reactivex.Flowable
 
 class TrainDataSource(private val database: TrainDatabase) {

@@ -9,7 +9,7 @@
 
         <variable
             name="brandItemClick"
-            type="com.canli.oya.traininventoryroom.adapters.BrandAdapter.BrandItemClickListener" />
+            type="com.canli.oya.traininventoryroom.ui.brands.BrandAdapter.BrandItemClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.ui
+package com.canli.oya.traininventoryroom.ui.trains
 
 import android.graphics.drawable.ShapeDrawable
 import android.os.Bundle
@@ -7,17 +7,16 @@ import android.view.animation.AnimationUtils
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.adapters.TrainAdapter
 import com.canli.oya.traininventoryroom.data.TrainMinimal
 import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
+import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.utils.*
-import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -30,7 +29,7 @@ import kotlin.coroutines.CoroutineContext
 
 class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, CoroutineScope {
 
-    private val mViewModel by activityViewModels<MainViewModel>()
+    private val mViewModel by viewModels<TrainViewModel>()
 
     private lateinit var trainListJob: Job
 

@@ -1,22 +1,22 @@
-package com.canli.oya.traininventoryroom.viewmodel
+package com.canli.oya.traininventoryroom.ui.addtrain
 
 
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.data.TrainEntry
-import com.canli.oya.traininventoryroom.data.repositories.TrainRepository
+import com.canli.oya.traininventoryroom.data.*
 import io.reactivex.Flowable
 import kotlinx.coroutines.launch
 
-class AddTrainViewModel(private val trainRepo: TrainRepository,
-        private val chosenTrain: TrainEntry?) : ViewModel() {
+class AddTrainViewModel(private val trainDataSource: TrainDataSource,
+                        categoryDataSource : CategoryDataSource,
+                        brandDataSource: BrandDataSource,
+                        private val chosenTrain: TrainEntry?) : ViewModel() {
 
     val trainBeingModified = ObservableField<TrainEntry>()
 
-    val brandList: Flowable<List<BrandEntry>> = trainRepo.getAllBrands()
-    val categoryList: Flowable<List<String>> = trainRepo.getAllCategories()
+    val brandList: Flowable<List<BrandEntry>> = brandDataSource.getAllBrands()
+    val categoryList: Flowable<List<String>> = categoryDataSource.getAllCategories()
 
     var isEdit: Boolean
 
@@ -34,11 +34,11 @@ class AddTrainViewModel(private val trainRepo: TrainRepository,
     }
 
     private fun insertTrain(train: TrainEntry) {
-        viewModelScope.launch { trainRepo.insertTrain(train) }
+        viewModelScope.launch { trainDataSource.insertTrain(train) }
     }
 
     private fun updateTrain(train: TrainEntry) {
-        viewModelScope.launch { trainRepo.updateTrain(train) }
+        viewModelScope.launch { trainDataSource.updateTrain(train) }
     }
 
     var isChanged: Boolean = false

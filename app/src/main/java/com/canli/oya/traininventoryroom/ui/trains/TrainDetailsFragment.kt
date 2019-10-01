@@ -1,17 +1,17 @@
-package com.canli.oya.traininventoryroom.ui
+package com.canli.oya.traininventoryroom.ui.trains
 
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
+import androidx.fragment.app.viewModels
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentTrainDetailsBinding
+import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.utils.CHOSEN_TRAIN
 import com.canli.oya.traininventoryroom.utils.TRAIN_ID
-import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -21,7 +21,7 @@ class TrainDetailsFragment : androidx.fragment.app.Fragment() {
 
     private lateinit var binding: FragmentTrainDetailsBinding
     private lateinit var mChosenTrain: TrainEntry
-    private val mViewModel by activityViewModels<MainViewModel>()
+    private val mViewModel by viewModels<TrainViewModel>()
     private var trainId = 0
 
     private val disposable = CompositeDisposable()

@@ -10,7 +10,7 @@
 
         <variable
             name="trainItemClick"
-            type="com.canli.oya.traininventoryroom.adapters.TrainAdapter.TrainItemClickListener" />
+            type="com.canli.oya.traininventoryroom.ui.trains.TrainAdapter.TrainItemClickListener" />
 
         <import type="com.canli.oya.traininventoryroom.utils.BindingUtils" />
     </data>

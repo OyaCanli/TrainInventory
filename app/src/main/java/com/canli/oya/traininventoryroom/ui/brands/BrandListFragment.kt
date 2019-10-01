@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.ui
+package com.canli.oya.traininventoryroom.ui.brands
 
 import android.content.Intent
 import android.graphics.drawable.ShapeDrawable
@@ -15,11 +15,10 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.adapters.BrandAdapter
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
+import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
 import com.canli.oya.traininventoryroom.utils.*
-import com.canli.oya.traininventoryroom.viewmodel.MainViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -43,7 +42,7 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
 
     private val disposable = CompositeDisposable()
 
-    private val mViewModel by activityViewModels<MainViewModel>()
+    private val mViewModel by viewModels<BrandViewModel>()
 
     var addBrandFragVisible = false
 

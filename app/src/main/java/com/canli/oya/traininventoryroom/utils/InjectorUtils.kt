@@ -1,33 +1,27 @@
 package com.canli.oya.traininventoryroom.utils
 
 import android.content.Context
+import com.canli.oya.traininventoryroom.data.*
+import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFactory
 
-import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.data.TrainEntry
-import com.canli.oya.traininventoryroom.data.datasources.BrandDataSource
-import com.canli.oya.traininventoryroom.data.datasources.CategoryDataSource
-import com.canli.oya.traininventoryroom.data.datasources.TrainDataSource
-import com.canli.oya.traininventoryroom.data.repositories.BrandRepository
-import com.canli.oya.traininventoryroom.data.repositories.CategoryRepository
-import com.canli.oya.traininventoryroom.data.repositories.TrainRepository
-import com.canli.oya.traininventoryroom.viewmodel.AddTrainFactory
 
-fun provideTrainRepo(context: Context): TrainRepository {
-    val db = TrainDatabase.getInstance(context)
-    return TrainRepository(TrainDataSource(db), CategoryDataSource(db), BrandDataSource(db))
+fun provideAddTrainFactory(context: Context, chosenTrain: TrainEntry?) : AddTrainFactory {
+    return AddTrainFactory(provideTrainDataSource(context), provideCategoryDataSource(context), provideBrandDataSource(context), chosenTrain)
 }
 
-fun provideBrandRepo(context: Context): BrandRepository {
-    val db = TrainDatabase.getInstance(context)
-    return BrandRepository(BrandDataSource(db))
+fun provideTrainDataSource(context: Context) : TrainDataSource {
+    return TrainDataSource(provideDatabase(context))
 }
 
-fun provideCategoryRepo(context: Context): CategoryRepository {
-    val db = TrainDatabase.getInstance(context)
-    return CategoryRepository(CategoryDataSource(db))
+fun provideCategoryDataSource(context: Context) : CategoryDataSource {
+    return CategoryDataSource(provideDatabase(context))
 }
 
-fun provideAddTrainFactory(context: Context, chosenTrain: TrainEntry?) : AddTrainFactory{
-    return AddTrainFactory(provideTrainRepo(context), chosenTrain)
+fun provideBrandDataSource(context: Context) : BrandDataSource {
+    return BrandDataSource(provideDatabase(context))
+}
+
+fun provideDatabase(context: Context) : TrainDatabase {
+    return TrainDatabase.getInstance(context)
 }
 

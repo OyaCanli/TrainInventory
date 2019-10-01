@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.canli.oya.traininventoryroom.viewmodel.AddTrainViewModel" />
+            type="com.canli.oya.traininventoryroom.ui.addtrain.AddTrainViewModel" />
 
         <import type="com.canli.oya.traininventoryroom.utils.BindingUtils" />
     </data>

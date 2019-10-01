@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.ui
+package com.canli.oya.traininventoryroom.ui.addtrain
 
 import android.app.Activity
 import android.content.Intent
@@ -15,13 +15,13 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.adapters.CustomSpinAdapter
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
+import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
+import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
 import com.canli.oya.traininventoryroom.utils.CHOSEN_TRAIN
 import com.canli.oya.traininventoryroom.utils.provideAddTrainFactory
-import com.canli.oya.traininventoryroom.viewmodel.AddTrainViewModel
 import com.github.dhaval2404.imagepicker.ImagePicker
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
