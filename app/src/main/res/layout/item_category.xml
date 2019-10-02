@@ -4,101 +4,73 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="category"
-            type="com.canli.oya.traininventoryroom.data.CategoryEntry" />
-
+            type="com.canli.oya.traininventoryroom.data.CategoryEntry"/>
         <variable
             name="categoryItemClick"
             type="com.canli.oya.traininventoryroom.ui.categories.CategoryAdapter.CategoryItemClickListener" />
     </data>
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/item_category_foreground"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="@dimen/half_padding"
+        android:background="@color/window_background">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorAccent">
+        <TextView
+            android:id="@+id/category_item_category_name"
+            style="@style/name_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_standard"
+            android:text="@{category.categoryName}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/category_item_edit_icon"
+            app:layout_constraintStart_toEndOf="@+id/category_item_number"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Vagon" />
 
-            <TextView
-                android:id="@+id/textView20"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="@string/are_you_sure_you_want_to_delete_this_category"
-                android:textColor="@color/colorPrimaryDark"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/item_category_delete_button"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/category_item_train_icon"
+            android:layout_width="@dimen/brand_item_icon_dim"
+            android:layout_height="@dimen/brand_item_icon_dim"
+            android:layout_marginEnd="@dimen/margin_standard"
+            android:background="@drawable/button_state_selector"
+            android:contentDescription="@string/cd_category_item_train_btn"
+            android:onClick="@{(theView) ->  categoryItemClick.onCategoryItemClicked(theView, category)}"
+            android:padding="@dimen/half_padding"
+            android:src="@drawable/ic_train_list_item"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/item_category_delete_button"
-                style="@style/Base.Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_standard"
-                android:layout_marginBottom="8dp"
-                android:text="@string/yes_delete"
-                android:textColor="@color/colorPrimaryDark"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/category_item_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/half_margin"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:textSize="@dimen/largeTextSize"
+            app:layout_constraintBaseline_toBaselineOf="@+id/category_item_category_name"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="1." />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/item_category_foreground"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/window_background">
+        <ImageView
+            android:id="@+id/category_item_edit_icon"
+            android:layout_width="@dimen/brand_item_icon_dim"
+            android:layout_height="@dimen/brand_item_icon_dim"
+            android:layout_marginEnd="@dimen/half_margin"
+            android:background="@drawable/button_state_selector"
+            android:contentDescription="@string/cd_edit_icon"
+            android:onClick="@{(theView) ->  categoryItemClick.onCategoryItemClicked(theView, category)}"
+            android:padding="@dimen/half_padding"
+            app:layout_constraintEnd_toStartOf="@+id/category_item_train_icon"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintTop_toTopOf="@+id/category_item_train_icon"
+            app:srcCompat="@drawable/ic_edit_colored" />
 
-            <TextView
-                android:id="@+id/category_item_category_name"
-                style="@style/name_style"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_standard"
-                android:text="@{category.categoryName}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/category_item_train_icon"
-                app:layout_constraintStart_toEndOf="@+id/category_item_number"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Vagon" />
-
-            <ImageView
-                android:id="@+id/category_item_train_icon"
-                android:layout_width="@dimen/brand_item_icon_dim"
-                android:layout_height="@dimen/brand_item_icon_dim"
-                android:layout_marginEnd="@dimen/margin_standard"
-                android:background="@drawable/button_state_selector"
-                android:contentDescription="@string/cd_category_item_train_btn"
-                android:onClick="@{() ->  categoryItemClick.onCategoryItemClicked(category.categoryName)}"
-                android:padding="@dimen/half_padding"
-                android:src="@drawable/ic_train_list_item"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/category_item_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/half_margin"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:textSize="@dimen/largeTextSize"
-                app:layout_constraintBaseline_toBaselineOf="@+id/category_item_category_name"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:text="1." />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </FrameLayout>
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

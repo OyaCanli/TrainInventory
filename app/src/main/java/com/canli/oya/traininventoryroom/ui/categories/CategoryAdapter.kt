@@ -1,6 +1,7 @@
 package com.canli.oya.traininventoryroom.ui.categories
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
@@ -36,7 +37,7 @@ class CategoryAdapter (private val clickListener: CategoryItemClickListener) : L
     }
 
     interface CategoryItemClickListener {
-        fun onCategoryItemClicked(categoryName: String)
+        fun onCategoryItemClicked(view: View, category: CategoryEntry)
     }
 }
 

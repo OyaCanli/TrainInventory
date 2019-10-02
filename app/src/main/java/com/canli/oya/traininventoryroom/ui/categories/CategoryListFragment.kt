@@ -18,10 +18,7 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
 import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
-import com.canli.oya.traininventoryroom.utils.CATEGORY_NAME
-import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
-import com.canli.oya.traininventoryroom.utils.SwipeToDeleteCallback
-import com.canli.oya.traininventoryroom.utils.TRAINS_OF_CATEGORY
+import com.canli.oya.traininventoryroom.utils.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -174,7 +171,26 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
         }
     }
 
-    override fun onCategoryItemClicked(categoryName: String) {
+    override fun onCategoryItemClicked(view: View, category: CategoryEntry) {
+        when(view.id){
+            R.id.category_item_train_icon -> openTrainsForThisCategory(category.categoryName)
+            R.id.category_item_edit_icon -> editCategory(category)
+        }
+    }
+
+    private fun editCategory(chosenCategory : CategoryEntry) {
+        mViewModel.setChosenCategory(chosenCategory)
+        val addCategoryFrag = AddCategoryFragment()
+        val args = Bundle()
+        args.putString(INTENT_REQUEST_CODE, EDIT_CASE)
+        addCategoryFrag.arguments = args
+        childFragmentManager.commit {
+            setCustomAnimations(R.anim.translate_from_top, 0)
+                    .replace(R.id.list_addFrag_container, addCategoryFrag)
+        }
+    }
+
+    private fun openTrainsForThisCategory(categoryName : String) {
         val trainListFrag = TrainListFragment()
         val args = Bundle()
         args.putString(INTENT_REQUEST_CODE, TRAINS_OF_CATEGORY)
@@ -194,7 +210,6 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
 
     override fun onStop() {
         super.onStop()
-
         // clear all the subscription
         disposable.clear()
     }

@@ -12,8 +12,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
@@ -23,23 +23,18 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import org.jetbrains.anko.toast
 import timber.log.Timber
 
+
 class AddBrandFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentAddBrandBinding
 
-    private val mViewModel by viewModels<BrandViewModel>()
+    private val mViewModel by lazy {
+        ViewModelProviders.of(parentFragment!!).get(BrandViewModel::class.java)
+    }
 
-    private var mContext: Context? = null
     private var mBrandId: Int = 0
-
     private var mLogoUri: Uri? = null
     private var isEditCase: Boolean = false
-
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mContext = context
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
@@ -59,7 +54,6 @@ class AddBrandFragment : Fragment(), View.OnClickListener {
         super.onActivityCreated(savedInstanceState)
         if (arguments?.containsKey(INTENT_REQUEST_CODE) == true) { //This is the "edit" case
             isEditCase = true
-            binding.isEdit = true
             mViewModel.chosenBrand.observe(this@AddBrandFragment, Observer { brandEntry ->
                 brandEntry?.let {
                     binding.chosenBrand = it
@@ -87,7 +81,7 @@ class AddBrandFragment : Fragment(), View.OnClickListener {
         //Get brand name from edit text and verify it is not empty
         val brandName = binding.addBrandEditBrandName.text?.toString()?.trim()
         if(brandName.isNullOrBlank()){
-            context?.toast(getString(R.string.brand_cannot_be_empty))
+            context?.toast(getString(com.canli.oya.traininventoryroom.R.string.brand_cannot_be_empty))
             return
         }
 
@@ -109,7 +103,7 @@ class AddBrandFragment : Fragment(), View.OnClickListener {
             mViewModel.insertBrand(newBrand)
         }
 
-        Toast.makeText(activity, R.string.brand_Saved, Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, com.canli.oya.traininventoryroom.R.string.brand_Saved, Toast.LENGTH_SHORT).show()
 
         //Clear focus and hide soft keyboard
         binding.addBrandEditBrandName.text = null
@@ -132,12 +126,5 @@ class AddBrandFragment : Fragment(), View.OnClickListener {
                     .into(binding.addBrandImage)
             mLogoUri = Uri.fromFile(file)
         }
-
     }
-
-    override fun onDetach() {
-        super.onDetach()
-        mContext = null
-    }
-
 }

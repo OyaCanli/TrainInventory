@@ -2,6 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <variable
+            name="chosenCategory"
+            type="com.canli.oya.traininventoryroom.data.CategoryEntry" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,6 +26,7 @@
             android:layout_marginTop="@dimen/margin_standard"
             android:ems="10"
             android:hint="@string/category_name"
+            android:text="@{chosenCategory.categoryName}"
             android:textColorHint="@color/divider_color"
             android:inputType="textCapWords"
             app:layout_constraintBottom_toBottomOf="parent"

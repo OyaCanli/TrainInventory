@@ -15,4 +15,8 @@ class CategoryDataSource(val database: TrainDatabase) {
     fun isThisCategoryUsed(category: String): Boolean {
         return database.trainDao().isThisCategoryUsed(category)
     }
+
+    suspend fun updateCategory(category: CategoryEntry) {
+        database.categoryDao().update(category)
+    }
 }

@@ -6,12 +6,6 @@
         <variable
             name="chosenBrand"
             type="com.canli.oya.traininventoryroom.data.BrandEntry" />
-        <variable
-            name="isEdit"
-            type="boolean" />
-
-        <import type="com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment" />
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,7 +35,7 @@
             android:layout_marginTop="@dimen/half_margin"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="@{isEdit ? chosenBrand.brandName : null}"
+            android:text="@{chosenBrand.brandName}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView8"
             app:layout_constraintTop_toTopOf="parent" />
@@ -90,7 +84,7 @@
             android:layout_marginTop="@dimen/half_margin"
             android:ems="10"
             android:inputType="textEmailAddress"
-            android:text="@{isEdit ? chosenBrand.webUrl : null}"
+            android:text="@{chosenBrand.webUrl}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView8"
             app:layout_constraintTop_toBottomOf="@+id/addBrand_editBrandName" />

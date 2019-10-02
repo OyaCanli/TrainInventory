@@ -25,13 +25,13 @@ class BrandViewModel(application: Application) : AndroidViewModel(application) {
 
     var brandList: Flowable<List<BrandEntry>> = dataSource.getAllBrands()
 
-    private val mChosenBrand = MutableLiveData<BrandEntry>()
+    private val _chosenBrand = MutableLiveData<BrandEntry>()
 
     val chosenBrand: LiveData<BrandEntry>
-        get() = mChosenBrand
+        get() = _chosenBrand
 
     fun setChosenBrand(chosenBrand: BrandEntry) {
-        mChosenBrand.value = chosenBrand
+        _chosenBrand.value = chosenBrand
     }
 
     fun insertBrand(brand: BrandEntry) {
