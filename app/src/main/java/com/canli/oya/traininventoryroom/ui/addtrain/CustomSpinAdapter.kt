@@ -8,8 +8,8 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.canli.oya.traininventoryroom.R
+import com.canli.oya.traininventoryroom.common.GlideApp
 import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.utils.GlideApp
 
 class CustomSpinAdapter(private val mContext: Context, var mBrandList: List<BrandEntry>?) : BaseAdapter() {
 

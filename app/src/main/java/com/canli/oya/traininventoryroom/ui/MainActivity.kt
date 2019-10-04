@@ -11,13 +11,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import com.canli.oya.traininventoryroom.R
+import com.canli.oya.traininventoryroom.common.ALL_TRAIN
+import com.canli.oya.traininventoryroom.common.INTENT_REQUEST_CODE
 import com.canli.oya.traininventoryroom.databinding.ActivityMainBinding
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
 import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
 import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
-import com.canli.oya.traininventoryroom.utils.ALL_TRAIN
-import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 

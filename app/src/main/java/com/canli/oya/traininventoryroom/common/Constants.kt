@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.utils
+package com.canli.oya.traininventoryroom.common
 
     //Request codes:
     const val REQUEST_IMAGE_CAPTURE = 1

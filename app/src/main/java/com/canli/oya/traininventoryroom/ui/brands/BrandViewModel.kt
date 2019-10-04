@@ -7,10 +7,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.canli.oya.traininventoryroom.R
+import com.canli.oya.traininventoryroom.common.UIState
+import com.canli.oya.traininventoryroom.common.provideBrandDataSource
 import com.canli.oya.traininventoryroom.data.BrandDataSource
 import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.utils.UIState
-import com.canli.oya.traininventoryroom.utils.provideBrandDataSource
 import io.reactivex.Flowable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

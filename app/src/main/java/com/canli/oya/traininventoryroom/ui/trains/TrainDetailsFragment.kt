@@ -7,11 +7,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import com.canli.oya.traininventoryroom.R
+import com.canli.oya.traininventoryroom.common.CHOSEN_TRAIN
+import com.canli.oya.traininventoryroom.common.TRAIN_ID
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentTrainDetailsBinding
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
-import com.canli.oya.traininventoryroom.utils.CHOSEN_TRAIN
-import com.canli.oya.traininventoryroom.utils.TRAIN_ID
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.utils
+package com.canli.oya.traininventoryroom.common
 
 import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.module.AppGlideModule

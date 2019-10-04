@@ -8,7 +8,7 @@
             name="chosenTrain"
             type="com.canli.oya.traininventoryroom.data.TrainEntry" />
 
-        <import type="com.canli.oya.traininventoryroom.utils.BindingUtils" />
+        <import type="com.canli.oya.traininventoryroom.common.BindingUtils" />
     </data>
 
     <ScrollView

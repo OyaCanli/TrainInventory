@@ -1,6 +1,6 @@
 @file:JvmName("BindingUtils")
 
-package com.canli.oya.traininventoryroom.utils
+package com.canli.oya.traininventoryroom.common
 
 fun encloseInParenthesis(category: String?): String? {
     return category?.let {"($it)"}

@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.utils
+package com.canli.oya.traininventoryroom.common
 
 import android.graphics.drawable.Drawable
 import android.view.View

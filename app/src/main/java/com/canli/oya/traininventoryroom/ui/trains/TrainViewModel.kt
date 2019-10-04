@@ -5,11 +5,11 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.canli.oya.traininventoryroom.R
+import com.canli.oya.traininventoryroom.common.UIState
+import com.canli.oya.traininventoryroom.common.provideTrainDataSource
 import com.canli.oya.traininventoryroom.data.TrainDataSource
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.TrainMinimal
-import com.canli.oya.traininventoryroom.utils.UIState
-import com.canli.oya.traininventoryroom.utils.provideTrainDataSource
 import io.reactivex.Flowable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

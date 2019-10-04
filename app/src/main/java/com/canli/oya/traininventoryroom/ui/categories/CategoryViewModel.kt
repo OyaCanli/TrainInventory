@@ -7,10 +7,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.canli.oya.traininventoryroom.R
+import com.canli.oya.traininventoryroom.common.UIState
+import com.canli.oya.traininventoryroom.common.provideCategoryDataSource
 import com.canli.oya.traininventoryroom.data.CategoryDataSource
 import com.canli.oya.traininventoryroom.data.CategoryEntry
-import com.canli.oya.traininventoryroom.utils.UIState
-import com.canli.oya.traininventoryroom.utils.provideCategoryDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber

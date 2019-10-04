@@ -8,7 +8,7 @@
             name="viewModel"
             type="com.canli.oya.traininventoryroom.ui.addtrain.AddTrainViewModel" />
 
-        <import type="com.canli.oya.traininventoryroom.utils.BindingUtils" />
+        <import type="com.canli.oya.traininventoryroom.common.BindingUtils" />
     </data>
 
     <androidx.core.widget.NestedScrollView
