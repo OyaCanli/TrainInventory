@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -47,7 +48,7 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
 
     private val mViewModel by viewModels<BrandViewModel>()
 
-    var addBrandFragVisible = false
+    private var addMenuItem : MenuItem? = null
 
     init {
         retainInstance = true
@@ -137,6 +138,14 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
                 }
             }
         }).attachToRecyclerView(binding.includedList.list)
+
+        mViewModel.isChildFragVisible.observe(this, Observer {
+            if(it) {
+                addMenuItem?.setIcon(R.drawable.ic_cancel)
+            } else {
+                addMenuItem?.setIcon(R.drawable.ic_add_light)
+            }
+        })
     }
 
     private fun openAddBrandFragment() {
@@ -145,23 +154,21 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
             setCustomAnimations(R.anim.translate_from_top, 0)
                     .replace(R.id.list_addFrag_container, addBrandFrag)
         }
+        mViewModel.setIsChildFragVisible(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_add_item, menu)
+        addMenuItem = menu.getItem(0)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_add) {
-            if(!addBrandFragVisible) {
+            if(mViewModel.isChildFragVisible.value == false) {
                 openAddBrandFragment()
-                addBrandFragVisible = true
-                item.setIcon(R.drawable.ic_cancel)
             } else {
                 removeAddBrandFragment()
-                addBrandFragVisible = false
-                item.setIcon(R.drawable.ic_add_light)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -171,8 +178,9 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
         val childFrag = childFragmentManager.findFragmentById(R.id.list_addFrag_container)
         childFragmentManager.commit {
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-            remove(childFrag!!)
+            childFrag?.let { remove(it) }
         }
+        mViewModel.setIsChildFragVisible(false)
     }
 
     override fun onBrandItemClicked(view: View, clickedBrand: BrandEntry) {
@@ -189,11 +197,14 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
         val args = Bundle()
         args.putString(INTENT_REQUEST_CODE, EDIT_CASE)
         addBrandFrag.arguments = args
+        mViewModel.setIsChildFragVisible(true)
         childFragmentManager.commit {
             setCustomAnimations(R.anim.translate_from_top, 0)
                     .replace(R.id.list_addFrag_container, addBrandFrag)
         }
+
     }
+
 
     private fun showTrainsFromThisBrand(clickedBrand: BrandEntry) {
         val trainListFrag = TrainListFragment()

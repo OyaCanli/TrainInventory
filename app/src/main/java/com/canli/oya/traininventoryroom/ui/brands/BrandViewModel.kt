@@ -14,6 +14,7 @@ import com.canli.oya.traininventoryroom.utils.provideBrandDataSource
 import io.reactivex.Flowable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class BrandViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -24,6 +25,19 @@ class BrandViewModel(application: Application) : AndroidViewModel(application) {
     var brandListUiState : UIState = UIState(context.resources.getString(R.string.no_brands_found))
 
     var brandList: Flowable<List<BrandEntry>> = dataSource.getAllBrands()
+
+    private var _isChildFragVisible = MutableLiveData<Boolean>()
+
+    init {
+        _isChildFragVisible.value = false
+    }
+
+    var isChildFragVisible : LiveData<Boolean> = _isChildFragVisible
+
+    fun setIsChildFragVisible(isVisible : Boolean) {
+        _isChildFragVisible.value = isVisible
+        Timber.d("isChildFragVisible is set to $isVisible")
+    }
 
     private val _chosenBrand = MutableLiveData<BrandEntry>()
 

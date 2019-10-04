@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -103,12 +102,16 @@ class AddBrandFragment : Fragment(), View.OnClickListener {
             mViewModel.insertBrand(newBrand)
         }
 
-        Toast.makeText(activity, com.canli.oya.traininventoryroom.R.string.brand_Saved, Toast.LENGTH_SHORT).show()
+        context?.toast(R.string.brand_Saved)
 
+        clearFocusAndHideSoftKeyboard()
+    }
+
+    private fun clearFocusAndHideSoftKeyboard() {
         //Clear focus and hide soft keyboard
         binding.addBrandEditBrandName.text = null
         val focusedView = activity?.currentFocus
-        val imm                                                                                                              = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         focusedView?.clearFocus()
         imm.hideSoftInputFromWindow(focusedView?.windowToken, 0)
     }

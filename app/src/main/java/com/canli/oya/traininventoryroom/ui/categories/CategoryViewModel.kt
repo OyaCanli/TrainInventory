@@ -13,6 +13,7 @@ import com.canli.oya.traininventoryroom.utils.UIState
 import com.canli.oya.traininventoryroom.utils.provideCategoryDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class CategoryViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -25,6 +26,19 @@ class CategoryViewModel(application: Application) : AndroidViewModel(application
     var categoryList = dataSource.getAllCategories()
 
     private val _chosenCategory = MutableLiveData<CategoryEntry?>()
+
+    private var _isChildFragVisible = MutableLiveData<Boolean>()
+
+    init {
+        _isChildFragVisible.value = false
+    }
+
+    var isChildFragVisible : LiveData<Boolean> = _isChildFragVisible
+
+    fun setIsChildFragVisible(isVisible : Boolean) {
+        _isChildFragVisible.value = isVisible
+        Timber.d("isChildFragVisible is set to $isVisible")
+    }
 
     val chosenCategory: LiveData<CategoryEntry?>
         get() = _chosenCategory
