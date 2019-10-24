@@ -1,19 +1,23 @@
 package com.canli.oya.traininventoryroom.ui.brands
 
 import android.content.Intent
+import android.graphics.drawable.Animatable2
+import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.ShapeDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
+import androidx.annotation.DrawableRes
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -47,8 +51,6 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
     private val disposable = CompositeDisposable()
 
     private val mViewModel by viewModels<BrandViewModel>()
-
-    private var addMenuItem : MenuItem? = null
 
     init {
         retainInstance = true
@@ -91,8 +93,8 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
                         { brandEntries ->
                             if (brandEntries.isNullOrEmpty()) {
                                 mViewModel.brandListUiState.showEmpty = true
-                                val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
-                                binding.includedList.emptyImage.startAnimation(animation)
+                                val slideAnim = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
+                                binding.includedList.emptyImage.startAnimation(slideAnim)
                             } else {
                                 Timber.d("fragment_list size : ${brandEntries.size}")
                                 mAdapter.submitList(brandEntries)
@@ -138,14 +140,40 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
                 }
             }
         }).attachToRecyclerView(binding.includedList.list)
+    }
 
-        mViewModel.isChildFragVisible.observe(this, Observer {
-            if(it) {
-                addMenuItem?.setIcon(R.drawable.ic_cancel)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_add_item, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_add) {
+            val icon : Int = if (mViewModel.isChildFragVisible.value == false) {
+                openAddBrandFragment()
+                R.drawable.cross_to_plus_avd
             } else {
-                addMenuItem?.setIcon(R.drawable.ic_add_light)
+                removeAddBrandFragment()
+                R.drawable.plus_to_cross_avd
             }
-        })
+            startAnimationOnMenuItem(item, icon)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun startAnimationOnMenuItem(item: MenuItem, @DrawableRes iconRes : Int) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            val avd: AnimatedVectorDrawable = item.icon as AnimatedVectorDrawable
+            avd.clearAnimationCallbacks()
+            avd.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+                override fun onAnimationStart(drawable: Drawable) {}
+
+                override fun onAnimationEnd(drawable: Drawable) {
+                    item.setIcon(iconRes)
+                }
+            })
+            avd.start()
+        }
     }
 
     private fun openAddBrandFragment() {
@@ -155,23 +183,6 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
                     .replace(R.id.list_addFrag_container, addBrandFrag)
         }
         mViewModel.setIsChildFragVisible(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_add_item, menu)
-        addMenuItem = menu.getItem(0)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_add) {
-            if(mViewModel.isChildFragVisible.value == false) {
-                openAddBrandFragment()
-            } else {
-                removeAddBrandFragment()
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun removeAddBrandFragment() {
@@ -202,9 +213,7 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
             setCustomAnimations(R.anim.translate_from_top, 0)
                     .replace(R.id.list_addFrag_container, addBrandFrag)
         }
-
     }
-
 
     private fun showTrainsFromThisBrand(clickedBrand: BrandEntry) {
         val trainListFrag = TrainListFragment()

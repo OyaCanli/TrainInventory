@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_add"
-        android:icon="@drawable/ic_add_light"
+        android:icon="@drawable/plus_to_cross_avd"
         android:title="@string/add"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always"/>
 </menu>

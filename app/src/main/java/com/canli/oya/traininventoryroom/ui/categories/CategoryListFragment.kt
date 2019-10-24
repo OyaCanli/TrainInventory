@@ -1,16 +1,20 @@
 package com.canli.oya.traininventoryroom.ui.categories
 
+import android.graphics.drawable.Animatable2
+import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.ShapeDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
+import androidx.annotation.DrawableRes
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -44,10 +48,6 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
     private var mCategories: List<CategoryEntry> = emptyList()
 
     private val disposable = CompositeDisposable()
-
-    var addCategoryFragVisible = false
-
-    private var addMenuItem : MenuItem? = null
 
     init {
         retainInstance = true
@@ -136,32 +136,40 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
                 }
             }
         }).attachToRecyclerView(binding.includedList.list)
-
-        mViewModel.isChildFragVisible.observe(this, Observer {
-            Timber.d("value of isChildFragVisible changed. new value $it")
-            if(it) {
-                addMenuItem?.setIcon(R.drawable.ic_cancel)
-            } else {
-                addMenuItem?.setIcon(R.drawable.ic_add_light)
-            }
-        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_add_item, menu)
-        addMenuItem = menu.getItem(0)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_add) {
-            if(mViewModel.isChildFragVisible.value == false) {
+            val icon : Int = if (mViewModel.isChildFragVisible.value == false) {
                 openAddCategoryFragment()
+                R.drawable.cross_to_plus_avd
             } else {
                 removeAddCategoryFragment()
+                R.drawable.plus_to_cross_avd
             }
+            startAnimationOnMenuItem(item, icon)
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun startAnimationOnMenuItem(item: MenuItem, @DrawableRes iconRes : Int) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            val avd: AnimatedVectorDrawable = item.icon as AnimatedVectorDrawable
+            avd.clearAnimationCallbacks()
+            avd.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+                override fun onAnimationStart(drawable: Drawable) {}
+
+                override fun onAnimationEnd(drawable: Drawable) {
+                    item.setIcon(iconRes)
+                }
+            })
+            avd.start()
+        }
     }
 
     private fun removeAddCategoryFragment() {

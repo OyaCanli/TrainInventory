@@ -1,34 +1,40 @@
 package com.canli.oya.traininventoryroom.data
 
-import io.reactivex.Flowable
+import androidx.lifecycle.LiveData
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
+
+const val TRAINS_PAGE_SIZE = 15
 
 class TrainDataSource(private val database: TrainDatabase) {
 
-    fun getAllTrains()=  database.trainDao().allTrains
+    fun getAllTrains() : LiveData<PagedList<TrainMinimal>> {
+        val factory = database.trainDao().allTrains
+        return LivePagedListBuilder(factory, TRAINS_PAGE_SIZE).build()
+    }
 
     fun getChosenTrainLiveData(trainId : Int) = database.trainDao().getChosenTrainLiveData(trainId)
 
-    suspend fun insertTrain(train: TrainEntry) {
-        database.trainDao().insert(train)
+    suspend fun insertTrain(train: TrainEntry) = database.trainDao().insert(train)
+
+    suspend fun updateTrain(train: TrainEntry) = database.trainDao().update(train)
+
+    suspend fun deleteTrain(train: TrainEntry) = database.trainDao().delete(train)
+
+    fun getTrainsFromThisBrand(brandName: String): LiveData<PagedList<TrainMinimal>> {
+        val factory = database.trainDao().getTrainsFromThisBrand(brandName)
+        return LivePagedListBuilder(factory, TRAINS_PAGE_SIZE).build()
     }
 
-    suspend fun updateTrain(train: TrainEntry) {
-        database.trainDao().update(train)
+    fun getTrainsFromThisCategory(category: String) : LiveData<PagedList<TrainMinimal>> {
+        val factory = (database.trainDao().getTrainsFromThisCategory(category))
+        return LivePagedListBuilder(factory, TRAINS_PAGE_SIZE).build()
     }
 
-    suspend fun deleteTrain(train: TrainEntry) {
-        database.trainDao().delete(train)
+    fun searchInTrains(query: String): LiveData<PagedList<TrainMinimal>> {
+        val factory = database.trainDao().searchInTrains(query)
+        return LivePagedListBuilder(factory, TRAINS_PAGE_SIZE).build()
     }
 
-    fun getTrainsFromThisBrand(brandName: String): Flowable<List<TrainMinimal>> {
-        return database.trainDao().getTrainsFromThisBrand(brandName)
-    }
-
-    fun getTrainsFromThisCategory(category: String): Flowable<List<TrainMinimal>> {
-        return database.trainDao().getTrainsFromThisCategory(category)
-    }
-
-    suspend fun searchInTrains(query: String): List<TrainMinimal> {
-        return database.trainDao().searchInTrains(query)
-    }
 }
+

@@ -9,10 +9,7 @@ import com.canli.oya.traininventoryroom.common.UIState
 import com.canli.oya.traininventoryroom.common.provideTrainDataSource
 import com.canli.oya.traininventoryroom.data.TrainDataSource
 import com.canli.oya.traininventoryroom.data.TrainEntry
-import com.canli.oya.traininventoryroom.data.TrainMinimal
-import io.reactivex.Flowable
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class TrainViewModel(application: Application) : AndroidViewModel(application) {
@@ -25,7 +22,7 @@ class TrainViewModel(application: Application) : AndroidViewModel(application) {
 
     var trainList = dataSource.getAllTrains()
 
-    fun getChosenTrain(trainId: Int): Flowable<TrainEntry> = dataSource.getChosenTrainLiveData(trainId)
+    fun getChosenTrain(trainId: Int) = dataSource.getChosenTrainLiveData(trainId)
 
     fun deleteTrain(train: TrainEntry) {
         viewModelScope.launch(Dispatchers.IO) { dataSource.deleteTrain(train) }
@@ -36,8 +33,5 @@ class TrainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getTrainsFromThisCategory(category: String) = dataSource.getTrainsFromThisCategory(category)
 
-    suspend fun searchInTrains(query: String): List<TrainMinimal> {
-        val searchResults = viewModelScope.async { dataSource.searchInTrains(query) }
-        return searchResults.await()
-    }
+    fun searchInTrains(query: String) = dataSource.searchInTrains(query)
 }

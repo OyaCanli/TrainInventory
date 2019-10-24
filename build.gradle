@@ -13,6 +13,7 @@ buildscript {
         coroutinesVersion = '1.1.1'
         anko_version = '0.10.8'
         dagger_version = '2.24'
+        paging_version = '2.1.0'
     }
 
     repositories {

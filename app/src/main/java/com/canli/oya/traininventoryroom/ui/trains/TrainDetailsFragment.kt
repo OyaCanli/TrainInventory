@@ -6,16 +6,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.CHOSEN_TRAIN
 import com.canli.oya.traininventoryroom.common.TRAIN_ID
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentTrainDetailsBinding
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
-import timber.log.Timber
 
 class TrainDetailsFragment : androidx.fragment.app.Fragment() {
 
@@ -39,22 +37,12 @@ class TrainDetailsFragment : androidx.fragment.app.Fragment() {
 
         trainId = arguments?.getInt(TRAIN_ID) ?: 0
 
-        disposable.add(mViewModel.getChosenTrain(trainId).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        //onNext
-                        {trainEntry ->
-                            trainEntry?.let {
-                                binding.chosenTrain = it
-                                mChosenTrain = it
-                                activity?.title = it.trainName
-                            }
-                        },
-                        // onError
-                        { error ->
-                            Timber.e("Unable to get trains for this category ${error.message}")
-                        })
-        )
+        mViewModel.getChosenTrain(trainId).observe(this, Observer { trainEntry ->
+            trainEntry?.let {
+                binding.chosenTrain = it
+                mChosenTrain = it
+                activity?.title = it.trainName
+            } })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

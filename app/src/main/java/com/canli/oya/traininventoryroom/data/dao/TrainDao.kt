@@ -1,19 +1,20 @@
 package com.canli.oya.traininventoryroom.data.dao
 
+import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Query
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.TrainMinimal
-import io.reactivex.Flowable
 
 @Dao
 interface TrainDao : BaseDao<TrainEntry>{
 
     @get:Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains")
-    val allTrains: Flowable<List<TrainMinimal>>
+    val allTrains: DataSource.Factory<Int, TrainMinimal>
 
     @Query("SELECT * FROM trains WHERE trainId = :id")
-    fun getChosenTrainLiveData(id: Int): Flowable<TrainEntry>
+    fun getChosenTrainLiveData(id: Int): LiveData<TrainEntry>
 
     @Query("SELECT 1 FROM trains WHERE brandName = :brandName")
     fun isThisBrandUsed(brandName: String): Boolean
@@ -22,12 +23,12 @@ interface TrainDao : BaseDao<TrainEntry>{
     fun isThisCategoryUsed(categoryName: String): Boolean
 
     @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE brandName = :brandName")
-    fun getTrainsFromThisBrand(brandName: String): Flowable<List<TrainMinimal>>
+    fun getTrainsFromThisBrand(brandName: String): DataSource.Factory<Int, TrainMinimal>
 
     @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE categoryName = :categoryName")
-    fun getTrainsFromThisCategory(categoryName: String): Flowable<List<TrainMinimal>>
+    fun getTrainsFromThisCategory(categoryName: String): DataSource.Factory<Int, TrainMinimal>
 
     @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE (trainName LIKE '%' || :query || '%') " + "OR (modelReference LIKE '%' || :query || '%') OR (description LIKE '%' || :query || '%')")
-    suspend fun searchInTrains(query: String): List<TrainMinimal>
+    fun searchInTrains(query: String): DataSource.Factory<Int, TrainMinimal>
 
 }
