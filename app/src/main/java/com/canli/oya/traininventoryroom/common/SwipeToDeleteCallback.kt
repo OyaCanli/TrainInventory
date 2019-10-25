@@ -17,7 +17,7 @@ abstract class SwipeToDeleteCallback(val context : Context) : ItemTouchHelper.Si
 
     // we want to cache these and not allocate anything repeatedly in the onChildDraw method
     private var background: ColorDrawable = ColorDrawable(context.resources.getColor(R.color.colorAccent))
-    private val deleteIcon: Drawable = ContextCompat.getDrawable(context, R.drawable.ic_baseline_delete)!!
+    private val deleteIcon: Drawable = ContextCompat.getDrawable(context, R.drawable.ic_delete)!!
     private val deleteIconMargin = context.resources.getDimension(R.dimen.half_margin)
     internal var initiated: Boolean = false
 

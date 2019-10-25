@@ -49,6 +49,8 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
 
     private val disposable = CompositeDisposable()
 
+    private var addMenuItem: MenuItem? = null
+
     init {
         retainInstance = true
     }
@@ -92,6 +94,7 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
                                 mViewModel.categoryListUiState.showEmpty = true
                                 val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
                                 binding.includedList.emptyImage.startAnimation(animation)
+                                blinkAddMenuItem()
                             } else {
                                 mAdapter.submitList(categoryEntries)
                                 mCategories = categoryEntries
@@ -138,19 +141,36 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
         }).attachToRecyclerView(binding.includedList.list)
     }
 
+    private fun blinkAddMenuItem() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            addMenuItem?.setIcon(R.drawable.avd_blinking_plus)
+            val blinkingAnim = addMenuItem?.icon as AnimatedVectorDrawable
+            blinkingAnim.clearAnimationCallbacks()
+            blinkingAnim.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+                override fun onAnimationStart(drawable: Drawable) {}
+
+                override fun onAnimationEnd(drawable: Drawable) {
+                    addMenuItem?.setIcon(R.drawable.avd_plus_to_cross)
+                }
+            })
+            blinkingAnim.start()
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_add_item, menu)
+        addMenuItem = menu.getItem(0)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_add) {
             val icon : Int = if (mViewModel.isChildFragVisible.value == false) {
                 openAddCategoryFragment()
-                R.drawable.cross_to_plus_avd
+                R.drawable.avd_cross_to_plus
             } else {
                 removeAddCategoryFragment()
-                R.drawable.plus_to_cross_avd
+                R.drawable.avd_plus_to_cross
             }
             startAnimationOnMenuItem(item, icon)
         }

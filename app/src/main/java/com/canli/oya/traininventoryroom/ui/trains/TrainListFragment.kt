@@ -1,6 +1,10 @@
 package com.canli.oya.traininventoryroom.ui.trains
 
+import android.graphics.drawable.Animatable2
+import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.ShapeDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.view.animation.AnimationUtils
@@ -36,6 +40,8 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
     private lateinit var binding: FragmentListBinding
     private lateinit var mAdapter: TrainAdapter
     private var mTrainList: PagedList<TrainMinimal>? = null
+
+    private var addMenuItem: MenuItem? = null
 
     init {
         retainInstance = true
@@ -91,23 +97,40 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
                     //If the fragment_list is going to be use for showing all trains, which is the default behaviour
                     activity?.title = getString(R.string.all_trains)
                     mViewModel.trainList.observe(this@TrainListFragment, Observer { trainEntries ->
-                        evaluateResults(trainEntries, getString(R.string.no_trains_found))
+                        evaluateResults(trainEntries, getString(R.string.no_trains_found), true)
                     })
                 }
             }
         }
     }
 
-
-    private fun evaluateResults(trainEntries: PagedList<TrainMinimal>?, message: String) {
+    private fun evaluateResults(trainEntries: PagedList<TrainMinimal>?, message: String, noTrain : Boolean = false) {
         if (trainEntries.isNullOrEmpty()) {
             mViewModel.trainListUiState.emptyMessage = message
             mViewModel.trainListUiState.showEmpty = true
             animateTrainLogo()
+            if(noTrain) {
+                blinkAddMenuItem()
+            }
         } else {
             mAdapter.submitList(trainEntries)
             mTrainList = trainEntries
             mViewModel.trainListUiState.showList = true
+        }
+    }
+
+    private fun blinkAddMenuItem() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            val blinkingAnim = addMenuItem?.icon as AnimatedVectorDrawable
+            blinkingAnim.clearAnimationCallbacks()
+            blinkingAnim.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+                override fun onAnimationStart(drawable: Drawable) {}
+
+                override fun onAnimationEnd(drawable: Drawable) {
+                    blinkingAnim.reset()
+                }
+            })
+            blinkingAnim.start()
         }
     }
 
@@ -126,6 +149,7 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_search_and_add, menu)
+        addMenuItem = menu.findItem(R.id.action_add)
         val searchView = menu.findItem(R.id.action_search).actionView as SearchView
         //added filter to fragment_list (dynamic change input text)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
