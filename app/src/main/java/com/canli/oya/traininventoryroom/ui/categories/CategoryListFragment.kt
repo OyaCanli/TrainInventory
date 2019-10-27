@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -50,6 +51,8 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
     private val disposable = CompositeDisposable()
 
     private var addMenuItem: MenuItem? = null
+
+    private var addFragVisible = false
 
     init {
         retainInstance = true
@@ -94,7 +97,9 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
                                 mViewModel.categoryListUiState.showEmpty = true
                                 val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
                                 binding.includedList.emptyImage.startAnimation(animation)
-                                blinkAddMenuItem()
+                                if(!addFragVisible) {
+                                    blinkAddMenuItem()
+                                }
                             } else {
                                 mAdapter.submitList(categoryEntries)
                                 mCategories = categoryEntries
@@ -109,6 +114,10 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
         )
 
         activity?.title = getString(R.string.all_categories)
+
+        mViewModel.isChildFragVisible.observe(this, Observer { isChildFragVisible ->
+            addFragVisible = isChildFragVisible
+        })
 
         //This part is for providing swipe-to-delete functionality, as well as a snack bar to undo deleting
         val rootView = activity!!.findViewById<FrameLayout>(R.id.container)
@@ -150,7 +159,9 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
                 override fun onAnimationStart(drawable: Drawable) {}
 
                 override fun onAnimationEnd(drawable: Drawable) {
-                    addMenuItem?.setIcon(R.drawable.avd_plus_to_cross)
+                    if(!addFragVisible){
+                        addMenuItem?.setIcon(R.drawable.avd_plus_to_cross)
+                    }
                 }
             })
             blinkingAnim.start()
@@ -161,6 +172,9 @@ class CategoryListFragment : Fragment(), CategoryAdapter.CategoryItemClickListen
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_add_item, menu)
         addMenuItem = menu.getItem(0)
+        if(addFragVisible){
+            addMenuItem?.setIcon((R.drawable.avd_cross_to_plus))
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

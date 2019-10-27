@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -53,6 +54,8 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
     private val mViewModel by viewModels<BrandViewModel>()
 
     private var addMenuItem: MenuItem? = null
+
+    private var addFragVisible = false
 
     init {
         retainInstance = true
@@ -97,7 +100,9 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
                                 mViewModel.brandListUiState.showEmpty = true
                                 val slideAnim = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
                                 binding.includedList.emptyImage.startAnimation(slideAnim)
-                                blinkAddMenuItem()
+                                if(!addFragVisible) {
+                                    blinkAddMenuItem()
+                                }
                             } else {
                                 Timber.d("fragment_list size : ${brandEntries.size}")
                                 mAdapter.submitList(brandEntries)
@@ -112,6 +117,10 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
                 ))
 
         activity?.title = getString(R.string.all_brands)
+
+        mViewModel.isChildFragVisible.observe(this, Observer { isChildFragVisible ->
+            addFragVisible = isChildFragVisible
+        })
 
         val rootView = activity!!.findViewById<FrameLayout>(R.id.container)
         ItemTouchHelper(object : SwipeToDeleteCallback(requireContext()) {
@@ -149,6 +158,9 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_add_item, menu)
         addMenuItem = menu.getItem(0)
+        if(addFragVisible){
+            addMenuItem?.setIcon((R.drawable.avd_cross_to_plus))
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -189,7 +201,9 @@ class BrandListFragment : Fragment(), BrandAdapter.BrandItemClickListener, Corou
                 override fun onAnimationStart(drawable: Drawable) {}
 
                 override fun onAnimationEnd(drawable: Drawable) {
-                    addMenuItem?.setIcon(R.drawable.avd_plus_to_cross)
+                    if(!addFragVisible){
+                        addMenuItem?.setIcon(R.drawable.avd_plus_to_cross)
+                    }
                 }
             })
             blinkingAnim.start()
