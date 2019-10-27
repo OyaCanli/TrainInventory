@@ -86,9 +86,11 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     private fun hideOrShowBottomNavigation(currentFrag: Fragment?) {
         if (currentFrag is AddTrainFragment) {
             binding.navigation.visibility = View.GONE
+            binding.navigationDecoration.visibility = View.GONE
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
         } else {
             binding.navigation.visibility = View.VISIBLE
+            binding.navigationDecoration.visibility = View.VISIBLE
             supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
     }

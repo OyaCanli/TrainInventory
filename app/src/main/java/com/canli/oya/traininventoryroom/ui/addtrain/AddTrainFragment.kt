@@ -2,6 +2,7 @@ package com.canli.oya.traininventoryroom.ui.addtrain
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -47,6 +48,8 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
 
     private lateinit var categoryAdapter: ArrayAdapter<String>
     private lateinit var brandAdapter: CustomSpinAdapter
+
+    private var saveMenuItem : MenuItem? = null
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -155,12 +158,17 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_with_save, menu)
+        saveMenuItem = menu.findItem(R.id.action_save)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_save -> saveTrain()
-            android.R.id.home -> activity?.onBackPressed()
+            android.R.id.home -> {
+                val anim = saveMenuItem?.icon as AnimatedVectorDrawable
+                anim.start()
+                activity?.onBackPressed()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
