@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BottomViewDecoration">
+        <attr name="colorSelected" format="color" />
+        <attr name="colorInactive" format="color" />
+        <attr name="menuItemCount" format="integer"/>
+    </declare-styleable>
+</resources>

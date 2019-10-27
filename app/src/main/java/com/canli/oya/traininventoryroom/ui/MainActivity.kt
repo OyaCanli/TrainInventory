@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         return true
     }
 
-    private fun hideOrShowBottomNavigation(currentFrag: androidx.fragment.app.Fragment?) {
+    private fun hideOrShowBottomNavigation(currentFrag: Fragment?) {
         if (currentFrag is AddTrainFragment) {
             binding.navigation.visibility = View.GONE
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -112,6 +112,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             else -> 2
         }
         binding.navigation.menu.getItem(itemNo).isChecked = true
+        binding.navigationDecoration.setSelected(itemNo)
     }
 
     override fun onBackPressed() {
