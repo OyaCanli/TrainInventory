@@ -1,42 +1,79 @@
 <resources>
     <string name="app_name">Train Inventory</string>
+
     <string name="trains">Trains</string>
     <string name="brands">Brands</string>
     <string name="categories">Categories</string>
+    <string name="all_brands">All Brands</string>
+    <string name="add_train">Add Train</string>
+    <string name="all_categories">All Categories</string>
+    <string name="trains_of_the_brand">Trains of the brand %1$s</string>
+    <string name="all_from_this_Category">All %1$ss</string>
+
+    <!-- Details and Add Train screen -->
     <string name="category">Category:</string>
-    <string name="no_trains_found">No trains found. Click on + button to add a new train.</string>
     <string name="brand">Brand:</string>
     <string name="reference">Reference:</string>
     <string name="name">Name:</string>
     <string name="quantity">Quantity:</string>
     <string name="add_image">Add image:</string>
-    <string name="save">Save</string>
     <string name="description">Description:</string>
     <string name="location">Location:</string>
-    <string name="quantity_should_be_positive">Quantity should be a positive integer</string>
     <string name="all_trains">All Trains</string>
     <string name="brand_name">Brand name:</string>
     <string name="add_logo">Add logo:</string>
-    <string name="edit">Edit</string>
-    <string name="delete">Delete</string>
-    <string name="category_name">Category name</string>
-    <string name="all_brands">All Brands</string>
-    <string name="add_train">Add Train</string>
-    <string name="brand_deleted">Brand deleted</string>
-    <string name="category_deleted">Category deleted</string>
-    <string name="undo">UNDO</string>
-    <string name="no_brands_found">No brands found. You can add brands from above, or while you add trains.</string>
-    <string name="brand_Saved">Brand is saved</string>
-    <string name="all_categories">All Categories</string>
-    <string name="no_categories_found">No categories found. Click on the + button to add a new category.</string>
-    <string name="search">Search</string>
     <string name="website">Website:</string>
     <string name="scale">Scale:</string>
+    <string name="category_name">Category name</string>
+    <string name="add_image_from">Add image from:</string>
+    <string name="select_category">--Select category--</string>
+    <string name="select_brand">--Select brand--</string>
+
+    <!-- Actions -->
+    <string name="save">Save</string>
+    <string name="add">Add</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="undo">UNDO</string>
+    <string name="search">Search</string>
     <string name="edit_train">Edit Train</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="select_picture">Select Picture</string>
+
+    <!-- Empty screen messages -->
+    <string name="no_trains_found">No trains found. Click on &#xf055; button to add a new train.</string>
+    <string name="no_brands_found">No brands found. Click on the &#xf055; button to add a new category.</string>
+    <string name="no_categories_found">No categories found. Click on the &#xf055; button to add a new category.</string>
     <string name="no_train_for_this_brand">No trains found for this brand</string>
     <string name="no_train_for_this_category">No items found for this category</string>
+    <string name="plus_icon_unicode">&#xf055;</string>
+
+    <!-- Feedback -->
+    <string name="brand_Saved">Brand is saved</string>
+    <string name="brand_deleted">Brand deleted</string>
+    <string name="category_deleted">Category deleted</string>
+
+    <!-- Warnings -->
+    <string name="quantity_should_be_positive">Quantity should be a positive integer</string>
     <string name="cannot_erase_category">This category is used by some trains. You cannot erase this category</string>
     <string name="cannot_erase_brand">This brand is used by some trains. You cannot erase this brand</string>
+    <string name="scale_cant_be_empty">Scale cannot be empty</string>
+    <string name="brand_name_empty">Brand name cannot be empty</string>
+    <string name="category_name_empty">Category name cannot be empty</string>
+    <string name="train_name_empty">Train name cannot be empty</string>
+    <string name="category_cannot_be_empty">Category name cannot be empty</string>
+    <string name="brand_cannot_be_empty">Brand name cannot be empty</string>
+    <string name="do_you_want_to_delete">Do you want to delete this item from the database?</string>
+    <string name="yes_delete">Yes, delete</string>
+    <string name="unsaved_changes_warning">There are unsaved changes. Are you sure that you want to discard your changes?</string>
+    <string name="discard_changes">Discard changes</string>
+    <string name="keep_editing">Keep editing</string>
+    <string name="permission_denied">Permission denied</string>
+    <string name="are_you_sure_you_want_to_delete_this_category">Are you sure you want to delete this category?</string>
+    <string name="no_website_warning">You haven\'t provided a web site for this brand. Click edit icon to add one.</string>
+
+    <!-- Content descriptions -->
     <string name="cd_product_image">image of the train</string>
     <string name="cd_edit_icon">Edit icon</string>
     <string name="cd_train_icon_for_brands">Train icon which shows the trains from this brand</string>
@@ -44,40 +81,20 @@
     <string name="cd_brand_logo">Brand of the logo</string>
     <string name="cd_empty_icon">Train icon is shown when the list is empty</string>
     <string name="cd_chosen_train_image">An image of the chosen train</string>
+    <string name="cd_details_gallery_icon">Train image if available, click for changing the image</string>
+    <string name="cd_add_category_button">Button for adding a category</string>
+    <string name="cd_add_brand_button">Button for adding a brand</string>
+    <string name="cd_brand_logo_edit">Brand logo. You can click for changing it.</string>
+    <string name="cd_brand_item_logo">Brand logo</string>
+    <string name="cd_category_item_train_btn">Train icon. Click here to see trains from this category.</string>
+
+    <!-- Hints for edittexts -->
     <string name="hint_train_name">Train name</string>
     <string name="hint_quantity">Quantity</string>
     <string name="hint_reference">Model Reference</string>
-    <string name="cd_details_gallery_icon">Train image if available, click for changing the image</string>
     <string name="hint_train_description">Train description</string>
     <string name="hint_location_number">Row of the location, which is a number</string>
     <string name="hint_location_letter">Column of the location, which is a letter</string>
-    <string name="cd_add_category_button">Button for adding a category</string>
-    <string name="cd_add_brand_button">Button for adding a brand</string>
     <string name="hint_train_scale">Scale of the train</string>
-    <string name="cd_brand_logo_edit">Brand logo. You can click for changing it.</string>
-    <string name="cd_brand_item_logo">Brand logo</string>
-    <string name="add_image_from">Add image from:</string>
-    <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
-    <string name="select_picture">Select Picture</string>
-    <string name="cd_category_item_train_btn">Train icon. Click here to see trains from this category.</string>
-    <string name="add">Add</string>
-    <string name="do_you_want_to_delete">Do you want to delete this item from the database?</string>
-    <string name="yes_delete">Yes, delete</string>
-    <string name="unsaved_changes_warning">There are unsaved changes. Are you sure that you want to discard your changes?</string>
-    <string name="discard_changes">Discard changes</string>
-    <string name="keep_editing">Keep editing</string>
-    <string name="trains_of_the_brand">Trains of the brand %1$s</string>
-    <string name="all_from_this_Category">All %1$ss</string>
-    <string name="permission_denied">Permission denied</string>
-    <string name="category_cannot_be_empty">Category name cannot be empty</string>
-    <string name="brand_cannot_be_empty">Brand name cannot be empty</string>
-    <string name="are_you_sure_you_want_to_delete_this_category">Are you sure you want to delete this category?</string>
-    <string name="no_website_warning">You haven\'t provided a web site for this brand. Click edit icon to add one.</string>
-    <string name="select_category">--Select category--</string>
-    <string name="select_brand">--Select brand--</string>
-    <string name="scale_cant_be_empty">Scale cannot be empty</string>
-    <string name="brand_name_empty">Brand name cannot be empty</string>
-    <string name="category_name_empty">Category name cannot be empty</string>
-    <string name="train_name_empty">Train name cannot be empty</string>
+
 </resources>

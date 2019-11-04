@@ -34,20 +34,20 @@
             android:id="@+id/empty_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_standard"
-            android:layout_marginEnd="@dimen/margin_standard"
             android:layout_marginStart="@dimen/margin_standard"
             android:layout_marginTop="@dimen/margin_standard"
-            app:visible= "@{uiState.showEmpty}"
+            android:layout_marginEnd="@dimen/margin_standard"
+            android:layout_marginBottom="@dimen/margin_standard"
             android:contentDescription="@string/cd_empty_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.313"
-            app:srcCompat="@drawable/ic_train" />
+            app:layout_constraintVertical_bias="0.24000001"
+            app:srcCompat="@drawable/ic_train"
+            app:visible="@{uiState.showEmpty}" />
 
-        <TextView
+        <com.canli.oya.traininventoryroom.ui.IconTextView
             android:id="@+id/empty_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -55,7 +55,8 @@
             android:layout_marginStart="@dimen/large_margin"
             android:layout_marginTop="@dimen/margin_standard"
             android:gravity="center"
-            android:textSize="18sp"
+            android:textSize="24sp"
+            android:lineSpacingMultiplier="1.5"
             android:text="@{uiState.emptyMessage}"
             app:visible= "@{uiState.showEmpty}"
             app:layout_constraintEnd_toEndOf="parent"

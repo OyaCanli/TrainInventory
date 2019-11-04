@@ -81,4 +81,5 @@
     <string name="brand_name_empty">Brand name cannot be empty</string>
     <string name="category_name_empty">Category name cannot be empty</string>
     <string name="train_name_empty">Train name cannot be empty</string>
+    <string name="plus_icon_unicode">&#xf055;</string>
 </resources>

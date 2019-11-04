@@ -18,7 +18,7 @@ class BottomViewDecoration : LinearLayout {
     }
 
     private val defaultColorSelected = resources.getColor(R.color.colorAccent)
-    private val defaultColorInActive = resources.getColor(R.color.colorPrimary)
+    private val defaultColorInActive = resources.getColor(R.color.inactiveMenuColor)
 
     private fun init(set: AttributeSet?) {
         if (set == null) {
