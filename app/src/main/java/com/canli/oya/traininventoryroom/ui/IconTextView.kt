@@ -1,22 +1,35 @@
 package com.canli.oya.traininventoryroom.ui
 
 import android.content.Context
-import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableString
 import android.util.AttributeSet
 import android.widget.TextView
+import com.canli.oya.traininventoryroom.R
+import com.facebook.widget.text.span.BetterImageSpan
 
 
 class IconTextView : TextView {
 
-    constructor(context: Context) : super(context) {
-        createView(context)
-    }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        createView(context)
-    }
-
-    private fun createView(context: Context) {
-        typeface = Typeface.createFromAsset(context.assets, "fa-solid-900.ttf")
+    override fun setText(text: CharSequence?, type: BufferType?) {
+        if(text.isNullOrBlank()){
+            super.setText(text, type)
+        } else {
+            val startIndex = text.indexOf("plus")
+            if(startIndex == -1){
+                super.setText(text, type)
+            } else {
+                val endIndex = startIndex + 4
+                val spannable = SpannableString(text)
+                val plusIcon = context.resources.getDrawable(R.drawable.ic_plus_with_circle)
+                plusIcon.mutate()
+                plusIcon.setBounds(0, 0, 100, 100)
+                spannable.setSpan(BetterImageSpan(plusIcon, BetterImageSpan.ALIGN_CENTER), startIndex, endIndex, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                super.setText(spannable, type)
+            }
+        }
     }
 }

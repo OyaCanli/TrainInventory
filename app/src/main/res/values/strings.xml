@@ -42,9 +42,9 @@
     <string name="select_picture">Select Picture</string>
 
     <!-- Empty screen messages -->
-    <string name="no_trains_found">No trains found. Click on &#xf055; button to add a new train.</string>
-    <string name="no_brands_found">No brands found. Click on the &#xf055; button to add a new category.</string>
-    <string name="no_categories_found">No categories found. Click on the &#xf055; button to add a new category.</string>
+    <string name="no_trains_found">No trains found. Click on the plus button above to add a new train.</string>
+    <string name="no_brands_found">No brands found. Click on the plus button above to add a new brand.</string>
+    <string name="no_categories_found">No categories found. Click on the plus button above to add a new category.</string>
     <string name="no_train_for_this_brand">No trains found for this brand</string>
     <string name="no_train_for_this_category">No items found for this category</string>
     <string name="plus_icon_unicode">&#xf055;</string>

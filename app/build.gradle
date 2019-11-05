@@ -109,4 +109,7 @@ dependencies {
     //Paging library
     implementation "androidx.paging:paging-runtime-ktx:$rootProject.paging_version"
     implementation "androidx.paging:paging-rxjava2-ktx:$rootProject.paging_version"
+
+    //Fresco
+    implementation 'com.facebook.fresco:fresco:2.0.0'
 }
