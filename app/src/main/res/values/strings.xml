@@ -38,7 +38,6 @@
     <string name="search">Search</string>
     <string name="edit_train">Edit Train</string>
     <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
     <string name="select_picture">Select Picture</string>
 
     <!-- Empty screen messages -->
@@ -64,8 +63,9 @@
     <string name="train_name_empty">Train name cannot be empty</string>
     <string name="category_cannot_be_empty">Category name cannot be empty</string>
     <string name="brand_cannot_be_empty">Brand name cannot be empty</string>
-    <string name="do_you_want_to_delete">Do you want to delete this item from the database?</string>
+    <string name="do_you_want_to_delete">Do you want to delete this item?</string>
     <string name="yes_delete">Yes, delete</string>
+    <string name="cancel">Cancel</string>
     <string name="unsaved_changes_warning">There are unsaved changes. Are you sure that you want to discard your changes?</string>
     <string name="discard_changes">Discard changes</string>
     <string name="keep_editing">Keep editing</string>

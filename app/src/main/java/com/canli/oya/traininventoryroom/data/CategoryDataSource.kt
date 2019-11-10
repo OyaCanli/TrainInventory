@@ -1,8 +1,17 @@
 package com.canli.oya.traininventoryroom.data
 
-class CategoryDataSource(val database: TrainDatabase) {
+import androidx.lifecycle.LiveData
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 
-    fun getAllCategories() = database.categoryDao().allCategories
+const val CATEGORIES_PAGE_SIZE = 15
+
+class CategoryDataSource(private val database: TrainDatabase) {
+
+    fun getAllCategories(): LiveData<PagedList<CategoryEntry>> {
+        val factory = database.categoryDao().allCategories
+        return LivePagedListBuilder(factory, CATEGORIES_PAGE_SIZE).build()
+    }
 
     suspend fun insertCategory(category: CategoryEntry) {
         database.categoryDao().insert(category)

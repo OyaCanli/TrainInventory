@@ -61,21 +61,19 @@ dependencies {
 
     //Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation 'androidx.fragment:fragment-ktx:1.2.0-alpha04'
+    implementation 'androidx.fragment:fragment-ktx:1.2.0-rc01'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutinesVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.coroutinesVersion"
 
     //Room
     implementation "androidx.room:room-runtime:$rootProject.roomVersion"
     kapt "androidx.room:room-compiler:$rootProject.roomVersion"
-    implementation "androidx.room:room-coroutines:$rootProject.roomVersion"
-    implementation 'android.arch.persistence.room:rxjava2:1.1.1'
+    implementation "androidx.room:room-ktx:$rootProject.roomVersion"
 
     //ViewModel and liveData
     implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycleVersion"
-
-    kapt "androidx.lifecycle:lifecycle-compiler:$rootProject.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$rootProject.lifecycleVersion"
 
     //Glide
     implementation "com.github.bumptech.glide:glide:$rootProject.glideVersion"
@@ -98,10 +96,6 @@ dependencies {
     compileOnly 'javax.annotation:jsr250-api:1.0'
     kapt "com.google.dagger:dagger-android-processor:$rootProject.dagger_version"
     implementation "com.google.dagger:dagger-android-support:$rootProject.dagger_version"
-
-    //RxJava
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 
     //Image picker
     implementation 'com.github.dhaval2404:imagepicker:1.4'

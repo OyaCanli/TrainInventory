@@ -5,19 +5,20 @@
 
     <data>
         <variable
-            name="category"
-            type="com.canli.oya.traininventoryroom.data.CategoryEntry"/>
+            name="item"
+            type="com.canli.oya.traininventoryroom.data.CategoryEntry" />
         <variable
-            name="categoryItemClick"
-            type="com.canli.oya.traininventoryroom.ui.categories.CategoryAdapter.CategoryItemClickListener" />
+            name="position"
+            type="int" />
+        <variable
+            name="itemClick"
+            type="com.canli.oya.traininventoryroom.ui.categories.CategoryItemClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/item_category_foreground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/half_padding"
-        android:background="@color/window_background">
+        android:padding="@dimen/half_padding">
 
         <TextView
             android:id="@+id/category_item_category_name"
@@ -25,7 +26,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_standard"
-            android:text="@{category.categoryName}"
+            android:text="@{item.categoryName}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/category_item_edit_icon"
             app:layout_constraintStart_toEndOf="@+id/category_item_number"
@@ -39,7 +40,7 @@
             android:layout_marginEnd="@dimen/margin_standard"
             android:background="@drawable/button_state_selector"
             android:contentDescription="@string/cd_category_item_train_btn"
-            android:onClick="@{(theView) ->  categoryItemClick.onCategoryItemClicked(theView, category)}"
+            android:onClick="@{(theView) ->  itemClick.onCategoryItemClicked(theView, item)}"
             android:padding="@dimen/half_padding"
             android:src="@drawable/ic_train_list_item"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -54,6 +55,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:textSize="@dimen/largeTextSize"
+            android:text="@{String.valueOf(position + 1)}"
             app:layout_constraintBaseline_toBaselineOf="@+id/category_item_category_name"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="1." />
@@ -65,7 +67,7 @@
             android:layout_marginEnd="@dimen/half_margin"
             android:background="@drawable/button_state_selector"
             android:contentDescription="@string/cd_edit_icon"
-            android:onClick="@{(theView) ->  categoryItemClick.onCategoryItemClicked(theView, category)}"
+            android:onClick="@{(theView) ->  itemClick.onCategoryItemClicked(theView, item)}"
             android:padding="@dimen/half_padding"
             app:layout_constraintEnd_toStartOf="@+id/category_item_train_icon"
             app:layout_constraintHorizontal_bias="0.5"
@@ -73,4 +75,5 @@
             app:srcCompat="@drawable/ic_edit_colored" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

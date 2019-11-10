@@ -4,8 +4,10 @@ package com.canli.oya.traininventoryroom.ui.addtrain
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.canli.oya.traininventoryroom.data.*
-import io.reactivex.Flowable
+import com.canli.oya.traininventoryroom.data.BrandDataSource
+import com.canli.oya.traininventoryroom.data.CategoryDataSource
+import com.canli.oya.traininventoryroom.data.TrainDataSource
+import com.canli.oya.traininventoryroom.data.TrainEntry
 import kotlinx.coroutines.launch
 
 class AddTrainViewModel(private val trainDataSource: TrainDataSource,
@@ -16,7 +18,7 @@ class AddTrainViewModel(private val trainDataSource: TrainDataSource,
     val trainBeingModified = ObservableField<TrainEntry>()
 
     val brandList = brandDataSource.getAllBrands()
-    val categoryList : Flowable<List<CategoryEntry>> = categoryDataSource.getAllCategories()
+    val categoryList  = categoryDataSource.getAllCategories()
 
     var isEdit: Boolean
 

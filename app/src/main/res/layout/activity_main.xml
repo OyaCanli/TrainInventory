@@ -22,7 +22,7 @@
         <com.canli.oya.traininventoryroom.ui.BottomViewDecoration
             android:id="@+id/navigation_decoration"
             android:layout_width="match_parent"
-            android:layout_height="15dp"
+            android:layout_height="12dp"
             app:menuItemCount="3"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"

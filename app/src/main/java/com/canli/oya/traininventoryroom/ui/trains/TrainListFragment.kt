@@ -3,7 +3,6 @@ package com.canli.oya.traininventoryroom.ui.trains
 import android.graphics.drawable.Animatable2
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.ShapeDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.*
@@ -15,9 +14,6 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.*
 import com.canli.oya.traininventoryroom.data.TrainMinimal
@@ -28,7 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
-class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, CoroutineScope {
+class TrainListFragment : Fragment(), TrainItemClickListener, CoroutineScope {
 
     private val mViewModel by viewModels<TrainViewModel>()
 
@@ -54,16 +50,9 @@ class TrainListFragment : Fragment(), TrainAdapter.TrainItemClickListener, Corou
 
         //Set recycler view
         mAdapter = TrainAdapter(this)
-        val divider = DividerItemDecoration(requireActivity(), LinearLayoutManager.VERTICAL)
-        divider.setDrawable(ShapeDrawable().apply {
-            intrinsicHeight = resources.getDimensionPixelOffset(R.dimen.divider_height)
-            paint.color = resources.getColor(R.color.divider_color)
-        })
 
         with(binding.list) {
-            layoutManager = LinearLayoutManager(activity)
-            itemAnimator = DefaultItemAnimator()
-            addItemDecoration(divider)
+            addItemDecoration(getItemDivider(context))
             adapter = mAdapter
         }
 

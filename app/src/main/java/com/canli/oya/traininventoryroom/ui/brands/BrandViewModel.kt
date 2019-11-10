@@ -11,7 +11,6 @@ import com.canli.oya.traininventoryroom.common.UIState
 import com.canli.oya.traininventoryroom.common.provideBrandDataSource
 import com.canli.oya.traininventoryroom.data.BrandDataSource
 import com.canli.oya.traininventoryroom.data.BrandEntry
-import io.reactivex.Flowable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -24,7 +23,7 @@ class BrandViewModel(application: Application) : AndroidViewModel(application) {
 
     var brandListUiState : UIState = UIState(context.resources.getString(R.string.no_brands_found))
 
-    var brandList: Flowable<List<BrandEntry>> = dataSource.getAllBrands()
+    var brandList = dataSource.getAllBrands()
 
     private var _isChildFragVisible = MutableLiveData<Boolean>()
 

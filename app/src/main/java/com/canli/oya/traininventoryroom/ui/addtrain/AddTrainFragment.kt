@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
@@ -24,9 +25,6 @@ import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
 import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
 import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
 import com.github.dhaval2404.imagepicker.ImagePicker
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.toast
 import timber.log.Timber
 
@@ -44,12 +42,10 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     private var brandList: List<BrandEntry> = ArrayList()
     private var categoryList: ArrayList<String> = ArrayList()
 
-    private val disposable = CompositeDisposable()
-
     private lateinit var categoryAdapter: ArrayAdapter<String>
     private lateinit var brandAdapter: CustomSpinAdapter
 
-    private var saveMenuItem : MenuItem? = null
+    private var saveMenuItem: MenuItem? = null
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -94,25 +90,16 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     }
 
     private fun getAndObserveCategories() {
-        disposable.add(addViewModel.categoryList.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        //onNext
-                        { categoryEntries ->
-                            if (!categoryEntries.isNullOrEmpty()) {
-                                categoryList.clear()
-                                categoryList.add(getString(R.string.select_category))
-                                categoryList.addAll(categoryEntries.map { categoryEntry -> categoryEntry.categoryName})
-                                categoryAdapter.notifyDataSetChanged()
-                                val index = categoryList.indexOf(chosenTrain?.categoryName)
-                                binding.categorySpinner.setSelection(index)
-                            }
-                        },
-                        //onError
-                        { error ->
-                            Timber.e("Unable to get category list ${error.message}")
-                        })
-        )
+        addViewModel.categoryList.observe(this, Observer { categoryEntries ->
+            if (!categoryEntries.isNullOrEmpty()) {
+                categoryList.clear()
+                categoryList.add(getString(R.string.select_category))
+                categoryList.addAll(categoryEntries.map { categoryEntry -> categoryEntry.categoryName })
+                categoryAdapter.notifyDataSetChanged()
+                val index = categoryList.indexOf(chosenTrain?.categoryName)
+                binding.categorySpinner.setSelection(index)
+            }
+        })
     }
 
     private fun setBrandSpinner() {
@@ -121,24 +108,15 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     }
 
     private fun getAndObserveBrands() {
-        disposable.add(addViewModel.brandList.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        // onNext
-                        { brandEntries ->
-                            if (!brandEntries.isNullOrEmpty()) {
-                                brandAdapter.mBrandList = brandEntries
-                                brandAdapter.notifyDataSetChanged()
-                                brandList = brandEntries
-                                val index = brandEntries.indexOfFirst { it.brandName == chosenTrain?.brandName }.plus(1)
-                                binding.brandSpinner.setSelection(index)
-                            }
-                        },
-                        // onError
-                        { error ->
-                            Timber.e("Unable to get brand list ${error.message}")
-                        })
-        )
+        addViewModel.brandList.observe(this, Observer { brandEntries ->
+            if (!brandEntries.isNullOrEmpty()) {
+                brandAdapter.mBrandList = brandEntries
+                brandAdapter.notifyDataSetChanged()
+                brandList = brandEntries
+                val index = brandEntries.indexOfFirst { it.brandName == chosenTrain?.brandName }.plus(1)
+                binding.brandSpinner.setSelection(index)
+            }
+        })
     }
 
     override fun onClick(v: View) {
@@ -147,9 +125,9 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
             R.id.addTrain_addCategoryBtn -> insertAddCategoryFragment()
             R.id.product_details_gallery_image -> {
                 ImagePicker.with(this)
-                        .crop(1f, 1f)	    		//Crop Square image(Optional)
-                        .compress(1024)			//Final image size will be less than 1 MB(Optional)
-                        .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
+                        .crop(1f, 1f)                //Crop Square image(Optional)
+                        .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                        .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
                         .start()
             }
         }
@@ -312,12 +290,5 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
                 addViewModel.trainBeingModified.get()?.categoryName = if (position == 0) null else categoryList[position]
             }
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        // clear all the subscription
-        disposable.clear()
     }
 }

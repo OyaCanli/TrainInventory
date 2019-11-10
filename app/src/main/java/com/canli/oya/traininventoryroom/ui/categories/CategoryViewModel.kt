@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagedList
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.UIState
 import com.canli.oya.traininventoryroom.common.provideCategoryDataSource
@@ -23,7 +24,7 @@ class CategoryViewModel(application: Application) : AndroidViewModel(application
 
     var categoryListUiState = UIState(context.resources.getString(R.string.no_categories_found))
 
-    var categoryList = dataSource.getAllCategories()
+    var categoryList : LiveData<PagedList<CategoryEntry>> = dataSource.getAllCategories()
 
     private val _chosenCategory = MutableLiveData<CategoryEntry?>()
 

@@ -5,12 +5,14 @@
 
     <data>
         <variable
-            name="train"
+            name="item"
             type="com.canli.oya.traininventoryroom.data.TrainMinimal"/>
-
         <variable
-            name="trainItemClick"
-            type="com.canli.oya.traininventoryroom.ui.trains.TrainAdapter.TrainItemClickListener" />
+            name="position"
+            type="int" />
+        <variable
+            name="itemClick"
+            type="com.canli.oya.traininventoryroom.ui.trains.TrainItemClickListener" />
 
         <import type="com.canli.oya.traininventoryroom.common.BindingUtils" />
     </data>
@@ -20,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/half_margin"
         android:layout_marginBottom="@dimen/half_margin"
-        android:onClick="@{() ->  trainItemClick.onListItemClick(train.trainId)}">
+        android:onClick="@{() ->  itemClick.onListItemClick(item.trainId)}">
 
         <TextView
             android:id="@+id/train_item_train_name"
@@ -32,7 +34,7 @@
             app:layout_constraintStart_toEndOf="@+id/product_item_image"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Train name"
-            android:text="@{train.trainName}"/>
+            android:text="@{item.trainName}"/>
 
         <TextView
             android:id="@+id/train_item_brand"
@@ -44,7 +46,7 @@
             app:layout_constraintTop_toBottomOf="@+id/train_item_train_name"
             tools:text="Brand name"
             android:textSize="@dimen/normalTextSize"
-            android:text="@{train.brandName}"/>
+            android:text="@{item.brandName}"/>
 
         <ImageView
             android:id="@+id/product_item_image"
@@ -56,7 +58,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:imageUrl="@{train.imageUri}"
+            app:imageUrl="@{item.imageUri}"
             app:placeholder="@{@drawable/ic_gallery_light}"
             android:contentDescription="@string/cd_product_image"/>
 
@@ -70,7 +72,7 @@
             app:layout_constraintTop_toBottomOf="@+id/train_item_brand"
             tools:text="reference"
             android:textSize="@dimen/normalTextSize"
-            android:text="@{train.modelReference}"/>
+            android:text="@{item.modelReference}"/>
 
         <TextView
             android:id="@+id/train_item_category"
@@ -82,7 +84,7 @@
             app:layout_constraintStart_toEndOf="@+id/train_item_train_name"
             tools:text="(Vagon)"
             android:textSize="@dimen/normalTextSize"
-            android:text="@{BindingUtils.encloseInParenthesis(train.categoryName)}"/>
+            android:text="@{BindingUtils.encloseInParenthesis(item.categoryName)}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

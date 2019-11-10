@@ -9,34 +9,30 @@ import com.canli.oya.traininventoryroom.R
 import timber.log.Timber
 
 
-class BottomViewDecoration : LinearLayout {
-
-    constructor(context: Context) : this(context, null)
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): super(context, attrs, defStyleAttr){
-        init(attrs)
-    }
+class BottomViewDecoration @JvmOverloads constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int= 0)
+    : LinearLayout(context, attrs, defStyleAttr) {
 
     private val defaultColorSelected = resources.getColor(R.color.colorAccent)
     private val defaultColorInActive = resources.getColor(R.color.inactiveMenuColor)
 
-    private fun init(set: AttributeSet?) {
-        if (set == null) {
-            return
+    init {
+        if(attrs != null){
+            val typedArray = context.obtainStyledAttributes(attrs, R.styleable.BottomViewDecoration)
+            val colorSelected = typedArray.getColor(R.styleable.BottomViewDecoration_colorSelected, defaultColorSelected)
+            val colorInactive = typedArray.getColor(R.styleable.BottomViewDecoration_colorInactive, defaultColorInActive)
+            val menuItemCount = typedArray.getInt(R.styleable.BottomViewDecoration_menuItemCount, 0)
+
+            repeat(menuItemCount){
+                addView(getStyledItem(colorSelected, colorInactive))
+            }
+
+            typedArray.recycle()
+
+            setSelected(0)
         }
-
-        val typedArray = context.obtainStyledAttributes(set, R.styleable.BottomViewDecoration)
-        val colorSelected = typedArray.getColor(R.styleable.BottomViewDecoration_colorSelected, defaultColorSelected)
-        val colorInactive = typedArray.getColor(R.styleable.BottomViewDecoration_colorInactive, defaultColorInActive)
-        val menuItemCount = typedArray.getInt(R.styleable.BottomViewDecoration_menuItemCount, 0)
-
-        repeat(menuItemCount){
-            addView(getStyledItem(colorSelected, colorInactive))
-        }
-
-        typedArray.recycle()
-
-        setSelected(0)
     }
 
     private fun getStyledItem(colorSelected : Int, colorInactive: Int): BottomViewDecorationItem {

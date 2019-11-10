@@ -1,8 +1,17 @@
 package com.canli.oya.traininventoryroom.data
 
-class BrandDataSource(val database: TrainDatabase) {
+import androidx.lifecycle.LiveData
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 
-    fun getAllBrands() = database.brandDao().allBrands
+const val BRANDS_PAGE_SIZE = 15
+
+class BrandDataSource(private val database: TrainDatabase) {
+
+    fun getAllBrands() : LiveData<PagedList<BrandEntry>> {
+        val factory = database.brandDao().allBrands
+        return LivePagedListBuilder(factory, BRANDS_PAGE_SIZE).build()
+    }
 
     suspend fun getBrandList() = database.brandDao().getBrandList()
 

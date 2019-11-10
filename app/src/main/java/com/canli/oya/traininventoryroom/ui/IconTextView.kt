@@ -9,10 +9,10 @@ import com.canli.oya.traininventoryroom.R
 import com.facebook.widget.text.span.BetterImageSpan
 
 
-class IconTextView : TextView {
-
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+class IconTextView @JvmOverloads constructor(
+        context: Context,
+        attrs: AttributeSet? = null)
+    : TextView(context, attrs) {
 
     override fun setText(text: CharSequence?, type: BufferType?) {
         if(text.isNullOrBlank()){
