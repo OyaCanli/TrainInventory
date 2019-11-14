@@ -21,6 +21,8 @@ class TrainDataSource(private val database: TrainDatabase) {
 
     suspend fun deleteTrain(train: TrainEntry) = database.trainDao().delete(train)
 
+    suspend fun deleteTrain(trainId: Int) = database.trainDao().delete(trainId)
+
     fun getTrainsFromThisBrand(brandName: String): LiveData<PagedList<TrainMinimal>> {
         val factory = database.trainDao().getTrainsFromThisBrand(brandName)
         return LivePagedListBuilder(factory, TRAINS_PAGE_SIZE).build()

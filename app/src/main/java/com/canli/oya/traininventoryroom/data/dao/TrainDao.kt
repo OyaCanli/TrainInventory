@@ -31,4 +31,6 @@ interface TrainDao : BaseDao<TrainEntry>{
     @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE (trainName LIKE '%' || :query || '%') " + "OR (modelReference LIKE '%' || :query || '%') OR (description LIKE '%' || :query || '%')")
     fun searchInTrains(query: String): DataSource.Factory<Int, TrainMinimal>
 
+    @Query("DELETE FROM trains WHERE trainId = :trainId")
+    suspend fun delete(trainId : Int)
 }

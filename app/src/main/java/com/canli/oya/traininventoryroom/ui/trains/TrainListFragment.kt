@@ -174,13 +174,6 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
             if (Build.VERSION.SDK_INT >= 23) {
                 addMenuItem?.setIcon(R.drawable.avd_plus_to_save)
                 val anim = addMenuItem?.icon as AnimatedVectorDrawable
-                /*anim.clearAnimationCallbacks()
-                anim.registerAnimationCallback(object : Animatable2.AnimationCallback() {
-                    override fun onAnimationStart(drawable: Drawable) {}
-                    override fun onAnimationEnd(drawable: Drawable) {
-                        //openAddTrainFragment()
-                    }
-                })*/
                 anim.start()
             }
             openAddTrainFragment()
@@ -207,7 +200,7 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
     }
 
     override fun onDeleteConfirmed(itemToDelete: TrainMinimal, position: Int) {
-        //TODO= delete train
+        mViewModel.deleteTrain(itemToDelete.trainId)
     }
 
     override fun onDeleteCanceled(position: Int) = mAdapter.cancelDelete(position)

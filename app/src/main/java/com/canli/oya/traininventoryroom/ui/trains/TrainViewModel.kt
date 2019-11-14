@@ -28,6 +28,10 @@ class TrainViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) { dataSource.deleteTrain(train) }
     }
 
+    fun deleteTrain(trainId: Int) {
+        viewModelScope.launch(Dispatchers.IO) { dataSource.deleteTrain(trainId) }
+    }
+
     ///////////// SEARCH //////////////////////////
     fun getTrainsFromThisBrand(brandName: String) = dataSource.getTrainsFromThisBrand(brandName)
 
