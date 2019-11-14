@@ -58,7 +58,7 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
 
         brandListJob = Job()
 
-        mAdapter = BrandAdapter(this, this)
+        mAdapter = BrandAdapter(requireContext(), this, this)
 
         with(binding.includedList.list) {
             addItemDecoration(getItemDivider(context))

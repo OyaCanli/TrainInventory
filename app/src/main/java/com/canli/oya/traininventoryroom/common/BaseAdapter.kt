@@ -1,5 +1,6 @@
 package com.canli.oya.traininventoryroom.common
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -9,18 +10,22 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.canli.oya.traininventoryroom.BR
 import com.canli.oya.traininventoryroom.R
+import com.canli.oya.traininventoryroom.data.BrandEntry
+import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.databinding.ItemConfirmDeleteBinding
+
 
 const val VIEW_TYPE_NORMAL = 1
 const val VIEW_TYPE_DELETE = 2
 
-abstract class BaseAdapter<T, L>(private val itemClickListener : L?, private val swipeListener: SwipeDeleteListener<T>): PagedListAdapter<T, RecyclerView.ViewHolder>(BaseDiffCallback<T>()) {
+abstract class BaseAdapter<T, L>(val context: Context, private val itemClickListener: L?, private val swipeListener: SwipeDeleteListener<T>) : PagedListAdapter<T, RecyclerView.ViewHolder>(BaseDiffCallback<T>()) {
 
     private val swipedItems = mutableListOf<Int>()
+    private var itemHeight = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        return if(viewType == VIEW_TYPE_NORMAL){
+        return if (viewType == VIEW_TYPE_NORMAL) {
             val binding = DataBindingUtil.inflate<ViewDataBinding>(
                     layoutInflater, getLayoutId(), parent, false)
             ItemViewHolder<T, L>(binding)
@@ -31,43 +36,53 @@ abstract class BaseAdapter<T, L>(private val itemClickListener : L?, private val
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int){
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val currentItem = getItem(position) ?: return
-        if(getItemViewType(position) == VIEW_TYPE_NORMAL){
-            (holder as ItemViewHolder<T,L>).bind(currentItem, itemClickListener, position)
+        if (getItemViewType(position) == VIEW_TYPE_NORMAL) {
+            (holder as ItemViewHolder<T, L>).bind(currentItem, itemClickListener, position)
         } else {
-            (holder as DeleteItemViewHolder<T>).bind(currentItem, swipeListener, position)
+            if(itemHeight == 0) itemHeight = getItemHeightForType(currentItem, context)
+            (holder as DeleteItemViewHolder<T>).bind(currentItem, swipeListener, position, itemHeight)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if(swipedItems.contains(position)) VIEW_TYPE_DELETE
+        return if (swipedItems.contains(position)) VIEW_TYPE_DELETE
         else VIEW_TYPE_NORMAL
     }
 
+    private fun getItemHeightForType(currentItem: T, context: Context): Int {
+        val itemHeightRes = when (currentItem) {
+            is CategoryEntry -> R.dimen.category_item_height
+            is BrandEntry -> R.dimen.brand_item_height
+            else -> R.dimen.train_item_height
+        }
+        return context.resources.getDimension(itemHeightRes).toInt()
+    }
+
     fun itemSwiped(position: Int) {
-        if(!swipedItems.contains(position)){
+        if (!swipedItems.contains(position)) {
             swipedItems.add(position)
         }
         notifyItemChanged(position)
     }
 
-    fun cancelDelete(position: Int){
+    fun cancelDelete(position: Int) {
         swipedItems.remove(position)
         notifyItemChanged(position)
     }
 
-    fun itemDeleted(position: Int){
+    fun itemDeleted(position: Int) {
         swipedItems.remove(position)
     }
 
-    abstract fun getLayoutId() : Int
+    abstract fun getLayoutId(): Int
 
 }
 
-class ItemViewHolder<T, L> (val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root){
+class ItemViewHolder<T, L>(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(currentItem : T, listener: L?, position : Int){
+    fun bind(currentItem: T, listener: L?, position: Int) {
         binding.setVariable(BR.item, currentItem)
         binding.setVariable(BR.itemClick, listener)
         binding.setVariable(BR.position, position)
@@ -75,17 +90,23 @@ class ItemViewHolder<T, L> (val binding: ViewDataBinding) : RecyclerView.ViewHol
     }
 }
 
-class DeleteItemViewHolder<T> (val binding: ItemConfirmDeleteBinding) : RecyclerView.ViewHolder(binding.root){
+class DeleteItemViewHolder<T>(val binding: ItemConfirmDeleteBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(currentItem : T, listener: SwipeDeleteListener<T>, position: Int){
-        binding.confirmDeleteBtn.setOnClickListener{
+    fun bind(currentItem: T, listener: SwipeDeleteListener<T>, position: Int, itemHeight: Int) {
+        val params = binding.root.layoutParams
+        params.height = itemHeight
+        binding.root.layoutParams = params
+
+        binding.confirmDeleteBtn.setOnClickListener {
             listener.onDeleteConfirmed(currentItem, position)
         }
-        binding.cancelBtn.setOnClickListener{
+        binding.cancelBtn.setOnClickListener {
             listener.onDeleteCanceled(position)
         }
         binding.executePendingBindings()
     }
+
+
 }
 
 open class BaseDiffCallback<T> : DiffUtil.ItemCallback<T>() {
@@ -99,7 +120,7 @@ open class BaseDiffCallback<T> : DiffUtil.ItemCallback<T>() {
 }
 
 interface SwipeDeleteListener<T> {
-    fun onDeleteConfirmed(itemToDelete : T, position : Int)
+    fun onDeleteConfirmed(itemToDelete: T, position: Int)
     fun onDeleteCanceled(position: Int)
 }
 

@@ -29,7 +29,9 @@
 
     <dimen name="divider_height">1dp</dimen>
 
-    <dimen name="item_height">110dp</dimen>
+    <dimen name="category_item_height">90dp</dimen>
+    <dimen name="brand_item_height">120dp</dimen>
+    <dimen name="train_item_height">130dp</dimen>
     <dimen name="bottom_navigation_height">60dp</dimen>
     <dimen name="elevation">5dp</dimen>
 

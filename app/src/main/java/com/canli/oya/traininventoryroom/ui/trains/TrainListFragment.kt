@@ -50,7 +50,7 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
         setHasOptionsMenu(true)
 
         //Set recycler view
-        mAdapter = TrainAdapter(this, this)
+        mAdapter = TrainAdapter(requireContext(), this, this)
 
         with(binding.list) {
             addItemDecoration(getItemDivider(context))

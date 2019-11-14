@@ -56,7 +56,7 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
 
         categoryListJob = Job()
 
-        mAdapter = CategoryAdapter(this, this)
+        mAdapter = CategoryAdapter(requireContext(), this, this)
 
         with(binding.includedList.list) {
             addItemDecoration(getItemDivider(context))
