@@ -19,9 +19,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/half_margin"
-        android:layout_marginBottom="@dimen/half_margin"
+        android:layout_height="130dp"
+        android:padding="@dimen/padding_standard"
+        android:background="@color/window_background"
         android:onClick="@{() ->  itemClick.onListItemClick(item.trainId)}">
 
         <TextView

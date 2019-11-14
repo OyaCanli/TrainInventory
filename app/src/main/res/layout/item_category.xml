@@ -17,8 +17,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/half_padding">
+        android:layout_height="@dimen/item_height"
+        android:background="@color/window_background"
+        android:padding="@dimen/small_padding">
 
         <TextView
             android:id="@+id/category_item_category_name"

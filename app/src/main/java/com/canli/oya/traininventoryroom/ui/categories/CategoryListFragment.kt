@@ -14,23 +14,19 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.*
-import com.canli.oya.traininventoryroom.common.CATEGORY_NAME
-import com.canli.oya.traininventoryroom.common.EDIT_CASE
-import com.canli.oya.traininventoryroom.common.INTENT_REQUEST_CODE
-import com.canli.oya.traininventoryroom.common.TRAINS_OF_CATEGORY
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
 import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
+import org.jetbrains.anko.toast
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 
-class CategoryListFragment : Fragment(), CategoryItemClickListener, CoroutineScope {
+class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteListener<CategoryEntry>, CoroutineScope {
 
     private lateinit var binding: BrandCategoryList
 
@@ -60,7 +56,7 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, CoroutineSco
 
         categoryListJob = Job()
 
-        mAdapter = CategoryAdapter(this)
+        mAdapter = CategoryAdapter(this, this)
 
         with(binding.includedList.list) {
             addItemDecoration(getItemDivider(context))
@@ -96,24 +92,27 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, CoroutineSco
             addFragVisible = isChildFragVisible
         })
 
-        //ItemTouchHelper(SwipeToDeleteCallback2(requireContext(), mAdapter)).attachToRecyclerView(binding.includedList.list)
+        ItemTouchHelper(SwipeToDeleteCallback(requireContext(), mAdapter)).attachToRecyclerView(binding.includedList.list)
     }
 
-   /* private fun attemptToDelete(categoryToErase : CategoryEntry){
-        Timber.d("delete item is called")
+    override fun onDeleteConfirmed(itemToDelete: CategoryEntry, position : Int) {
+        Timber.d("delete is confirmed")
         launch {
             //First check whether this category is used by trains table
-            val isUsed = withContext(Dispatchers.IO) { mViewModel.isThisCategoryUsed(categoryToErase.categoryName) }
+            val isUsed = withContext(Dispatchers.IO) { mViewModel.isThisCategoryUsed(itemToDelete.categoryName) }
             if (isUsed) {
                 // If it is used, show a warning and don't let user delete this
                 context?.toast(R.string.cannot_erase_category)
-                mAdapter.notifyDataSetChanged()
+                mAdapter.cancelDelete(position)
             } else {
                 //If it is not used, erase the category
-                mViewModel.deleteCategory(categoryToErase)
+                mViewModel.deleteCategory(itemToDelete)
+                mAdapter.itemDeleted(position)
             }
         }
-    }*/
+    }
+
+    override fun onDeleteCanceled(position: Int) = mAdapter.cancelDelete(position)
 
     private fun blinkAddMenuItem() {
         if (Build.VERSION.SDK_INT >= 23) {

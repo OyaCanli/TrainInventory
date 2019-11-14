@@ -14,6 +14,7 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.*
 import com.canli.oya.traininventoryroom.data.TrainMinimal
@@ -24,7 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
-class TrainListFragment : Fragment(), TrainItemClickListener, CoroutineScope {
+class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListener<TrainMinimal>, CoroutineScope {
 
     private val mViewModel by viewModels<TrainViewModel>()
 
@@ -49,7 +50,7 @@ class TrainListFragment : Fragment(), TrainItemClickListener, CoroutineScope {
         setHasOptionsMenu(true)
 
         //Set recycler view
-        mAdapter = TrainAdapter(this)
+        mAdapter = TrainAdapter(this, this)
 
         with(binding.list) {
             addItemDecoration(getItemDivider(context))
@@ -91,6 +92,8 @@ class TrainListFragment : Fragment(), TrainItemClickListener, CoroutineScope {
                 }
             }
         }
+
+        ItemTouchHelper(SwipeToDeleteCallback(requireContext(), mAdapter)).attachToRecyclerView(binding.list)
     }
 
     private fun evaluateResults(trainEntries: PagedList<TrainMinimal>?, message: String, noTrain : Boolean = false) {
@@ -202,6 +205,12 @@ class TrainListFragment : Fragment(), TrainItemClickListener, CoroutineScope {
         val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
         binding.emptyImage.startAnimation(animation)
     }
+
+    override fun onDeleteConfirmed(itemToDelete: TrainMinimal, position: Int) {
+        //TODO= delete train
+    }
+
+    override fun onDeleteCanceled(position: Int) = mAdapter.cancelDelete(position)
 
     fun scrollToTop() {
         binding.list.smoothScrollToPosition(0)

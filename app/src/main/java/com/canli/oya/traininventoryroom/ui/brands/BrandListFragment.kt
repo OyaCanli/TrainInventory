@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
 import android.view.animation.AnimationUtils
-import android.widget.FrameLayout
 import androidx.annotation.DrawableRes
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -25,12 +24,11 @@ import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
 import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
 import kotlinx.coroutines.*
-import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.toast
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
-class BrandListFragment : Fragment(), BrandItemClickListener, CoroutineScope {
+class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListener<BrandEntry>, CoroutineScope {
 
     private lateinit var brandListJob: Job
 
@@ -60,7 +58,7 @@ class BrandListFragment : Fragment(), BrandItemClickListener, CoroutineScope {
 
         brandListJob = Job()
 
-        mAdapter = BrandAdapter(this)
+        mAdapter = BrandAdapter(this, this)
 
         with(binding.includedList.list) {
             addItemDecoration(getItemDivider(context))
@@ -97,36 +95,7 @@ class BrandListFragment : Fragment(), BrandItemClickListener, CoroutineScope {
             addFragVisible = isChildFragVisible
         })
 
-        val rootView = activity!!.findViewById<FrameLayout>(R.id.container)
-        ItemTouchHelper(object : SwipeToDeleteCallback(requireContext()) {
-            override fun onMove(recyclerView: androidx.recyclerview.widget.RecyclerView, viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, target: androidx.recyclerview.widget.RecyclerView.ViewHolder): Boolean {
-                return false
-            }
-
-            override fun onSwiped(viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-
-                //First take a backup of the brand to erase
-                val brandToErase = brands[position]
-
-                launch {
-                    //Check whether this brand is used in trains table.
-                    val isUsed = withContext(Dispatchers.IO) { mViewModel.isThisBrandUsed(brandToErase.brandName) }
-                    if (isUsed) {
-                        // If it is used, show a warning and don't let the user delete this
-                        context.toast(R.string.cannot_erase_brand)
-                        mAdapter.notifyDataSetChanged()
-                    } else {
-                        //If it is not used delete the brand
-                        mViewModel.deleteBrand(brandToErase)
-                        //Show a snack bar for undoing delete
-                        rootView?.longSnackbar(R.string.brand_deleted, R.string.undo) {
-                            mViewModel.insertBrand(brandToErase)
-                        }
-                    }
-                }
-            }
-        }).attachToRecyclerView(binding.includedList.list)
+        ItemTouchHelper(SwipeToDeleteCallback(requireContext(), mAdapter)).attachToRecyclerView(binding.includedList.list)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -210,6 +179,24 @@ class BrandListFragment : Fragment(), BrandItemClickListener, CoroutineScope {
             R.id.brand_item_edit_icon -> editBrand(clickedBrand)
         }
     }
+
+    override fun onDeleteConfirmed(itemToDelete: BrandEntry, position: Int) {
+        launch {
+            //Check whether this brand is used in trains table.
+            val isUsed = withContext(Dispatchers.IO) { mViewModel.isThisBrandUsed(itemToDelete.brandName) }
+            if (isUsed) {
+                // If it is used, show a warning and don't let the user delete this
+                context?.toast(R.string.cannot_erase_brand)
+                mAdapter.notifyItemChanged(position)
+            } else {
+                //If it is not used delete the brand
+                mViewModel.deleteBrand(itemToDelete)
+                mAdapter.itemDeleted(position)
+            }
+        }
+    }
+
+    override fun onDeleteCanceled(position: Int) = mAdapter.cancelDelete(position)
 
     private fun editBrand(clickedBrand: BrandEntry) {
         mViewModel.setChosenBrand(clickedBrand)
