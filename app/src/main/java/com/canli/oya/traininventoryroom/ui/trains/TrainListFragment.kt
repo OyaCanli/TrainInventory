@@ -201,6 +201,7 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
 
     override fun onDeleteConfirmed(itemToDelete: TrainMinimal, position: Int) {
         mViewModel.deleteTrain(itemToDelete.trainId)
+        mAdapter.itemDeleted(position)
     }
 
     override fun onDeleteCanceled(position: Int) = mAdapter.cancelDelete(position)

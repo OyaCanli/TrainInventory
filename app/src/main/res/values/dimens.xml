@@ -27,12 +27,13 @@
     <dimen name="largeTextSize">20sp</dimen>
     <dimen name="dashTextSize">40sp</dimen>
 
+    <!-- Item heights -->
     <dimen name="divider_height">1dp</dimen>
-
-    <dimen name="category_item_height">90dp</dimen>
+    <dimen name="category_item_height">80dp</dimen>
     <dimen name="brand_item_height">120dp</dimen>
     <dimen name="train_item_height">130dp</dimen>
     <dimen name="bottom_navigation_height">60dp</dimen>
+
     <dimen name="elevation">5dp</dimen>
 
     <dimen name="design_bottom_navigation_item_max_width" tools:override="true">600dp</dimen>

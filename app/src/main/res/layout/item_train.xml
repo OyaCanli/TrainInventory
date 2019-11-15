@@ -20,7 +20,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/train_item_height"
-        android:padding="@dimen/padding_standard"
+        android:padding="@dimen/half_padding"
         android:background="@color/window_background"
         android:onClick="@{() ->  itemClick.onListItemClick(item.trainId)}">
 
