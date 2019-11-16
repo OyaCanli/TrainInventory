@@ -73,7 +73,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
 
         chosenTrain = arguments?.getParcelable(CHOSEN_TRAIN)
 
-        addViewModel = ViewModelProvider(this, provideAddTrainFactory(requireActivity(), chosenTrain)).get(AddTrainViewModel::class.java)
+        addViewModel = ViewModelProvider(this, provideAddTrainFactory(requireActivity().application, chosenTrain)).get(AddTrainViewModel::class.java)
         binding.viewModel = addViewModel
 
         setBrandSpinner()

@@ -1,12 +1,13 @@
 package com.canli.oya.traininventoryroom.common
 
+import android.app.Application
 import android.content.Context
 import com.canli.oya.traininventoryroom.data.*
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFactory
 
 
-fun provideAddTrainFactory(context: Context, chosenTrain: TrainEntry?) : AddTrainFactory {
-    return AddTrainFactory(provideTrainDataSource(context), provideCategoryDataSource(context), provideBrandDataSource(context), chosenTrain)
+fun provideAddTrainFactory(application: Application, chosenTrain: TrainEntry?) : AddTrainFactory {
+    return AddTrainFactory(application, chosenTrain)
 }
 
 fun provideTrainDataSource(context: Context) : TrainDataSource {

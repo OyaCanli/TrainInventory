@@ -13,8 +13,6 @@ class BrandDataSource(private val database: TrainDatabase) {
         return LivePagedListBuilder(factory, BRANDS_PAGE_SIZE).build()
     }
 
-    suspend fun getBrandList() = database.brandDao().getBrandList()
-
     suspend fun insertBrand(brand: BrandEntry) {
         database.brandDao().insert(brand)
     }

@@ -1,24 +1,28 @@
 package com.canli.oya.traininventoryroom.ui.addtrain
 
 
+import android.app.Application
+import android.content.Context
 import androidx.databinding.ObservableField
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.canli.oya.traininventoryroom.data.BrandDataSource
-import com.canli.oya.traininventoryroom.data.CategoryDataSource
-import com.canli.oya.traininventoryroom.data.TrainDataSource
+import com.canli.oya.traininventoryroom.common.provideBrandDataSource
+import com.canli.oya.traininventoryroom.common.provideCategoryDataSource
+import com.canli.oya.traininventoryroom.common.provideTrainDataSource
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import kotlinx.coroutines.launch
 
-class AddTrainViewModel(private val trainDataSource: TrainDataSource,
-                        categoryDataSource : CategoryDataSource,
-                        brandDataSource: BrandDataSource,
-                        private val chosenTrain: TrainEntry?) : ViewModel() {
+class AddTrainViewModel(application: Application,
+                        private val chosenTrain: TrainEntry?) : AndroidViewModel(application) {
+
+    val context: Context = application.applicationContext
+
+    private val trainDataSource = provideTrainDataSource(context)
 
     val trainBeingModified = ObservableField<TrainEntry>()
 
-    val brandList = brandDataSource.getAllBrands()
-    val categoryList  = categoryDataSource.getAllCategories()
+    val brandList = provideBrandDataSource(context).getAllBrands()
+    val categoryList  = provideCategoryDataSource(context).getAllCategories()
 
     var isEdit: Boolean
 
