@@ -3,9 +3,9 @@ package com.canli.oya.traininventoryroom.di
 import android.content.res.Resources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.canli.oya.traininventoryroom.data.BrandDataSource
-import com.canli.oya.traininventoryroom.data.CategoryDataSource
-import com.canli.oya.traininventoryroom.data.TrainDataSource
+import com.canli.oya.traininventoryroom.data.datasource.BrandDataSource
+import com.canli.oya.traininventoryroom.data.datasource.CategoryDataSource
+import com.canli.oya.traininventoryroom.data.datasource.TrainDataSource
 import com.canli.oya.traininventoryroom.ui.brands.BrandViewModel
 import com.canli.oya.traininventoryroom.ui.categories.CategoryViewModel
 import com.canli.oya.traininventoryroom.ui.trains.TrainViewModel

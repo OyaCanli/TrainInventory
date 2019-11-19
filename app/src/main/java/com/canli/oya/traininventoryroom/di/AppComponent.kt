@@ -1,8 +1,9 @@
 package com.canli.oya.traininventoryroom.di
 
-import com.canli.oya.traininventoryroom.data.BrandDataSource
-import com.canli.oya.traininventoryroom.data.CategoryDataSource
-import com.canli.oya.traininventoryroom.data.TrainDataSource
+import com.canli.oya.traininventoryroom.data.TrainDatabase
+import com.canli.oya.traininventoryroom.data.datasource.IBrandDataSource
+import com.canli.oya.traininventoryroom.data.datasource.ICategoryDataSource
+import com.canli.oya.traininventoryroom.data.datasource.ITrainDataSource
 import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
 import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
 import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
@@ -13,14 +14,16 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [AppModule::class])
+@Component(modules = [AppModule::class, DataSourceModule::class])
 interface AppComponent {
 
-    fun exposeTrainDataSource() : TrainDataSource
+    fun exposeTrainDataSource() : ITrainDataSource
 
-    fun exposeBrandDataSource() : BrandDataSource
+    fun exposeBrandDataSource() : IBrandDataSource
 
-    fun exposeCategoryDataSource() : CategoryDataSource
+    fun exposeCategoryDataSource() : ICategoryDataSource
+
+    fun exposeDatabase() : TrainDatabase
 
     fun inject(target: CategoryListFragment)
     fun inject(target: BrandListFragment)

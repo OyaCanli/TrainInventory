@@ -4,6 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.canli.oya.traininventoryroom.data.CategoryEntry
+import com.canli.oya.traininventoryroom.data.FakeCategoryDataSource
+import com.canli.oya.traininventoryroom.di.TestTrainApplication
 import com.canli.oya.traininventoryroom.getOrAwaitValue
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -24,7 +26,7 @@ class CategoryViewModelTest {
 
     @Before
     fun setupViewModel() {
-        categoryViewModel = CategoryViewModel(ApplicationProvider.getApplicationContext())
+        categoryViewModel = CategoryViewModel(FakeCategoryDataSource(), ApplicationProvider.getApplicationContext<TestTrainApplication>().resources)
     }
 
     @Test

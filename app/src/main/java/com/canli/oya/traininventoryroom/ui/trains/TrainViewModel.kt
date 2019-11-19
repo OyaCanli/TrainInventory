@@ -5,19 +5,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.UIState
-import com.canli.oya.traininventoryroom.data.TrainDataSource
 import com.canli.oya.traininventoryroom.data.TrainEntry
+import com.canli.oya.traininventoryroom.data.datasource.ITrainDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class TrainViewModel (private val dataSource: TrainDataSource, resources : Resources) : ViewModel() {
+class TrainViewModel (private val dataSource: ITrainDataSource, resources : Resources) : ViewModel() {
 
     var trainListUiState: UIState = UIState(resources.getString(R.string.no_trains_found))
 
     var trainList = dataSource.getAllTrains()
 
-    fun getChosenTrain(trainId: Int) = dataSource.getChosenTrainLiveData(trainId)
+    fun getChosenTrain(trainId: Int) = dataSource.getChosenTrain(trainId)
 
     fun deleteTrain(train: TrainEntry) {
         viewModelScope.launch(Dispatchers.IO) { dataSource.deleteTrain(train) }

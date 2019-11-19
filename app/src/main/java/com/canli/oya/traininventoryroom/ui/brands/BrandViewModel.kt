@@ -7,13 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.UIState
-import com.canli.oya.traininventoryroom.data.BrandDataSource
 import com.canli.oya.traininventoryroom.data.BrandEntry
+import com.canli.oya.traininventoryroom.data.datasource.IBrandDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class BrandViewModel(private val dataSource : BrandDataSource, resources: Resources) : ViewModel() {
+class BrandViewModel(private val dataSource : IBrandDataSource, resources: Resources) : ViewModel() {
 
     var brandListUiState : UIState = UIState(resources.getString(R.string.no_brands_found))
 

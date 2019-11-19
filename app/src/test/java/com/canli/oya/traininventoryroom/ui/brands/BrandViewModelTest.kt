@@ -4,6 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.canli.oya.traininventoryroom.data.BrandEntry
+import com.canli.oya.traininventoryroom.data.FakeBrandDataSource
+import com.canli.oya.traininventoryroom.di.TestTrainApplication
 import com.canli.oya.traininventoryroom.getOrAwaitValue
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat
@@ -24,7 +26,7 @@ class BrandViewModelTest{
 
     @Before
     fun setupViewModel() {
-        brandViewModel = BrandViewModel(ApplicationProvider.getApplicationContext())
+        brandViewModel = BrandViewModel(FakeBrandDataSource(), ApplicationProvider.getApplicationContext<TestTrainApplication>().resources)
     }
 
     @Test

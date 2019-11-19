@@ -3,10 +3,10 @@ package com.canli.oya.traininventoryroom.ui.addtrain
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.canli.oya.traininventoryroom.data.BrandDataSource
-import com.canli.oya.traininventoryroom.data.CategoryDataSource
-import com.canli.oya.traininventoryroom.data.TrainDataSource
 import com.canli.oya.traininventoryroom.data.TrainEntry
+import com.canli.oya.traininventoryroom.data.datasource.BrandDataSource
+import com.canli.oya.traininventoryroom.data.datasource.CategoryDataSource
+import com.canli.oya.traininventoryroom.data.datasource.TrainDataSource
 import javax.inject.Inject
 
 

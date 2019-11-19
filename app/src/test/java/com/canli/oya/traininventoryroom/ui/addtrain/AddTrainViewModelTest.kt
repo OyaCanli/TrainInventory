@@ -1,8 +1,10 @@
 package com.canli.oya.traininventoryroom.ui.addtrain
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.canli.oya.traininventoryroom.data.FakeBrandDataSource
+import com.canli.oya.traininventoryroom.data.FakeCategoryDataSource
+import com.canli.oya.traininventoryroom.data.FakeTrainDataSource
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -80,8 +82,8 @@ class AddTrainViewModelTest {
         assertThat(addTrainViewModel.isChanged, `is`(true))
     }
 
-    private fun getViewModelForAddCase() = AddTrainViewModel(ApplicationProvider.getApplicationContext(), null)
+    private fun getViewModelForAddCase() = AddTrainViewModel(FakeTrainDataSource(), FakeBrandDataSource(), FakeCategoryDataSource(), null)
 
-    private fun getViewModelForEditCase() = AddTrainViewModel(ApplicationProvider.getApplicationContext(), sampleTrain)
+    private fun getViewModelForEditCase() = AddTrainViewModel(FakeTrainDataSource(), FakeBrandDataSource(), FakeCategoryDataSource(), sampleTrain)
 
 }
