@@ -9,21 +9,25 @@ import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.INTENT_REQUEST_CODE
+import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddCategoryBinding
 import org.jetbrains.anko.toast
+import javax.inject.Inject
 
 
 class AddCategoryFragment : Fragment() {
 
     private lateinit var binding: FragmentAddCategoryBinding
 
-    private val mViewModel by lazy {
-        ViewModelProviders.of(parentFragment!!).get(CategoryViewModel::class.java)
-    }
+    private lateinit var viewModel : CategoryViewModel
+
+    @Inject
+    lateinit var viewModelFactory : TrainInventoryVMFactory
 
     private var mCategoryId: Int = 0
     private var isEditCase: Boolean = false
@@ -40,9 +44,14 @@ class AddCategoryFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        (activity?.application as TrainApplication).appComponent.inject(this)
+
+        viewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(CategoryViewModel::class.java)
+
         if (arguments?.containsKey(INTENT_REQUEST_CODE) == true) { //This is the "edit" case
             isEditCase = true
-            mViewModel.chosenCategory.observe(this@AddCategoryFragment, Observer { categoryEntry ->
+            viewModel.chosenCategory.observe(this@AddCategoryFragment, Observer { categoryEntry ->
                 categoryEntry?.let {
                     binding.chosenCategory = it
                     mCategoryId = it.categoryId
@@ -60,11 +69,11 @@ class AddCategoryFragment : Fragment() {
 
         if(isEditCase){
             val categoryToUpdate = CategoryEntry(mCategoryId, categoryName)
-            mViewModel.updateCategory(categoryToUpdate)
+            viewModel.updateCategory(categoryToUpdate)
         } else {
             val newCategory = CategoryEntry(categoryName = categoryName)
             //Insert the category by the intermediance of view model
-            mViewModel.insertCategory(newCategory)
+            viewModel.insertCategory(newCategory)
         }
 
         //Clear focus and hide soft keyboard

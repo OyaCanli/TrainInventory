@@ -12,24 +12,28 @@ import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.INTENT_REQUEST_CODE
+import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddBrandBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
 import org.jetbrains.anko.toast
 import timber.log.Timber
+import javax.inject.Inject
 
 
 class AddBrandFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentAddBrandBinding
 
-    private val mViewModel by lazy {
-        ViewModelProviders.of(parentFragment!!).get(BrandViewModel::class.java)
-    }
+    private lateinit var viewModel : BrandViewModel
+
+    @Inject
+    lateinit var viewModelFactory : TrainInventoryVMFactory
 
     private var mBrandId: Int = 0
     private var mLogoUri: Uri? = null
@@ -51,9 +55,14 @@ class AddBrandFragment : Fragment(), View.OnClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        (activity?.application as TrainApplication).appComponent.inject(this)
+
+        viewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(BrandViewModel::class.java)
+
         if (arguments?.containsKey(INTENT_REQUEST_CODE) == true) { //This is the "edit" case
             isEditCase = true
-            mViewModel.chosenBrand.observe(this@AddBrandFragment, Observer { brandEntry ->
+            viewModel.chosenBrand.observe(this@AddBrandFragment, Observer { brandEntry ->
                 brandEntry?.let {
                     binding.chosenBrand = it
                     mBrandId = it.brandId
@@ -94,12 +103,12 @@ class AddBrandFragment : Fragment(), View.OnClickListener {
         if (isEditCase) {
             //Construct a new BrandEntry object from this data with ID included
             val brandToUpdate = BrandEntry(mBrandId, brandName, imagePath, webAddress)
-            mViewModel.updateBrand(brandToUpdate)
+            viewModel.updateBrand(brandToUpdate)
         } else {
             //Construct a new BrandEntry object from this data (without ID)
             val newBrand = BrandEntry(brandName = brandName, brandLogoUri = imagePath, webUrl = webAddress)
             //Insert to database in a background thread
-            mViewModel.insertBrand(newBrand)
+            viewModel.insertBrand(newBrand)
         }
 
         context?.toast(R.string.brand_Saved)

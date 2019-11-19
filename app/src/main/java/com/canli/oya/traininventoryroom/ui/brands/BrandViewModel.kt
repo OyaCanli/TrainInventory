@@ -1,27 +1,21 @@
 package com.canli.oya.traininventoryroom.ui.brands
 
-import android.app.Application
-import android.content.Context
-import androidx.lifecycle.AndroidViewModel
+import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.UIState
-import com.canli.oya.traininventoryroom.common.provideBrandDataSource
 import com.canli.oya.traininventoryroom.data.BrandDataSource
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class BrandViewModel(application: Application) : AndroidViewModel(application) {
+class BrandViewModel(private val dataSource : BrandDataSource, resources: Resources) : ViewModel() {
 
-    val context: Context = application.applicationContext
-
-    private val dataSource : BrandDataSource = provideBrandDataSource(context)
-
-    var brandListUiState : UIState = UIState(context.resources.getString(R.string.no_brands_found))
+    var brandListUiState : UIState = UIState(resources.getString(R.string.no_brands_found))
 
     var brandList = dataSource.getAllBrands()
 

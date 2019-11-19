@@ -3,10 +3,11 @@ package com.canli.oya.traininventoryroom.data
 import androidx.lifecycle.LiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import javax.inject.Inject
 
 const val CATEGORIES_PAGE_SIZE = 15
 
-class CategoryDataSource(private val database: TrainDatabase) {
+class CategoryDataSource @Inject constructor(private val database: TrainDatabase) {
 
     fun getAllCategories(): LiveData<PagedList<CategoryEntry>> {
         val factory = database.categoryDao().allCategories

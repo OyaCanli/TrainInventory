@@ -12,17 +12,20 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.*
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
+import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
 import kotlinx.coroutines.*
 import org.jetbrains.anko.toast
 import timber.log.Timber
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 
@@ -30,7 +33,10 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
 
     private lateinit var binding: BrandCategoryList
 
-    private val mViewModel by viewModels<CategoryViewModel>()
+    private lateinit var viewModel : CategoryViewModel
+
+    @Inject
+    lateinit var viewModelFactory : TrainInventoryVMFactory
 
     private lateinit var categoryListJob: Job
 
@@ -69,11 +75,15 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        binding.includedList.uiState = mViewModel.categoryListUiState
+        (activity?.application as TrainApplication).appComponent.inject(this)
 
-        mViewModel.categoryList.observe(this, Observer { categoryEntries ->
+        viewModel = ViewModelProvider(this, viewModelFactory).get(CategoryViewModel::class.java)
+
+        binding.includedList.uiState = viewModel.categoryListUiState
+
+        viewModel.categoryList.observe(this, Observer { categoryEntries ->
             if (categoryEntries.isNullOrEmpty()) {
-                mViewModel.categoryListUiState.showEmpty = true
+                viewModel.categoryListUiState.showEmpty = true
                 val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
                 binding.includedList.emptyImage.startAnimation(animation)
                 if (!addFragVisible) {
@@ -82,13 +92,13 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
             } else {
                 mAdapter.submitList(categoryEntries)
                 mCategories = categoryEntries
-                mViewModel.categoryListUiState.showList = true
+                viewModel.categoryListUiState.showList = true
             }
         })
 
         activity?.title = getString(R.string.all_categories)
 
-        mViewModel.isChildFragVisible.observe(this, Observer { isChildFragVisible ->
+        viewModel.isChildFragVisible.observe(this, Observer { isChildFragVisible ->
             addFragVisible = isChildFragVisible
         })
 
@@ -99,14 +109,14 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
         Timber.d("delete is confirmed")
         launch {
             //First check whether this category is used by trains table
-            val isUsed = withContext(Dispatchers.IO) { mViewModel.isThisCategoryUsed(itemToDelete.categoryName) }
+            val isUsed = withContext(Dispatchers.IO) { viewModel.isThisCategoryUsed(itemToDelete.categoryName) }
             if (isUsed) {
                 // If it is used, show a warning and don't let user delete this
                 context?.toast(R.string.cannot_erase_category)
                 mAdapter.cancelDelete(position)
             } else {
                 //If it is not used, erase the category
-                mViewModel.deleteCategory(itemToDelete)
+                viewModel.deleteCategory(itemToDelete)
                 mAdapter.itemDeleted(position)
             }
         }
@@ -143,7 +153,7 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_add) {
-            val icon : Int = if (mViewModel.isChildFragVisible.value == false) {
+            val icon : Int = if (viewModel.isChildFragVisible.value == false) {
                 openAddCategoryFragment()
                 R.drawable.avd_cross_to_plus
             } else {
@@ -176,7 +186,7 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
             childFrag?.let { remove(it) }
         }
-        mViewModel.setIsChildFragVisible(false)
+        viewModel.setIsChildFragVisible(false)
     }
 
     private fun openAddCategoryFragment() {
@@ -185,7 +195,7 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
             setCustomAnimations(R.anim.translate_from_top, 0)
                     .replace(R.id.list_addFrag_container, addCatFrag)
         }
-        mViewModel.setIsChildFragVisible(true)
+        viewModel.setIsChildFragVisible(true)
     }
 
     override fun onCategoryItemClicked(view: View, category: CategoryEntry) {
@@ -198,12 +208,12 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
 
     private fun editCategory(chosenCategory : CategoryEntry) {
         Timber.d("Edit category is called")
-        mViewModel.setChosenCategory(chosenCategory)
+        viewModel.setChosenCategory(chosenCategory)
         val addCategoryFrag = AddCategoryFragment()
         val args = Bundle()
         args.putString(INTENT_REQUEST_CODE, EDIT_CASE)
         addCategoryFrag.arguments = args
-        mViewModel.setIsChildFragVisible(true)
+        viewModel.setIsChildFragVisible(true)
         childFragmentManager.commit {
             setCustomAnimations(R.anim.translate_from_top, 0)
                     .replace(R.id.list_addFrag_container, addCategoryFrag)

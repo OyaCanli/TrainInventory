@@ -8,7 +8,7 @@
         android:required="false" />
 
     <application
-        android:name=".common.TrainApplication"
+        android:name=".di.TrainApplication"
         android:allowBackup="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:icon="@mipmap/ic_launcher"
@@ -17,11 +17,10 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name="com.canli.oya.traininventoryroom.ui.MainActivity"
+        <activity android:name="com.canli.oya.traininventoryroom.ui.common.MainActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

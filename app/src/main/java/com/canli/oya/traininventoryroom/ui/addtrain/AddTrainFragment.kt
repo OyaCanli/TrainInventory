@@ -18,7 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.CHOSEN_TRAIN
-import com.canli.oya.traininventoryroom.common.provideAddTrainFactory
+import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
@@ -27,6 +27,7 @@ import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
 import com.github.dhaval2404.imagepicker.ImagePicker
 import org.jetbrains.anko.toast
 import timber.log.Timber
+import javax.inject.Inject
 
 
 class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSelectedListener {
@@ -34,6 +35,9 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     private lateinit var binding: FragmentAddTrainBinding
 
     private lateinit var addViewModel: AddTrainViewModel
+
+    @Inject
+    lateinit var viewModelFactory : AddTrainFactory
 
     private var isEdit: Boolean = false
 
@@ -73,7 +77,15 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
 
         chosenTrain = arguments?.getParcelable(CHOSEN_TRAIN)
 
-        addViewModel = ViewModelProvider(this, provideAddTrainFactory(requireActivity().application, chosenTrain)).get(AddTrainViewModel::class.java)
+        val app = (activity?.application as TrainApplication)
+        val appComponent = app.appComponent
+        DaggerAddTrainComponent.builder()
+                .appComponent(appComponent)
+                .bindChosenTrain(chosenTrain)
+                .build()
+                .inject(this)
+
+        addViewModel = ViewModelProvider(this, viewModelFactory).get(AddTrainViewModel::class.java)
         binding.viewModel = addViewModel
 
         setBrandSpinner()

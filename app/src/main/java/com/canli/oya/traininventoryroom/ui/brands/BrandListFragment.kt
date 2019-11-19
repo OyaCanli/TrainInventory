@@ -15,17 +15,20 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.*
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
+import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
 import kotlinx.coroutines.*
 import org.jetbrains.anko.toast
 import timber.log.Timber
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListener<BrandEntry>, CoroutineScope {
@@ -40,7 +43,10 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
 
     private lateinit var binding: BrandCategoryList
 
-    private val mViewModel by viewModels<BrandViewModel>()
+    private lateinit var viewModel : BrandViewModel
+
+    @Inject
+    lateinit var viewModelFactory : TrainInventoryVMFactory
 
     private var addMenuItem: MenuItem? = null
 
@@ -71,11 +77,15 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        binding.includedList.uiState = mViewModel.brandListUiState
+        (activity?.application as TrainApplication).appComponent.inject(this)
 
-        mViewModel.brandList.observe(this, Observer { brandEntries ->
+        viewModel = ViewModelProvider(this, viewModelFactory).get(BrandViewModel::class.java)
+
+        binding.includedList.uiState = viewModel.brandListUiState
+
+        viewModel.brandList.observe(this, Observer { brandEntries ->
             if (brandEntries.isNullOrEmpty()) {
-                mViewModel.brandListUiState.showEmpty = true
+                viewModel.brandListUiState.showEmpty = true
                 val slideAnim = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
                 binding.includedList.emptyImage.startAnimation(slideAnim)
                 if(!addFragVisible) {
@@ -85,13 +95,13 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
                 Timber.d("fragment_list size : ${brandEntries.size}")
                 mAdapter.submitList(brandEntries)
                 brands = brandEntries
-                mViewModel.brandListUiState.showList = true
+                viewModel.brandListUiState.showList = true
             }
         })
 
         activity?.title = getString(R.string.all_brands)
 
-        mViewModel.isChildFragVisible.observe(this, Observer { isChildFragVisible ->
+        viewModel.isChildFragVisible.observe(this, Observer { isChildFragVisible ->
             addFragVisible = isChildFragVisible
         })
 
@@ -109,7 +119,7 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_add) {
-            val icon : Int = if (mViewModel.isChildFragVisible.value == false) {
+            val icon : Int = if (viewModel.isChildFragVisible.value == false) {
                 openAddBrandFragment()
                 R.drawable.avd_cross_to_plus
             } else {
@@ -160,7 +170,7 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
             setCustomAnimations(R.anim.translate_from_top, 0)
                     .replace(R.id.list_addFrag_container, addBrandFrag)
         }
-        mViewModel.setIsChildFragVisible(true)
+        viewModel.setIsChildFragVisible(true)
     }
 
     private fun removeAddBrandFragment() {
@@ -169,7 +179,7 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
             childFrag?.let { remove(it) }
         }
-        mViewModel.setIsChildFragVisible(false)
+        viewModel.setIsChildFragVisible(false)
     }
 
     override fun onBrandItemClicked(view: View, clickedBrand: BrandEntry) {
@@ -183,14 +193,14 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
     override fun onDeleteConfirmed(itemToDelete: BrandEntry, position: Int) {
         launch {
             //Check whether this brand is used in trains table.
-            val isUsed = withContext(Dispatchers.IO) { mViewModel.isThisBrandUsed(itemToDelete.brandName) }
+            val isUsed = withContext(Dispatchers.IO) { viewModel.isThisBrandUsed(itemToDelete.brandName) }
             if (isUsed) {
                 // If it is used, show a warning and don't let the user delete this
                 context?.toast(R.string.cannot_erase_brand)
                 mAdapter.notifyItemChanged(position)
             } else {
                 //If it is not used delete the brand
-                mViewModel.deleteBrand(itemToDelete)
+                viewModel.deleteBrand(itemToDelete)
                 mAdapter.itemDeleted(position)
             }
         }
@@ -199,12 +209,12 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
     override fun onDeleteCanceled(position: Int) = mAdapter.cancelDelete(position)
 
     private fun editBrand(clickedBrand: BrandEntry) {
-        mViewModel.setChosenBrand(clickedBrand)
+        viewModel.setChosenBrand(clickedBrand)
         val addBrandFrag = AddBrandFragment()
         val args = Bundle()
         args.putString(INTENT_REQUEST_CODE, EDIT_CASE)
         addBrandFrag.arguments = args
-        mViewModel.setIsChildFragVisible(true)
+        viewModel.setIsChildFragVisible(true)
         childFragmentManager.commit {
             setCustomAnimations(R.anim.translate_from_top, 0)
                     .replace(R.id.list_addFrag_container, addBrandFrag)

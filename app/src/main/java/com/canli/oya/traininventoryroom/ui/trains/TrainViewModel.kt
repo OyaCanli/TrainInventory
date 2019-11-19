@@ -1,24 +1,19 @@
 package com.canli.oya.traininventoryroom.ui.trains
 
-import android.app.Application
-import android.content.Context
-import androidx.lifecycle.AndroidViewModel
+import android.content.res.Resources
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.UIState
-import com.canli.oya.traininventoryroom.common.provideTrainDataSource
 import com.canli.oya.traininventoryroom.data.TrainDataSource
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class TrainViewModel(application: Application) : AndroidViewModel(application) {
 
-    val context: Context = application.applicationContext
+class TrainViewModel (private val dataSource: TrainDataSource, resources : Resources) : ViewModel() {
 
-    private val dataSource: TrainDataSource = provideTrainDataSource(context)
-
-    var trainListUiState: UIState = UIState(context.resources.getString(R.string.no_trains_found))
+    var trainListUiState: UIState = UIState(resources.getString(R.string.no_trains_found))
 
     var trainList = dataSource.getAllTrains()
 

@@ -1,28 +1,20 @@
 package com.canli.oya.traininventoryroom.ui.categories
 
-import android.app.Application
-import android.content.Context
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+
+import android.content.res.Resources
+import androidx.lifecycle.*
 import androidx.paging.PagedList
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.UIState
-import com.canli.oya.traininventoryroom.common.provideCategoryDataSource
 import com.canli.oya.traininventoryroom.data.CategoryDataSource
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class CategoryViewModel(application: Application) : AndroidViewModel(application) {
+class CategoryViewModel(private val dataSource : CategoryDataSource, resources : Resources) : ViewModel() {
 
-    val context: Context = application.applicationContext
-
-    private val dataSource : CategoryDataSource = provideCategoryDataSource(context)
-
-    var categoryListUiState = UIState(context.resources.getString(R.string.no_categories_found))
+    var categoryListUiState = UIState(resources.getString(R.string.no_categories_found))
 
     var categoryList : LiveData<PagedList<CategoryEntry>> = dataSource.getAllCategories()
 
@@ -35,6 +27,7 @@ class CategoryViewModel(application: Application) : AndroidViewModel(application
     }
 
     var isChildFragVisible : LiveData<Boolean> = _isChildFragVisible
+        private set
 
     fun setIsChildFragVisible(isVisible : Boolean) {
         _isChildFragVisible.value = isVisible

@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.ui
+package com.canli.oya.traininventoryroom.ui.common
 
 import android.content.Context
 import android.os.Bundle
@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     private val trainListFragment by lazy { TrainListFragment() }
     private val brandListFragment by lazy { BrandListFragment() }
     private val categoryListFragment by lazy { CategoryListFragment() }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

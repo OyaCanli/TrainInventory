@@ -11,23 +11,29 @@ import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.*
 import com.canli.oya.traininventoryroom.data.TrainMinimal
 import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
+import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListener<TrainMinimal>, CoroutineScope {
 
-    private val mViewModel by viewModels<TrainViewModel>()
+    private lateinit var viewModel : TrainViewModel
+
+    @Inject
+    lateinit var viewModelFactory : TrainInventoryVMFactory
 
     private lateinit var trainListJob: Job
 
@@ -63,7 +69,11 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        binding.uiState = mViewModel.trainListUiState
+        (activity?.application as TrainApplication).appComponent.inject(this)
+
+        viewModel = ViewModelProvider(this, viewModelFactory).get(TrainViewModel::class.java)
+
+        binding.uiState = viewModel.trainListUiState
 
         arguments?.run {
             when (this.getString(INTENT_REQUEST_CODE)) {
@@ -71,7 +81,7 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
                 TRAINS_OF_BRAND -> {
                     val brandName = this.getString(BRAND_NAME) ?: return
                     activity?.title = getString(R.string.trains_of_the_brand, brandName)
-                    mViewModel.getTrainsFromThisBrand(brandName).observe(this@TrainListFragment, Observer { trainEntries ->
+                    viewModel.getTrainsFromThisBrand(brandName).observe(this@TrainListFragment, Observer { trainEntries ->
                         evaluateResults(trainEntries, getString(R.string.no_train_for_this_brand))
                     })
                 }
@@ -79,14 +89,14 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
                 TRAINS_OF_CATEGORY -> {
                     val categoryName = this.getString(CATEGORY_NAME) ?: return
                     activity?.title = getString(R.string.all_from_this_Category, categoryName)
-                    mViewModel.getTrainsFromThisCategory(categoryName).observe(this@TrainListFragment, Observer { trainEntries ->
+                    viewModel.getTrainsFromThisCategory(categoryName).observe(this@TrainListFragment, Observer { trainEntries ->
                         evaluateResults(trainEntries, getString(R.string.no_train_for_this_category))
                     })
                 }
                 else -> {
                     //If the fragment_list is going to be use for showing all trains, which is the default behaviour
                     activity?.title = getString(R.string.all_trains)
-                    mViewModel.trainList.observe(this@TrainListFragment, Observer { trainEntries ->
+                    viewModel.trainList.observe(this@TrainListFragment, Observer { trainEntries ->
                         evaluateResults(trainEntries, getString(R.string.no_trains_found), true)
                     })
                 }
@@ -98,8 +108,8 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
 
     private fun evaluateResults(trainEntries: PagedList<TrainMinimal>?, message: String, noTrain : Boolean = false) {
         if (trainEntries.isNullOrEmpty()) {
-            mViewModel.trainListUiState.emptyMessage = message
-            mViewModel.trainListUiState.showEmpty = true
+            viewModel.trainListUiState.emptyMessage = message
+            viewModel.trainListUiState.showEmpty = true
             animateTrainLogo()
             if(noTrain) {
                 blinkAddMenuItem()
@@ -107,7 +117,7 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
         } else {
             mAdapter.submitList(trainEntries)
             mTrainList = trainEntries
-            mViewModel.trainListUiState.showList = true
+            viewModel.trainListUiState.showList = true
         }
     }
 
@@ -160,10 +170,10 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
         if (query.isNullOrBlank()) {
             mAdapter.submitList(mTrainList)
         } else {
-            mViewModel.searchInTrains(query).observe(this, Observer { filteredTrains ->
+            viewModel.searchInTrains(query).observe(this, Observer { filteredTrains ->
                 if(filteredTrains.isNotEmpty()){
                     mAdapter.submitList(filteredTrains)
-                    mViewModel.searchInTrains(query).removeObservers(this)
+                    viewModel.searchInTrains(query).removeObservers(this)
                 }
             })
         }
@@ -200,7 +210,7 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
     }
 
     override fun onDeleteConfirmed(itemToDelete: TrainMinimal, position: Int) {
-        mViewModel.deleteTrain(itemToDelete.trainId)
+        viewModel.deleteTrain(itemToDelete.trainId)
         mAdapter.itemDeleted(position)
     }
 

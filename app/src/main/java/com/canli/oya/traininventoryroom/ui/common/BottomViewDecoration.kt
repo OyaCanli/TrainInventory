@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.ui
+package com.canli.oya.traininventoryroom.ui.main
 
 import android.content.Context
 import android.util.AttributeSet

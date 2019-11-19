@@ -5,21 +5,27 @@ import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.CHOSEN_TRAIN
 import com.canli.oya.traininventoryroom.common.TRAIN_ID
+import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentTrainDetailsBinding
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
 
 class TrainDetailsFragment : androidx.fragment.app.Fragment() {
 
     private lateinit var binding: FragmentTrainDetailsBinding
     private lateinit var mChosenTrain: TrainEntry
-    private val mViewModel by viewModels<TrainViewModel>()
+    private lateinit var viewModel : TrainViewModel
+
+    @Inject
+    lateinit var viewModelFactory : TrainInventoryVMFactory
     private var trainId = 0
 
     private val disposable = CompositeDisposable()
@@ -37,7 +43,11 @@ class TrainDetailsFragment : androidx.fragment.app.Fragment() {
 
         trainId = arguments?.getInt(TRAIN_ID) ?: 0
 
-        mViewModel.getChosenTrain(trainId).observe(this, Observer { trainEntry ->
+        (activity?.application as TrainApplication).appComponent.inject(this)
+
+        viewModel = ViewModelProvider(this, viewModelFactory).get(TrainViewModel::class.java)
+
+        viewModel.getChosenTrain(trainId).observe(this, Observer { trainEntry ->
             trainEntry?.let {
                 binding.chosenTrain = it
                 mChosenTrain = it
@@ -80,7 +90,7 @@ class TrainDetailsFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun deleteTrain() {
-        mViewModel.deleteTrain(mChosenTrain)
+        viewModel.deleteTrain(mChosenTrain)
         fragmentManager?.popBackStack()
     }
 

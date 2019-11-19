@@ -15,7 +15,7 @@
         android:paddingEnd="@dimen/padding_standard"
         android:paddingBottom="@dimen/padding_standard"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context=".ui.MainActivity"
+        tools:context=".ui.main.MainActivity"
         tools:showIn="@layout/activity_main">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -47,7 +47,7 @@
             app:srcCompat="@drawable/ic_train"
             app:visible="@{uiState.showEmpty}" />
 
-        <com.canli.oya.traininventoryroom.ui.IconTextView
+        <com.canli.oya.traininventoryroom.ui.main.IconTextView
             android:id="@+id/empty_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
