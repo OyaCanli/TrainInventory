@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.data.datasource
+package com.canli.oya.traininventoryroom.data.source
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList

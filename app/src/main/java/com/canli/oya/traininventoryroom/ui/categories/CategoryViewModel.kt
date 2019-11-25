@@ -9,12 +9,15 @@ import androidx.lifecycle.viewModelScope
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.UIState
 import com.canli.oya.traininventoryroom.data.CategoryEntry
-import com.canli.oya.traininventoryroom.data.datasource.ICategoryDataSource
+import com.canli.oya.traininventoryroom.data.source.ICategoryDataSource
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class CategoryViewModel(private val dataSource : ICategoryDataSource, resources : Resources) : ViewModel() {
+class CategoryViewModel(private val dataSource : ICategoryDataSource,
+                        resources : Resources,
+                        private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
 
     var categoryListUiState = UIState(resources.getString(R.string.no_categories_found))
 
@@ -44,15 +47,15 @@ class CategoryViewModel(private val dataSource : ICategoryDataSource, resources 
     }
 
     fun deleteCategory(category: CategoryEntry) {
-        viewModelScope.launch(Dispatchers.IO) { dataSource.deleteCategory(category) }
+        viewModelScope.launch(ioDispatcher) { dataSource.deleteCategory(category) }
     }
 
     fun insertCategory(category: CategoryEntry) {
-        viewModelScope.launch(Dispatchers.IO) { dataSource.insertCategory(category) }
+        viewModelScope.launch(ioDispatcher) { dataSource.insertCategory(category) }
     }
 
     fun updateCategory(category: CategoryEntry){
-        viewModelScope.launch(Dispatchers.IO) { dataSource.updateCategory(category) }
+        viewModelScope.launch(ioDispatcher) { dataSource.updateCategory(category) }
     }
 
     fun isThisCategoryUsed(category: String): Boolean {

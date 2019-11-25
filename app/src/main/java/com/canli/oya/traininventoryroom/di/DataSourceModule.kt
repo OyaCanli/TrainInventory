@@ -1,6 +1,6 @@
 package com.canli.oya.traininventoryroom.di
 
-import com.canli.oya.traininventoryroom.data.datasource.*
+import com.canli.oya.traininventoryroom.data.source.*
 import dagger.Binds
 import dagger.Module
 

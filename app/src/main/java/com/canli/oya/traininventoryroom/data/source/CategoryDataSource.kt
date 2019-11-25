@@ -1,10 +1,11 @@
-package com.canli.oya.traininventoryroom.data.datasource
+package com.canli.oya.traininventoryroom.data.source
 
 import androidx.lifecycle.LiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.data.TrainDatabase
+import timber.log.Timber
 import javax.inject.Inject
 
 const val CATEGORIES_PAGE_SIZE = 15
@@ -12,6 +13,7 @@ const val CATEGORIES_PAGE_SIZE = 15
 class CategoryDataSource @Inject constructor(private val database: TrainDatabase) : ICategoryDataSource {
 
     override fun getAllCategories(): LiveData<PagedList<CategoryEntry>> {
+        Timber.d("getAllCategories is called")
         val factory = database.categoryDao().allCategories
         return LivePagedListBuilder(factory, CATEGORIES_PAGE_SIZE).build()
     }

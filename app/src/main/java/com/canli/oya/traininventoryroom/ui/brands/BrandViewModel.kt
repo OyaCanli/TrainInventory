@@ -8,12 +8,15 @@ import androidx.lifecycle.viewModelScope
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.UIState
 import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.data.datasource.IBrandDataSource
+import com.canli.oya.traininventoryroom.data.source.IBrandDataSource
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class BrandViewModel(private val dataSource : IBrandDataSource, resources: Resources) : ViewModel() {
+class BrandViewModel(private val dataSource : IBrandDataSource,
+                     resources: Resources,
+                     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
 
     var brandListUiState : UIState = UIState(resources.getString(R.string.no_brands_found))
 
@@ -42,7 +45,7 @@ class BrandViewModel(private val dataSource : IBrandDataSource, resources: Resou
     }
 
     fun insertBrand(brand: BrandEntry) {
-        viewModelScope.launch(Dispatchers.IO) { dataSource.insertBrand(brand) }
+        viewModelScope.launch(ioDispatcher) { dataSource.insertBrand(brand) }
     }
 
     suspend fun deleteBrand(brand: BrandEntry) {
@@ -50,7 +53,7 @@ class BrandViewModel(private val dataSource : IBrandDataSource, resources: Resou
     }
 
     fun updateBrand(brand: BrandEntry) {
-        viewModelScope.launch(Dispatchers.IO) { dataSource.updateBrand(brand) }
+        viewModelScope.launch(ioDispatcher) { dataSource.updateBrand(brand) }
     }
 
     fun isThisBrandUsed(brandName: String): Boolean {

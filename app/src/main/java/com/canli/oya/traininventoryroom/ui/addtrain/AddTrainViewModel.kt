@@ -5,12 +5,12 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.canli.oya.traininventoryroom.data.TrainEntry
-import com.canli.oya.traininventoryroom.data.datasource.IBrandDataSource
-import com.canli.oya.traininventoryroom.data.datasource.ICategoryDataSource
-import com.canli.oya.traininventoryroom.data.datasource.ITrainDataSource
+import com.canli.oya.traininventoryroom.data.source.IBrandDataSource
+import com.canli.oya.traininventoryroom.data.source.ICategoryDataSource
+import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import kotlinx.coroutines.launch
 
-class AddTrainViewModel(private val trainDataSource : ITrainDataSource,
+class AddTrainViewModel(val trainDataSource : ITrainDataSource,
                         brandDataSource: IBrandDataSource,
                         categoryDataSource : ICategoryDataSource,
                         private val chosenTrain: TrainEntry?) : ViewModel() {

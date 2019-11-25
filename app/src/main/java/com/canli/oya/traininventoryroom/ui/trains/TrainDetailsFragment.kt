@@ -10,12 +10,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.CHOSEN_TRAIN
 import com.canli.oya.traininventoryroom.common.TRAIN_ID
-import com.canli.oya.traininventoryroom.di.TrainApplication
-import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentTrainDetailsBinding
+import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
-import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
 class TrainDetailsFragment : androidx.fragment.app.Fragment() {
@@ -28,7 +27,6 @@ class TrainDetailsFragment : androidx.fragment.app.Fragment() {
     lateinit var viewModelFactory : TrainInventoryVMFactory
     private var trainId = 0
 
-    private val disposable = CompositeDisposable()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
@@ -92,13 +90,6 @@ class TrainDetailsFragment : androidx.fragment.app.Fragment() {
     private fun deleteTrain() {
         viewModel.deleteTrain(mChosenTrain)
         fragmentManager?.popBackStack()
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        // clear all the subscription
-        disposable.clear()
     }
 
 }

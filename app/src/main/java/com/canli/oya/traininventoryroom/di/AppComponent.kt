@@ -1,9 +1,9 @@
 package com.canli.oya.traininventoryroom.di
 
 import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.data.datasource.IBrandDataSource
-import com.canli.oya.traininventoryroom.data.datasource.ICategoryDataSource
-import com.canli.oya.traininventoryroom.data.datasource.ITrainDataSource
+import com.canli.oya.traininventoryroom.data.source.IBrandDataSource
+import com.canli.oya.traininventoryroom.data.source.ICategoryDataSource
+import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
 import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
 import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
