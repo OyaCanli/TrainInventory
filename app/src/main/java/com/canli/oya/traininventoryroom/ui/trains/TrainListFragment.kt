@@ -81,7 +81,7 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
                 TRAINS_OF_BRAND -> {
                     val brandName = this.getString(BRAND_NAME) ?: return
                     activity?.title = getString(R.string.trains_of_the_brand, brandName)
-                    viewModel.getTrainsFromThisBrand(brandName).observe(this@TrainListFragment, Observer { trainEntries ->
+                    viewModel.getTrainsFromThisBrand(brandName).observe(viewLifecycleOwner, Observer { trainEntries ->
                         evaluateResults(trainEntries, getString(R.string.no_train_for_this_brand))
                     })
                 }
@@ -89,14 +89,14 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
                 TRAINS_OF_CATEGORY -> {
                     val categoryName = this.getString(CATEGORY_NAME) ?: return
                     activity?.title = getString(R.string.all_from_this_Category, categoryName)
-                    viewModel.getTrainsFromThisCategory(categoryName).observe(this@TrainListFragment, Observer { trainEntries ->
+                    viewModel.getTrainsFromThisCategory(categoryName).observe(viewLifecycleOwner, Observer { trainEntries ->
                         evaluateResults(trainEntries, getString(R.string.no_train_for_this_category))
                     })
                 }
                 else -> {
                     //If the fragment_list is going to be use for showing all trains, which is the default behaviour
                     activity?.title = getString(R.string.all_trains)
-                    viewModel.trainList.observe(this@TrainListFragment, Observer { trainEntries ->
+                    viewModel.trainList.observe(viewLifecycleOwner, Observer { trainEntries ->
                         evaluateResults(trainEntries, getString(R.string.no_trains_found), true)
                     })
                 }
@@ -123,16 +123,16 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
 
     private fun blinkAddMenuItem() {
         if (Build.VERSION.SDK_INT >= 23) {
-            val blinkingAnim = addMenuItem?.icon as AnimatedVectorDrawable
-            blinkingAnim.clearAnimationCallbacks()
-            blinkingAnim.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+            val blinkingAnim = addMenuItem?.icon as? AnimatedVectorDrawable
+            blinkingAnim?.clearAnimationCallbacks()
+            blinkingAnim?.registerAnimationCallback(object : Animatable2.AnimationCallback() {
                 override fun onAnimationStart(drawable: Drawable) {}
 
                 override fun onAnimationEnd(drawable: Drawable) {
-                    blinkingAnim.reset()
+                    blinkingAnim?.reset()
                 }
             })
-            blinkingAnim.start()
+            blinkingAnim?.start()
         }
     }
 
@@ -183,8 +183,8 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
         if (item.itemId == R.id.action_add) {
             if (Build.VERSION.SDK_INT >= 23) {
                 addMenuItem?.setIcon(R.drawable.avd_plus_to_save)
-                val anim = addMenuItem?.icon as AnimatedVectorDrawable
-                anim.start()
+                val anim = addMenuItem?.icon as? AnimatedVectorDrawable
+                anim?.start()
             }
             openAddTrainFragment()
 

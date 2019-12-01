@@ -16,10 +16,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.INTENT_REQUEST_CODE
-import com.canli.oya.traininventoryroom.di.TrainApplication
-import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddBrandBinding
+import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.github.dhaval2404.imagepicker.ImagePicker
 import org.jetbrains.anko.toast
 import timber.log.Timber
@@ -62,7 +62,7 @@ class AddBrandFragment : Fragment(), View.OnClickListener {
 
         if (arguments?.containsKey(INTENT_REQUEST_CODE) == true) { //This is the "edit" case
             isEditCase = true
-            viewModel.chosenBrand.observe(this@AddBrandFragment, Observer { brandEntry ->
+            viewModel.chosenBrand.observe(viewLifecycleOwner, Observer { brandEntry ->
                 brandEntry?.let {
                     binding.chosenBrand = it
                     mBrandId = it.brandId

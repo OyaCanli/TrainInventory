@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.*
 import android.view.animation.AnimationUtils
 import androidx.annotation.DrawableRes
+import androidx.annotation.VisibleForTesting
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -33,10 +34,10 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
 
     private lateinit var binding: BrandCategoryList
 
-    private lateinit var viewModel : CategoryViewModel
-
     @Inject
     lateinit var viewModelFactory : TrainInventoryVMFactory
+
+    private lateinit var viewModel : CategoryViewModel
 
     private lateinit var categoryListJob: Job
 
@@ -46,7 +47,8 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
     private lateinit var mAdapter: CategoryAdapter
     private var mCategories: List<CategoryEntry> = emptyList()
 
-    private var addMenuItem: MenuItem? = null
+    @VisibleForTesting
+    var addMenuItem: MenuItem? = null
 
     private var addFragVisible = false
 
@@ -75,13 +77,15 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        Timber.d("onActivityCreated is called")
+
         (activity?.application as TrainApplication).appComponent.inject(this)
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(CategoryViewModel::class.java)
 
         binding.includedList.uiState = viewModel.categoryListUiState
 
-        viewModel.categoryList.observe(this, Observer { categoryEntries ->
+        viewModel.categoryList.observe(viewLifecycleOwner, Observer { categoryEntries ->
             if (categoryEntries.isNullOrEmpty()) {
                 viewModel.categoryListUiState.showEmpty = true
                 val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
@@ -98,7 +102,7 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
 
         activity?.title = getString(R.string.all_categories)
 
-        viewModel.isChildFragVisible.observe(this, Observer { isChildFragVisible ->
+        viewModel.isChildFragVisible.observe(viewLifecycleOwner, Observer { isChildFragVisible ->
             addFragVisible = isChildFragVisible
         })
 
@@ -127,9 +131,9 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
     private fun blinkAddMenuItem() {
         if (Build.VERSION.SDK_INT >= 23) {
             addMenuItem?.setIcon(R.drawable.avd_blinking_plus)
-            val blinkingAnim = addMenuItem?.icon as AnimatedVectorDrawable
-            blinkingAnim.clearAnimationCallbacks()
-            blinkingAnim.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+            val blinkingAnim = addMenuItem?.icon as? AnimatedVectorDrawable
+            blinkingAnim?.clearAnimationCallbacks()
+            blinkingAnim?.registerAnimationCallback(object : Animatable2.AnimationCallback() {
                 override fun onAnimationStart(drawable: Drawable) {}
 
                 override fun onAnimationEnd(drawable: Drawable) {
@@ -138,11 +142,12 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
                     }
                 }
             })
-            blinkingAnim.start()
+            blinkingAnim?.start()
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        Timber.d("onCreateOptionsMEnu is created")
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_add_item, menu)
         addMenuItem = menu.getItem(0)
@@ -167,16 +172,16 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
 
     private fun startAnimationOnMenuItem(item: MenuItem, @DrawableRes iconRes : Int) {
         if (Build.VERSION.SDK_INT >= 23) {
-            val avd: AnimatedVectorDrawable = item.icon as AnimatedVectorDrawable
-            avd.clearAnimationCallbacks()
-            avd.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+            val avd = item.icon as? AnimatedVectorDrawable
+            avd?.clearAnimationCallbacks()
+            avd?.registerAnimationCallback(object : Animatable2.AnimationCallback() {
                 override fun onAnimationStart(drawable: Drawable) {}
 
                 override fun onAnimationEnd(drawable: Drawable) {
                     item.setIcon(iconRes)
                 }
             })
-            avd.start()
+            avd?.start()
         }
     }
 

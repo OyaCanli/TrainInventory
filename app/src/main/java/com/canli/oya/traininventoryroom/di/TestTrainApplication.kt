@@ -1,6 +1,6 @@
 package com.canli.oya.traininventoryroom.di
 
-import com.canli.oya.traininventoryroom.di.TrainApplication
+//This class is used by Roboelectric, when unit tests require a simulation of Android framework
 
 class TestTrainApplication : TrainApplication(){
 

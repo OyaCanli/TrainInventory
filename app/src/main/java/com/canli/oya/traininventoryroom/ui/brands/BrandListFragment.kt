@@ -83,7 +83,7 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
 
         binding.includedList.uiState = viewModel.brandListUiState
 
-        viewModel.brandList.observe(this, Observer { brandEntries ->
+        viewModel.brandList.observe(viewLifecycleOwner, Observer { brandEntries ->
             if (brandEntries.isNullOrEmpty()) {
                 viewModel.brandListUiState.showEmpty = true
                 val slideAnim = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
@@ -101,7 +101,7 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
 
         activity?.title = getString(R.string.all_brands)
 
-        viewModel.isChildFragVisible.observe(this, Observer { isChildFragVisible ->
+        viewModel.isChildFragVisible.observe(viewLifecycleOwner, Observer { isChildFragVisible ->
             addFragVisible = isChildFragVisible
         })
 
@@ -131,27 +131,27 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
         return super.onOptionsItemSelected(item)
     }
 
-    private fun startAnimationOnMenuItem(item: MenuItem, @DrawableRes iconRes : Int) {
+    private fun startAnimationOnMenuItem(item: MenuItem?, @DrawableRes iconRes : Int) {
         if (Build.VERSION.SDK_INT >= 23) {
-            val avd: AnimatedVectorDrawable = item.icon as AnimatedVectorDrawable
-            avd.clearAnimationCallbacks()
-            avd.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+            val avd = item?.icon as? AnimatedVectorDrawable
+            avd?.clearAnimationCallbacks()
+            avd?.registerAnimationCallback(object : Animatable2.AnimationCallback() {
                 override fun onAnimationStart(drawable: Drawable) {}
 
                 override fun onAnimationEnd(drawable: Drawable) {
                     item.setIcon(iconRes)
                 }
             })
-            avd.start()
+            avd?.start()
         }
     }
 
     private fun blinkAddMenuItem() {
         if (Build.VERSION.SDK_INT >= 23) {
             addMenuItem?.setIcon(R.drawable.avd_blinking_plus)
-            val blinkingAnim = addMenuItem?.icon as AnimatedVectorDrawable
-            blinkingAnim.clearAnimationCallbacks()
-            blinkingAnim.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+            val blinkingAnim = addMenuItem?.icon as? AnimatedVectorDrawable
+            blinkingAnim?.clearAnimationCallbacks()
+            blinkingAnim?.registerAnimationCallback(object : Animatable2.AnimationCallback() {
                 override fun onAnimationStart(drawable: Drawable) {}
 
                 override fun onAnimationEnd(drawable: Drawable) {
@@ -160,7 +160,7 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
                     }
                 }
             })
-            blinkingAnim.start()
+            blinkingAnim?.start()
         }
     }
 

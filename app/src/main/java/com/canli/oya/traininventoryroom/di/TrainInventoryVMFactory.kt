@@ -3,17 +3,17 @@ package com.canli.oya.traininventoryroom.di
 import android.content.res.Resources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.canli.oya.traininventoryroom.data.source.BrandDataSource
-import com.canli.oya.traininventoryroom.data.source.CategoryDataSource
-import com.canli.oya.traininventoryroom.data.source.TrainDataSource
+import com.canli.oya.traininventoryroom.data.source.IBrandDataSource
+import com.canli.oya.traininventoryroom.data.source.ICategoryDataSource
+import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import com.canli.oya.traininventoryroom.ui.brands.BrandViewModel
 import com.canli.oya.traininventoryroom.ui.categories.CategoryViewModel
 import com.canli.oya.traininventoryroom.ui.trains.TrainViewModel
 import javax.inject.Inject
 
-class TrainInventoryVMFactory @Inject constructor(private val trainDataSource: TrainDataSource,
-                                                  private val brandDataSource: BrandDataSource,
-                                                  private val categoryDataSource: CategoryDataSource,
+class TrainInventoryVMFactory @Inject constructor(private val trainDataSource: ITrainDataSource,
+                                                  private val brandDataSource: IBrandDataSource,
+                                                  private val categoryDataSource: ICategoryDataSource,
                                                   private val resources: Resources)
     : ViewModelProvider.NewInstanceFactory() {
 
