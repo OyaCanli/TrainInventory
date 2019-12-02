@@ -7,10 +7,12 @@ import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.source.FakeBrandDataSource
@@ -29,6 +31,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito
 import javax.inject.Inject
 
+@MediumTest
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 class BrandListFragmentTest {
@@ -60,6 +63,7 @@ class BrandListFragmentTest {
 
             onView(withId(R.id.empty_text)).check(isVisible())
             onView(withId(R.id.empty_image)).check(isVisible())
+            onView(withId(R.id.list)).check(isGone())
         }
     }
 
@@ -73,16 +77,6 @@ class BrandListFragmentTest {
 
             onView(withId(R.id.empty_text)).check(isGone())
             onView(withId(R.id.empty_image)).check(isGone())
-        }
-    }
-
-    @Test
-    fun withSampleList_listIsShown() {
-        runBlockingTest {
-            //Set some sample data
-            (dataSource as FakeBrandDataSource).setData(sampleBrandList)
-            launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
-
             onView(withId(R.id.list)).check(isVisible())
         }
     }
@@ -123,6 +117,25 @@ class BrandListFragmentTest {
             onView(withId(R.id.addBrand_editBrandName)).check(matches(withText("MDN")))
             onView(withId(R.id.addBrand_image)).check(matches(isDisplayed()))
             onView(withId(R.id.addBrand_saveBtn)).check(matches(isDisplayed()))
+        }
+    }
+
+    @Test
+    fun swipingItem_revealsDeleteConfirmation() {
+        runBlockingTest {
+            //Set some sample data
+            (dataSource as FakeBrandDataSource).setData(sampleBrandList)
+
+            launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+
+            //Swipe an item
+            onView(withId(R.id.list))
+                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, swipeLeft()))
+
+            //Verify that delete confirmation layout is displayed
+            onView(withId(R.id.confirm_delete_btn)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+            onView(withId(R.id.cancel_btn)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+            onView(withText(R.string.do_you_want_to_delete)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
         }
     }
 }
