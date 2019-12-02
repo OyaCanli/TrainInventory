@@ -1,9 +1,9 @@
 package com.canli.oya.traininventoryroom.ui.addtrain
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.canli.oya.traininventoryroom.data.*
 import com.canli.oya.traininventoryroom.getOrAwaitValue
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
@@ -11,9 +11,8 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
+
 class AddTrainViewModelTest {
 
     @get:Rule
@@ -120,8 +119,8 @@ class AddTrainViewModelTest {
         }
     }
 
-    private fun getViewModelForAddCase() = AddTrainViewModel(FakeTrainDataSource(sampleTrainList), FakeBrandDataSource(sampleBrandList), FakeCategoryDataSource(sampleCategoryList), null)
+    private fun getViewModelForAddCase() = AddTrainViewModel(FakeTrainDataSource(sampleTrainList), FakeBrandDataSource(sampleBrandList), FakeCategoryDataSource(sampleCategoryList), null, Dispatchers.Unconfined)
 
-    private fun getViewModelForEditCase() = AddTrainViewModel(FakeTrainDataSource(sampleTrainList), FakeBrandDataSource(sampleBrandList), FakeCategoryDataSource(sampleCategoryList), sampleTrain)
+    private fun getViewModelForEditCase() = AddTrainViewModel(FakeTrainDataSource(sampleTrainList), FakeBrandDataSource(sampleBrandList), FakeCategoryDataSource(sampleCategoryList), sampleTrain, Dispatchers.Unconfined)
 
 }

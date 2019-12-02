@@ -1,11 +1,8 @@
 package com.canli.oya.traininventoryroom.ui.brands
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.FakeBrandDataSource
-import com.canli.oya.traininventoryroom.di.TestTrainApplication
 import com.canli.oya.traininventoryroom.getOrAwaitValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,9 +15,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
 class BrandViewModelTest{
 
     @get:Rule
@@ -37,7 +32,6 @@ class BrandViewModelTest{
     @Before
     fun setupViewModel() {
         brandViewModel = BrandViewModel(FakeBrandDataSource(sampleList),
-                ApplicationProvider.getApplicationContext<TestTrainApplication>().resources,
                 Dispatchers.Unconfined)
     }
 

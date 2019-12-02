@@ -82,4 +82,5 @@
     <string name="category_name_empty">Category name cannot be empty</string>
     <string name="train_name_empty">Train name cannot be empty</string>
     <string name="plus_icon_unicode">&#xf055;</string>
+    <string name="no_items_found">Il y a aucun article. Clicquer sur le bouton plus au dessus pour en ajouter un</string>
 </resources>

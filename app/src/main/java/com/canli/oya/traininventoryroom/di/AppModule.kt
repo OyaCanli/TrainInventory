@@ -2,7 +2,6 @@ package com.canli.oya.traininventoryroom.di
 
 import android.app.Application
 import android.content.Context
-import android.content.res.Resources
 import com.canli.oya.traininventoryroom.data.TrainDatabase
 import dagger.Module
 import dagger.Provides
@@ -15,12 +14,6 @@ class AppModule(private val app: Application) {
     @Singleton
     fun provideContext(): Context {
         return app
-    }
-
-    @Provides
-    @Singleton
-    fun provideResources(): Resources {
-        return app.resources
     }
 
     @Singleton

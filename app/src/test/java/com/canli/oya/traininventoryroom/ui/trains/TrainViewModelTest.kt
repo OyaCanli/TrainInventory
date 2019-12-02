@@ -1,13 +1,10 @@
 package com.canli.oya.traininventoryroom.ui.trains
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.canli.oya.traininventoryroom.data.FakeTrainDataSource
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.TrainMinimal
 import com.canli.oya.traininventoryroom.data.convertToMinimal
-import com.canli.oya.traininventoryroom.di.TestTrainApplication
 import com.canli.oya.traininventoryroom.getOrAwaitValue
 import junit.framework.Assert.assertFalse
 import kotlinx.coroutines.Dispatchers
@@ -19,9 +16,7 @@ import org.hamcrest.core.IsEqual
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
 class TrainViewModelTest{
 
     @get:Rule
@@ -37,8 +32,7 @@ class TrainViewModelTest{
 
     @Before
     fun setupViewModel() {
-        val res = ApplicationProvider.getApplicationContext<TestTrainApplication>().resources
-        trainViewModel = TrainViewModel(FakeTrainDataSource(sampleTrainList), res, Dispatchers.Unconfined)
+        trainViewModel = TrainViewModel(FakeTrainDataSource(sampleTrainList), Dispatchers.Unconfined)
     }
 
     @Test

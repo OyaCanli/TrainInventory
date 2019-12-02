@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.view.animation.AnimationUtils
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -82,7 +83,7 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
                     val brandName = this.getString(BRAND_NAME) ?: return
                     activity?.title = getString(R.string.trains_of_the_brand, brandName)
                     viewModel.getTrainsFromThisBrand(brandName).observe(viewLifecycleOwner, Observer { trainEntries ->
-                        evaluateResults(trainEntries, getString(R.string.no_train_for_this_brand))
+                        evaluateResults(trainEntries, R.string.no_train_for_this_brand)
                     })
                 }
                 //If the fragment_list will be used for showing trains from a specific category
@@ -90,14 +91,14 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
                     val categoryName = this.getString(CATEGORY_NAME) ?: return
                     activity?.title = getString(R.string.all_from_this_Category, categoryName)
                     viewModel.getTrainsFromThisCategory(categoryName).observe(viewLifecycleOwner, Observer { trainEntries ->
-                        evaluateResults(trainEntries, getString(R.string.no_train_for_this_category))
+                        evaluateResults(trainEntries, R.string.no_train_for_this_category)
                     })
                 }
                 else -> {
                     //If the fragment_list is going to be use for showing all trains, which is the default behaviour
                     activity?.title = getString(R.string.all_trains)
                     viewModel.trainList.observe(viewLifecycleOwner, Observer { trainEntries ->
-                        evaluateResults(trainEntries, getString(R.string.no_trains_found), true)
+                        evaluateResults(trainEntries, R.string.no_trains_found, true)
                     })
                 }
             }
@@ -106,7 +107,7 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
         ItemTouchHelper(SwipeToDeleteCallback(requireContext(), mAdapter)).attachToRecyclerView(binding.list)
     }
 
-    private fun evaluateResults(trainEntries: PagedList<TrainMinimal>?, message: String, noTrain : Boolean = false) {
+    private fun evaluateResults(trainEntries: PagedList<TrainMinimal>?, @StringRes message: Int, noTrain : Boolean = false) {
         if (trainEntries.isNullOrEmpty()) {
             viewModel.trainListUiState.emptyMessage = message
             viewModel.trainListUiState.showEmpty = true

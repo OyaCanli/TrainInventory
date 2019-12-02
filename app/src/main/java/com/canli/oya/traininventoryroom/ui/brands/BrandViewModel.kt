@@ -1,6 +1,5 @@
 package com.canli.oya.traininventoryroom.ui.brands
 
-import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,10 +14,9 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class BrandViewModel(private val dataSource : IBrandDataSource,
-                     resources: Resources,
                      private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
 
-    var brandListUiState : UIState = UIState(resources.getString(R.string.no_brands_found))
+    var brandListUiState : UIState = UIState(message = R.string.no_brands_found)
 
     var brandList = dataSource.getAllBrands()
 

@@ -1,11 +1,13 @@
 package com.canli.oya.traininventoryroom.common
 
+import androidx.annotation.StringRes
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import com.canli.oya.traininventoryroom.BR
+import com.canli.oya.traininventoryroom.R
 import timber.log.Timber
 
-class UIState(message: String,
+class UIState(@StringRes message: Int = R.string.no_items_found,
               loading : Boolean = true,
               success: Boolean = false,
               empty: Boolean = false): BaseObservable(){

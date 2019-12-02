@@ -1,11 +1,8 @@
 package com.canli.oya.traininventoryroom.ui.categories
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.data.FakeCategoryDataSource
-import com.canli.oya.traininventoryroom.di.TestTrainApplication
 import com.canli.oya.traininventoryroom.getOrAwaitValue
 import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
@@ -17,10 +14,8 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
 
-@RunWith(AndroidJUnit4::class)
 class CategoryViewModelTest {
 
     @get:Rule
@@ -37,7 +32,6 @@ class CategoryViewModelTest {
     fun setupViewModel() {
         val sampleCategoryList = mutableListOf(sampleCategory1, sampleCategory2)
         categoryViewModel = CategoryViewModel(FakeCategoryDataSource(sampleCategoryList),
-                ApplicationProvider.getApplicationContext<TestTrainApplication>().resources,
                 Dispatchers.Unconfined
         )
     }

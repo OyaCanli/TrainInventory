@@ -156,9 +156,9 @@ class TrainListFragmentTest{
             args.putString(CATEGORY_NAME, sampleCategoryName)
             launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
 
-            val enclosedInParanthesis = "($sampleCategoryName)"
+            val enclosedInParenthesis = "($sampleCategoryName)"
             onView(withId(R.id.list)).check(isVisible())
-            onView(withText(enclosedInParanthesis)).check(isVisible())
+            onView(withText(enclosedInParenthesis)).check(isVisible())
         }
     }
 

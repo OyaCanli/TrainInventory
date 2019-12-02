@@ -1,7 +1,6 @@
 package com.canli.oya.traininventoryroom.ui.categories
 
 
-import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,10 +15,9 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class CategoryViewModel(private val dataSource : ICategoryDataSource,
-                        resources : Resources,
                         private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
 
-    var categoryListUiState = UIState(resources.getString(R.string.no_categories_found))
+    var categoryListUiState = UIState(message = R.string.no_categories_found)
 
     var categoryList = dataSource.getAllCategories()
 

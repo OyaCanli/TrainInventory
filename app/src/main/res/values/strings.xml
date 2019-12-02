@@ -41,6 +41,7 @@
     <string name="select_picture">Select Picture</string>
 
     <!-- Empty screen messages -->
+    <string name="no_items_found">No items found. Click on the plus button above to add a new item</string>
     <string name="no_trains_found">No trains found. Click on the plus button above to add a new train.</string>
     <string name="no_brands_found">No brands found. Click on the plus button above to add a new brand.</string>
     <string name="no_categories_found">No categories found. Click on the plus button above to add a new category.</string>

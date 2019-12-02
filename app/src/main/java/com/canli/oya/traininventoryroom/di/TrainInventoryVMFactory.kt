@@ -1,6 +1,5 @@
 package com.canli.oya.traininventoryroom.di
 
-import android.content.res.Resources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.canli.oya.traininventoryroom.data.source.IBrandDataSource
@@ -13,15 +12,14 @@ import javax.inject.Inject
 
 class TrainInventoryVMFactory @Inject constructor(private val trainDataSource: ITrainDataSource,
                                                   private val brandDataSource: IBrandDataSource,
-                                                  private val categoryDataSource: ICategoryDataSource,
-                                                  private val resources: Resources)
+                                                  private val categoryDataSource: ICategoryDataSource )
     : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
-            modelClass.isAssignableFrom(TrainViewModel::class.java) -> TrainViewModel(trainDataSource, resources) as T
-            modelClass.isAssignableFrom(BrandViewModel::class.java) -> BrandViewModel(brandDataSource, resources) as T
-            modelClass.isAssignableFrom(CategoryViewModel::class.java) -> CategoryViewModel(categoryDataSource, resources) as T
+            modelClass.isAssignableFrom(TrainViewModel::class.java) -> TrainViewModel(trainDataSource) as T
+            modelClass.isAssignableFrom(BrandViewModel::class.java) -> BrandViewModel(brandDataSource) as T
+            modelClass.isAssignableFrom(CategoryViewModel::class.java) -> CategoryViewModel(categoryDataSource) as T
             else -> throw IllegalArgumentException("unknown model class $modelClass")
         }
     }

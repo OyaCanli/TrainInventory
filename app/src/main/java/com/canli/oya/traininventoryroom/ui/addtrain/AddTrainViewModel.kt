@@ -8,12 +8,16 @@ import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.source.IBrandDataSource
 import com.canli.oya.traininventoryroom.data.source.ICategoryDataSource
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class AddTrainViewModel(val trainDataSource : ITrainDataSource,
                         brandDataSource: IBrandDataSource,
                         categoryDataSource : ICategoryDataSource,
-                        private val chosenTrain: TrainEntry?) : ViewModel() {
+                        private val chosenTrain: TrainEntry?,
+                        private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO)
+    : ViewModel() {
 
     val trainBeingModified = ObservableField<TrainEntry>()
 
@@ -36,11 +40,11 @@ class AddTrainViewModel(val trainDataSource : ITrainDataSource,
     }
 
     private fun insertTrain(train: TrainEntry) {
-        viewModelScope.launch { trainDataSource.insertTrain(train) }
+        viewModelScope.launch(ioDispatcher) { trainDataSource.insertTrain(train) }
     }
 
     private fun updateTrain(train: TrainEntry) {
-        viewModelScope.launch { trainDataSource.updateTrain(train) }
+        viewModelScope.launch(ioDispatcher) { trainDataSource.updateTrain(train) }
     }
 
     var isChanged: Boolean = false
