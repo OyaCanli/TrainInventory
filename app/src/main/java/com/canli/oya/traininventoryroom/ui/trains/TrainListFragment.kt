@@ -31,10 +31,10 @@ import kotlin.coroutines.CoroutineContext
 
 class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListener<TrainMinimal>, CoroutineScope {
 
-    private lateinit var viewModel : TrainViewModel
+    private lateinit var viewModel: TrainViewModel
 
     @Inject
-    lateinit var viewModelFactory : TrainInventoryVMFactory
+    lateinit var viewModelFactory: TrainInventoryVMFactory
 
     private lateinit var trainListJob: Job
 
@@ -76,43 +76,42 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
 
         binding.uiState = viewModel.trainListUiState
 
-        arguments?.run {
-            when (this.getString(INTENT_REQUEST_CODE)) {
-                //If the fragment will be used for showing trains from a specific brand
-                TRAINS_OF_BRAND -> {
-                    val brandName = this.getString(BRAND_NAME) ?: return
-                    activity?.title = getString(R.string.trains_of_the_brand, brandName)
-                    viewModel.getTrainsFromThisBrand(brandName).observe(viewLifecycleOwner, Observer { trainEntries ->
-                        evaluateResults(trainEntries, R.string.no_train_for_this_brand)
-                    })
-                }
-                //If the fragment_list will be used for showing trains from a specific category
-                TRAINS_OF_CATEGORY -> {
-                    val categoryName = this.getString(CATEGORY_NAME) ?: return
-                    activity?.title = getString(R.string.all_from_this_Category, categoryName)
-                    viewModel.getTrainsFromThisCategory(categoryName).observe(viewLifecycleOwner, Observer { trainEntries ->
-                        evaluateResults(trainEntries, R.string.no_train_for_this_category)
-                    })
-                }
-                else -> {
-                    //If the fragment_list is going to be use for showing all trains, which is the default behaviour
-                    activity?.title = getString(R.string.all_trains)
-                    viewModel.trainList.observe(viewLifecycleOwner, Observer { trainEntries ->
-                        evaluateResults(trainEntries, R.string.no_trains_found, true)
-                    })
-                }
+        when (arguments?.getString(INTENT_REQUEST_CODE)) {
+            //If the fragment will be used for showing trains from a specific brand
+            TRAINS_OF_BRAND -> {
+                val brandName = arguments?.getString(BRAND_NAME) ?: return
+                activity?.title = getString(R.string.trains_of_the_brand, brandName)
+                viewModel.getTrainsFromThisBrand(brandName).observe(viewLifecycleOwner, Observer { trainEntries ->
+                    evaluateResults(trainEntries, R.string.no_train_for_this_brand)
+                })
+            }
+            //If the fragment_list will be used for showing trains from a specific category
+            TRAINS_OF_CATEGORY -> {
+                val categoryName = arguments?.getString(CATEGORY_NAME) ?: return
+                activity?.title = getString(R.string.all_from_this_Category, categoryName)
+                viewModel.getTrainsFromThisCategory(categoryName).observe(viewLifecycleOwner, Observer { trainEntries ->
+                    evaluateResults(trainEntries, R.string.no_train_for_this_category)
+                })
+            }
+            else -> {
+                //If the fragment_list is going to be use for showing all trains, which is the default behaviour
+                activity?.title = getString(R.string.all_trains)
+                viewModel.trainList.observe(viewLifecycleOwner, Observer { trainEntries ->
+                    evaluateResults(trainEntries, R.string.no_trains_found, true)
+                })
             }
         }
+
 
         ItemTouchHelper(SwipeToDeleteCallback(requireContext(), mAdapter)).attachToRecyclerView(binding.list)
     }
 
-    private fun evaluateResults(trainEntries: PagedList<TrainMinimal>?, @StringRes message: Int, noTrain : Boolean = false) {
+    private fun evaluateResults(trainEntries: PagedList<TrainMinimal>?, @StringRes message: Int, noTrain: Boolean = false) {
         if (trainEntries.isNullOrEmpty()) {
             viewModel.trainListUiState.emptyMessage = message
             viewModel.trainListUiState.showEmpty = true
             animateTrainLogo()
-            if(noTrain) {
+            if (noTrain) {
                 blinkAddMenuItem()
             }
         } else {
@@ -172,7 +171,7 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
             mAdapter.submitList(mTrainList)
         } else {
             viewModel.searchInTrains(query).observe(this, Observer { filteredTrains ->
-                if(filteredTrains.isNotEmpty()){
+                if (filteredTrains.isNotEmpty()) {
                     mAdapter.submitList(filteredTrains)
                     viewModel.searchInTrains(query).removeObservers(this)
                 }

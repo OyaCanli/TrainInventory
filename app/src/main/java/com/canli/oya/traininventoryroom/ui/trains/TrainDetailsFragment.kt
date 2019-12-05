@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,7 +18,7 @@ import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import javax.inject.Inject
 
-class TrainDetailsFragment : androidx.fragment.app.Fragment() {
+class TrainDetailsFragment : Fragment() {
 
     private lateinit var binding: FragmentTrainDetailsBinding
     private lateinit var mChosenTrain: TrainEntry

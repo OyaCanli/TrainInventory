@@ -11,7 +11,6 @@ import com.canli.oya.traininventoryroom.data.source.IBrandDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class BrandViewModel(private val dataSource : IBrandDataSource,
                      private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
@@ -20,18 +19,7 @@ class BrandViewModel(private val dataSource : IBrandDataSource,
 
     var brandList = dataSource.getAllBrands()
 
-    private var _isChildFragVisible = MutableLiveData<Boolean>()
-
-    init {
-        _isChildFragVisible.value = false
-    }
-
-    var isChildFragVisible : LiveData<Boolean> = _isChildFragVisible
-
-    fun setIsChildFragVisible(isVisible : Boolean) {
-        _isChildFragVisible.value = isVisible
-        Timber.d("isChildFragVisible is set to $isVisible")
-    }
+    var isChildFragVisible : Boolean = false
 
     private val _chosenBrand = MutableLiveData<BrandEntry>()
 

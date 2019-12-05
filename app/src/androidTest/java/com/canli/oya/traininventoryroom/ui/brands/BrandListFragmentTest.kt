@@ -31,6 +31,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito
 import javax.inject.Inject
 
+
 @MediumTest
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -51,7 +52,7 @@ class BrandListFragmentTest {
     fun setUp() {
         val app = ApplicationProvider.getApplicationContext<AndroidTestApplication>()
         val component = app.appComponent as TestComponent
-        component.inject(this@BrandListFragmentTest)
+        component.inject(this)
     }
 
     //Launch with an empty list. Verify that empty text and image are shown and verify that the list is not shown

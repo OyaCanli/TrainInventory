@@ -17,7 +17,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name="com.canli.oya.traininventoryroom.ui.common.MainActivity"
+        <activity android:name="com.canli.oya.traininventoryroom.ui.main.MainActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

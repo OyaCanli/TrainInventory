@@ -37,7 +37,7 @@ class BrandViewModelTest{
 
     @Test
     fun atLaunch_addItemChildFragIsNotVisible() {
-        val value = brandViewModel.isChildFragVisible.getOrAwaitValue()
+        val value = brandViewModel.isChildFragVisible
         assertThat(value, CoreMatchers.`is`(false))
     }
 

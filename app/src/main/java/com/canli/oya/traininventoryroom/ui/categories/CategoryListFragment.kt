@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.*
 import android.view.animation.AnimationUtils
 import androidx.annotation.DrawableRes
-import androidx.annotation.VisibleForTesting
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -23,6 +22,7 @@ import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
+import com.canli.oya.traininventoryroom.utils.toggleTruth
 import kotlinx.coroutines.*
 import org.jetbrains.anko.toast
 import timber.log.Timber
@@ -47,10 +47,7 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
     private lateinit var mAdapter: CategoryAdapter
     private var mCategories: List<CategoryEntry> = emptyList()
 
-    @VisibleForTesting
     var addMenuItem: MenuItem? = null
-
-    private var addFragVisible = false
 
     init {
         retainInstance = true
@@ -90,7 +87,8 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
                 viewModel.categoryListUiState.showEmpty = true
                 val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
                 binding.includedList.emptyImage.startAnimation(animation)
-                if (!addFragVisible) {
+                //If there are no items and add is not clicked, blink add button to draw user's attention
+                if (!viewModel.isChildFragVisible) {
                     blinkAddMenuItem()
                 }
             } else {
@@ -101,10 +99,6 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
         })
 
         activity?.title = getString(R.string.all_categories)
-
-        viewModel.isChildFragVisible.observe(viewLifecycleOwner, Observer { isChildFragVisible ->
-            addFragVisible = isChildFragVisible
-        })
 
         ItemTouchHelper(SwipeToDeleteCallback(requireContext(), mAdapter)).attachToRecyclerView(binding.includedList.list)
     }
@@ -137,7 +131,9 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
                 override fun onAnimationStart(drawable: Drawable) {}
 
                 override fun onAnimationEnd(drawable: Drawable) {
-                    if(!addFragVisible){
+                    if(viewModel.isChildFragVisible){
+                        addMenuItem?.setIcon(R.drawable.avd_cross_to_plus)
+                    } else {
                         addMenuItem?.setIcon(R.drawable.avd_plus_to_cross)
                     }
                 }
@@ -151,19 +147,24 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_add_item, menu)
         addMenuItem = menu.getItem(0)
-        if(addFragVisible){
+        if(viewModel.isChildFragVisible){
+            Timber.d("fragment seems to be visible in viewmodel")
             addMenuItem?.setIcon((R.drawable.avd_cross_to_plus))
+        } else {
+            addMenuItem?.setIcon((R.drawable.avd_plus_to_cross))
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_add) {
-            val icon : Int = if (viewModel.isChildFragVisible.value == false) {
-                openAddCategoryFragment()
-                R.drawable.avd_cross_to_plus
-            } else {
+            val icon : Int = if (viewModel.isChildFragVisible) {
                 removeAddCategoryFragment()
+                viewModel.isChildFragVisible = false
                 R.drawable.avd_plus_to_cross
+            } else {
+                openAddEditCategoryFragment(AddCategoryFragment())
+                viewModel.isChildFragVisible = true
+                R.drawable.avd_cross_to_plus
             }
             startAnimationOnMenuItem(item, icon)
         }
@@ -191,16 +192,13 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
             childFrag?.let { remove(it) }
         }
-        viewModel.setIsChildFragVisible(false)
     }
 
-    private fun openAddCategoryFragment() {
-        val addCatFrag = AddCategoryFragment()
+    private fun openAddEditCategoryFragment(frag: AddCategoryFragment) {
         childFragmentManager.commit {
             setCustomAnimations(R.anim.translate_from_top, 0)
-                    .replace(R.id.list_addFrag_container, addCatFrag)
+                    .replace(R.id.list_addFrag_container, frag)
         }
-        viewModel.setIsChildFragVisible(true)
     }
 
     override fun onCategoryItemClicked(view: View, category: CategoryEntry) {
@@ -218,11 +216,9 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
         val args = Bundle()
         args.putString(INTENT_REQUEST_CODE, EDIT_CASE)
         addCategoryFrag.arguments = args
-        viewModel.setIsChildFragVisible(true)
-        childFragmentManager.commit {
-            setCustomAnimations(R.anim.translate_from_top, 0)
-                    .replace(R.id.list_addFrag_container, addCategoryFrag)
-        }
+        openAddEditCategoryFragment(addCategoryFrag)
+        viewModel.isChildFragVisible = true
+        startAnimationOnMenuItem(addMenuItem!!, R.drawable.avd_cross_to_plus)
     }
 
     private fun openTrainsForThisCategory(categoryName : String) {

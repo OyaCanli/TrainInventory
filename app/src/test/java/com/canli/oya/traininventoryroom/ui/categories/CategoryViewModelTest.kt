@@ -38,8 +38,7 @@ class CategoryViewModelTest {
 
     @Test
     fun atLaunch_addItemChildFragIsNotVisible() {
-        val value = categoryViewModel.isChildFragVisible.getOrAwaitValue()
-        assertThat(value, `is`(false))
+        assertThat(categoryViewModel.isChildFragVisible, `is`(false))
     }
 
     @Test

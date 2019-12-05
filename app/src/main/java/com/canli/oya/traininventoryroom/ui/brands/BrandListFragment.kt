@@ -25,6 +25,7 @@ import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
+import com.canli.oya.traininventoryroom.utils.toggleTruth
 import kotlinx.coroutines.*
 import org.jetbrains.anko.toast
 import timber.log.Timber
@@ -49,8 +50,6 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
     lateinit var viewModelFactory : TrainInventoryVMFactory
 
     private var addMenuItem: MenuItem? = null
-
-    private var addFragVisible = false
 
     init {
         retainInstance = true
@@ -88,7 +87,8 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
                 viewModel.brandListUiState.showEmpty = true
                 val slideAnim = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
                 binding.includedList.emptyImage.startAnimation(slideAnim)
-                if(!addFragVisible) {
+                //If there are no items and add is not clicked, blink add button to draw user's attention
+                if(!viewModel.isChildFragVisible) {
                     blinkAddMenuItem()
                 }
             } else {
@@ -101,10 +101,6 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
 
         activity?.title = getString(R.string.all_brands)
 
-        viewModel.isChildFragVisible.observe(viewLifecycleOwner, Observer { isChildFragVisible ->
-            addFragVisible = isChildFragVisible
-        })
-
         ItemTouchHelper(SwipeToDeleteCallback(requireContext(), mAdapter)).attachToRecyclerView(binding.includedList.list)
     }
 
@@ -112,20 +108,23 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_add_item, menu)
         addMenuItem = menu.getItem(0)
-        if(addFragVisible){
+        if(viewModel.isChildFragVisible){
             addMenuItem?.setIcon((R.drawable.avd_cross_to_plus))
+        } else {
+            addMenuItem?.setIcon((R.drawable.avd_plus_to_cross))
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_add) {
-            val icon : Int = if (viewModel.isChildFragVisible.value == false) {
-                openAddBrandFragment()
-                R.drawable.avd_cross_to_plus
-            } else {
+            val icon : Int = if (viewModel.isChildFragVisible) {
                 removeAddBrandFragment()
                 R.drawable.avd_plus_to_cross
+            } else {
+                openAddBrandFragment()
+                R.drawable.avd_cross_to_plus
             }
+            viewModel.isChildFragVisible = !viewModel.isChildFragVisible
             startAnimationOnMenuItem(item, icon)
         }
         return super.onOptionsItemSelected(item)
@@ -155,7 +154,9 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
                 override fun onAnimationStart(drawable: Drawable) {}
 
                 override fun onAnimationEnd(drawable: Drawable) {
-                    if(!addFragVisible){
+                    if(viewModel.isChildFragVisible){
+                        addMenuItem?.setIcon(R.drawable.avd_cross_to_plus)
+                    } else {
                         addMenuItem?.setIcon(R.drawable.avd_plus_to_cross)
                     }
                 }
@@ -170,7 +171,6 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
             setCustomAnimations(R.anim.translate_from_top, 0)
                     .replace(R.id.list_addFrag_container, addBrandFrag)
         }
-        viewModel.setIsChildFragVisible(true)
     }
 
     private fun removeAddBrandFragment() {
@@ -179,7 +179,6 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
             childFrag?.let { remove(it) }
         }
-        viewModel.setIsChildFragVisible(false)
     }
 
     override fun onBrandItemClicked(view: View, clickedBrand: BrandEntry) {
@@ -214,7 +213,8 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
         val args = Bundle()
         args.putString(INTENT_REQUEST_CODE, EDIT_CASE)
         addBrandFrag.arguments = args
-        viewModel.setIsChildFragVisible(true)
+        viewModel.isChildFragVisible = true
+        startAnimationOnMenuItem(addMenuItem!!, R.drawable.avd_cross_to_plus)
         childFragmentManager.commit {
             setCustomAnimations(R.anim.translate_from_top, 0)
                     .replace(R.id.list_addFrag_container, addBrandFrag)

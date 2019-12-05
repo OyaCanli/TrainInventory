@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.ui.common
+package com.canli.oya.traininventoryroom.ui.main
 
 import android.content.Context
 import android.os.Bundle

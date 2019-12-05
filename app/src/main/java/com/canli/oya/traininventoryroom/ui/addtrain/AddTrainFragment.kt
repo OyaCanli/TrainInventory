@@ -18,10 +18,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.CHOSEN_TRAIN
-import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.common.IS_EDIT
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
+import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
 import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -65,6 +66,8 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
 
         binding.categorySpinner.onItemSelectedListener = this
         binding.brandSpinner.onItemSelectedListener = this
+
+        isEdit = arguments?.getBoolean(IS_EDIT) ?: false
 
         activity?.title = if (isEdit) getString(R.string.edit_train)
         else getString(R.string.add_train)
@@ -120,7 +123,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     }
 
     private fun getAndObserveBrands() {
-        addViewModel.brandList.observe(this, Observer { brandEntries ->
+        addViewModel.brandList.observe(viewLifecycleOwner, Observer { brandEntries ->
             if (!brandEntries.isNullOrEmpty()) {
                 brandAdapter.mBrandList = brandEntries
                 brandAdapter.notifyDataSetChanged()

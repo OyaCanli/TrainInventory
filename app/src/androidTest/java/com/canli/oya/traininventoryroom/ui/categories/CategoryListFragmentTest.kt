@@ -105,7 +105,7 @@ class CategoryListFragmentTest {
 
     //Click edit on a category and verify that add child frag becomes visible with the category name inside edittext
     @Test
-    fun clickEditONItem_opensAddFragmentFilled() {
+    fun clickEditOnItem_opensAddFragmentFilled() {
         runBlockingTest {
             (dataSource as FakeCategoryDataSource).setData(sampleCategoryList)
             launchFragmentInContainer<CategoryListFragment>(Bundle(), R.style.AppTheme)
