@@ -9,22 +9,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.commit
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.common.ALL_TRAIN
-import com.canli.oya.traininventoryroom.common.INTENT_REQUEST_CODE
 import com.canli.oya.traininventoryroom.databinding.ActivityMainBinding
+import com.canli.oya.traininventoryroom.ui.Navigator
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
 import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
 import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import timber.log.Timber
 
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var fm: FragmentManager
+
+    private var fm : FragmentManager? = null
 
     private val trainListFragment by lazy { TrainListFragment() }
     private val brandListFragment by lazy { BrandListFragment() }
@@ -36,49 +36,22 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         binding.navigation.setOnNavigationItemSelectedListener(this)
         fm = supportFragmentManager
-        fm.addOnBackStackChangedListener(this)
+        fm?.addOnBackStackChangedListener(this)
 
-        //Bring the train fragment_list fragment at the launch of activity
+        Navigator.fragmentManager = fm
+
+        //Bring the category list fragment at first launch of activity
         if (savedInstanceState == null) {
-            fm.commit {
-                setCustomAnimations(0, android.R.animator.fade_out)
-                    .add(R.id.container, CategoryListFragment())
-            }
+            Navigator.launchCategoryList()
         }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-
-        val ft = fm.beginTransaction()
-        val currentFrag = fm.findFragmentById(R.id.container)
-
         when (item.itemId){
-            R.id.trains -> {
-                if (currentFrag is TrainListFragment) {
-                    currentFrag.scrollToTop()
-                    return true
-                }
-                val args = Bundle()
-                args.putString(INTENT_REQUEST_CODE, ALL_TRAIN)
-                trainListFragment.arguments = args
-                ft.replace(R.id.container, trainListFragment)
-            }
-            R.id.brands -> {
-                if (currentFrag is BrandListFragment) {
-                    return true
-                }
-                ft.replace(R.id.container, brandListFragment)
-            }
-            R.id.categories -> {
-                if (currentFrag is CategoryListFragment) {
-                    return true
-                }
-                ft.replace(R.id.container, categoryListFragment)
-            }
+            R.id.trains -> Navigator.launchTrainList()
+            R.id.brands -> Navigator.launchBrandList()
+            R.id.categories -> Navigator.launchCategoryList()
         }
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                .addToBackStack(null)
-                .commit()
         return true
     }
 
@@ -126,8 +99,9 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     override fun onBackStackChanged() {
+        Timber.d("onBackStackChanged is called")
         clearFocusAndHideKeyboard()
-        val currentFrag = fm.findFragmentById(R.id.container)
+        val currentFrag = fm?.findFragmentById(R.id.container)
         setMenuItemChecked(currentFrag)
         hideOrShowBottomNavigation(currentFrag)
     }

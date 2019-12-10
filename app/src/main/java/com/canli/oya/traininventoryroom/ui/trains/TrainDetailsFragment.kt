@@ -5,17 +5,15 @@ import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.common.CHOSEN_TRAIN
 import com.canli.oya.traininventoryroom.common.TRAIN_ID
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentTrainDetailsBinding
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
-import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
+import com.canli.oya.traininventoryroom.ui.Navigator
 import javax.inject.Inject
 
 class TrainDetailsFragment : Fragment() {
@@ -46,7 +44,7 @@ class TrainDetailsFragment : Fragment() {
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(TrainViewModel::class.java)
 
-        viewModel.getChosenTrain(trainId).observe(this, Observer { trainEntry ->
+        viewModel.getChosenTrain(trainId).observe(viewLifecycleOwner, Observer { trainEntry ->
             trainEntry?.let {
                 binding.chosenTrain = it
                 mChosenTrain = it
@@ -64,15 +62,7 @@ class TrainDetailsFragment : Fragment() {
             R.id.action_delete -> {
                 openAlertDialogForDelete()
             }
-            R.id.action_edit -> {
-                val addTrainFrag = AddTrainFragment()
-                val args = Bundle()
-                args.putParcelable(CHOSEN_TRAIN, mChosenTrain)
-                addTrainFrag.arguments = args
-                fragmentManager?.commit { replace(R.id.container, addTrainFrag)
-                        .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                        .addToBackStack(null)}
-            }
+            R.id.action_edit -> Navigator.launchEditTrain(mChosenTrain)
         }
         return super.onOptionsItemSelected(item)
     }

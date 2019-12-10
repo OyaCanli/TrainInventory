@@ -16,13 +16,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.common.*
+import com.canli.oya.traininventoryroom.common.EDIT_CASE
+import com.canli.oya.traininventoryroom.common.INTENT_REQUEST_CODE
+import com.canli.oya.traininventoryroom.common.SwipeDeleteListener
+import com.canli.oya.traininventoryroom.common.SwipeToDeleteCallback
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
-import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
-import com.canli.oya.traininventoryroom.utils.toggleTruth
+import com.canli.oya.traininventoryroom.ui.Navigator
 import kotlinx.coroutines.*
 import org.jetbrains.anko.toast
 import timber.log.Timber
@@ -204,7 +206,7 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
     override fun onCategoryItemClicked(view: View, category: CategoryEntry) {
         Timber.d("Category item clicked")
         when(view.id){
-            R.id.category_item_train_icon -> openTrainsForThisCategory(category.categoryName)
+            R.id.category_item_train_icon -> Navigator.launchTrainList_withThisCategory(category.categoryName)
             R.id.category_item_edit_icon -> editCategory(category)
         }
     }
@@ -219,19 +221,6 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
         openAddEditCategoryFragment(addCategoryFrag)
         viewModel.isChildFragVisible = true
         startAnimationOnMenuItem(addMenuItem!!, R.drawable.avd_cross_to_plus)
-    }
-
-    private fun openTrainsForThisCategory(categoryName : String) {
-        val trainListFrag = TrainListFragment()
-        val args = Bundle()
-        args.putString(INTENT_REQUEST_CODE, TRAINS_OF_CATEGORY)
-        args.putString(CATEGORY_NAME, categoryName)
-        trainListFrag.arguments = args
-        fragmentManager?.commit {
-            replace(R.id.container, trainListFrag)
-                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                    .addToBackStack(null)
-        }
     }
 
     override fun onDestroyView() {

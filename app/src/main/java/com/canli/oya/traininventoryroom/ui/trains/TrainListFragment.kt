@@ -11,7 +11,6 @@ import androidx.annotation.StringRes
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedList
@@ -22,7 +21,7 @@ import com.canli.oya.traininventoryroom.data.TrainMinimal
 import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
-import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
+import com.canli.oya.traininventoryroom.ui.Navigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -136,17 +135,7 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
         }
     }
 
-    override fun onListItemClick(trainId: Int) {
-        val trainDetailsFrag = TrainDetailsFragment()
-        val args = Bundle()
-        args.putInt(TRAIN_ID, trainId)
-        trainDetailsFrag.arguments = args
-        fragmentManager?.commit {
-            replace(R.id.container, trainDetailsFrag)
-                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                    .addToBackStack(null)
-        }
-    }
+    override fun onListItemClick(trainId: Int) = Navigator.launchTrainDetails(trainId)
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -186,22 +175,9 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
                 val anim = addMenuItem?.icon as? AnimatedVectorDrawable
                 anim?.start()
             }
-            openAddTrainFragment()
-
+            Navigator.launchAddTrain()
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun openAddTrainFragment() {
-        val addTrainFrag = AddTrainFragment()
-        val args = Bundle()
-        args.putBoolean(IS_EDIT, false)
-        addTrainFrag.arguments = args
-        fragmentManager?.commit {
-            replace(R.id.container, addTrainFrag)
-            setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-            addToBackStack(null)
-        }
     }
 
     private fun animateTrainLogo() {

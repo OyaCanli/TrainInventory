@@ -19,13 +19,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.common.*
+import com.canli.oya.traininventoryroom.common.EDIT_CASE
+import com.canli.oya.traininventoryroom.common.INTENT_REQUEST_CODE
+import com.canli.oya.traininventoryroom.common.SwipeDeleteListener
+import com.canli.oya.traininventoryroom.common.SwipeToDeleteCallback
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
-import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
-import com.canli.oya.traininventoryroom.utils.toggleTruth
+import com.canli.oya.traininventoryroom.ui.Navigator
 import kotlinx.coroutines.*
 import org.jetbrains.anko.toast
 import timber.log.Timber
@@ -184,7 +186,7 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
     override fun onBrandItemClicked(view: View, clickedBrand: BrandEntry) {
         when (view.id) {
             R.id.brand_item_web_icon -> openWebSite(clickedBrand)
-            R.id.brand_item_train_icon -> showTrainsFromThisBrand(clickedBrand)
+            R.id.brand_item_train_icon -> Navigator.launchTrainList_withThisBrand(clickedBrand.brandName)
             R.id.brand_item_edit_icon -> editBrand(clickedBrand)
         }
     }
@@ -218,19 +220,6 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
         childFragmentManager.commit {
             setCustomAnimations(R.anim.translate_from_top, 0)
                     .replace(R.id.list_addFrag_container, addBrandFrag)
-        }
-    }
-
-    private fun showTrainsFromThisBrand(clickedBrand: BrandEntry) {
-        val trainListFrag = TrainListFragment()
-        val args = Bundle()
-        args.putString(INTENT_REQUEST_CODE, TRAINS_OF_BRAND)
-        args.putString(BRAND_NAME, clickedBrand.brandName)
-        trainListFrag.arguments = args
-        fragmentManager?.commit {
-            replace(R.id.container, trainListFrag)
-                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                    .addToBackStack(null)
         }
     }
 
