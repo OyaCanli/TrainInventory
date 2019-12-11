@@ -25,6 +25,7 @@ import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.Navigator
+import com.canli.oya.traininventoryroom.utils.getItemDivider
 import kotlinx.coroutines.*
 import org.jetbrains.anko.toast
 import timber.log.Timber
@@ -35,6 +36,9 @@ import kotlin.coroutines.CoroutineContext
 class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteListener<CategoryEntry>, CoroutineScope {
 
     private lateinit var binding: BrandCategoryList
+
+    @Inject
+    lateinit var navigator : Navigator
 
     @Inject
     lateinit var viewModelFactory : TrainInventoryVMFactory
@@ -206,7 +210,7 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
     override fun onCategoryItemClicked(view: View, category: CategoryEntry) {
         Timber.d("Category item clicked")
         when(view.id){
-            R.id.category_item_train_icon -> Navigator.launchTrainList_withThisCategory(category.categoryName)
+            R.id.category_item_train_icon -> navigator.launchTrainList_withThisCategory(category.categoryName)
             R.id.category_item_edit_icon -> editCategory(category)
         }
     }
@@ -220,7 +224,9 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
         addCategoryFrag.arguments = args
         openAddEditCategoryFragment(addCategoryFrag)
         viewModel.isChildFragVisible = true
-        startAnimationOnMenuItem(addMenuItem!!, R.drawable.avd_cross_to_plus)
+        addMenuItem?.let {
+            startAnimationOnMenuItem(it, R.drawable.avd_cross_to_plus)
+        }
     }
 
     override fun onDestroyView() {

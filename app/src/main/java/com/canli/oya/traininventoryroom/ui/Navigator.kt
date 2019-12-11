@@ -14,7 +14,7 @@ import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
 import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
 import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
 
-object Navigator  {
+open class Navigator {
 
     var fragmentManager : FragmentManager? = null
 

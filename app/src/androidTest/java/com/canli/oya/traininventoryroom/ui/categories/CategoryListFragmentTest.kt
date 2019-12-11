@@ -19,6 +19,7 @@ import com.canli.oya.traininventoryroom.data.source.FakeCategoryDataSource
 import com.canli.oya.traininventoryroom.data.source.ICategoryDataSource
 import com.canli.oya.traininventoryroom.di.AndroidTestApplication
 import com.canli.oya.traininventoryroom.di.TestComponent
+import com.canli.oya.traininventoryroom.ui.Navigator
 import com.canli.oya.traininventoryroom.utils.clickOnChildWithId
 import com.canli.oya.traininventoryroom.utils.isGone
 import com.canli.oya.traininventoryroom.utils.isVisible
@@ -28,9 +29,10 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
+import org.mockito.Mockito.*
+import org.mockito.MockitoAnnotations
 import javax.inject.Inject
+
 
 @MediumTest
 @ExperimentalCoroutinesApi
@@ -43,12 +45,16 @@ class CategoryListFragmentTest {
     @Inject
     lateinit var dataSource: ICategoryDataSource
 
+    @Inject
+    lateinit var navigator : Navigator
+
     val sampleCategory1 = CategoryEntry(0, "Wagon")
     val sampleCategory2 = CategoryEntry(1, "Locomotive")
     val sampleCategoryList = mutableListOf(sampleCategory1, sampleCategory2)
 
     @Before
     fun setUp() {
+        MockitoAnnotations.initMocks(this)
         val app = ApplicationProvider.getApplicationContext<AndroidTestApplication>()
         val component = app.appComponent as TestComponent
         component.inject(this)
@@ -116,6 +122,20 @@ class CategoryListFragmentTest {
             onView(withId(R.id.addCategory_editCatName)).check(matches(isDisplayed()))
             onView(withId(R.id.addCategory_editCatName)).check(matches(withText("Locomotive")))
             onView(withId(R.id.addCategory_saveBtn)).check(matches(isDisplayed()))
+        }
+    }
+
+    //Click on train icon on a category and verify that navigator temps to launch TrainListFrag with correct inputs
+    @Test
+    fun clickTrainIconOnItem_launchesAddTrainFragment() {
+        runBlockingTest {
+            (dataSource as FakeCategoryDataSource).setData(sampleCategoryList)
+            launchFragmentInContainer<CategoryListFragment>(Bundle(), R.style.AppTheme)
+
+            onView(withId(R.id.list))
+                    .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(1, clickOnChildWithId(R.id.category_item_train_icon)))
+
+            verify(navigator).launchTrainList_withThisCategory("Locomotive")
         }
     }
 

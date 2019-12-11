@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ActivityMainBinding
+import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.ui.Navigator
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
@@ -18,11 +19,15 @@ import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
 import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import timber.log.Timber
+import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener {
 
     private lateinit var binding: ActivityMainBinding
+
+    @Inject
+    lateinit var navigator : Navigator
 
     private var fm : FragmentManager? = null
 
@@ -34,23 +39,25 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
+        (application as TrainApplication).appComponent.inject(this)
+
         binding.navigation.setOnNavigationItemSelectedListener(this)
         fm = supportFragmentManager
         fm?.addOnBackStackChangedListener(this)
 
-        Navigator.fragmentManager = fm
+        navigator.fragmentManager = fm
 
         //Bring the category list fragment at first launch of activity
         if (savedInstanceState == null) {
-            Navigator.launchCategoryList()
+            navigator.launchCategoryList()
         }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
-            R.id.trains -> Navigator.launchTrainList()
-            R.id.brands -> Navigator.launchBrandList()
-            R.id.categories -> Navigator.launchCategoryList()
+            R.id.trains -> navigator.launchTrainList()
+            R.id.brands -> navigator.launchBrandList()
+            R.id.categories -> navigator.launchCategoryList()
         }
         return true
     }

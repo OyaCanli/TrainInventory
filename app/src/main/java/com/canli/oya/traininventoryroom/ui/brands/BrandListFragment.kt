@@ -28,6 +28,7 @@ import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.Navigator
+import com.canli.oya.traininventoryroom.utils.getItemDivider
 import kotlinx.coroutines.*
 import org.jetbrains.anko.toast
 import timber.log.Timber
@@ -47,6 +48,9 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
     private lateinit var binding: BrandCategoryList
 
     private lateinit var viewModel : BrandViewModel
+
+    @Inject
+    lateinit var navigator : Navigator
 
     @Inject
     lateinit var viewModelFactory : TrainInventoryVMFactory
@@ -186,7 +190,7 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
     override fun onBrandItemClicked(view: View, clickedBrand: BrandEntry) {
         when (view.id) {
             R.id.brand_item_web_icon -> openWebSite(clickedBrand)
-            R.id.brand_item_train_icon -> Navigator.launchTrainList_withThisBrand(clickedBrand.brandName)
+            R.id.brand_item_train_icon -> navigator.launchTrainList_withThisBrand(clickedBrand.brandName)
             R.id.brand_item_edit_icon -> editBrand(clickedBrand)
         }
     }
@@ -216,7 +220,9 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
         args.putString(INTENT_REQUEST_CODE, EDIT_CASE)
         addBrandFrag.arguments = args
         viewModel.isChildFragVisible = true
-        startAnimationOnMenuItem(addMenuItem!!, R.drawable.avd_cross_to_plus)
+        addMenuItem?.let {
+            startAnimationOnMenuItem(addMenuItem!!, R.drawable.avd_cross_to_plus)
+        }
         childFragmentManager.commit {
             setCustomAnimations(R.anim.translate_from_top, 0)
                     .replace(R.id.list_addFrag_container, addBrandFrag)

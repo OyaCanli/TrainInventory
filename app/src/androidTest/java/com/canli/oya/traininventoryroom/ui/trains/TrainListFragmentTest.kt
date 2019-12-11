@@ -1,11 +1,13 @@
 package com.canli.oya.traininventoryroom.ui.trains
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -19,6 +21,7 @@ import com.canli.oya.traininventoryroom.data.source.FakeTrainDataSource
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import com.canli.oya.traininventoryroom.di.AndroidTestApplication
 import com.canli.oya.traininventoryroom.di.TestComponent
+import com.canli.oya.traininventoryroom.ui.Navigator
 import com.canli.oya.traininventoryroom.utils.isGone
 import com.canli.oya.traininventoryroom.utils.isVisible
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,6 +30,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
+import org.mockito.Mockito.verify
+import org.mockito.MockitoAnnotations
 import javax.inject.Inject
 
 @MediumTest
@@ -40,6 +46,9 @@ class TrainListFragmentTest{
     @Inject
     lateinit var dataSource: ITrainDataSource
 
+    @Inject
+    lateinit var navigator : Navigator
+
     val sampleTrain1 = TrainEntry(trainId = 0, trainName = "Red Wagon", categoryName = "Wagon", brandName = "Marklin")
     val sampleTrain2 = TrainEntry(trainId = 1, trainName = "Blue Loco", categoryName = "Locomotif", brandName = "MDN")
     val sampleTrain3 = TrainEntry(trainId = 2, trainName = "Gare", categoryName = "Accessoire", brandName = "Marklin")
@@ -47,6 +56,7 @@ class TrainListFragmentTest{
 
     @Before
     fun setUp() {
+        MockitoAnnotations.initMocks(this)
         val app = ApplicationProvider.getApplicationContext<AndroidTestApplication>()
         val component = app.appComponent as TestComponent
         component.inject(this)
@@ -184,4 +194,46 @@ class TrainListFragmentTest{
         }
     }
 
+    //Clicking a train item launches trainDetails fragment
+    @Test
+    fun clickingTrainItem_launchesTrainDetails() {
+        runBlockingTest {
+            //Set some sample data
+            (dataSource as FakeTrainDataSource).setData(sampleTrainList)
+
+            //Launch the fragment in ALL_TRAINS mode
+            val args = Bundle()
+            args.putString(INTENT_REQUEST_CODE, ALL_TRAIN)
+            launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
+
+            //Click on an item
+            onView(withId(R.id.list))
+                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+
+            verify(navigator).launchTrainDetails(0)
+        }
+    }
+
+    //Clicking add menu on the item launches addTrainFragment
+    @Test
+    fun clickAddMenuItem_launchesAddTrainFrag() {
+        runBlockingTest {
+            //Set some sample data
+            (dataSource as FakeTrainDataSource).setData(mutableListOf())
+
+            //Launch the fragment in ALL_TRAINS mode
+            val args = Bundle()
+            args.putString(INTENT_REQUEST_CODE, ALL_TRAIN)
+            val scenario = launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
+
+            val addMenuItem = Mockito.mock(MenuItem::class.java)
+            Mockito.`when`(addMenuItem.itemId).thenReturn(R.id.action_add)
+            //Click on the add menu item
+            scenario.onFragment { fragment ->
+                fragment.onOptionsItemSelected(addMenuItem)
+            }
+
+            verify(navigator).launchAddTrain()
+        }
+    }
 }

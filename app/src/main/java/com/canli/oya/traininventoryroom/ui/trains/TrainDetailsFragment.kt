@@ -23,6 +23,9 @@ class TrainDetailsFragment : Fragment() {
     private lateinit var viewModel : TrainViewModel
 
     @Inject
+    lateinit var navigator : Navigator
+
+    @Inject
     lateinit var viewModelFactory : TrainInventoryVMFactory
     private var trainId = 0
 
@@ -59,10 +62,8 @@ class TrainDetailsFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_delete -> {
-                openAlertDialogForDelete()
-            }
-            R.id.action_edit -> Navigator.launchEditTrain(mChosenTrain)
+            R.id.action_delete -> openAlertDialogForDelete()
+            R.id.action_edit -> navigator.launchEditTrain(mChosenTrain)
         }
         return super.onOptionsItemSelected(item)
     }

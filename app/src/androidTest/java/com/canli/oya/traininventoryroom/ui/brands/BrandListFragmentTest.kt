@@ -1,7 +1,7 @@
 package com.canli.oya.traininventoryroom.ui.brands
 
 import android.os.Bundle
-import android.view.MenuItem
+import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.recyclerview.widget.RecyclerView
@@ -9,7 +9,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
@@ -19,6 +19,7 @@ import com.canli.oya.traininventoryroom.data.source.FakeBrandDataSource
 import com.canli.oya.traininventoryroom.data.source.IBrandDataSource
 import com.canli.oya.traininventoryroom.di.AndroidTestApplication
 import com.canli.oya.traininventoryroom.di.TestComponent
+import com.canli.oya.traininventoryroom.ui.Navigator
 import com.canli.oya.traininventoryroom.utils.clickOnChildWithId
 import com.canli.oya.traininventoryroom.utils.isGone
 import com.canli.oya.traininventoryroom.utils.isVisible
@@ -28,7 +29,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
+import org.mockito.Mockito.*
+import org.mockito.MockitoAnnotations
 import javax.inject.Inject
 
 
@@ -43,6 +45,9 @@ class BrandListFragmentTest {
     @Inject
     lateinit var dataSource: IBrandDataSource
 
+    @Inject
+    lateinit var navigator : Navigator
+
     val sampleBrand1 = BrandEntry(0, "Markin")
     val sampleBrand2 = BrandEntry(1, "MDN")
     val sampleBrand3 = BrandEntry(2, "Legit")
@@ -50,6 +55,7 @@ class BrandListFragmentTest {
 
     @Before
     fun setUp() {
+        MockitoAnnotations.initMocks(this)
         val app = ApplicationProvider.getApplicationContext<AndroidTestApplication>()
         val component = app.appComponent as TestComponent
         component.inject(this)
@@ -88,8 +94,8 @@ class BrandListFragmentTest {
             (dataSource as FakeBrandDataSource).setData(sampleBrandList)
             val scenario = launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
 
-            val addMenuItem = Mockito.mock(MenuItem::class.java)
-            Mockito.`when`(addMenuItem.itemId).thenReturn(R.id.action_add)
+            val addMenuItem = mock(ActionMenuItem::class.java)
+            `when`(addMenuItem.itemId).thenReturn(R.id.action_add)
             //Click on the add menu item
             scenario.onFragment { fragment ->
                 fragment.onOptionsItemSelected(addMenuItem)
@@ -100,6 +106,8 @@ class BrandListFragmentTest {
             onView(withId(R.id.addBrand_editBrandName)).check(matches(withText("")))
             onView(withId(R.id.addBrand_image)).check(matches(isDisplayed()))
             onView(withId(R.id.addBrand_saveBtn)).check(matches(isDisplayed()))
+
+            validateMockitoUsage()
         }
     }
 
@@ -111,13 +119,27 @@ class BrandListFragmentTest {
             launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
 
             onView(withId(R.id.list))
-                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, clickOnChildWithId(R.id.brand_item_edit_icon)))
+                    .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(1, clickOnChildWithId(R.id.brand_item_edit_icon)))
 
             //Check whether add category screen becomes visible
             onView(withId(R.id.addBrand_editBrandName)).check(matches(isDisplayed()))
             onView(withId(R.id.addBrand_editBrandName)).check(matches(withText("MDN")))
             onView(withId(R.id.addBrand_image)).check(matches(isDisplayed()))
             onView(withId(R.id.addBrand_saveBtn)).check(matches(isDisplayed()))
+        }
+    }
+
+    //Click on train icon on a category and verify that navigator temps to launch TrainListFrag with correct inputs
+    @Test
+    fun clickTrainIconOnItem_launchesAddTrainFragment() {
+        runBlockingTest {
+            (dataSource as FakeBrandDataSource).setData(sampleBrandList)
+            launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+
+            onView(withId(R.id.list))
+                    .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(1, clickOnChildWithId(R.id.brand_item_train_icon)))
+
+            verify(navigator).launchTrainList_withThisBrand("MDN")
         }
     }
 
@@ -131,7 +153,7 @@ class BrandListFragmentTest {
 
             //Swipe an item
             onView(withId(R.id.list))
-                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, swipeLeft()))
+                    .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(1, swipeLeft()))
 
             //Verify that delete confirmation layout is displayed
             onView(withId(R.id.confirm_delete_btn)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))

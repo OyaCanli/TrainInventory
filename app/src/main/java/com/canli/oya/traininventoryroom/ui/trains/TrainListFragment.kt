@@ -22,6 +22,7 @@ import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.Navigator
+import com.canli.oya.traininventoryroom.utils.getItemDivider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -31,6 +32,9 @@ import kotlin.coroutines.CoroutineContext
 class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListener<TrainMinimal>, CoroutineScope {
 
     private lateinit var viewModel: TrainViewModel
+
+    @Inject
+    lateinit var navigator : Navigator
 
     @Inject
     lateinit var viewModelFactory: TrainInventoryVMFactory
@@ -135,7 +139,7 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
         }
     }
 
-    override fun onListItemClick(trainId: Int) = Navigator.launchTrainDetails(trainId)
+    override fun onListItemClick(trainId: Int) = navigator.launchTrainDetails(trainId)
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -175,7 +179,7 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
                 val anim = addMenuItem?.icon as? AnimatedVectorDrawable
                 anim?.start()
             }
-            Navigator.launchAddTrain()
+            navigator.launchAddTrain()
         }
         return super.onOptionsItemSelected(item)
     }
