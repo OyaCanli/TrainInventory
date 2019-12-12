@@ -6,14 +6,18 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.canli.oya.traininventoryroom.R
 
+class UIUtils{
 
-fun getItemDivider(context: Context): DividerItemDecoration {
-    val divider = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
-    divider.setDrawable(ShapeDrawable().apply {
-        intrinsicHeight = context.resources.getDimensionPixelOffset(R.dimen.divider_height)
-        paint.color = context.resources.getColor(R.color.divider_color)
-    })
-    return divider
+    companion object {
+        fun getItemDivider(context: Context): DividerItemDecoration {
+            val divider = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
+            divider.setDrawable(ShapeDrawable().apply {
+                intrinsicHeight = context.resources.getDimensionPixelOffset(R.dimen.divider_height)
+                paint.color = context.resources.getColor(R.color.divider_color)
+            })
+            return divider
+        }
+    }
 }
 
 

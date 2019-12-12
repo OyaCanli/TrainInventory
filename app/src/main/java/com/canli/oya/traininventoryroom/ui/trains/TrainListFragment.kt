@@ -22,7 +22,7 @@ import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.Navigator
-import com.canli.oya.traininventoryroom.utils.getItemDivider
+import com.canli.oya.traininventoryroom.utils.UIUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -63,7 +63,7 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
         mAdapter = TrainAdapter(requireContext(), this, this)
 
         with(binding.list) {
-            addItemDecoration(getItemDivider(context))
+            addItemDecoration(UIUtils.getItemDivider(context))
             adapter = mAdapter
         }
 

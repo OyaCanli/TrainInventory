@@ -24,11 +24,11 @@ import com.canli.oya.traininventoryroom.common.INTENT_REQUEST_CODE
 import com.canli.oya.traininventoryroom.common.SwipeDeleteListener
 import com.canli.oya.traininventoryroom.common.SwipeToDeleteCallback
 import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
+import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.Navigator
-import com.canli.oya.traininventoryroom.utils.getItemDivider
+import com.canli.oya.traininventoryroom.utils.UIUtils
 import kotlinx.coroutines.*
 import org.jetbrains.anko.toast
 import timber.log.Timber
@@ -45,7 +45,7 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
     private lateinit var brands: List<BrandEntry>
     private lateinit var mAdapter: BrandAdapter
 
-    private lateinit var binding: BrandCategoryList
+    private lateinit var binding: FragmentListBinding
 
     private lateinit var viewModel : BrandViewModel
 
@@ -63,7 +63,7 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_list_with_framelayout, container, false)
+                inflater, R.layout.fragment_list, container, false)
 
         setHasOptionsMenu(true)
 
@@ -71,8 +71,8 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
 
         mAdapter = BrandAdapter(requireContext(), this, this)
 
-        with(binding.includedList.list) {
-            addItemDecoration(getItemDivider(context))
+        with(binding.list) {
+            addItemDecoration(UIUtils.getItemDivider(context))
             adapter = mAdapter
         }
 
@@ -86,13 +86,13 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(BrandViewModel::class.java)
 
-        binding.includedList.uiState = viewModel.brandListUiState
+        binding.uiState = viewModel.brandListUiState
 
         viewModel.brandList.observe(viewLifecycleOwner, Observer { brandEntries ->
             if (brandEntries.isNullOrEmpty()) {
                 viewModel.brandListUiState.showEmpty = true
                 val slideAnim = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
-                binding.includedList.emptyImage.startAnimation(slideAnim)
+                binding.emptyImage.startAnimation(slideAnim)
                 //If there are no items and add is not clicked, blink add button to draw user's attention
                 if(!viewModel.isChildFragVisible) {
                     blinkAddMenuItem()
@@ -107,7 +107,7 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
 
         activity?.title = getString(R.string.all_brands)
 
-        ItemTouchHelper(SwipeToDeleteCallback(requireContext(), mAdapter)).attachToRecyclerView(binding.includedList.list)
+        ItemTouchHelper(SwipeToDeleteCallback(requireContext(), mAdapter)).attachToRecyclerView(binding.list)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

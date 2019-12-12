@@ -21,11 +21,11 @@ import com.canli.oya.traininventoryroom.common.INTENT_REQUEST_CODE
 import com.canli.oya.traininventoryroom.common.SwipeDeleteListener
 import com.canli.oya.traininventoryroom.common.SwipeToDeleteCallback
 import com.canli.oya.traininventoryroom.data.CategoryEntry
-import com.canli.oya.traininventoryroom.databinding.BrandCategoryList
+import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.Navigator
-import com.canli.oya.traininventoryroom.utils.getItemDivider
+import com.canli.oya.traininventoryroom.utils.UIUtils
 import kotlinx.coroutines.*
 import org.jetbrains.anko.toast
 import timber.log.Timber
@@ -35,7 +35,7 @@ import kotlin.coroutines.CoroutineContext
 
 class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteListener<CategoryEntry>, CoroutineScope {
 
-    private lateinit var binding: BrandCategoryList
+    private lateinit var binding: FragmentListBinding
 
     @Inject
     lateinit var navigator : Navigator
@@ -61,7 +61,7 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_list_with_framelayout, container, false)
+                inflater, R.layout.fragment_list, container, false)
 
         setHasOptionsMenu(true)
 
@@ -69,8 +69,8 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
 
         mAdapter = CategoryAdapter(requireContext(), this, this)
 
-        with(binding.includedList.list) {
-            addItemDecoration(getItemDivider(context))
+        with(binding.list) {
+            addItemDecoration(UIUtils.getItemDivider(context))
             adapter = mAdapter
         }
 
@@ -86,13 +86,13 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(CategoryViewModel::class.java)
 
-        binding.includedList.uiState = viewModel.categoryListUiState
+        binding.uiState = viewModel.categoryListUiState
 
         viewModel.categoryList.observe(viewLifecycleOwner, Observer { categoryEntries ->
             if (categoryEntries.isNullOrEmpty()) {
                 viewModel.categoryListUiState.showEmpty = true
                 val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
-                binding.includedList.emptyImage.startAnimation(animation)
+                binding.emptyImage.startAnimation(animation)
                 //If there are no items and add is not clicked, blink add button to draw user's attention
                 if (!viewModel.isChildFragVisible) {
                     blinkAddMenuItem()
@@ -106,7 +106,7 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
 
         activity?.title = getString(R.string.all_categories)
 
-        ItemTouchHelper(SwipeToDeleteCallback(requireContext(), mAdapter)).attachToRecyclerView(binding.includedList.list)
+        ItemTouchHelper(SwipeToDeleteCallback(requireContext(), mAdapter)).attachToRecyclerView(binding.list)
     }
 
     override fun onDeleteConfirmed(itemToDelete: CategoryEntry, position : Int) {
