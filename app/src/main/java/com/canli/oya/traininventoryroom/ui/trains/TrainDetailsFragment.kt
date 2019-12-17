@@ -64,6 +64,7 @@ class TrainDetailsFragment : Fragment() {
         when (item.itemId) {
             R.id.action_delete -> openAlertDialogForDelete()
             R.id.action_edit -> navigator.launchEditTrain(mChosenTrain)
+            android.R.id.home -> activity?.onBackPressed()
         }
         return super.onOptionsItemSelected(item)
     }

@@ -16,6 +16,7 @@ import com.canli.oya.traininventoryroom.ui.Navigator
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
 import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
+import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import timber.log.Timber
 import javax.inject.Inject
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     private fun hideOrShowBottomNavigation(currentFrag: Fragment?) {
-        if (currentFrag is AddTrainFragment) {
+        if (currentFrag is AddTrainFragment || currentFrag is TrainDetailsFragment) {
             binding.navigation.visibility = View.GONE
             binding.navigationDecoration.visibility = View.GONE
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
