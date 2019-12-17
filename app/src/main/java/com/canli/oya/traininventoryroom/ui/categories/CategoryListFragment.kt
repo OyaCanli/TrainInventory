@@ -69,11 +69,11 @@ class CategoryListFragment : BaseListFragment(), CategoryItemClickListener, Swip
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(CategoryViewModel::class.java)
 
-        binding.uiState = viewModel.categoryListUiState
+        binding.uiState = viewModel.listUiState
 
-        viewModel.categoryList.observe(viewLifecycleOwner, Observer { categoryEntries ->
+        viewModel.allItems.observe(viewLifecycleOwner, Observer { categoryEntries ->
             if (categoryEntries.isNullOrEmpty()) {
-                viewModel.categoryListUiState.showEmpty = true
+                viewModel.listUiState.showEmpty = true
                 val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
                 binding.emptyImage.startAnimation(animation)
                 //If there are no items and add is not clicked, blink add button to draw user's attention
@@ -83,7 +83,7 @@ class CategoryListFragment : BaseListFragment(), CategoryItemClickListener, Swip
             } else {
                 mAdapter.submitList(categoryEntries)
                 mCategories = categoryEntries
-                viewModel.categoryListUiState.showList = true
+                viewModel.listUiState.showList = true
             }
         })
 

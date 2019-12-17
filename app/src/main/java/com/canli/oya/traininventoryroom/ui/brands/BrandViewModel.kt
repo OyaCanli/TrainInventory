@@ -2,22 +2,19 @@ package com.canli.oya.traininventoryroom.ui.brands
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.common.UIState
+import androidx.paging.PagedList
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.source.IBrandDataSource
+import com.canli.oya.traininventoryroom.ui.base.BaseListViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class BrandViewModel(private val dataSource : IBrandDataSource,
-                     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
+                     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) : BaseListViewModel<BrandEntry>() {
 
-    var brandListUiState : UIState = UIState(message = R.string.no_brands_found)
-
-    var brandList = dataSource.getAllBrands()
+    override var allItems: LiveData<PagedList<BrandEntry>> = dataSource.getAllBrands()
 
     var isChildFragVisible : Boolean = false
 

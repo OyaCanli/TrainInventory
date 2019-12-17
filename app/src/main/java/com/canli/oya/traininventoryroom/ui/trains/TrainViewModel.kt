@@ -1,22 +1,21 @@
 package com.canli.oya.traininventoryroom.ui.trains
 
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.common.UIState
+import androidx.paging.PagedList
 import com.canli.oya.traininventoryroom.data.TrainEntry
+import com.canli.oya.traininventoryroom.data.TrainMinimal
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
+import com.canli.oya.traininventoryroom.ui.base.BaseListViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
 class TrainViewModel (private val dataSource: ITrainDataSource,
-                      private val ioDispatcher : CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
+                      private val ioDispatcher : CoroutineDispatcher = Dispatchers.IO) : BaseListViewModel<TrainMinimal>() {
 
-    var trainListUiState: UIState = UIState(message = R.string.no_trains_found)
-
-    var trainList = dataSource.getAllTrains()
+    override var allItems: LiveData<PagedList<TrainMinimal>> = dataSource.getAllTrains()
 
     fun getChosenTrain(trainId: Int) = dataSource.getChosenTrain(trainId)
 
@@ -34,4 +33,5 @@ class TrainViewModel (private val dataSource: ITrainDataSource,
     fun getTrainsFromThisCategory(category: String) = dataSource.getTrainsFromThisCategory(category)
 
     fun searchInTrains(query: String) = dataSource.searchInTrains(query)
+
 }

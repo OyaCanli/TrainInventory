@@ -69,11 +69,11 @@ class BrandListFragment : BaseListFragment(), BrandItemClickListener, SwipeDelet
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(BrandViewModel::class.java)
 
-        binding.uiState = viewModel.brandListUiState
+        binding.uiState = viewModel.listUiState
 
-        viewModel.brandList.observe(viewLifecycleOwner, Observer { brandEntries ->
+        viewModel.allItems.observe(viewLifecycleOwner, Observer { brandEntries ->
             if (brandEntries.isNullOrEmpty()) {
-                viewModel.brandListUiState.showEmpty = true
+                viewModel.listUiState.showEmpty = true
                 val slideAnim = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
                 binding.emptyImage.startAnimation(slideAnim)
                 //If there are no items and add is not clicked, blink add button to draw user's attention
@@ -84,7 +84,7 @@ class BrandListFragment : BaseListFragment(), BrandItemClickListener, SwipeDelet
                 Timber.d("fragment_list size : ${brandEntries.size}")
                 mAdapter.submitList(brandEntries)
                 brands = brandEntries
-                viewModel.brandListUiState.showList = true
+                viewModel.listUiState.showList = true
             }
         })
 

@@ -42,7 +42,6 @@ class TrainListFragment : BaseListFragment(), TrainItemClickListener, SwipeDelet
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_list, container, false)
-        setHasOptionsMenu(true)
 
         //Set recycler view
         mAdapter = TrainAdapter(requireContext(), this, this)
@@ -58,7 +57,7 @@ class TrainListFragment : BaseListFragment(), TrainItemClickListener, SwipeDelet
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(TrainViewModel::class.java)
 
-        binding.uiState = viewModel.trainListUiState
+        binding.uiState = viewModel.listUiState
 
         when (arguments?.getString(INTENT_REQUEST_CODE)) {
             //If the fragment will be used for showing trains from a specific brand
@@ -80,20 +79,19 @@ class TrainListFragment : BaseListFragment(), TrainItemClickListener, SwipeDelet
             else -> {
                 //If the fragment_list is going to be use for showing all trains, which is the default behaviour
                 activity?.title = getString(R.string.all_trains)
-                viewModel.trainList.observe(viewLifecycleOwner, Observer { trainEntries ->
+                viewModel.allItems.observe(viewLifecycleOwner, Observer { trainEntries ->
                     evaluateResults(trainEntries, R.string.no_trains_found, true)
                 })
             }
         }
-
 
         ItemTouchHelper(SwipeToDeleteCallback(requireContext(), mAdapter)).attachToRecyclerView(binding.list)
     }
 
     private fun evaluateResults(trainEntries: PagedList<TrainMinimal>?, @StringRes message: Int, noTrain: Boolean = false) {
         if (trainEntries.isNullOrEmpty()) {
-            viewModel.trainListUiState.emptyMessage = message
-            viewModel.trainListUiState.showEmpty = true
+            viewModel.listUiState.emptyMessage = message
+            viewModel.listUiState.showEmpty = true
             animateTrainLogo()
             if (noTrain) {
                 addMenuItem?.let { blinkAddMenuItem(it, R.drawable.avd_plus_to_save) }
@@ -101,7 +99,7 @@ class TrainListFragment : BaseListFragment(), TrainItemClickListener, SwipeDelet
         } else {
             mAdapter.submitList(trainEntries)
             mTrainList = trainEntries
-            viewModel.trainListUiState.showList = true
+            viewModel.listUiState.showList = true
         }
     }
 
