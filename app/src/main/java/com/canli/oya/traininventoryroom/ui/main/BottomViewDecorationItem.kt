@@ -16,8 +16,8 @@ class BottomViewDecorationItem @JvmOverloads constructor(
 
     var colorSelected = resources.getColor(R.color.colorAccent)
     var colorInActive = resources.getColor(R.color.colorPrimary)
+    val frameColor = resources.getColor(R.color.colorPrimary)
 
-    var itemWidth : Float = 0f
     var itemHeight : Float = 0f
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -34,7 +34,6 @@ class BottomViewDecorationItem @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        paint.color = if(checked) colorSelected else colorInActive
 
         itemHeight = height*1f
 
@@ -50,6 +49,13 @@ class BottomViewDecorationItem @JvmOverloads constructor(
 
         path.lineTo(0f, itemHeight)
 
+        paint.color = if(checked) colorSelected else colorInActive
+        paint.style = Paint.Style.FILL
+        canvas.drawPath(path, paint)
+
+        paint.color = frameColor
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = 3f
         canvas.drawPath(path, paint)
     }
 

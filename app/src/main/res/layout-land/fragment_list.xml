@@ -26,6 +26,7 @@
             android:scrollbars="vertical"
             app:visible= "@{uiState.showList}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:itemDivider = "@{true}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
