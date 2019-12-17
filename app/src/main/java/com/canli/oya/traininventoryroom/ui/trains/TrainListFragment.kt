@@ -1,8 +1,6 @@
 package com.canli.oya.traininventoryroom.ui.trains
 
-import android.graphics.drawable.Animatable2
 import android.graphics.drawable.AnimatedVectorDrawable
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.view.*
@@ -10,7 +8,6 @@ import android.view.animation.AnimationUtils
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedList
@@ -22,14 +19,10 @@ import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.Navigator
-import com.canli.oya.traininventoryroom.utils.UIUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import com.canli.oya.traininventoryroom.ui.base.BaseListFragment
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListener<TrainMinimal>, CoroutineScope {
+class TrainListFragment : BaseListFragment(), TrainItemClickListener, SwipeDeleteListener<TrainMinimal> {
 
     private lateinit var viewModel: TrainViewModel
 
@@ -39,20 +32,12 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
     @Inject
     lateinit var viewModelFactory: TrainInventoryVMFactory
 
-    private lateinit var trainListJob: Job
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + trainListJob
-
     private lateinit var binding: FragmentListBinding
     private lateinit var mAdapter: TrainAdapter
     private var mTrainList: PagedList<TrainMinimal>? = null
 
     private var addMenuItem: MenuItem? = null
 
-    init {
-        retainInstance = true
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
@@ -61,11 +46,7 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
 
         //Set recycler view
         mAdapter = TrainAdapter(requireContext(), this, this)
-
-        with(binding.list) {
-            addItemDecoration(UIUtils.getItemDivider(context))
-            adapter = mAdapter
-        }
+        binding.list.adapter = mAdapter
 
         return binding.root
     }
@@ -115,7 +96,7 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
             viewModel.trainListUiState.showEmpty = true
             animateTrainLogo()
             if (noTrain) {
-                blinkAddMenuItem()
+                addMenuItem?.let { blinkAddMenuItem(it, R.drawable.avd_plus_to_save) }
             }
         } else {
             mAdapter.submitList(trainEntries)
@@ -124,20 +105,7 @@ class TrainListFragment : Fragment(), TrainItemClickListener, SwipeDeleteListene
         }
     }
 
-    private fun blinkAddMenuItem() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            val blinkingAnim = addMenuItem?.icon as? AnimatedVectorDrawable
-            blinkingAnim?.clearAnimationCallbacks()
-            blinkingAnim?.registerAnimationCallback(object : Animatable2.AnimationCallback() {
-                override fun onAnimationStart(drawable: Drawable) {}
 
-                override fun onAnimationEnd(drawable: Drawable) {
-                    blinkingAnim?.reset()
-                }
-            })
-            blinkingAnim?.start()
-        }
-    }
 
     override fun onListItemClick(trainId: Int) = navigator.launchTrainDetails(trainId)
 

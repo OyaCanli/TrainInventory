@@ -12,7 +12,6 @@ import android.view.*
 import android.view.animation.AnimationUtils
 import androidx.annotation.DrawableRes
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
@@ -28,19 +27,15 @@ import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.Navigator
-import com.canli.oya.traininventoryroom.utils.UIUtils
-import kotlinx.coroutines.*
+import com.canli.oya.traininventoryroom.ui.base.BaseListFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.anko.toast
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListener<BrandEntry>, CoroutineScope {
-
-    private lateinit var brandListJob: Job
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + brandListJob
+class BrandListFragment : BaseListFragment(), BrandItemClickListener, SwipeDeleteListener<BrandEntry> {
 
     private lateinit var brands: List<BrandEntry>
     private lateinit var mAdapter: BrandAdapter
@@ -57,24 +52,12 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
 
     private var addMenuItem: MenuItem? = null
 
-    init {
-        retainInstance = true
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_list, container, false)
 
-        setHasOptionsMenu(true)
-
-        brandListJob = Job()
-
         mAdapter = BrandAdapter(requireContext(), this, this)
-
-        with(binding.list) {
-            addItemDecoration(UIUtils.getItemDivider(context))
-            adapter = mAdapter
-        }
+        binding.list.adapter = mAdapter
 
         return binding.root
     }
@@ -95,7 +78,7 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
                 binding.emptyImage.startAnimation(slideAnim)
                 //If there are no items and add is not clicked, blink add button to draw user's attention
                 if(!viewModel.isChildFragVisible) {
-                    blinkAddMenuItem()
+                    addMenuItem?.let { blinkAddMenuItem(it, R.drawable.avd_plus_to_cross) }
                 }
             } else {
                 Timber.d("fragment_list size : ${brandEntries.size}")
@@ -148,26 +131,6 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
                 }
             })
             avd?.start()
-        }
-    }
-
-    private fun blinkAddMenuItem() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            addMenuItem?.setIcon(R.drawable.avd_blinking_plus)
-            val blinkingAnim = addMenuItem?.icon as? AnimatedVectorDrawable
-            blinkingAnim?.clearAnimationCallbacks()
-            blinkingAnim?.registerAnimationCallback(object : Animatable2.AnimationCallback() {
-                override fun onAnimationStart(drawable: Drawable) {}
-
-                override fun onAnimationEnd(drawable: Drawable) {
-                    if(viewModel.isChildFragVisible){
-                        addMenuItem?.setIcon(R.drawable.avd_cross_to_plus)
-                    } else {
-                        addMenuItem?.setIcon(R.drawable.avd_plus_to_cross)
-                    }
-                }
-            })
-            blinkingAnim?.start()
         }
     }
 
@@ -247,11 +210,6 @@ class BrandListFragment : Fragment(), BrandItemClickListener, SwipeDeleteListene
         } else {
             context?.toast(getString(R.string.no_website_warning))
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        brandListJob.cancel()
     }
 }
 

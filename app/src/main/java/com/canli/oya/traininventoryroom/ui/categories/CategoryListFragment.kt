@@ -9,7 +9,6 @@ import android.view.*
 import android.view.animation.AnimationUtils
 import androidx.annotation.DrawableRes
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
@@ -25,15 +24,16 @@ import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.Navigator
-import com.canli.oya.traininventoryroom.utils.UIUtils
-import kotlinx.coroutines.*
+import com.canli.oya.traininventoryroom.ui.base.BaseListFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.anko.toast
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 
-class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteListener<CategoryEntry>, CoroutineScope {
+class CategoryListFragment : BaseListFragment(), CategoryItemClickListener, SwipeDeleteListener<CategoryEntry> {
 
     private lateinit var binding: FragmentListBinding
 
@@ -45,34 +45,17 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
 
     private lateinit var viewModel : CategoryViewModel
 
-    private lateinit var categoryListJob: Job
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + categoryListJob
-
     private lateinit var mAdapter: CategoryAdapter
     private var mCategories: List<CategoryEntry> = emptyList()
 
     var addMenuItem: MenuItem? = null
 
-    init {
-        retainInstance = true
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_list, container, false)
 
-        setHasOptionsMenu(true)
-
-        categoryListJob = Job()
-
         mAdapter = CategoryAdapter(requireContext(), this, this)
-
-        with(binding.list) {
-            addItemDecoration(UIUtils.getItemDivider(context))
-            adapter = mAdapter
-        }
+        binding.list.adapter = mAdapter
 
         return binding.root
     }
@@ -95,7 +78,7 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
                 binding.emptyImage.startAnimation(animation)
                 //If there are no items and add is not clicked, blink add button to draw user's attention
                 if (!viewModel.isChildFragVisible) {
-                    blinkAddMenuItem()
+                    addMenuItem?.let { blinkAddMenuItem(it, R.drawable.avd_plus_to_cross) }
                 }
             } else {
                 mAdapter.submitList(categoryEntries)
@@ -127,26 +110,6 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
     }
 
     override fun onDeleteCanceled(position: Int) = mAdapter.cancelDelete(position)
-
-    private fun blinkAddMenuItem() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            addMenuItem?.setIcon(R.drawable.avd_blinking_plus)
-            val blinkingAnim = addMenuItem?.icon as? AnimatedVectorDrawable
-            blinkingAnim?.clearAnimationCallbacks()
-            blinkingAnim?.registerAnimationCallback(object : Animatable2.AnimationCallback() {
-                override fun onAnimationStart(drawable: Drawable) {}
-
-                override fun onAnimationEnd(drawable: Drawable) {
-                    if(viewModel.isChildFragVisible){
-                        addMenuItem?.setIcon(R.drawable.avd_cross_to_plus)
-                    } else {
-                        addMenuItem?.setIcon(R.drawable.avd_plus_to_cross)
-                    }
-                }
-            })
-            blinkingAnim?.start()
-        }
-    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         Timber.d("onCreateOptionsMEnu is created")
@@ -227,10 +190,5 @@ class CategoryListFragment : Fragment(), CategoryItemClickListener, SwipeDeleteL
         addMenuItem?.let {
             startAnimationOnMenuItem(it, R.drawable.avd_cross_to_plus)
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        categoryListJob.cancel()
     }
 }
