@@ -36,14 +36,18 @@ class BottomViewDecorationItem @JvmOverloads constructor(
         super.onDraw(canvas)
         paint.color = if(checked) colorSelected else colorInActive
 
-        itemWidth = width*1f
         itemHeight = height*1f
+
+        val curveCount = width / (height*2)
 
         path.reset()
         path.moveTo(0f, itemHeight)
-        path.quadTo(0f, 0f, itemHeight, 0f)
-        path.lineTo(itemWidth-itemHeight, 0f)
-        path.quadTo(itemWidth, 0f, itemWidth, itemHeight)
+
+        for(curveNo in 0 until curveCount){
+            path.quadTo(curveNo*2*itemHeight, 0f, ((curveNo*2)+1)*itemHeight, 0f)
+            path.quadTo(((curveNo*2)+2)*itemHeight, 0f, ((curveNo*2)+2)*itemHeight, itemHeight)
+        }
+
         path.lineTo(0f, itemHeight)
 
         canvas.drawPath(path, paint)

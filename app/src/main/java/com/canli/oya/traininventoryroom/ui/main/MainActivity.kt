@@ -16,7 +16,6 @@ import com.canli.oya.traininventoryroom.ui.Navigator
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
 import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
-import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import timber.log.Timber
 import javax.inject.Inject
@@ -29,11 +28,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     @Inject
     lateinit var navigator : Navigator
 
-    private var fm : FragmentManager? = null
-
-    private val trainListFragment by lazy { TrainListFragment() }
-    private val brandListFragment by lazy { BrandListFragment() }
-    private val categoryListFragment by lazy { CategoryListFragment() }
+    private lateinit var fm : FragmentManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +38,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         binding.navigation.setOnNavigationItemSelectedListener(this)
         fm = supportFragmentManager
-        fm?.addOnBackStackChangedListener(this)
+        fm.addOnBackStackChangedListener(this)
 
         navigator.fragmentManager = fm
 
@@ -97,7 +92,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     override fun onBackPressed() {
-        val currentFrag = supportFragmentManager.findFragmentById(R.id.container)
+        val currentFrag = fm.findFragmentById(R.id.container)
         if (currentFrag is AddTrainFragment) {
             currentFrag.onBackClicked()
         } else {
@@ -108,7 +103,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onBackStackChanged() {
         Timber.d("onBackStackChanged is called")
         clearFocusAndHideKeyboard()
-        val currentFrag = fm?.findFragmentById(R.id.container)
+        val currentFrag = fm.findFragmentById(R.id.container)
         setMenuItemChecked(currentFrag)
         hideOrShowBottomNavigation(currentFrag)
     }
