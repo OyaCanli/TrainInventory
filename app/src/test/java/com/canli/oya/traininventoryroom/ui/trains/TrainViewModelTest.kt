@@ -37,7 +37,7 @@ class TrainViewModelTest{
 
     @Test
     fun atLaunch_defaultUIStateIsLoading() {
-        val value = trainViewModel.trainListUiState.showLoading
+        val value = trainViewModel.listUiState.showLoading
         assertThat(value, CoreMatchers.`is`(true))
     }
 
@@ -48,7 +48,7 @@ class TrainViewModelTest{
         runBlockingTest {
             trainViewModel.deleteTrain(sampleTrain1.trainId)
 
-            val list: MutableList<TrainMinimal> = trainViewModel.trainList.getOrAwaitValue().snapshot()
+            val list: MutableList<TrainMinimal> = trainViewModel.allItems.getOrAwaitValue().snapshot()
             assertFalse(list.contains(sampleTrain1.convertToMinimal()))
         }
     }
@@ -60,7 +60,7 @@ class TrainViewModelTest{
         runBlockingTest {
             trainViewModel.deleteTrain(sampleTrain1)
 
-            val list: MutableList<TrainMinimal> = trainViewModel.trainList.getOrAwaitValue().snapshot()
+            val list: MutableList<TrainMinimal> = trainViewModel.allItems.getOrAwaitValue().snapshot()
             assertFalse(list.contains(sampleTrain1.convertToMinimal()))
         }
     }

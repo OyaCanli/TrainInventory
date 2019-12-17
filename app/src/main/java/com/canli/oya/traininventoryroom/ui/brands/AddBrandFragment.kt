@@ -62,7 +62,7 @@ class AddBrandFragment : Fragment(), View.OnClickListener {
 
         if (arguments?.containsKey(INTENT_REQUEST_CODE) == true) { //This is the "edit" case
             isEditCase = true
-            viewModel.chosenBrand.observe(viewLifecycleOwner, Observer { brandEntry ->
+            viewModel.chosenItem.observe(viewLifecycleOwner, Observer { brandEntry ->
                 brandEntry?.let {
                     binding.chosenBrand = it
                     mBrandId = it.brandId
@@ -103,12 +103,12 @@ class AddBrandFragment : Fragment(), View.OnClickListener {
         if (isEditCase) {
             //Construct a new BrandEntry object from this data with ID included
             val brandToUpdate = BrandEntry(mBrandId, brandName, imagePath, webAddress)
-            viewModel.updateBrand(brandToUpdate)
+            viewModel.updateItem(brandToUpdate)
         } else {
             //Construct a new BrandEntry object from this data (without ID)
             val newBrand = BrandEntry(brandName = brandName, brandLogoUri = imagePath, webUrl = webAddress)
             //Insert to database in a background thread
-            viewModel.insertBrand(newBrand)
+            viewModel.insertItem(newBrand)
         }
 
         context?.toast(R.string.brand_Saved)

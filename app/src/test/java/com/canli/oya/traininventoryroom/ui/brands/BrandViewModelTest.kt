@@ -43,14 +43,14 @@ class BrandViewModelTest{
 
     @Test
     fun atLaunch_defaultUIStateIsLoading() {
-        val value = brandViewModel.brandListUiState.showLoading
+        val value = brandViewModel.listUiState.showLoading
         assertThat(value, CoreMatchers.`is`(true))
     }
 
     @Test
     fun getChosenBrand_returnsTheBrandSet() {
-        brandViewModel.setChosenBrand(sampleBrand1)
-        val value = brandViewModel.chosenBrand.getOrAwaitValue()
+        brandViewModel.setChosenItem(sampleBrand1)
+        val value = brandViewModel.chosenItem.getOrAwaitValue()
         assertThat(value, `is`(sampleBrand1))
     }
 
@@ -58,9 +58,9 @@ class BrandViewModelTest{
     @Test
     fun insertBrand_insertsTheBrand() {
         runBlockingTest {
-            brandViewModel.insertBrand(sampleBrand3)
+            brandViewModel.insertItem(sampleBrand3)
 
-            val list = brandViewModel.brandList.getOrAwaitValue().snapshot()
+            val list = brandViewModel.allItems.getOrAwaitValue().snapshot()
             //Verify that the list contains the new item
             assertTrue(list.contains(sampleBrand3))
         }
@@ -70,9 +70,9 @@ class BrandViewModelTest{
     @Test
     fun deleteBrand_deletesTheBrand() {
         runBlockingTest {
-            brandViewModel.deleteBrand(sampleBrand2)
+            brandViewModel.deleteItem(sampleBrand2)
 
-            val list = brandViewModel.brandList.getOrAwaitValue().snapshot()
+            val list = brandViewModel.allItems.getOrAwaitValue().snapshot()
             //Verify that the list doesn't contain that item anymore
             assertFalse(list.contains(sampleBrand2))
         }

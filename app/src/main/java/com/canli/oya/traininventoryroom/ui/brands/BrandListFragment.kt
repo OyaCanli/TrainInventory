@@ -161,14 +161,14 @@ class BrandListFragment : BaseListFragment(), BrandItemClickListener, SwipeDelet
     override fun onDeleteConfirmed(itemToDelete: BrandEntry, position: Int) {
         launch {
             //Check whether this brand is used in trains table.
-            val isUsed = withContext(Dispatchers.IO) { viewModel.isThisBrandUsed(itemToDelete.brandName) }
+            val isUsed = withContext(Dispatchers.IO) { viewModel.isThisItemUsed(itemToDelete.brandName) }
             if (isUsed) {
                 // If it is used, show a warning and don't let the user delete this
                 context?.toast(R.string.cannot_erase_brand)
                 mAdapter.notifyItemChanged(position)
             } else {
                 //If it is not used delete the brand
-                viewModel.deleteBrand(itemToDelete)
+                viewModel.deleteItem(itemToDelete)
                 mAdapter.itemDeleted(position)
             }
         }
@@ -177,7 +177,7 @@ class BrandListFragment : BaseListFragment(), BrandItemClickListener, SwipeDelet
     override fun onDeleteCanceled(position: Int) = mAdapter.cancelDelete(position)
 
     private fun editBrand(clickedBrand: BrandEntry) {
-        viewModel.setChosenBrand(clickedBrand)
+        viewModel.setChosenItem(clickedBrand)
         val addBrandFrag = AddBrandFragment()
         val args = Bundle()
         args.putString(INTENT_REQUEST_CODE, EDIT_CASE)

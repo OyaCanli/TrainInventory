@@ -1,5 +1,7 @@
 package com.canli.oya.traininventoryroom.di
 
+import com.canli.oya.traininventoryroom.data.BrandEntry
+import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.data.source.*
 import dagger.Module
 import dagger.Provides
@@ -14,9 +16,9 @@ class TestDataModule {
 
     @Provides
     @Singleton
-    fun provideCategoryDataSource() : ICategoryDataSource = FakeCategoryDataSource()
+    fun provideCategoryDataSource() : IBrandCategoryDataSource<CategoryEntry> = FakeCategoryDataSource()
 
     @Provides
     @Singleton
-    fun provideBrandDataSource() : IBrandDataSource = FakeBrandDataSource()
+    fun provideBrandDataSource() : IBrandCategoryDataSource<BrandEntry> = FakeBrandDataSource()
 }

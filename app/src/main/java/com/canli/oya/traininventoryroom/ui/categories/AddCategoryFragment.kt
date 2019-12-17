@@ -12,10 +12,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.INTENT_REQUEST_CODE
-import com.canli.oya.traininventoryroom.di.TrainApplication
-import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddCategoryBinding
+import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import org.jetbrains.anko.toast
 import javax.inject.Inject
 
@@ -51,7 +51,7 @@ class AddCategoryFragment : Fragment() {
 
         if (arguments?.containsKey(INTENT_REQUEST_CODE) == true) { //This is the "edit" case
             isEditCase = true
-            viewModel.chosenCategory.observe(this@AddCategoryFragment, Observer { categoryEntry ->
+            viewModel.chosenItem.observe(viewLifecycleOwner, Observer { categoryEntry ->
                 categoryEntry?.let {
                     binding.chosenCategory = it
                     mCategoryId = it.categoryId
@@ -69,11 +69,11 @@ class AddCategoryFragment : Fragment() {
 
         if(isEditCase){
             val categoryToUpdate = CategoryEntry(mCategoryId, categoryName)
-            viewModel.updateCategory(categoryToUpdate)
+            viewModel.updateItem(categoryToUpdate)
         } else {
             val newCategory = CategoryEntry(categoryName = categoryName)
             //Insert the category by the intermediance of view model
-            viewModel.insertCategory(newCategory)
+            viewModel.insertItem(newCategory)
         }
 
         //Clear focus and hide soft keyboard

@@ -10,27 +10,27 @@ import javax.inject.Inject
 
 const val CATEGORIES_PAGE_SIZE = 15
 
-class CategoryDataSource @Inject constructor(private val database: TrainDatabase) : ICategoryDataSource {
+class CategoryDataSource @Inject constructor(private val database: TrainDatabase) : IBrandCategoryDataSource<CategoryEntry> {
 
-    override fun getAllCategories(): LiveData<PagedList<CategoryEntry>> {
+    override fun getAllItems(): LiveData<PagedList<CategoryEntry>> {
         Timber.d("getAllCategories is called")
         val factory = database.categoryDao().allCategories
         return LivePagedListBuilder(factory, CATEGORIES_PAGE_SIZE).build()
     }
 
-    override suspend fun insertCategory(category: CategoryEntry) {
+    override suspend fun insertItem(category: CategoryEntry) {
         database.categoryDao().insert(category)
     }
 
-    override suspend fun deleteCategory(category: CategoryEntry) {
+    override suspend fun deleteItem(category: CategoryEntry) {
         database.categoryDao().delete(category)
     }
 
-    override fun isThisCategoryUsed(category: String): Boolean {
+    override fun isThisItemUsed(category: String): Boolean {
         return database.trainDao().isThisCategoryUsed(category)
     }
 
-    override suspend fun updateCategory(category: CategoryEntry) {
+    override suspend fun updateItem(category: CategoryEntry) {
         database.categoryDao().update(category)
     }
 }

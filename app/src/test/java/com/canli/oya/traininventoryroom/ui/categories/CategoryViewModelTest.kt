@@ -43,15 +43,15 @@ class CategoryViewModelTest {
 
     @Test
     fun atLaunch_defaultUIStateIsLoading() {
-        val value = categoryViewModel.categoryListUiState.showLoading
+        val value = categoryViewModel.listUiState.showLoading
         assertThat(value, `is`(true))
     }
 
     @Test
     fun getChosenCategory_returnsTheCategorySet() {
         val sampleCategory = CategoryEntry(0, "category")
-        categoryViewModel.setChosenCategory(sampleCategory)
-        val value = categoryViewModel.chosenCategory.getOrAwaitValue()
+        categoryViewModel.setChosenItem(sampleCategory)
+        val value = categoryViewModel.chosenItem.getOrAwaitValue()
         assertThat(value, `is`(sampleCategory))
     }
 
@@ -59,8 +59,8 @@ class CategoryViewModelTest {
     @Test
     fun deleteCategory_deletesCategory() {
         runBlockingTest {
-            categoryViewModel.deleteCategory(sampleCategory2)
-            val list = categoryViewModel.categoryList.getOrAwaitValue().snapshot()
+            categoryViewModel.deleteItem(sampleCategory2)
+            val list = categoryViewModel.allItems.getOrAwaitValue().snapshot()
             //Verify that the list doesn't contain the item anymore
             assertFalse(list.contains(sampleCategory2))
         }
@@ -70,9 +70,9 @@ class CategoryViewModelTest {
     @Test
     fun insertCategory_insertsCategory() {
         runBlockingTest {
-            categoryViewModel.insertCategory(sampleCategory3)
+            categoryViewModel.insertItem(sampleCategory3)
             
-            val list = categoryViewModel.categoryList.getOrAwaitValue().snapshot()
+            val list = categoryViewModel.allItems.getOrAwaitValue().snapshot()
             //Verify that the list contains the new item
             assertTrue(list.contains(sampleCategory3))
         }

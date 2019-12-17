@@ -105,7 +105,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     }
 
     private fun getAndObserveCategories() {
-        addViewModel.categoryList.observe(this, Observer { categoryEntries ->
+        addViewModel.categoryList.observe(viewLifecycleOwner, Observer { categoryEntries ->
             if (!categoryEntries.isNullOrEmpty()) {
                 categoryList.clear()
                 categoryList.add(getString(R.string.select_category))

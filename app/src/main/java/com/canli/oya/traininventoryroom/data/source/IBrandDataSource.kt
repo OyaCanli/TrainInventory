@@ -2,16 +2,15 @@ package com.canli.oya.traininventoryroom.data.source
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
-import com.canli.oya.traininventoryroom.data.BrandEntry
 
-interface IBrandDataSource {
-    fun getAllBrands() : LiveData<PagedList<BrandEntry>>
+interface IBrandCategoryDataSource<T> {
+    fun getAllItems() : LiveData<PagedList<T>>
 
-    suspend fun insertBrand(brand: BrandEntry)
+    suspend fun insertItem(item: T)
 
-    suspend fun updateBrand(brand: BrandEntry)
+    suspend fun updateItem(item: T)
 
-    suspend fun deleteBrand(brand: BrandEntry)
+    suspend fun deleteItem(item: T)
 
-    fun isThisBrandUsed(brandName: String): Boolean
+    fun isThisItemUsed(itemName: String): Boolean
 }

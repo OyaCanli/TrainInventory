@@ -16,7 +16,7 @@ import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.data.source.FakeCategoryDataSource
-import com.canli.oya.traininventoryroom.data.source.ICategoryDataSource
+import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import com.canli.oya.traininventoryroom.di.AndroidTestApplication
 import com.canli.oya.traininventoryroom.di.TestComponent
 import com.canli.oya.traininventoryroom.ui.Navigator
@@ -43,7 +43,7 @@ class CategoryListFragmentTest {
     var instantExecutorRule = InstantTaskExecutorRule()
 
     @Inject
-    lateinit var dataSource: ICategoryDataSource
+    lateinit var dataSource: IBrandCategoryDataSource<CategoryEntry>
 
     @Inject
     lateinit var navigator : Navigator

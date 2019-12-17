@@ -96,14 +96,14 @@ class CategoryListFragment : BaseListFragment(), CategoryItemClickListener, Swip
         Timber.d("delete is confirmed")
         launch {
             //First check whether this category is used by trains table
-            val isUsed = withContext(Dispatchers.IO) { viewModel.isThisCategoryUsed(itemToDelete.categoryName) }
+            val isUsed = withContext(Dispatchers.IO) { viewModel.isThisItemUsed(itemToDelete.categoryName) }
             if (isUsed) {
                 // If it is used, show a warning and don't let user delete this
                 context?.toast(R.string.cannot_erase_category)
                 mAdapter.cancelDelete(position)
             } else {
                 //If it is not used, erase the category
-                viewModel.deleteCategory(itemToDelete)
+                viewModel.deleteItem(itemToDelete)
                 mAdapter.itemDeleted(position)
             }
         }
@@ -180,7 +180,7 @@ class CategoryListFragment : BaseListFragment(), CategoryItemClickListener, Swip
 
     private fun editCategory(chosenCategory : CategoryEntry) {
         Timber.d("Edit category is called")
-        viewModel.setChosenCategory(chosenCategory)
+        viewModel.setChosenItem(chosenCategory)
         val addCategoryFrag = AddCategoryFragment()
         val args = Bundle()
         args.putString(INTENT_REQUEST_CODE, EDIT_CASE)

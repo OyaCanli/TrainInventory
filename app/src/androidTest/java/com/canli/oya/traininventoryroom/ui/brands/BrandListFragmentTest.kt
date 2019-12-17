@@ -16,7 +16,7 @@ import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.source.FakeBrandDataSource
-import com.canli.oya.traininventoryroom.data.source.IBrandDataSource
+import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import com.canli.oya.traininventoryroom.di.AndroidTestApplication
 import com.canli.oya.traininventoryroom.di.TestComponent
 import com.canli.oya.traininventoryroom.ui.Navigator
@@ -43,7 +43,7 @@ class BrandListFragmentTest {
     var instantExecutorRule = InstantTaskExecutorRule()
 
     @Inject
-    lateinit var dataSource: IBrandDataSource
+    lateinit var dataSource: IBrandCategoryDataSource<BrandEntry>
 
     @Inject
     lateinit var navigator : Navigator

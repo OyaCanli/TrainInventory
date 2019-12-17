@@ -1,7 +1,8 @@
 package com.canli.oya.traininventoryroom.di
 
-import com.canli.oya.traininventoryroom.data.source.IBrandDataSource
-import com.canli.oya.traininventoryroom.data.source.ICategoryDataSource
+import com.canli.oya.traininventoryroom.data.BrandEntry
+import com.canli.oya.traininventoryroom.data.CategoryEntry
+import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import com.canli.oya.traininventoryroom.ui.brands.BrandListFragmentTest
 import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragmentTest
@@ -17,8 +18,8 @@ import javax.inject.Singleton
 interface TestComponent : AppComponent {
 
     override fun exposeTrainDataSource() : ITrainDataSource
-    override fun exposeBrandDataSource() : IBrandDataSource
-    override fun exposeCategoryDataSource() : ICategoryDataSource
+    override fun exposeBrandDataSource() : IBrandCategoryDataSource<BrandEntry>
+    override fun exposeCategoryDataSource() : IBrandCategoryDataSource<CategoryEntry>
 
     fun inject(target: CategoryListFragmentTest)
     fun inject(target: BrandListFragmentTest)

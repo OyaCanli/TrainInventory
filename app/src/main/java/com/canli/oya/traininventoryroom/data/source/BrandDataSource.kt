@@ -9,26 +9,26 @@ import javax.inject.Inject
 
 const val BRANDS_PAGE_SIZE = 15
 
-class BrandDataSource @Inject constructor(private val database: TrainDatabase) : IBrandDataSource {
+class BrandDataSource @Inject constructor(private val database: TrainDatabase) : IBrandCategoryDataSource<BrandEntry> {
 
-    override fun getAllBrands() : LiveData<PagedList<BrandEntry>> {
+    override fun getAllItems() : LiveData<PagedList<BrandEntry>> {
         val factory = database.brandDao().allBrands
         return LivePagedListBuilder(factory, BRANDS_PAGE_SIZE).build()
     }
 
-    override suspend fun insertBrand(brand: BrandEntry) {
+    override suspend fun insertItem(brand: BrandEntry) {
         database.brandDao().insert(brand)
     }
 
-    override suspend fun updateBrand(brand: BrandEntry) {
+    override suspend fun updateItem(brand: BrandEntry) {
         database.brandDao().update(brand)
     }
 
-    override suspend fun deleteBrand(brand: BrandEntry) {
+    override suspend fun deleteItem(brand: BrandEntry) {
         database.brandDao().delete(brand)
     }
 
-    override fun isThisBrandUsed(brandName: String): Boolean {
+    override fun isThisItemUsed(brandName: String): Boolean {
         return database.trainDao().isThisBrandUsed(brandName)
     }
 }
