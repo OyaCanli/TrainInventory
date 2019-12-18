@@ -5,22 +5,22 @@ import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.annotation.DrawableRes
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
+import com.canli.oya.traininventoryroom.common.BaseAdapter
 import com.canli.oya.traininventoryroom.common.EDIT_CASE
 import com.canli.oya.traininventoryroom.common.INTENT_REQUEST_CODE
 import com.canli.oya.traininventoryroom.common.SwipeDeleteListener
-import com.canli.oya.traininventoryroom.common.SwipeToDeleteCallback
 import com.canli.oya.traininventoryroom.data.CategoryEntry
-import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.Navigator
@@ -33,9 +33,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class CategoryListFragment : BaseListFragment(), CategoryItemClickListener, SwipeDeleteListener<CategoryEntry> {
-
-    private lateinit var binding: FragmentListBinding
+class CategoryListFragment : BaseListFragment<CategoryEntry>(), CategoryItemClickListener, SwipeDeleteListener<CategoryEntry> {
 
     @Inject
     lateinit var navigator : Navigator
@@ -45,20 +43,11 @@ class CategoryListFragment : BaseListFragment(), CategoryItemClickListener, Swip
 
     private lateinit var viewModel : CategoryViewModel
 
-    private lateinit var mAdapter: CategoryAdapter
     private var mCategories: List<CategoryEntry> = emptyList()
 
     var addMenuItem: MenuItem? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_list, container, false)
-
-        mAdapter = CategoryAdapter(requireContext(), this, this)
-        binding.list.adapter = mAdapter
-
-        return binding.root
-    }
+    override fun getListAdapter(): BaseAdapter<CategoryEntry, out Any> = CategoryAdapter(requireContext(), this, this)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -81,7 +70,7 @@ class CategoryListFragment : BaseListFragment(), CategoryItemClickListener, Swip
                     addMenuItem?.let { blinkAddMenuItem(it, R.drawable.avd_plus_to_cross) }
                 }
             } else {
-                mAdapter.submitList(categoryEntries)
+                adapter.submitList(categoryEntries)
                 mCategories = categoryEntries
                 viewModel.listUiState.showList = true
             }
@@ -89,7 +78,6 @@ class CategoryListFragment : BaseListFragment(), CategoryItemClickListener, Swip
 
         activity?.title = getString(R.string.all_categories)
 
-        ItemTouchHelper(SwipeToDeleteCallback(requireContext(), mAdapter)).attachToRecyclerView(binding.list)
     }
 
     override fun onDeleteConfirmed(itemToDelete: CategoryEntry, position : Int) {
@@ -100,16 +88,16 @@ class CategoryListFragment : BaseListFragment(), CategoryItemClickListener, Swip
             if (isUsed) {
                 // If it is used, show a warning and don't let user delete this
                 context?.toast(R.string.cannot_erase_category)
-                mAdapter.cancelDelete(position)
+                adapter.cancelDelete(position)
             } else {
                 //If it is not used, erase the category
                 viewModel.deleteItem(itemToDelete)
-                mAdapter.itemDeleted(position)
+                adapter.itemDeleted(position)
             }
         }
     }
 
-    override fun onDeleteCanceled(position: Int) = mAdapter.cancelDelete(position)
+    override fun onDeleteCanceled(position: Int) = adapter.cancelDelete(position)
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         Timber.d("onCreateOptionsMEnu is created")

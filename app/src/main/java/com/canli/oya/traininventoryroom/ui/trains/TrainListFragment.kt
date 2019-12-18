@@ -3,26 +3,25 @@ package com.canli.oya.traininventoryroom.ui.trains
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.animation.AnimationUtils
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.SearchView
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedList
-import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.common.*
 import com.canli.oya.traininventoryroom.data.TrainMinimal
-import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.Navigator
 import com.canli.oya.traininventoryroom.ui.base.BaseListFragment
 import javax.inject.Inject
 
-class TrainListFragment : BaseListFragment(), TrainItemClickListener, SwipeDeleteListener<TrainMinimal> {
+class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListener, SwipeDeleteListener<TrainMinimal> {
 
     private lateinit var viewModel: TrainViewModel
 
@@ -32,23 +31,11 @@ class TrainListFragment : BaseListFragment(), TrainItemClickListener, SwipeDelet
     @Inject
     lateinit var viewModelFactory: TrainInventoryVMFactory
 
-    private lateinit var binding: FragmentListBinding
-    private lateinit var mAdapter: TrainAdapter
     private var mTrainList: PagedList<TrainMinimal>? = null
 
     private var addMenuItem: MenuItem? = null
 
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_list, container, false)
-
-        //Set recycler view
-        mAdapter = TrainAdapter(requireContext(), this, this)
-        binding.list.adapter = mAdapter
-
-        return binding.root
-    }
+    override fun getListAdapter(): BaseAdapter<TrainMinimal, out Any> = TrainAdapter(requireContext(), this, this)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -84,8 +71,6 @@ class TrainListFragment : BaseListFragment(), TrainItemClickListener, SwipeDelet
                 })
             }
         }
-
-        ItemTouchHelper(SwipeToDeleteCallback(requireContext(), mAdapter)).attachToRecyclerView(binding.list)
     }
 
     private fun evaluateResults(trainEntries: PagedList<TrainMinimal>?, @StringRes message: Int, noTrain: Boolean = false) {
@@ -97,13 +82,11 @@ class TrainListFragment : BaseListFragment(), TrainItemClickListener, SwipeDelet
                 addMenuItem?.let { blinkAddMenuItem(it, R.drawable.avd_plus_to_save) }
             }
         } else {
-            mAdapter.submitList(trainEntries)
+            adapter.submitList(trainEntries)
             mTrainList = trainEntries
             viewModel.listUiState.showList = true
         }
     }
-
-
 
     override fun onListItemClick(trainId: Int) = navigator.launchTrainDetails(trainId)
 
@@ -127,11 +110,11 @@ class TrainListFragment : BaseListFragment(), TrainItemClickListener, SwipeDelet
 
     private fun filterTrains(query: String?) {
         if (query.isNullOrBlank()) {
-            mAdapter.submitList(mTrainList)
+            adapter.submitList(mTrainList)
         } else {
             viewModel.searchInTrains(query).observe(this, Observer { filteredTrains ->
                 if (filteredTrains.isNotEmpty()) {
-                    mAdapter.submitList(filteredTrains)
+                    adapter.submitList(filteredTrains)
                     viewModel.searchInTrains(query).removeObservers(this)
                 }
             })
@@ -157,10 +140,10 @@ class TrainListFragment : BaseListFragment(), TrainItemClickListener, SwipeDelet
 
     override fun onDeleteConfirmed(itemToDelete: TrainMinimal, position: Int) {
         viewModel.deleteTrain(itemToDelete.trainId)
-        mAdapter.itemDeleted(position)
+        adapter.itemDeleted(position)
     }
 
-    override fun onDeleteCanceled(position: Int) = mAdapter.cancelDelete(position)
+    override fun onDeleteCanceled(position: Int) = adapter.cancelDelete(position)
 
     fun scrollToTop() {
         binding.list.smoothScrollToPosition(0)

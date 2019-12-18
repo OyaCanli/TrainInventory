@@ -8,22 +8,22 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.annotation.DrawableRes
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
+import com.canli.oya.traininventoryroom.common.BaseAdapter
 import com.canli.oya.traininventoryroom.common.EDIT_CASE
 import com.canli.oya.traininventoryroom.common.INTENT_REQUEST_CODE
 import com.canli.oya.traininventoryroom.common.SwipeDeleteListener
-import com.canli.oya.traininventoryroom.common.SwipeToDeleteCallback
 import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.Navigator
@@ -35,12 +35,9 @@ import org.jetbrains.anko.toast
 import timber.log.Timber
 import javax.inject.Inject
 
-class BrandListFragment : BaseListFragment(), BrandItemClickListener, SwipeDeleteListener<BrandEntry> {
+class BrandListFragment : BaseListFragment<BrandEntry>(), BrandItemClickListener, SwipeDeleteListener<BrandEntry> {
 
     private lateinit var brands: List<BrandEntry>
-    private lateinit var mAdapter: BrandAdapter
-
-    private lateinit var binding: FragmentListBinding
 
     private lateinit var viewModel : BrandViewModel
 
@@ -52,15 +49,7 @@ class BrandListFragment : BaseListFragment(), BrandItemClickListener, SwipeDelet
 
     private var addMenuItem: MenuItem? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_list, container, false)
-
-        mAdapter = BrandAdapter(requireContext(), this, this)
-        binding.list.adapter = mAdapter
-
-        return binding.root
-    }
+    override fun getListAdapter(): BaseAdapter<BrandEntry, BrandItemClickListener> = BrandAdapter(context!!, this, this)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -82,7 +71,7 @@ class BrandListFragment : BaseListFragment(), BrandItemClickListener, SwipeDelet
                 }
             } else {
                 Timber.d("fragment_list size : ${brandEntries.size}")
-                mAdapter.submitList(brandEntries)
+                adapter.submitList(brandEntries)
                 brands = brandEntries
                 viewModel.listUiState.showList = true
             }
@@ -90,7 +79,6 @@ class BrandListFragment : BaseListFragment(), BrandItemClickListener, SwipeDelet
 
         activity?.title = getString(R.string.all_brands)
 
-        ItemTouchHelper(SwipeToDeleteCallback(requireContext(), mAdapter)).attachToRecyclerView(binding.list)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -165,16 +153,16 @@ class BrandListFragment : BaseListFragment(), BrandItemClickListener, SwipeDelet
             if (isUsed) {
                 // If it is used, show a warning and don't let the user delete this
                 context?.toast(R.string.cannot_erase_brand)
-                mAdapter.notifyItemChanged(position)
+                adapter.notifyItemChanged(position)
             } else {
                 //If it is not used delete the brand
                 viewModel.deleteItem(itemToDelete)
-                mAdapter.itemDeleted(position)
+                adapter.itemDeleted(position)
             }
         }
     }
 
-    override fun onDeleteCanceled(position: Int) = mAdapter.cancelDelete(position)
+    override fun onDeleteCanceled(position: Int) = adapter.cancelDelete(position)
 
     private fun editBrand(clickedBrand: BrandEntry) {
         viewModel.setChosenItem(clickedBrand)
