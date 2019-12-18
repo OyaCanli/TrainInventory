@@ -161,7 +161,7 @@ class BrandListFragment : BaseListFragment(), BrandItemClickListener, SwipeDelet
     override fun onDeleteConfirmed(itemToDelete: BrandEntry, position: Int) {
         launch {
             //Check whether this brand is used in trains table.
-            val isUsed = withContext(Dispatchers.IO) { viewModel.isThisItemUsed(itemToDelete.brandName) }
+            val isUsed = withContext(Dispatchers.IO) { viewModel.isThisItemUsed(itemToDelete) }
             if (isUsed) {
                 // If it is used, show a warning and don't let the user delete this
                 context?.toast(R.string.cannot_erase_brand)

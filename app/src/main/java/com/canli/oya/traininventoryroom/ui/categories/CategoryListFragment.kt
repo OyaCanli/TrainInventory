@@ -96,7 +96,7 @@ class CategoryListFragment : BaseListFragment(), CategoryItemClickListener, Swip
         Timber.d("delete is confirmed")
         launch {
             //First check whether this category is used by trains table
-            val isUsed = withContext(Dispatchers.IO) { viewModel.isThisItemUsed(itemToDelete.categoryName) }
+            val isUsed = withContext(Dispatchers.IO) { viewModel.isThisItemUsed(itemToDelete) }
             if (isUsed) {
                 // If it is used, show a warning and don't let user delete this
                 context?.toast(R.string.cannot_erase_category)

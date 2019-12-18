@@ -26,8 +26,8 @@ class CategoryDataSource @Inject constructor(private val database: TrainDatabase
         database.categoryDao().delete(category)
     }
 
-    override fun isThisItemUsed(category: String): Boolean {
-        return database.trainDao().isThisCategoryUsed(category)
+    override fun isThisItemUsed(category: CategoryEntry): Boolean {
+        return database.trainDao().isThisCategoryUsed(category.categoryName)
     }
 
     override suspend fun updateItem(category: CategoryEntry) {

@@ -37,8 +37,8 @@ abstract class BrandCategoryBaseVM<T>(private val dataSource : IBrandCategoryDat
         viewModelScope.launch(ioDispatcher) { dataSource.insertItem(item) }
     }
 
-    fun isThisItemUsed(itemName: String): Boolean {
-        return dataSource.isThisItemUsed(itemName)
+    fun isThisItemUsed(item: T): Boolean {
+        return dataSource.isThisItemUsed(item)
     }
 
 }
