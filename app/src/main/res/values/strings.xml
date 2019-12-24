@@ -97,5 +97,9 @@
     <string name="hint_location_number">Row of the location, which is a number</string>
     <string name="hint_location_letter">Column of the location, which is a letter</string>
     <string name="hint_train_scale">Scale of the train</string>
+    <string name="export_to_excel">Export to Excel</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
 </resources>

@@ -6,13 +6,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.common.*
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
 import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
 import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
 import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
+import com.canli.oya.traininventoryroom.utils.*
 
 open class Navigator {
 

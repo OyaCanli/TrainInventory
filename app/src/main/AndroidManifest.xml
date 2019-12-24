@@ -7,6 +7,8 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
         android:name=".di.TrainApplication"
         android:allowBackup="true"
@@ -18,7 +20,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity android:name="com.canli.oya.traininventoryroom.ui.main.MainActivity"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

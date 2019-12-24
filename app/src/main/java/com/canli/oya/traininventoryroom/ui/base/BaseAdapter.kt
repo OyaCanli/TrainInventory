@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.common
+package com.canli.oya.traininventoryroom.ui.base
 
 import android.content.Context
 import android.view.LayoutInflater

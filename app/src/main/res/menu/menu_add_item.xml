@@ -5,5 +5,5 @@
         android:id="@+id/action_add"
         android:icon="@drawable/avd_plus_to_cross"
         android:title="@string/add"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 </menu>

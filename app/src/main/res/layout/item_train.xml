@@ -14,7 +14,7 @@
             name="itemClick"
             type="com.canli.oya.traininventoryroom.ui.trains.TrainItemClickListener" />
 
-        <import type="com.canli.oya.traininventoryroom.common.BindingUtils" />
+        <import type="com.canli.oya.traininventoryroom.utils.BindingUtils" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

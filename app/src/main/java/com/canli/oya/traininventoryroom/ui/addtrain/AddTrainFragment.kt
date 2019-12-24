@@ -17,14 +17,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.common.CHOSEN_TRAIN
-import com.canli.oya.traininventoryroom.common.IS_EDIT
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
 import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
+import com.canli.oya.traininventoryroom.utils.CHOSEN_TRAIN
+import com.canli.oya.traininventoryroom.utils.IS_EDIT
 import com.github.dhaval2404.imagepicker.ImagePicker
 import org.jetbrains.anko.toast
 import timber.log.Timber

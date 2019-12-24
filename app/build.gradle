@@ -150,4 +150,7 @@ dependencies {
 
     //Fresco
     implementation 'com.facebook.fresco:fresco:2.0.0'
+
+    //For exporting database to excel, and importing from excel
+    implementation 'com.ajts.androidmads.SQLite2Excel:library:1.0.4'
 }
