@@ -25,7 +25,6 @@ import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
 import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
 import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
 import com.canli.oya.traininventoryroom.utils.DatabaseConverter
-import com.canli.oya.traininventoryroom.utils.REQUEST_STORAGE_PERMISSION
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import org.jetbrains.anko.toast
@@ -87,24 +86,26 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             R.id.trains -> navigator.launchTrainList()
             R.id.brands -> navigator.launchBrandList()
             R.id.categories -> navigator.launchCategoryList()
-            R.id.action_export -> exportDatabaseToExcel()
+            R.id.action_export -> checkPermissionAndExport()
         }
         return true
     }
 
-    fun exportDatabaseToExcel() {
+    private fun checkPermissionAndExport(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkWritePermission()
         } else {
-            DatabaseConverter.exportDatabaseToExcel(this)
+            exportDatabaseToExcel()
         }
     }
 
-    fun checkWritePermission() {
+    private fun exportDatabaseToExcel() = DatabaseConverter.exportDatabaseToExcel(this)
+
+    private fun checkWritePermission() {
         if (needsPermission()) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_STORAGE_PERMISSION)
         } else {
-            DatabaseConverter.exportDatabaseToExcel(this)
+            exportDatabaseToExcel()
         }
     }
 
@@ -115,11 +116,9 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     private fun hideOrShowBottomNavigation(currentFrag: Fragment?) {
         if (currentFrag is AddTrainFragment || currentFrag is TrainDetailsFragment) {
             binding.navigation.visibility = View.GONE
-            //binding.navigationDecoration.visibility = View.GONE
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
         } else {
             binding.navigation.visibility = View.VISIBLE
-            //binding.navigationDecoration.visibility = View.VISIBLE
             supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
     }
@@ -143,7 +142,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             else -> 2
         }
         binding.navigation.menu.getItem(itemNo).isChecked = true
-        //binding.navigationDecoration.setSelected(itemNo)
     }
 
     override fun onBackPressed() {
@@ -173,12 +171,16 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             REQUEST_STORAGE_PERMISSION -> {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // If you get permission, go ahead
-                    DatabaseConverter.exportDatabaseToExcel(this)
+                    exportDatabaseToExcel()
                 } else {
                     // If you do not get permission, show a Toast
                     toast(R.string.permission_denied)
                 }
             }
         }
+    }
+
+    companion object {
+        const val REQUEST_STORAGE_PERMISSION = 1
     }
 }

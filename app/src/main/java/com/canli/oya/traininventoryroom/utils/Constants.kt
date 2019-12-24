@@ -12,6 +12,4 @@ const val BRAND_NAME = "brandName"
 const val TRAINS_OF_CATEGORY = "trainsOfCategory"
 const val CATEGORY_NAME = "categoryName"
 
-const val REQUEST_STORAGE_PERMISSION = 1
-
 
