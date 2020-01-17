@@ -19,12 +19,10 @@ import androidx.fragment.app.FragmentManager
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ActivityMainBinding
 import com.canli.oya.traininventoryroom.di.TrainApplication
-import com.canli.oya.traininventoryroom.ui.Navigator
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
 import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
 import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
-import com.canli.oya.traininventoryroom.utils.DatabaseConverter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import org.jetbrains.anko.toast
@@ -95,17 +93,15 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkWritePermission()
         } else {
-            exportDatabaseToExcel()
+            navigator.launchExportToExcelFragment()
         }
     }
-
-    private fun exportDatabaseToExcel() = DatabaseConverter.exportDatabaseToExcel(this)
 
     private fun checkWritePermission() {
         if (needsPermission()) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_STORAGE_PERMISSION)
         } else {
-            exportDatabaseToExcel()
+            navigator.launchExportToExcelFragment()
         }
     }
 
@@ -171,7 +167,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             REQUEST_STORAGE_PERMISSION -> {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // If you get permission, go ahead
-                    exportDatabaseToExcel()
+                    navigator.launchExportToExcelFragment()
                 } else {
                     // If you do not get permission, show a Toast
                     toast(R.string.permission_denied)

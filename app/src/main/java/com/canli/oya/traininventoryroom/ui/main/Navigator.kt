@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.ui
+package com.canli.oya.traininventoryroom.ui.main
 
 
 import android.os.Bundle
@@ -10,6 +10,7 @@ import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
 import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
+import com.canli.oya.traininventoryroom.ui.exportToExcel.ExportingToExcelDialog
 import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
 import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
 import com.canli.oya.traininventoryroom.utils.*
@@ -77,4 +78,13 @@ open class Navigator {
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .addToBackStack(null)}
     }
+
+    fun launchExportToExcelFragment(){
+        val dialogFrag = ExportingToExcelDialog()
+        fragmentManager?.let {
+            dialogFrag.show(it, null)
+        }
+    }
+
+
 }

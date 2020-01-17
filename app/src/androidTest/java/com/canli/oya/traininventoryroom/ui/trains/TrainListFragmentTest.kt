@@ -15,13 +15,12 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.common.*
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.source.FakeTrainDataSource
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import com.canli.oya.traininventoryroom.di.AndroidTestApplication
 import com.canli.oya.traininventoryroom.di.TestComponent
-import com.canli.oya.traininventoryroom.ui.Navigator
+import com.canli.oya.traininventoryroom.ui.main.Navigator
 import com.canli.oya.traininventoryroom.utils.isGone
 import com.canli.oya.traininventoryroom.utils.isVisible
 import kotlinx.coroutines.ExperimentalCoroutinesApi

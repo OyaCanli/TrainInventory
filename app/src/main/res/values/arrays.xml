@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="dialog_options">
-        <item>Take an image</item>
-        <item>Choose from gallery</item>
+        <item>Upload excel file on cloud</item>
+        <item>Open excel file</item>
     </string-array>
 </resources>

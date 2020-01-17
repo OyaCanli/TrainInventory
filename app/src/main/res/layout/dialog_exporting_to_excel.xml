@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data class="ExportToExcelBinding"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/window_background">
+
+        <ImageView
+            android:id="@+id/database_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/margin_standard"
+            app:layout_constraintEnd_toStartOf="@+id/lottie_exporting_anim"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_database" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_exporting_anim"
+            android:layout_width="120dp"
+            android:layout_height="10dp"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="@+id/database_icon"
+            app:layout_constraintEnd_toStartOf="@+id/excel_icon"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/database_icon"
+            app:layout_constraintTop_toTopOf="@+id/database_icon"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/transfer_anim" />
+
+        <ImageView
+            android:id="@+id/excel_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_standard"
+            android:layout_marginTop="@dimen/margin_standard"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/lottie_exporting_anim"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_excel" />
+
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_standard"
+            android:text="@string/exporting_to_excel"
+            android:textSize="@dimen/normalTextSize"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/database_icon" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -16,10 +16,10 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.TrainMinimal
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
-import com.canli.oya.traininventoryroom.ui.Navigator
 import com.canli.oya.traininventoryroom.ui.base.BaseAdapter
 import com.canli.oya.traininventoryroom.ui.base.BaseListFragment
 import com.canli.oya.traininventoryroom.ui.base.SwipeDeleteListener
+import com.canli.oya.traininventoryroom.ui.main.Navigator
 import com.canli.oya.traininventoryroom.utils.*
 import javax.inject.Inject
 

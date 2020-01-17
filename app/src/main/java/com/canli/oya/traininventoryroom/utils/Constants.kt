@@ -12,4 +12,7 @@ const val BRAND_NAME = "brandName"
 const val TRAINS_OF_CATEGORY = "trainsOfCategory"
 const val CATEGORY_NAME = "categoryName"
 
+const val EXCEL_FILE_PATH = "excelFilePath"
+const val PROVIDER_AUTHORITY = "com.canli.oya.traininventoryroom.fileprovider"
+
 

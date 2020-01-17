@@ -84,4 +84,6 @@
     <string name="plus_icon_unicode">&#xf055;</string>
     <string name="no_items_found">Il y a aucun article. Clicquer sur le bouton plus au dessus pour en ajouter un</string>
     <string name="export_to_excel">Exporter en Excel</string>
+    <string name="successfully_exported">Successfully exported to excel</string>
+    <string name="exporting_to_excel">En train d\'importer en excel. Veuillez patienter..</string>
 </resources>
