@@ -19,7 +19,7 @@ import com.canli.oya.traininventoryroom.data.source.FakeBrandDataSource
 import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import com.canli.oya.traininventoryroom.di.AndroidTestApplication
 import com.canli.oya.traininventoryroom.di.TestComponent
-import com.canli.oya.traininventoryroom.ui.Navigator
+import com.canli.oya.traininventoryroom.ui.main.Navigator
 import com.canli.oya.traininventoryroom.utils.clickOnChildWithId
 import com.canli.oya.traininventoryroom.utils.isGone
 import com.canli.oya.traininventoryroom.utils.isVisible

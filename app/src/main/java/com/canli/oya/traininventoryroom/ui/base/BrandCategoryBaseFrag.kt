@@ -16,10 +16,9 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.common.EDIT_CASE
-import com.canli.oya.traininventoryroom.common.INTENT_REQUEST_CODE
-import com.canli.oya.traininventoryroom.common.SwipeDeleteListener
-import com.canli.oya.traininventoryroom.common.SwipeToDeleteCallback
+import com.canli.oya.traininventoryroom.utils.EDIT_CASE
+import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
+import com.canli.oya.traininventoryroom.utils.SwipeToDeleteCallback
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

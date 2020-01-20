@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.common
+package com.canli.oya.traininventoryroom.utils
 
 import android.content.Context
 import android.graphics.Canvas
@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.canli.oya.traininventoryroom.R
+import com.canli.oya.traininventoryroom.ui.base.BaseAdapter
 import timber.log.Timber
 
 

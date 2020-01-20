@@ -8,12 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.common.TRAIN_ID
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentTrainDetailsBinding
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
-import com.canli.oya.traininventoryroom.ui.Navigator
+import com.canli.oya.traininventoryroom.ui.main.Navigator
+import com.canli.oya.traininventoryroom.utils.TRAIN_ID
 import javax.inject.Inject
 
 class TrainDetailsFragment : Fragment() {

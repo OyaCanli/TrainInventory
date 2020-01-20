@@ -5,13 +5,13 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.common.BaseAdapter
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
-import com.canli.oya.traininventoryroom.ui.Navigator
+import com.canli.oya.traininventoryroom.ui.base.BaseAdapter
 import com.canli.oya.traininventoryroom.ui.base.BrandCategoryBaseFrag
 import com.canli.oya.traininventoryroom.ui.base.BrandCategoryBaseVM
+import com.canli.oya.traininventoryroom.ui.main.Navigator
 import timber.log.Timber
 import javax.inject.Inject
 

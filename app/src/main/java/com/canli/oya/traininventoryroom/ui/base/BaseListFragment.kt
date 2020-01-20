@@ -14,9 +14,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.common.BaseAdapter
-import com.canli.oya.traininventoryroom.common.SwipeToDeleteCallback
 import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
+import com.canli.oya.traininventoryroom.utils.SwipeToDeleteCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

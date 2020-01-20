@@ -67,7 +67,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "androidx.appcompat:appcompat:$rootProject.supportLibVersion"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta3'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
     implementation "com.google.android.material:material:$rootProject.materialVersion"
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
     implementation "androidx.annotation:annotation:1.1.0"
@@ -96,12 +96,12 @@ dependencies {
     androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
 
-    debugImplementation 'androidx.fragment:fragment-testing:1.2.0-rc03'
+    debugImplementation "androidx.fragment:fragment-testing:$fragmentTestingVersion"
     debugImplementation "androidx.test:core:$testCore_version"
 
     //Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation 'androidx.fragment:fragment-ktx:1.2.0-rc03'
+    implementation "androidx.fragment:fragment-ktx:$fragmentTestingVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
 
@@ -144,10 +144,12 @@ dependencies {
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
     implementation "androidx.paging:paging-rxjava2-ktx:$paging_version"
 
-    //Navigation
-    implementation "android.arch.navigation:navigation-fragment-ktx:$navigation_version"
-    implementation "android.arch.navigation:navigation-ui-ktx:$navigation_version"
-
     //Fresco
     implementation 'com.facebook.fresco:fresco:2.0.0'
+
+    //For exporting database to excel, and importing from excel
+    implementation 'com.ajts.androidmads.SQLite2Excel:library:1.0.4'
+
+    //Lottie Animations
+    implementation "com.airbnb.android:lottie:$lottieVersion"
 }

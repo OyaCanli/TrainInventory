@@ -18,7 +18,7 @@ import com.canli.oya.traininventoryroom.data.source.FakeTrainDataSource
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import com.canli.oya.traininventoryroom.di.AndroidTestApplication
 import com.canli.oya.traininventoryroom.di.TestComponent
-import com.canli.oya.traininventoryroom.ui.Navigator
+import com.canli.oya.traininventoryroom.ui.main.Navigator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
