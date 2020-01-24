@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 
-class FakeCategoryDataSource(val categories : MutableList<CategoryEntry> = mutableListOf(),
+class FakeCategoryDataSource(private val categories : MutableList<CategoryEntry> = mutableListOf(),
                              private val trains: List<TrainEntry> = listOf()) : IBrandCategoryDataSource<CategoryEntry> {
 
     private val categoriesLiveData : MutableLiveData<PagedList<CategoryEntry>> = MutableLiveData()
@@ -14,24 +14,19 @@ class FakeCategoryDataSource(val categories : MutableList<CategoryEntry> = mutab
         updateCategoriesLiveData()
     }
 
-    override suspend fun insertItem(category: CategoryEntry) {
-        categories.add(category)
+    override suspend fun insertItem(item: CategoryEntry) {
+        categories.add(item)
         updateCategoriesLiveData()
     }
 
-    override suspend fun deleteItem(category: CategoryEntry) {
-        categories.remove(category)
+    override suspend fun deleteItem(item: CategoryEntry) {
+        categories.remove(item)
         updateCategoriesLiveData()
     }
 
-    override fun isThisItemUsed(category: String): Boolean {
-        val index = trains.indexOfFirst { it.categoryName == category }
-        return (index != -1)
-    }
-
-    override suspend fun updateItem(category: CategoryEntry) {
-        val index = categories.indexOfFirst { it.categoryId == category.categoryId }
-        categories[index] = category
+    override suspend fun updateItem(item: CategoryEntry) {
+        val index = categories.indexOfFirst { it.categoryId == item.categoryId }
+        categories[index] = item
         updateCategoriesLiveData()
     }
 
@@ -39,5 +34,10 @@ class FakeCategoryDataSource(val categories : MutableList<CategoryEntry> = mutab
 
     private fun updateCategoriesLiveData(){
         categoriesLiveData.value = categories.asPagedList()
+    }
+
+    override fun isThisItemUsed(item: CategoryEntry): Boolean {
+        val index = trains.indexOfFirst { it.categoryName == item.categoryName }
+        return (index != -1)
     }
 }
