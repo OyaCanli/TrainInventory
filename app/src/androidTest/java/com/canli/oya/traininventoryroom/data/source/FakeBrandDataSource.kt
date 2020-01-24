@@ -15,25 +15,20 @@ class FakeBrandDataSource(private var brands : MutableList<BrandEntry> = mutable
         updateBrandsLiveData()
     }
 
-    override suspend fun insertItem(brand: BrandEntry) {
-        brands.add(brand)
+    override suspend fun insertItem(item: BrandEntry) {
+        brands.add(item)
         updateBrandsLiveData()
     }
 
-    override suspend fun updateItem(brand: BrandEntry) {
-        val index = brands.indexOfFirst { it.brandId == brand.brandId }
-        brands[index] = brand
+    override suspend fun updateItem(item: BrandEntry) {
+        val index = brands.indexOfFirst { it.brandId == item.brandId }
+        brands[index] = item
         updateBrandsLiveData()
     }
 
-    override suspend fun deleteItem(brand: BrandEntry) {
-        brands.remove(brand)
+    override suspend fun deleteItem(item: BrandEntry) {
+        brands.remove(item)
         updateBrandsLiveData()
-    }
-
-    override fun isThisItemUsed(brandName: String): Boolean {
-        val index = trains.indexOfFirst { it.brandName == brandName }
-        return (index != -1)
     }
 
     override fun getAllItems(): LiveData<PagedList<BrandEntry>> = brandsLiveData
@@ -45,5 +40,10 @@ class FakeBrandDataSource(private var brands : MutableList<BrandEntry> = mutable
     fun setData(newBrandList : MutableList<BrandEntry>){
         brands = newBrandList
         updateBrandsLiveData()
+    }
+
+    override fun isThisItemUsed(item: BrandEntry): Boolean {
+        val index = trains.indexOfFirst { it.brandName == item.brandName }
+        return (index != -1)
     }
 }

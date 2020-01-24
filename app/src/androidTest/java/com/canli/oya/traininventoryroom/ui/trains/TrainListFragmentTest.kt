@@ -21,8 +21,7 @@ import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import com.canli.oya.traininventoryroom.di.AndroidTestApplication
 import com.canli.oya.traininventoryroom.di.TestComponent
 import com.canli.oya.traininventoryroom.ui.main.Navigator
-import com.canli.oya.traininventoryroom.utils.isGone
-import com.canli.oya.traininventoryroom.utils.isVisible
+import com.canli.oya.traininventoryroom.utils.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before

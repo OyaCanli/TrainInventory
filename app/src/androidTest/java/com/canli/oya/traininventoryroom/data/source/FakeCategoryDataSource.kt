@@ -15,24 +15,19 @@ class FakeCategoryDataSource(private var categories : MutableList<CategoryEntry>
         updateCategoriesLiveData()
     }
 
-    override suspend fun insertItem(category: CategoryEntry) {
-        categories.add(category)
+    override suspend fun insertItem(item: CategoryEntry) {
+        categories.add(item)
         updateCategoriesLiveData()
     }
 
-    override suspend fun deleteItem(category: CategoryEntry) {
-        categories.remove(category)
+    override suspend fun deleteItem(item: CategoryEntry) {
+        categories.remove(item)
         updateCategoriesLiveData()
     }
 
-    override fun isThisItemUsed(category: String): Boolean {
-        val index = trains.indexOfFirst { it.categoryName == category }
-        return (index != -1)
-    }
-
-    override suspend fun updateItem(category: CategoryEntry) {
-        val index = categories.indexOfFirst { it.categoryId == category.categoryId }
-        categories[index] = category
+    override suspend fun updateItem(item: CategoryEntry) {
+        val index = categories.indexOfFirst { it.categoryId == item.categoryId }
+        categories[index] = item
         updateCategoriesLiveData()
     }
 
@@ -45,5 +40,10 @@ class FakeCategoryDataSource(private var categories : MutableList<CategoryEntry>
     fun setData(newCategoryList : MutableList<CategoryEntry>){
         categories = newCategoryList
         updateCategoriesLiveData()
+    }
+
+    override fun isThisItemUsed(item: CategoryEntry): Boolean {
+        val index = trains.indexOfFirst { it.categoryName == item.categoryName }
+        return (index != -1)
     }
 }
