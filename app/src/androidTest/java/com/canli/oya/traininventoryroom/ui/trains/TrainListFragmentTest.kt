@@ -1,7 +1,7 @@
 package com.canli.oya.traininventoryroom.ui.trains
 
 import android.os.Bundle
-import android.view.MenuItem
+import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.recyclerview.widget.RecyclerView
@@ -28,7 +28,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import javax.inject.Inject
@@ -224,9 +223,7 @@ class TrainListFragmentTest{
             args.putString(INTENT_REQUEST_CODE, ALL_TRAIN)
             val scenario = launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
 
-            val addMenuItem = Mockito.mock(MenuItem::class.java)
-            Mockito.`when`(addMenuItem.itemId).thenReturn(R.id.action_add)
-            //Click on the add menu item
+            val addMenuItem = ActionMenuItem(null, 0, R.id.action_add, 0, 0, null)
             scenario.onFragment { fragment ->
                 fragment.onOptionsItemSelected(addMenuItem)
             }

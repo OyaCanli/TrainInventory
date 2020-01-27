@@ -2,6 +2,7 @@ package com.canli.oya.traininventoryroom.ui.trains
 
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
@@ -81,8 +82,8 @@ class TrainDetailsFragmentTest{
     @Test
     fun clickEditMenuItem_launchesAddTrainFragment() {
         //Click on edit menu item
-        val editMenuItem = Mockito.mock(MenuItem::class.java)
-        Mockito.`when`(editMenuItem.itemId).thenReturn(R.id.action_edit)
+        val editMenuItem = ActionMenuItem(null, 0, R.id.action_edit, 0, 0, null)
+
         //Click on the edit menu item
         scenario.onFragment { fragment ->
             fragment.onOptionsItemSelected(editMenuItem)

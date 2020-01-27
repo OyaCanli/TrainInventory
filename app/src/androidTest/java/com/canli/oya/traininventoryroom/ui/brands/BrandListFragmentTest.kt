@@ -29,7 +29,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.*
+import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import javax.inject.Inject
 
@@ -94,8 +94,7 @@ class BrandListFragmentTest {
             (dataSource as FakeBrandDataSource).setData(sampleBrandList)
             val scenario = launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
 
-            val addMenuItem = mock(ActionMenuItem::class.java)
-            `when`(addMenuItem.itemId).thenReturn(R.id.action_add)
+            val addMenuItem = ActionMenuItem(null, 0, R.id.action_add, 0, 0, null)
             //Click on the add menu item
             scenario.onFragment { fragment ->
                 fragment.onOptionsItemSelected(addMenuItem)
@@ -106,8 +105,6 @@ class BrandListFragmentTest {
             onView(withId(R.id.addBrand_editBrandName)).check(matches(withText("")))
             onView(withId(R.id.addBrand_image)).check(matches(isDisplayed()))
             onView(withId(R.id.addBrand_saveBtn)).check(matches(isDisplayed()))
-
-            validateMockitoUsage()
         }
     }
 

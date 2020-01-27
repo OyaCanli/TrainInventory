@@ -1,7 +1,7 @@
 package com.canli.oya.traininventoryroom.ui.categories
 
 import android.os.Bundle
-import android.view.MenuItem
+import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.recyclerview.widget.RecyclerView
@@ -29,7 +29,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.*
+import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import javax.inject.Inject
 
@@ -94,8 +94,8 @@ class CategoryListFragmentTest {
             (dataSource as FakeCategoryDataSource).setData(sampleCategoryList)
             val scenario = launchFragmentInContainer<CategoryListFragment>(Bundle(), R.style.AppTheme)
 
-            val addMenuItem = mock(MenuItem::class.java)
-            `when`(addMenuItem.itemId).thenReturn(R.id.action_add)
+            val addMenuItem = ActionMenuItem(null, 0, R.id.action_add, 0, 0, null)
+
             //Click on the add menu item
             scenario.onFragment { fragment ->
                 fragment.onOptionsItemSelected(addMenuItem)
