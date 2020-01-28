@@ -24,12 +24,15 @@ import com.canli.oya.traininventoryroom.ui.main.Navigator
 import com.canli.oya.traininventoryroom.utils.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+
 import javax.inject.Inject
 
 @MediumTest
@@ -44,7 +47,7 @@ class TrainListFragmentTest{
     lateinit var dataSource: ITrainDataSource
 
     @Inject
-    lateinit var navigator : Navigator
+    lateinit var navigator: Navigator
 
     val sampleTrain1 = TrainEntry(trainId = 0, trainName = "Red Wagon", categoryName = "Wagon", brandName = "Marklin")
     val sampleTrain2 = TrainEntry(trainId = 1, trainName = "Blue Loco", categoryName = "Locomotif", brandName = "MDN")
@@ -222,13 +225,20 @@ class TrainListFragmentTest{
             val args = Bundle()
             args.putString(INTENT_REQUEST_CODE, ALL_TRAIN)
             val scenario = launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
-
+            
             val addMenuItem = ActionMenuItem(null, 0, R.id.action_add, 0, 0, null)
-            scenario.onFragment { fragment ->
-                fragment.onOptionsItemSelected(addMenuItem)
+            scenario.onFragment {
+                it.onOptionsItemSelected(addMenuItem)
             }
 
             verify(navigator).launchAddTrain()
+        }
+    }
+
+    @After
+    fun validate() {
+        kotlin.runCatching {
+            Mockito.validateMockitoUsage()
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.canli.oya.traininventoryroom.ui.trains
 
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.FragmentScenario
@@ -21,6 +20,7 @@ import com.canli.oya.traininventoryroom.di.TestComponent
 import com.canli.oya.traininventoryroom.ui.main.Navigator
 import com.canli.oya.traininventoryroom.utils.TRAIN_ID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,6 +28,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+
 import javax.inject.Inject
 
 @MediumTest
@@ -44,7 +45,7 @@ class TrainDetailsFragmentTest{
     lateinit var dataSource: ITrainDataSource
 
     @Inject
-    lateinit var navigator : Navigator
+    lateinit var navigator: Navigator
 
     val sampleTrain1 = TrainEntry(trainId = 0, trainName = "Red Wagon", categoryName = "Wagon", brandName = "Marklin", modelReference = "MN", description = "In very good state", quantity = 1, scale = "1.2", locationColumn = "A", locationRow = "2")
     val sampleTrain2 = TrainEntry(trainId = 1, trainName = "Blue Loco", categoryName = "Locomotif", brandName = "MDN")
@@ -81,7 +82,8 @@ class TrainDetailsFragmentTest{
     //Click on edit menu item and verify that AddTrainFragment is launched
     @Test
     fun clickEditMenuItem_launchesAddTrainFragment() {
-        //Click on edit menu item
+
+        //Create a dummy menu item
         val editMenuItem = ActionMenuItem(null, 0, R.id.action_edit, 0, 0, null)
 
         //Click on the edit menu item
@@ -96,13 +98,19 @@ class TrainDetailsFragmentTest{
     @Test
     fun clickDeleteMenuItem_launchesAWarningDialog() {
         //Click on delete menu item
-        val deleteMenuItem = Mockito.mock(MenuItem::class.java)
-        Mockito.`when`(deleteMenuItem.itemId).thenReturn(R.id.action_delete)
+        val deleteMenuItem = ActionMenuItem(null, 0, R.id.action_delete, 0, 0, null)
         //Click on the edit menu item
         scenario.onFragment { fragment ->
             fragment.onOptionsItemSelected(deleteMenuItem)
         }
 
         onView(withText(R.string.do_you_want_to_delete)).check(matches(isDisplayed()))
+    }
+
+    @After
+    fun validate() {
+        kotlin.runCatching {
+            Mockito.validateMockitoUsage()
+        }
     }
 }

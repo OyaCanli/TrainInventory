@@ -25,10 +25,12 @@ import com.canli.oya.traininventoryroom.utils.isGone
 import com.canli.oya.traininventoryroom.utils.isVisible
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.validateMockitoUsage
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import javax.inject.Inject
@@ -46,7 +48,7 @@ class BrandListFragmentTest {
     lateinit var dataSource: IBrandCategoryDataSource<BrandEntry>
 
     @Inject
-    lateinit var navigator : Navigator
+    lateinit var navigator: Navigator
 
     val sampleBrand1 = BrandEntry(0, "Markin")
     val sampleBrand2 = BrandEntry(1, "MDN")
@@ -128,7 +130,7 @@ class BrandListFragmentTest {
 
     //Click on train icon on a category and verify that navigator temps to launch TrainListFrag with correct inputs
     @Test
-    fun clickTrainIconOnItem_launchesAddTrainFragment() {
+    fun clickTrainIconOnItem_launchesTrainListFragment() {
         runBlockingTest {
             (dataSource as FakeBrandDataSource).setData(sampleBrandList)
             launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
@@ -156,6 +158,13 @@ class BrandListFragmentTest {
             onView(withId(R.id.confirm_delete_btn)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
             onView(withId(R.id.cancel_btn)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
             onView(withText(R.string.do_you_want_to_delete)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+        }
+    }
+
+    @After
+    fun validate() {
+        kotlin.runCatching {
+            validateMockitoUsage()
         }
     }
 }

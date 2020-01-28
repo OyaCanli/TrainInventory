@@ -1,14 +1,13 @@
 package com.canli.oya.traininventoryroom.di
 
+
 import android.app.Application
 import android.content.Context
 import com.canli.oya.traininventoryroom.data.TrainDatabase
 import com.canli.oya.traininventoryroom.ui.main.Navigator
-import com.nhaarman.mockitokotlin2.mock
 import dagger.Module
 import dagger.Provides
-
-
+import org.mockito.Mockito.mock
 import javax.inject.Singleton
 
 @Module
@@ -23,13 +22,13 @@ class TestAppModule(private val app: Application) {
     @Singleton
     @Provides
     fun provideDatabase() : TrainDatabase {
-        return mock()
+        return mock(TrainDatabase::class.java)
     }
 
     @Singleton
     @Provides
     fun provideNavigator() : Navigator {
-        return mock()
+        return mock(Navigator::class.java)
     }
 
 }
