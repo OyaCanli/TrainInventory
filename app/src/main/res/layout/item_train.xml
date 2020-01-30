@@ -20,71 +20,80 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/train_item_height"
-        android:padding="@dimen/half_padding"
         android:background="@color/window_background"
-        android:onClick="@{() ->  itemClick.onListItemClick(item.trainId)}">
+        android:onClick="@{() ->  itemClick.onListItemClick(item.trainId)}"
+        android:padding="@dimen/half_padding">
+
+        <TextView
+            android:id="@+id/train_item_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/half_margin"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:textSize="@dimen/largeTextSize"
+            app:numerator="@{position}"
+            app:layout_constraintBaseline_toBaselineOf="@+id/train_item_train_name"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="1." />
 
         <TextView
             android:id="@+id/train_item_train_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/half_margin"
-            android:layout_marginTop="@dimen/half_margin"
             style="@style/name_style"
-            app:layout_constraintStart_toEndOf="@+id/product_item_image"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@{item.trainName}"
+            app:layout_constraintEnd_toStartOf="@+id/product_item_image"
+            app:layout_constraintStart_toEndOf="@+id/train_item_number"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Train name"
-            android:text="@{item.trainName}"/>
+            tools:text="Train name" />
 
         <TextView
             android:id="@+id/train_item_brand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/half_margin"
-            android:layout_marginTop="@dimen/half_margin"
-            app:layout_constraintStart_toEndOf="@+id/product_item_image"
-            app:layout_constraintTop_toBottomOf="@+id/train_item_train_name"
-            tools:text="Brand name"
+            android:layout_marginTop="8dp"
+            android:text="@{item.brandName}"
             android:textSize="@dimen/normalTextSize"
-            android:text="@{item.brandName}"/>
+            app:layout_constraintStart_toStartOf="@+id/train_item_train_name"
+            app:layout_constraintTop_toBottomOf="@+id/train_item_train_name"
+            tools:text="Brand name" />
 
         <ImageView
             android:id="@+id/product_item_image"
             android:layout_width="@dimen/product_item_image_dim"
             android:layout_height="@dimen/product_item_image_dim"
-            android:layout_marginBottom="@dimen/half_margin"
-            android:layout_marginStart="@dimen/half_margin"
-            android:layout_marginTop="@dimen/half_margin"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/cd_product_image"
             app:imageUrl="@{item.imageUri}"
-            app:placeholder="@{@drawable/ic_gallery_light}"
-            android:contentDescription="@string/cd_product_image"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:placeholder="@{@drawable/ic_gallery_light}" />
 
         <TextView
             android:id="@+id/train_item_reference"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/half_margin"
-            android:layout_marginTop="@dimen/half_margin"
-            app:layout_constraintStart_toEndOf="@+id/product_item_image"
-            app:layout_constraintTop_toBottomOf="@+id/train_item_brand"
-            tools:text="reference"
+            android:layout_marginTop="8dp"
+            android:text="@{item.modelReference}"
             android:textSize="@dimen/normalTextSize"
-            android:text="@{item.modelReference}"/>
+            app:layout_constraintStart_toStartOf="@+id/train_item_brand"
+            app:layout_constraintTop_toBottomOf="@+id/train_item_brand"
+            tools:text="reference" />
 
         <TextView
             android:id="@+id/train_item_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/half_margin"
-            android:textStyle="italic"
-            app:layout_constraintBaseline_toBaselineOf="@+id/train_item_train_name"
-            app:layout_constraintStart_toEndOf="@+id/train_item_train_name"
-            tools:text="(Vagon)"
+            android:text="@{BindingUtils.encloseInParenthesis(item.categoryName)}"
             android:textSize="@dimen/normalTextSize"
-            android:text="@{BindingUtils.encloseInParenthesis(item.categoryName)}"/>
+            android:textStyle="italic"
+            app:layout_constraintBaseline_toBaselineOf="@+id/train_item_brand"
+            app:layout_constraintStart_toEndOf="@+id/train_item_brand"
+            tools:text="(Vagon)" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
