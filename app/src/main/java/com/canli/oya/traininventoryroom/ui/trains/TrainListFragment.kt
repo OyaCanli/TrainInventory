@@ -79,7 +79,7 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
         if (trainEntries.isNullOrEmpty()) {
             viewModel.listUiState.emptyMessage = message
             viewModel.listUiState.showEmpty = true
-            animateTrainLogo()
+            //animateTrainLogo()
             if (noTrain) {
                 addMenuItem?.let { blinkAddMenuItem(it, R.drawable.avd_plus_to_save) }
             }

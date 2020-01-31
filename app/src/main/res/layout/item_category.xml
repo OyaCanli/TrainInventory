@@ -56,7 +56,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:textSize="@dimen/largeTextSize"
-            android:text="@{String.valueOf(position + 1)}"
+            app:numerator="@{position}"
             app:layout_constraintBaseline_toBaselineOf="@+id/category_item_category_name"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="1." />

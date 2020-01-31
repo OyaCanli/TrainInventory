@@ -62,11 +62,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         drawer.addDrawerListener(toggle)
         binding.navigationDrawer.setNavigationItemSelectedListener(this)
-
-        /*supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)*/
-
+        supportActionBar?.setDisplayShowHomeEnabled(true)
         toggle.syncState()
 
         fm = supportFragmentManager
@@ -119,13 +116,12 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             binding.navigation.visibility = View.GONE
             toggle.isDrawerIndicatorEnabled = false
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            toggle.syncState()
         } else {
             binding.navigation.visibility = View.VISIBLE
             toggle.isDrawerIndicatorEnabled = true
             supportActionBar?.setDisplayHomeAsUpEnabled(false)
-            toggle.syncState()
         }
+        toggle.syncState()
     }
 
     private fun clearFocusAndHideKeyboard() {
@@ -162,16 +158,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
     }
 
-    override fun onNavigateUp(): Boolean {
-        val currentFrag = fm.findFragmentById(R.id.container)
-        if (currentFrag is AddTrainFragment) {
-            currentFrag.onBackClicked()
-            return true
-        } else {
-            return super.onNavigateUp()
-        }
-    }
-
     override fun onBackStackChanged() {
         Timber.d("onBackStackChanged is called")
         clearFocusAndHideKeyboard()
@@ -193,14 +179,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 }
             }
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        Timber.d("onOptionsItemSelected")
-        if (toggle.onOptionsItemSelected(item)) {
-            return true
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     companion object {

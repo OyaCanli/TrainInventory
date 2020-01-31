@@ -106,7 +106,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/half_margin"
             android:layout_marginTop="@dimen/half_margin"
-            android:text="@{String.valueOf(position + 1)}"
+            app:numerator="@{position}"
             android:textSize="@dimen/largeTextSize"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
