@@ -34,7 +34,7 @@
         <ImageView
             android:id="@+id/empty_image"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_standard"
             android:layout_marginTop="@dimen/margin_standard"
             android:layout_marginEnd="@dimen/margin_standard"
@@ -45,7 +45,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/list_addFrag_container"
             app:layout_constraintVertical_bias="0.24"
-            app:srcCompat="@drawable/ic_train"
+            app:srcCompat="@drawable/train_logo_large"
             app:visible="@{uiState.showEmpty}" />
 
         <com.canli.oya.traininventoryroom.ui.main.IconTextView
@@ -62,7 +62,8 @@
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/empty_image"/>
 
         <ProgressBar
             android:id="@+id/loading_indicator"

@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.animation.AnimationUtils
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -41,8 +40,6 @@ abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteList
         viewModel.allItems.observe(viewLifecycleOwner, Observer { brandEntries ->
             if (brandEntries.isNullOrEmpty()) {
                 viewModel.listUiState.showEmpty = true
-                val slideAnim = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
-                binding.emptyImage.startAnimation(slideAnim)
                 //If there are no items and add is not clicked, blink add button to draw user's attention
                 if(!viewModel.isChildFragVisible) {
                     addMenuItem?.let { blinkAddMenuItem(it, R.drawable.avd_plus_to_cross) }

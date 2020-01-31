@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.ShapeDrawable
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,4 +34,9 @@ fun RecyclerView.addItemDivider(hasItemDivider : Boolean) {
         paint.color = context.resources.getColor(R.color.divider_color)
     })
     addItemDecoration(divider)
+}
+
+@BindingAdapter("numerator")
+fun TextView.numerate(position : Int){
+    text = "${position + 1}."
 }
