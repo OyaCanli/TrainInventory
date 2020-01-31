@@ -60,8 +60,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 this, drawer, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer.addDrawerListener(toggle)
         binding.navigationDrawer.setNavigationItemSelectedListener(this)
-        actionBar?.setHomeButtonEnabled(true)
-        actionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
         toggle.syncState()
 
         fm = supportFragmentManager

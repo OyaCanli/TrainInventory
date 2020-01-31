@@ -11,7 +11,7 @@
     <!-- Image dimensions -->
     <dimen name="train_details_image_height">140dp</dimen>
     <dimen name="train_details_image_width">120dp</dimen>
-    <dimen name="details_image_dropdown">300dp</dimen>
+    <dimen name="details_image_dropdown">200dp</dimen>
     <dimen name="add_brand_logo_dim">80dp</dimen>
     <dimen name="product_item_image_dim">100dp</dimen>
     <dimen name="brand_item_logo_dim">60dp</dimen>
