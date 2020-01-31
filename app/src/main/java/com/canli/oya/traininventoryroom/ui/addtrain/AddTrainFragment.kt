@@ -80,13 +80,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
 
         chosenTrain = arguments?.getParcelable(CHOSEN_TRAIN)
 
-        val app = (activity?.application as TrainApplication)
-        val appComponent = app.appComponent
-        DaggerAddTrainComponent.builder()
-                .appComponent(appComponent)
-                .bindChosenTrain(chosenTrain)
-                .build()
-                .inject(this)
+        initDagger()
 
         addViewModel = ViewModelProvider(this, viewModelFactory).get(AddTrainViewModel::class.java)
         binding.viewModel = addViewModel
@@ -95,6 +89,16 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         setCategorySpinner()
         getAndObserveCategories()
         getAndObserveBrands()
+    }
+
+    private fun initDagger() {
+        val app = (activity?.application as TrainApplication)
+        val appComponent = app.appComponent
+        DaggerAddTrainComponent.builder()
+                .appComponent(appComponent)
+                .bindChosenTrain(chosenTrain)
+                .build()
+                .inject(this)
     }
 
     private fun setCategorySpinner() {
@@ -155,15 +159,22 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Timber.d("onOptionsItemSelected")
         when (item.itemId) {
             R.id.action_save -> saveTrain()
-            android.R.id.home -> {
-                val anim = saveMenuItem?.icon as AnimatedVectorDrawable
-                anim.start()
-                activity?.onBackPressed()
-            }
+            android.R.id.home -> onBackClicked()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    fun onBackClicked() {
+        if (addViewModel.isChanged) {
+            showUnsavedChangesDialog()
+        } else {
+            val anim = saveMenuItem?.icon as AnimatedVectorDrawable
+            anim.start()
+            fragmentManager?.popBackStack()
+        }
     }
 
     private fun insertAddCategoryFragment() {
@@ -261,14 +272,6 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
                     .load(file)
                     .into(binding.productDetailsGalleryImage)
             addViewModel.trainBeingModified.get()?.imageUri = Uri.fromFile(file).toString()
-        }
-    }
-
-    fun onBackClicked() {
-        if (addViewModel.isChanged) {
-            showUnsavedChangesDialog()
-        } else {
-            fragmentManager?.popBackStack()
         }
     }
 
