@@ -158,16 +158,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
     }
 
-    override fun onNavigateUp(): Boolean {
-        val currentFrag = fm.findFragmentById(R.id.container)
-        if (currentFrag is AddTrainFragment) {
-            currentFrag.onBackClicked()
-            return true
-        } else {
-            return super.onNavigateUp()
-        }
-    }
-
     override fun onBackStackChanged() {
         Timber.d("onBackStackChanged is called")
         clearFocusAndHideKeyboard()
@@ -189,14 +179,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 }
             }
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        Timber.d("onOptionsItemSelected")
-        if (toggle.onOptionsItemSelected(item)) {
-            return true
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     companion object {
