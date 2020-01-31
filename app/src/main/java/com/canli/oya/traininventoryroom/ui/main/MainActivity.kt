@@ -54,14 +54,19 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         //Set bottom navigation
         binding.navigation.setOnNavigationItemSelectedListener(this)
 
-        //SEt navigation drawer
+        //Set navigation drawer
         val drawer = binding.drawerLayout
         toggle = ActionBarDrawerToggle(
                 this, drawer, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        toggle.setToolbarNavigationClickListener { onBackPressed() }
+
         drawer.addDrawerListener(toggle)
         binding.navigationDrawer.setNavigationItemSelectedListener(this)
-        actionBar?.setHomeButtonEnabled(true)
-        actionBar?.setDisplayShowHomeEnabled(true)
+
+        /*supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)*/
+
         toggle.syncState()
 
         fm = supportFragmentManager
@@ -112,10 +117,14 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     private fun hideOrShowBottomNavigation(currentFrag: Fragment?) {
         if (currentFrag is AddTrainFragment || currentFrag is TrainDetailsFragment) {
             binding.navigation.visibility = View.GONE
+            toggle.isDrawerIndicatorEnabled = false
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            toggle.syncState()
         } else {
             binding.navigation.visibility = View.VISIBLE
+            toggle.isDrawerIndicatorEnabled = true
             supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            toggle.syncState()
         }
     }
 
@@ -153,6 +162,16 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
     }
 
+    override fun onNavigateUp(): Boolean {
+        val currentFrag = fm.findFragmentById(R.id.container)
+        if (currentFrag is AddTrainFragment) {
+            currentFrag.onBackClicked()
+            return true
+        } else {
+            return super.onNavigateUp()
+        }
+    }
+
     override fun onBackStackChanged() {
         Timber.d("onBackStackChanged is called")
         clearFocusAndHideKeyboard()
@@ -174,6 +193,14 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 }
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        Timber.d("onOptionsItemSelected")
+        if (toggle.onOptionsItemSelected(item)) {
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     companion object {
