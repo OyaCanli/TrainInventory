@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -45,10 +44,10 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     var chosenTrain: TrainEntry? = null
 
     private var brandList: List<BrandEntry> = ArrayList()
-    private var categoryList: ArrayList<String> = ArrayList()
+    private var categoryList: List<String> = ArrayList()
 
-    private lateinit var categoryAdapter: ArrayAdapter<String>
-    private lateinit var brandAdapter: CustomSpinAdapter
+    private lateinit var categoryAdapter: CategorySpinAdapter
+    private lateinit var brandAdapter: BrandSpinAdapter
 
     private var saveMenuItem: MenuItem? = null
 
@@ -85,8 +84,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         addViewModel = ViewModelProvider(this, viewModelFactory).get(AddTrainViewModel::class.java)
         binding.viewModel = addViewModel
 
-        setBrandSpinner()
-        setCategorySpinner()
+        setSpinners()
         getAndObserveCategories()
         getAndObserveBrands()
     }
@@ -101,39 +99,37 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
                 .inject(this)
     }
 
-    private fun setCategorySpinner() {
-        categoryList.add(getString(R.string.select_category))
-        categoryAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, categoryList)
-        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+    private fun setSpinners() {
+        categoryAdapter = CategorySpinAdapter(requireActivity())
         binding.categorySpinner.adapter = categoryAdapter
+        brandAdapter = BrandSpinAdapter(requireContext(), null)
+        binding.brandSpinner.adapter = brandAdapter
     }
 
     private fun getAndObserveCategories() {
         addViewModel.categoryList.observe(viewLifecycleOwner, Observer { categoryEntries ->
             if (!categoryEntries.isNullOrEmpty()) {
-                categoryList.clear()
-                categoryList.add(getString(R.string.select_category))
-                categoryList.addAll(categoryEntries.map { categoryEntry -> categoryEntry.categoryName })
-                categoryAdapter.notifyDataSetChanged()
-                val index = categoryList.indexOf(chosenTrain?.categoryName)
-                binding.categorySpinner.setSelection(index)
+                categoryAdapter.setCategories(categoryEntries)
+                categoryList = categoryAdapter.categoryList
+
+                if(isEdit){ //In edit mode, show the existing categoryName as selected
+                    val index = categoryList.indexOf(chosenTrain?.categoryName)
+                    binding.categorySpinner.setSelection(index)
+                }
             }
         })
-    }
-
-    private fun setBrandSpinner() {
-        brandAdapter = CustomSpinAdapter(requireContext(), null)
-        binding.brandSpinner.adapter = brandAdapter
     }
 
     private fun getAndObserveBrands() {
         addViewModel.brandList.observe(viewLifecycleOwner, Observer { brandEntries ->
             if (!brandEntries.isNullOrEmpty()) {
-                brandAdapter.mBrandList = brandEntries
-                brandAdapter.notifyDataSetChanged()
+                brandAdapter.setBrands(brandEntries)
                 brandList = brandEntries
-                val index = brandEntries.indexOfFirst { it.brandName == chosenTrain?.brandName }.plus(1)
-                binding.brandSpinner.setSelection(index)
+
+                if(isEdit){ //In edit mode, show the existing brandName as selected
+                    val index = brandEntries.indexOfFirst { it.brandName == chosenTrain?.brandName }.plus(1)
+                    binding.brandSpinner.setSelection(index)
+                }
             }
         })
     }
@@ -173,7 +169,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         } else {
             val anim = saveMenuItem?.icon as AnimatedVectorDrawable
             anim.start()
-            fragmentManager?.popBackStack()
+            parentFragmentManager.popBackStack()
         }
     }
 
@@ -194,70 +190,54 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     private fun saveTrain() {
 
         // DATA VALIDATION
-        if (!quantityIsValid()) return
-        if (trainNameIsEmpty()) return
-        if (brandNameIsEmpty()) return
-        if (categoryNameIsEmpty()) return
-        if (scaleIsEmpty()) return
+        if(thereAreMissingValues()) return
+        if (quantityIsNotValid()) return
 
         // SAVE
         addViewModel.saveTrain()
 
         //After adding the train, go back to where user come from.
-        fragmentManager?.popBackStack()
+        parentFragmentManager.popBackStack()
     }
 
-    private fun scaleIsEmpty(): Boolean {
-        if (addViewModel.trainBeingModified.get()?.scale == null) {
-            context?.toast(getString(R.string.scale_cant_be_empty))
-            return true
+    private fun thereAreMissingValues() : Boolean {
+        val proposedTrain = addViewModel.trainBeingModified.get()
+        return when {
+            proposedTrain?.brandName.isNullOrBlank() -> {
+                context?.toast(getString(R.string.brand_name_empty))
+                true
+            }
+            proposedTrain?.categoryName.isNullOrBlank() -> {
+                context?.toast(getString(R.string.category_name_empty))
+                true
+            }
+            proposedTrain?.trainName.isNullOrBlank() -> {
+                context?.toast(getString(R.string.train_name_empty))
+                true
+            }
+            else -> false
         }
-        return false
     }
 
-    private fun brandNameIsEmpty(): Boolean {
-        if (addViewModel.trainBeingModified.get()?.brandName == null) {
-            context?.toast(getString(R.string.brand_name_empty))
-            return true
-        }
-        return false
-    }
-
-    private fun categoryNameIsEmpty(): Boolean {
-        if (addViewModel.trainBeingModified.get()?.categoryName == null) {
-            context?.toast(getString(R.string.category_name_empty))
-            return true
-        }
-        return false
-    }
-
-    private fun trainNameIsEmpty(): Boolean {
-        if (addViewModel.trainBeingModified.get()?.trainName == null) {
-            context?.toast(getString(R.string.train_name_empty))
-            return true
-        }
-        return false
-    }
-
-    private fun quantityIsValid(): Boolean {
+    private fun quantityIsNotValid(): Boolean {
         val quantityToParse = binding.editQuantity.text.toString().trim()
-        //Quantity can be null. But if it is not null it should be a positive integer
+        //Quantity can be null. But if it is not null it should be a non-negative integer
         val quantity: Int
         if (!TextUtils.isEmpty(quantityToParse)) {
             try {
                 quantity = Integer.valueOf(quantityToParse)
                 if (quantity < 0) {
                     context?.toast(R.string.quantity_should_be_positive)
-                    return false
+                    return true
                 } else {
                     addViewModel.trainBeingModified.get()?.quantity = quantity
                 }
             } catch (nfe: NumberFormatException) {
                 context?.toast(R.string.quantity_should_be_positive)
-                return false
+                return true
             }
         }
-        return true
+        return false
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -282,7 +262,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
             setMessage(R.string.unsaved_changes_warning)
             setPositiveButton(getString(R.string.discard_changes)) { _, _ ->
                 //Changes will be discarded
-                fragmentManager?.popBackStack()
+                parentFragmentManager.popBackStack()
             }
             setNegativeButton(R.string.keep_editing) { dialog, _ ->
                 // User clicked the "Keep editing" button, so dismiss the dialog
