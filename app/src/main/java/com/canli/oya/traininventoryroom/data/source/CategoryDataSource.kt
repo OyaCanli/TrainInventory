@@ -18,19 +18,19 @@ class CategoryDataSource @Inject constructor(private val database: TrainDatabase
         return LivePagedListBuilder(factory, CATEGORIES_PAGE_SIZE).build()
     }
 
-    override suspend fun insertItem(category: CategoryEntry) {
-        database.categoryDao().insert(category)
+    override suspend fun insertItem(item: CategoryEntry) {
+        database.categoryDao().insert(item)
     }
 
-    override suspend fun deleteItem(category: CategoryEntry) {
-        database.categoryDao().delete(category)
+    override suspend fun deleteItem(item: CategoryEntry) {
+        database.categoryDao().delete(item)
     }
 
-    override fun isThisItemUsed(category: CategoryEntry): Boolean {
-        return database.trainDao().isThisCategoryUsed(category.categoryName)
+    override fun isThisItemUsed(item: CategoryEntry): Boolean {
+        return database.trainDao().isThisCategoryUsed(item.categoryName)
     }
 
-    override suspend fun updateItem(category: CategoryEntry) {
-        database.categoryDao().update(category)
+    override suspend fun updateItem(item: CategoryEntry) {
+        database.categoryDao().update(item)
     }
 }

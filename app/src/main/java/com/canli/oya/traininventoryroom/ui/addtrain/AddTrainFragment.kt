@@ -190,7 +190,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     private fun saveTrain() {
 
         // DATA VALIDATION
-        if(thereAreMissingValues()) return
+        if(thereAreInvalidValues()) return
         if (quantityIsNotValid()) return
 
         // SAVE
@@ -200,7 +200,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         parentFragmentManager.popBackStack()
     }
 
-    private fun thereAreMissingValues() : Boolean {
+    private fun thereAreInvalidValues() : Boolean {
         val proposedTrain = addViewModel.trainBeingModified.get()
         return when {
             proposedTrain?.brandName.isNullOrBlank() -> {
@@ -213,6 +213,10 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
             }
             proposedTrain?.trainName.isNullOrBlank() -> {
                 context?.toast(getString(R.string.train_name_empty))
+                true
+            }
+            addViewModel.trainList.contains(proposedTrain?.trainName) -> {
+                context?.toast(getString(R.string.train_name_already_Exists))
                 true
             }
             else -> false

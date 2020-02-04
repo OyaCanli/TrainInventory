@@ -35,6 +35,8 @@ class AddCategoryFragment : Fragment() {
     private var mCategoryId: Int = 0
     private var isEditCase: Boolean = false
 
+    private var categoryList : List<String> = ArrayList()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_add_category, container, false)
@@ -61,12 +63,23 @@ class AddCategoryFragment : Fragment() {
                 }
             })
         }
+
+        viewModel.allItems.observe(viewLifecycleOwner, Observer { categoryEntries ->
+            categoryList = categoryEntries.map { categoryEntry -> categoryEntry.categoryName }
+        })
     }
 
     private fun saveCategory() {
+        //Validate category name
         val categoryName = binding.addCategoryEditCatName.text.toString().trim()
         if (categoryName.isBlank()) {
             context?.toast(getString(R.string.category_cannot_be_empty))
+            return
+        }
+
+        if(categoryList.contains(categoryName)){
+            context?.toast(getString(R.string.category_already_exists))
+            //TODO : Toasts are not visible enough because of open soft keyboard. Customize toasts or replace with snacks
             return
         }
 

@@ -42,6 +42,8 @@ class AddBrandFragment : Fragment() {
     private var mLogoUri: Uri? = null
     private var isEditCase: Boolean = false
 
+    private var brandList : List<String> = ArrayList()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_add_brand, container, false)
@@ -72,6 +74,10 @@ class AddBrandFragment : Fragment() {
                 }
             })
         }
+
+        viewModel.allItems.observe(viewLifecycleOwner, Observer { brandEntries ->
+            brandList = brandEntries.map { brandEntry -> brandEntry.brandName }
+        })
     }
 
     private fun launchImagePicker() {
@@ -87,6 +93,11 @@ class AddBrandFragment : Fragment() {
         val brandName = binding.addBrandEditBrandName.text?.toString()?.trim()
         if(brandName.isNullOrBlank()){
             context?.toast(getString(com.canli.oya.traininventoryroom.R.string.brand_cannot_be_empty))
+            return
+        }
+
+        if(brandList.contains(brandName)){
+            context?.toast(getString(R.string.brand_already_exists))
             return
         }
 
