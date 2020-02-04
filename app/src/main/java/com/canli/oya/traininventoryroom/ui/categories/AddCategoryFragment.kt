@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.canli.oya.traininventoryroom.R
@@ -15,6 +17,7 @@ import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddCategoryBinding
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
+import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
 import org.jetbrains.anko.toast
 import javax.inject.Inject
@@ -76,11 +79,27 @@ class AddCategoryFragment : Fragment() {
             viewModel.insertItem(newCategory)
         }
 
+        clearFocusAndHideSoftKeyboard()
+
+        if(parentFragment is AddTrainFragment){
+            removeFragment()
+        }
+    }
+
+    private fun clearFocusAndHideSoftKeyboard() {
         //Clear focus and hide soft keyboard
         binding.addCategoryEditCatName.text = null
         val focusedView = activity?.currentFocus
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         focusedView?.clearFocus()
         imm.hideSoftInputFromWindow(focusedView?.windowToken, 0)
+    }
+
+    private fun removeFragment() {
+        val currentInstance = parentFragmentManager.findFragmentById(R.id.childFragContainer)
+        parentFragmentManager.commit {
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+            remove(currentInstance!!)
+        }
     }
 }

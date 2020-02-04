@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_CLOSE
+import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -19,6 +21,7 @@ import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddBrandBinding
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
+import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
 import com.github.dhaval2404.imagepicker.ImagePicker
 import org.jetbrains.anko.toast
@@ -26,7 +29,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class AddBrandFragment : Fragment(), View.OnClickListener {
+class AddBrandFragment : Fragment() {
 
     private lateinit var binding: FragmentAddBrandBinding
 
@@ -44,8 +47,8 @@ class AddBrandFragment : Fragment(), View.OnClickListener {
                 inflater, R.layout.fragment_add_brand, container, false)
 
         //Set click listeners
-        binding.addBrandSaveBtn.setOnClickListener(this)
-        binding.addBrandImage.setOnClickListener(this)
+        binding.addBrandSaveBtn.setOnClickListener{ saveBrand() }
+        binding.addBrandImage.setOnClickListener{ launchImagePicker()}
 
         //Request focus on the first edit text
         binding.addBrandEditBrandName.requestFocus()
@@ -71,18 +74,12 @@ class AddBrandFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    override fun onClick(v: View) {
-        //If save is clicked
-        if (v.id == R.id.addBrand_saveBtn) {
-            saveBrand()
-        } else {
-            //If add photo is clicked
-            ImagePicker.with(this)
-                    .crop(1f, 1f)	    		//Crop Square image(Optional)
-                    .compress(1024)			//Final image size will be less than 1 MB(Optional)
-                    .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
-                    .start()
-        }
+    private fun launchImagePicker() {
+        ImagePicker.with(this)
+                .crop(1f, 1f)                //Crop Square image(Optional)
+                .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
+                .start()
     }
 
     private fun saveBrand() {
@@ -114,6 +111,18 @@ class AddBrandFragment : Fragment(), View.OnClickListener {
         context?.toast(R.string.brand_Saved)
 
         clearFocusAndHideSoftKeyboard()
+
+        if(parentFragment is AddTrainFragment){
+            removeFragment()
+        }
+    }
+
+    private fun removeFragment() {
+        val currentInstance = parentFragmentManager.findFragmentById(R.id.childFragContainer)
+        parentFragmentManager.commit {
+            setTransition(TRANSIT_FRAGMENT_CLOSE)
+            remove(currentInstance!!)
+        }
     }
 
     private fun clearFocusAndHideSoftKeyboard() {
