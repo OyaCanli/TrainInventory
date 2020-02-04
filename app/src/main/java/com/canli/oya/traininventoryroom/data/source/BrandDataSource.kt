@@ -16,19 +16,19 @@ class BrandDataSource @Inject constructor(private val database: TrainDatabase) :
         return LivePagedListBuilder(factory, BRANDS_PAGE_SIZE).build()
     }
 
-    override suspend fun insertItem(brand: BrandEntry) {
-        database.brandDao().insert(brand)
+    override suspend fun insertItem(item: BrandEntry) {
+        database.brandDao().insert(item)
     }
 
-    override suspend fun updateItem(brand: BrandEntry) {
-        database.brandDao().update(brand)
+    override suspend fun updateItem(item: BrandEntry) {
+        database.brandDao().update(item)
     }
 
-    override suspend fun deleteItem(brand: BrandEntry) {
-        database.brandDao().delete(brand)
+    override suspend fun deleteItem(item: BrandEntry) {
+        database.brandDao().delete(item)
     }
 
-    override fun isThisItemUsed(brand: BrandEntry): Boolean {
-        return database.trainDao().isThisBrandUsed(brand.brandName)
+    override fun isThisItemUsed(item: BrandEntry): Boolean {
+        return database.trainDao().isThisBrandUsed(item.brandName)
     }
 }

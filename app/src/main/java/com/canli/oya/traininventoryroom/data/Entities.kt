@@ -15,7 +15,7 @@ import kotlinx.android.parcel.Parcelize
                 parentColumns = ["brandName"], childColumns = ["brandName"],
                 onUpdate = CASCADE, onDelete = RESTRICT),
             ForeignKey(entity = CategoryEntry::class,
-                    parentColumns = ["categoryName"], childColumns = ["categoryName"])],
+                    parentColumns = ["categoryName"], childColumns = ["categoryName"], onUpdate = CASCADE, onDelete = RESTRICT)],
         indices = [Index(value = ["brandName"]), Index(value = ["categoryName"])])
 data class TrainEntry(
         @PrimaryKey(autoGenerate = true) var trainId: Int = 0,

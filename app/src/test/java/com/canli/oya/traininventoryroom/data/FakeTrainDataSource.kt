@@ -20,6 +20,8 @@ class FakeTrainDataSource(private val trains: MutableList<TrainEntry> = mutableL
         return chosenTrainLiveData
     }
 
+    override suspend fun getAllTrainNames(): List<String> = trains.map { train -> train.trainName!! }
+
     override suspend fun insertTrain(train: TrainEntry) {
         trains.add(train)
         updateTrainsLiveData()

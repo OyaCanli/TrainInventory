@@ -10,23 +10,55 @@
             android:viewportHeight="24">
             <group android:name="group"/>
             <path
-                android:name="path"
-                android:pathData="M 12 0 L 12 24 M 24 12 L 0 12"
+                android:name="accent"
+                android:pathData="M 12 1 L 12 23 M 23 12 L 1 12"
                 android:strokeColor="#ffffff"
                 android:strokeWidth="3"/>
         </vector>
     </aapt:attr>
-    <target android:name="path">
+    <target android:name="accent">
         <aapt:attr name="android:animation">
             <objectAnimator
-                android:propertyName="strokeAlpha"
-                android:duration="300"
-                android:repeatCount="3"
-                android:repeatMode="reverse"
-                android:valueFrom="1"
-                android:valueTo="0"
-                android:valueType="floatType"
-                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                android:duration="3000"
+                android:interpolator="@android:interpolator/accelerate_decelerate"
+                android:repeatCount="0">
+
+                <propertyValuesHolder
+                    android:propertyName="strokeColor"
+                    android:valueType="colorType">
+                    <keyframe
+                        android:fraction="0.0"
+                        android:value="#ffffff" />
+
+                    <keyframe
+                        android:fraction="0.1"
+                        android:value="#000000" />
+
+                    <keyframe
+                        android:fraction="0.2"
+                        android:value="@color/colorAccent" />
+
+                    <keyframe
+                        android:fraction="0.4"
+                        android:value="#000000" />
+
+                    <keyframe
+                        android:fraction="0.5"
+                        android:value="@color/colorAccent" />
+
+                    <keyframe
+                        android:fraction="0.7"
+                        android:value="#000000" />
+
+                    <keyframe
+                        android:fraction="0.8"
+                        android:value="@color/colorAccent" />
+
+                    <keyframe
+                        android:fraction="1.0"
+                        android:value="#ffffff" />
+                </propertyValuesHolder>
+            </objectAnimator>
         </aapt:attr>
     </target>
 </animated-vector>

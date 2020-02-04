@@ -25,11 +25,16 @@ class AddTrainViewModel(val trainDataSource : ITrainDataSource,
     val brandList = brandDataSource.getAllItems()
     val categoryList  = categoryDataSource.getAllItems()
 
+    var trainList : List<String> = ArrayList()
+
     var isEdit: Boolean
 
     init {
         trainBeingModified.set(chosenTrain?.copy() ?: TrainEntry())
         isEdit = chosenTrain != null
+        viewModelScope.launch(ioDispatcher) {
+            trainList = trainDataSource.getAllTrainNames()
+        }
     }
 
     fun saveTrain() {

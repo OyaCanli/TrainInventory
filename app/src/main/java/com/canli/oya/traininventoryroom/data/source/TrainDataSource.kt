@@ -19,6 +19,8 @@ class TrainDataSource @Inject constructor(private val database: TrainDatabase) :
 
     override fun getChosenTrain(trainId : Int) = database.trainDao().getChosenTrainLiveData(trainId)
 
+    override suspend fun getAllTrainNames(): List<String> = database.trainDao().getAllTrainNames()
+
     override suspend fun insertTrain(train: TrainEntry) = database.trainDao().insert(train)
 
     override suspend fun updateTrain(train: TrainEntry) = database.trainDao().update(train)

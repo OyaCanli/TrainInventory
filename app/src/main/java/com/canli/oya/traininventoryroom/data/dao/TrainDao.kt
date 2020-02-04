@@ -13,6 +13,9 @@ interface TrainDao : BaseDao<TrainEntry>{
     @get:Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains")
     val allTrains: DataSource.Factory<Int, TrainMinimal>
 
+    @Query("SELECT trainName FROM trains")
+    fun getAllTrainNames() : List<String>
+
     @Query("SELECT * FROM trains WHERE trainId = :id")
     fun getChosenTrainLiveData(id: Int): LiveData<TrainEntry>
 

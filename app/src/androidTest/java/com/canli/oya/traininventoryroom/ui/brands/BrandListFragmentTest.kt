@@ -1,5 +1,6 @@
 package com.canli.oya.traininventoryroom.ui.brands
 
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -96,7 +97,8 @@ class BrandListFragmentTest {
             (dataSource as FakeBrandDataSource).setData(sampleBrandList)
             val scenario = launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
 
-            val addMenuItem = ActionMenuItem(null, 0, R.id.action_add, 0, 0, null)
+            val context: Context = ApplicationProvider.getApplicationContext<AndroidTestApplication>()
+            val addMenuItem = ActionMenuItem(context, 0, R.id.action_add, 0, 0, null)
             //Click on the add menu item
             scenario.onFragment { fragment ->
                 fragment.onOptionsItemSelected(addMenuItem)

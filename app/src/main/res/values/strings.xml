@@ -107,5 +107,8 @@
     <string name="launch_excel"><u>Click here for browsing the contents of the excel file</u></string>
     <string name="uopload_file_to">Upload file to:</string>
     <string name="open_file_with">Open file with:</string>
+    <string name="category_already_exists">This category already exists.</string>
+    <string name="brand_already_exists">This brand already exists</string>
+    <string name="train_name_already_Exists">This train name is already used</string>
 
 </resources>

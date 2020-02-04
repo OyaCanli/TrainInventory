@@ -11,14 +11,14 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.utils.GlideApp
 
-class CustomSpinAdapter(private val mContext: Context, var mBrandList: List<BrandEntry>?) : BaseAdapter() {
+class BrandSpinAdapter(private val mContext: Context, var brandList: List<BrandEntry>?) : BaseAdapter() {
 
     override fun getCount(): Int {
-        return mBrandList?.size?.plus(1) ?: 1
+        return brandList?.size?.plus(1) ?: 1
     }
 
     override fun getItem(position: Int): BrandEntry? {
-        return if(position == 0) null else mBrandList?.get(position-1)
+        return if(position == 0) null else brandList?.get(position-1)
     }
 
     override fun getItemId(position: Int): Long {
@@ -59,5 +59,10 @@ class CustomSpinAdapter(private val mContext: Context, var mBrandList: List<Bran
         }
 
         return convertView
+    }
+
+    fun setBrands(newList : List<BrandEntry>){
+        brandList = newList
+        notifyDataSetChanged()
     }
 }

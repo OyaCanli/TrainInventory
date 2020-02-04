@@ -9,7 +9,7 @@ import com.canli.oya.traininventoryroom.data.dao.CategoryDao
 import com.canli.oya.traininventoryroom.data.dao.TrainDao
 
 @Database(entities = [TrainEntry::class, BrandEntry::class, CategoryEntry::class],
-        version = 2, exportSchema = false)
+        version = 3, exportSchema = false)
 abstract class TrainDatabase : RoomDatabase() {
 
     abstract fun trainDao(): TrainDao

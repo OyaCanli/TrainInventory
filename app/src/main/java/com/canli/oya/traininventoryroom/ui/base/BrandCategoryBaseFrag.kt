@@ -73,30 +73,36 @@ abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteList
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_add) {
-            val icon : Int = if (viewModel.isChildFragVisible) {
-                removeChildFragment()
-                viewModel.isChildFragVisible = false
-                R.drawable.avd_plus_to_cross
-            } else {
-                openChildFragment(getChildFragment())
-                viewModel.isChildFragVisible = true
-                R.drawable.avd_cross_to_plus
-            }
-            startAnimationOnMenuItem(item, icon)
+            onAddClicked(item)
         }
         return super.onOptionsItemSelected(item)
     }
 
+    private fun onAddClicked(item : MenuItem){
+        if (viewModel.isChildFragVisible) {
+            removeChildFragment()
+            startAnimationOnMenuItem(item, R.drawable.avd_cross_to_plus, R.drawable.avd_plus_to_cross)
+        } else {
+            openChildFragment(getChildFragment())
+            startAnimationOnMenuItem(item, R.drawable.avd_plus_to_cross, R.drawable.avd_cross_to_plus)
+        }
+        viewModel.isChildFragVisible = !viewModel.isChildFragVisible
+    }
 
-    private fun startAnimationOnMenuItem(item: MenuItem, @DrawableRes iconRes : Int) {
+    private fun startAnimationOnMenuItem(item: MenuItem, @DrawableRes iconAtStart : Int, @DrawableRes iconAtEnd : Int) {
         if (Build.VERSION.SDK_INT >= 23) {
+            //If there is an ongoing animation, cancel it
+            val previous_avd = item.icon as? AnimatedVectorDrawable
+            previous_avd?.clearAnimationCallbacks()
+
+            //In case the drawable is different(i.e. blinking animation), set the correct starting icon
+            item.setIcon(iconAtStart)
             val avd = item.icon as? AnimatedVectorDrawable
-            avd?.clearAnimationCallbacks()
             avd?.registerAnimationCallback(object : Animatable2.AnimationCallback() {
                 override fun onAnimationStart(drawable: Drawable) {}
 
                 override fun onAnimationEnd(drawable: Drawable) {
-                    item.setIcon(iconRes)
+                    item.setIcon(iconAtEnd)
                 }
             })
             avd?.start()
@@ -126,7 +132,7 @@ abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteList
         childFrag.arguments = args
         viewModel.isChildFragVisible = true
         addMenuItem?.let {
-            startAnimationOnMenuItem(addMenuItem!!, R.drawable.avd_cross_to_plus)
+            startAnimationOnMenuItem(it, R.drawable.avd_plus_to_cross, R.drawable.avd_cross_to_plus)
         }
         openChildFragment(childFrag)
     }

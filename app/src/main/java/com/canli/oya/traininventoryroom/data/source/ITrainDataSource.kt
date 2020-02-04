@@ -11,6 +11,8 @@ interface ITrainDataSource {
 
     fun getChosenTrain(trainId : Int): LiveData<TrainEntry>
 
+    suspend fun getAllTrainNames() : List<String>
+
     suspend fun insertTrain(train: TrainEntry)
 
     suspend fun updateTrain(train: TrainEntry)

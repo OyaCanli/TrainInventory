@@ -11,7 +11,7 @@
             <group android:name="group"/>
             <path
                 android:name="plus"
-                android:pathData="M 12 0 L 12 24 M 24 12 L 0 12"
+                android:pathData="M 1 12 L 23 12 M 12 23 L 12 1"
                 android:strokeColor="#ffffff"
                 android:strokeWidth="3"/>
         </vector>
@@ -21,7 +21,7 @@
             <objectAnimator
                 android:propertyName="pathData"
                 android:duration="300"
-                android:valueFrom="M 0 12 L 24 12 M 12 24 L 12 0"
+                android:valueFrom="M 1 12 L 23 12 M 12 23 L 12 1"
                 android:valueTo="M 1 14 L 9 23 M 8 22 L 23 7"
                 android:valueType="pathType"
                 android:interpolator="@android:interpolator/fast_out_slow_in"/>
