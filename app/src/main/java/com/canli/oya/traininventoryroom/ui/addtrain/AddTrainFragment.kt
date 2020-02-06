@@ -37,7 +37,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     private lateinit var addViewModel: AddTrainViewModel
 
     @Inject
-    lateinit var viewModelFactory : AddTrainFactory
+    lateinit var viewModelFactory: AddTrainFactory
 
     private var isEdit: Boolean = false
 
@@ -112,7 +112,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
                 categoryAdapter.setCategories(categoryEntries)
                 categoryList = categoryAdapter.categoryList
 
-                if(isEdit){ //In edit mode, show the existing categoryName as selected
+                if (isEdit) { //In edit mode, show the existing categoryName as selected
                     val index = categoryList.indexOf(chosenTrain?.categoryName)
                     binding.categorySpinner.setSelection(index)
                 }
@@ -126,7 +126,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
                 brandAdapter.setBrands(brandEntries)
                 brandList = brandEntries
 
-                if(isEdit){ //In edit mode, show the existing brandName as selected
+                if (isEdit) { //In edit mode, show the existing brandName as selected
                     val index = brandEntries.indexOfFirst { it.brandName == chosenTrain?.brandName }.plus(1)
                     binding.brandSpinner.setSelection(index)
                 }
@@ -190,8 +190,9 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     private fun saveTrain() {
 
         // DATA VALIDATION
-        if(thereAreInvalidValues()) return
+        if (thereAreMissingValues()) return
         if (quantityIsNotValid()) return
+        if (!isEdit && trainNameAlreadyExists()) return
 
         // SAVE
         addViewModel.saveTrain()
@@ -200,7 +201,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         parentFragmentManager.popBackStack()
     }
 
-    private fun thereAreInvalidValues() : Boolean {
+    private fun thereAreMissingValues(): Boolean {
         val proposedTrain = addViewModel.trainBeingModified.get()
         return when {
             proposedTrain?.categoryName.isNullOrBlank() -> {
@@ -215,12 +216,16 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
                 context?.shortToast(R.string.train_name_empty)
                 true
             }
-            addViewModel.trainList.contains(proposedTrain?.trainName) -> {
-                context?.shortToast(R.string.train_name_already_Exists)
-                true
-            }
             else -> false
         }
+    }
+
+    private fun trainNameAlreadyExists(): Boolean {
+        if (addViewModel.trainList.contains(addViewModel.trainBeingModified.get()?.trainName)) {
+            context?.shortToast(R.string.train_name_already_Exists)
+            return true
+        }
+        return false
     }
 
     private fun quantityIsNotValid(): Boolean {

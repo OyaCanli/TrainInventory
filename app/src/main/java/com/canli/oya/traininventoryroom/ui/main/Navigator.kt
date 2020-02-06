@@ -68,6 +68,7 @@ open class Navigator {
     fun launchEditTrain(chosenTrain : TrainEntry){
         val editTrainFrag = AddTrainFragment()
         val args = Bundle()
+        args.putBoolean(IS_EDIT, true)
         args.putParcelable(CHOSEN_TRAIN, chosenTrain)
         editTrainFrag.arguments = args
         commitFragmentTransaction(editTrainFrag)
