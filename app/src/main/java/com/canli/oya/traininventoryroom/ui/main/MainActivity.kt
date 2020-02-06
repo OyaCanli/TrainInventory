@@ -23,9 +23,9 @@ import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
 import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
 import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
+import com.canli.oya.traininventoryroom.utils.shortToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
-import org.jetbrains.anko.toast
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -175,7 +175,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                     navigator.launchExportToExcelFragment()
                 } else {
                     // If you do not get permission, show a Toast
-                    toast(R.string.permission_denied)
+                    shortToast(R.string.permission_denied)
                 }
             }
         }

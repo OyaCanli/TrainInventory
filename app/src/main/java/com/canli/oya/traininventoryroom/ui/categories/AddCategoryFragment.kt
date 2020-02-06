@@ -19,7 +19,7 @@ import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
-import org.jetbrains.anko.toast
+import com.canli.oya.traininventoryroom.utils.shortToast
 import javax.inject.Inject
 
 
@@ -73,12 +73,12 @@ class AddCategoryFragment : Fragment() {
         //Validate category name
         val categoryName = binding.addCategoryEditCatName.text.toString().trim()
         if (categoryName.isBlank()) {
-            context?.toast(getString(R.string.category_cannot_be_empty))
+            context?.shortToast(getString(R.string.category_cannot_be_empty))
             return
         }
 
         if(categoryList.contains(categoryName)){
-            context?.toast(getString(R.string.category_already_exists))
+            context?.shortToast(getString(R.string.category_already_exists))
             //TODO : Toasts are not visible enough because of open soft keyboard. Customize toasts or replace with snacks
             return
         }

@@ -13,7 +13,7 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.UploadExcelBinding
 import com.canli.oya.traininventoryroom.utils.EXCEL_FILE_PATH
 import com.canli.oya.traininventoryroom.utils.PROVIDER_AUTHORITY
-import org.jetbrains.anko.toast
+import com.canli.oya.traininventoryroom.utils.shortToast
 import java.io.File
 
 
@@ -28,7 +28,7 @@ class UploadExcelDialog : DialogFragment() {
         val filePath = arguments?.getString(EXCEL_FILE_PATH)
 
         if (filePath.isNullOrBlank()) {
-            context?.toast("File path was not properly received")
+            context?.shortToast("File path was not properly received")
         } else {
             val newFile = File(filePath)
             val contentUri: Uri = FileProvider.getUriForFile(context!!, PROVIDER_AUTHORITY, newFile)

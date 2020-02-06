@@ -24,8 +24,8 @@ import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
 import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
 import com.canli.oya.traininventoryroom.utils.CHOSEN_TRAIN
 import com.canli.oya.traininventoryroom.utils.IS_EDIT
+import com.canli.oya.traininventoryroom.utils.shortToast
 import com.github.dhaval2404.imagepicker.ImagePicker
-import org.jetbrains.anko.toast
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -203,20 +203,20 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     private fun thereAreInvalidValues() : Boolean {
         val proposedTrain = addViewModel.trainBeingModified.get()
         return when {
-            proposedTrain?.brandName.isNullOrBlank() -> {
-                context?.toast(getString(R.string.brand_name_empty))
+            proposedTrain?.categoryName.isNullOrBlank() -> {
+                context?.shortToast(R.string.category_name_empty)
                 true
             }
-            proposedTrain?.categoryName.isNullOrBlank() -> {
-                context?.toast(getString(R.string.category_name_empty))
+            proposedTrain?.brandName.isNullOrBlank() -> {
+                context?.shortToast(R.string.brand_name_empty)
                 true
             }
             proposedTrain?.trainName.isNullOrBlank() -> {
-                context?.toast(getString(R.string.train_name_empty))
+                context?.shortToast(R.string.train_name_empty)
                 true
             }
             addViewModel.trainList.contains(proposedTrain?.trainName) -> {
-                context?.toast(getString(R.string.train_name_already_Exists))
+                context?.shortToast(R.string.train_name_already_Exists)
                 true
             }
             else -> false
@@ -231,13 +231,13 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
             try {
                 quantity = Integer.valueOf(quantityToParse)
                 if (quantity < 0) {
-                    context?.toast(R.string.quantity_should_be_positive)
+                    context?.shortToast(R.string.quantity_should_be_positive)
                     return true
                 } else {
                     addViewModel.trainBeingModified.get()?.quantity = quantity
                 }
             } catch (nfe: NumberFormatException) {
-                context?.toast(R.string.quantity_should_be_positive)
+                context?.shortToast(R.string.quantity_should_be_positive)
                 return true
             }
         }
@@ -294,3 +294,5 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         }
     }
 }
+
+
