@@ -107,6 +107,24 @@
                 app:layout_constraintStart_toEndOf="@+id/barrier"
                 app:layout_constraintTop_toBottomOf="@+id/editScale" />
 
+            <EditText
+                android:id="@+id/editScale"
+                style="@style/editTextStyle"
+                android:ems="10"
+                android:hint="@string/hint_train_scale"
+                android:inputType="textPersonName"
+                android:text="@={viewModel.trainBeingModified.scale}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/barrier"
+                app:layout_constraintTop_toBottomOf="@+id/editTrainName" />
+
+            <TextView
+                android:id="@+id/textView13"
+                style="@style/FieldStyle"
+                android:text="@string/scale"
+                app:layout_constraintBaseline_toBaselineOf="@+id/editScale"
+                app:layout_constraintStart_toStartOf="parent" />
+
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrier"
                 android:layout_width="wrap_content"
@@ -114,7 +132,6 @@
                 app:barrierDirection="right"
                 app:constraint_referenced_ids="textView2,textView3,textView4,textView5,textView10,textView13"
                 tools:layout_editor_absoluteX="91dp" />
-
 
             <ImageView
                 android:id="@+id/product_details_gallery_image"
@@ -145,7 +162,7 @@
                 android:layout_marginTop="@dimen/margin_standard"
                 android:text="@string/description"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editQuantity" />
+                app:layout_constraintTop_toBottomOf="@+id/editLocation" />
 
             <EditText
                 android:id="@+id/editTrainDescription"
@@ -165,46 +182,25 @@
                 android:layout_marginTop="@dimen/margin_standard"
                 android:layout_marginBottom="@dimen/margin_standard"
                 android:text="@string/location"
-                app:layout_constraintBottom_toBottomOf="@+id/editLocationNumber"
+                app:layout_constraintBottom_toBottomOf="@+id/editLocation"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/editLocationNumber" />
+                app:layout_constraintTop_toTopOf="@+id/editLocation" />
 
             <EditText
-                android:id="@+id/editLocationLetter"
-                android:layout_width="80dp"
+                android:id="@+id/editLocation"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/half_margin"
-                android:layout_marginTop="@dimen/margin_standard"
-                android:layout_marginBottom="@dimen/large_margin"
-                android:background="@drawable/location_background"
-                android:hint="@string/hint_location_letter"
-                android:textColorHint="@color/divider_color"
-                android:inputType="textCapCharacters"
-                android:text="@={viewModel.trainBeingModified.locationColumn}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/textView11"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/product_details_gallery_image" />
-
-            <EditText
-                android:id="@+id/editLocationNumber"
-                android:layout_width="80dp"
-                android:layout_height="0dp"
                 android:layout_marginStart="@dimen/margin_standard"
-                android:layout_marginEnd="@dimen/half_margin"
-                android:background="@drawable/location_background"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 android:ems="10"
-                android:hint="@string/hint_location_number"
-                android:inputType="number"
+                android:hint="@string/hint_location"
+                android:text="@={viewModel.trainBeingModified.location}"
                 android:textColorHint="@color/divider_color"
-                android:text="@={viewModel.trainBeingModified.locationRow}"
-                app:layout_constraintBottom_toBottomOf="@+id/editLocationLetter"
-                app:layout_constraintEnd_toStartOf="@+id/textView11"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toEndOf="@+id/barrier"
-                app:layout_constraintTop_toTopOf="@+id/editLocationLetter" />
+                app:layout_constraintTop_toBottomOf="@+id/editQuantity" />
 
             <ImageButton
                 android:id="@+id/addTrain_addCategoryBtn"
@@ -243,37 +239,6 @@
                 app:layout_constraintTop_toTopOf="parent">
 
             </FrameLayout>
-
-            <TextView
-                android:id="@+id/textView11"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginStart="@dimen/half_margin"
-                android:text="-"
-                android:textSize="@dimen/dashTextSize"
-                app:layout_constraintBottom_toBottomOf="@+id/editLocationLetter"
-                app:layout_constraintEnd_toStartOf="@+id/editLocationLetter"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/editLocationNumber"
-                app:layout_constraintTop_toTopOf="@+id/editLocationLetter" />
-
-            <EditText
-                android:id="@+id/editScale"
-                style="@style/editTextStyle"
-                android:ems="10"
-                android:hint="@string/hint_train_scale"
-                android:inputType="textPersonName"
-                android:text="@={viewModel.trainBeingModified.scale}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/barrier"
-                app:layout_constraintTop_toBottomOf="@+id/editTrainName" />
-
-            <TextView
-                android:id="@+id/textView13"
-                style="@style/FieldStyle"
-                android:text="@string/scale"
-                app:layout_constraintBaseline_toBaselineOf="@+id/editScale"
-                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

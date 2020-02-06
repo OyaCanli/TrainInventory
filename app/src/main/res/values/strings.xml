@@ -94,8 +94,7 @@
     <string name="hint_quantity">Quantity</string>
     <string name="hint_reference">Model Reference</string>
     <string name="hint_train_description">Train description</string>
-    <string name="hint_location_number">Row of the location, which is a number</string>
-    <string name="hint_location_letter">Column of the location, which is a letter</string>
+    <string name="hint_location">Location of the train</string>
     <string name="hint_train_scale">Scale of the train</string>
     <string name="export_to_excel">Export to Excel</string>
 
