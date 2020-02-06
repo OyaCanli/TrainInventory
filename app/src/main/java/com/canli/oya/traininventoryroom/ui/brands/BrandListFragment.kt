@@ -16,7 +16,7 @@ import com.canli.oya.traininventoryroom.ui.base.BrandCategoryBaseFrag
 import com.canli.oya.traininventoryroom.ui.base.BrandCategoryBaseVM
 import com.canli.oya.traininventoryroom.ui.base.SwipeDeleteListener
 import com.canli.oya.traininventoryroom.ui.main.Navigator
-import org.jetbrains.anko.toast
+import com.canli.oya.traininventoryroom.utils.shortToast
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -61,7 +61,7 @@ class BrandListFragment : BrandCategoryBaseFrag<BrandEntry>(), BrandItemClickLis
                 startActivity(webIntent)
             }
         } else {
-            context?.toast(getString(R.string.no_website_warning))
+            context?.shortToast(getString(R.string.no_website_warning))
         }
     }
 

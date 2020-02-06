@@ -26,8 +26,7 @@ data class TrainEntry(
         var quantity: Int = 0,
         var imageUri: String? = null,
         var description: String? = null,
-        var locationRow: String? = null,
-        var locationColumn: String? = null,
+        var location: String? = null,
         var scale: String? = null) : Parcelable
 
 data class TrainMinimal(val trainId: Int = 0,

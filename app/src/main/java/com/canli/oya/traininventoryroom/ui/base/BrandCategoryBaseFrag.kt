@@ -18,10 +18,10 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.utils.EDIT_CASE
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
 import com.canli.oya.traininventoryroom.utils.SwipeToDeleteCallback
+import com.canli.oya.traininventoryroom.utils.shortToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jetbrains.anko.toast
 import timber.log.Timber
 
 abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteListener<T> {
@@ -146,7 +146,7 @@ abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteList
             val isUsed = withContext(Dispatchers.IO) { viewModel.isThisItemUsed(itemToDelete) }
             if (isUsed) {
                 // If it is used, show a warning and don't let user delete this
-                context?.toast(R.string.cannot_erase_category)
+                context?.shortToast(R.string.cannot_erase_category)
                 adapter.cancelDelete(position)
             } else {
                 //If it is not used, erase the item

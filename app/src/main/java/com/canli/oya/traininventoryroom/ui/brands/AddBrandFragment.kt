@@ -23,8 +23,8 @@ import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
+import com.canli.oya.traininventoryroom.utils.shortToast
 import com.github.dhaval2404.imagepicker.ImagePicker
-import org.jetbrains.anko.toast
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -92,12 +92,12 @@ class AddBrandFragment : Fragment() {
         //Get brand name from edit text and verify it is not empty
         val brandName = binding.addBrandEditBrandName.text?.toString()?.trim()
         if(brandName.isNullOrBlank()){
-            context?.toast(getString(com.canli.oya.traininventoryroom.R.string.brand_cannot_be_empty))
+            context?.shortToast(getString(com.canli.oya.traininventoryroom.R.string.brand_cannot_be_empty))
             return
         }
 
         if(brandList.contains(brandName)){
-            context?.toast(getString(R.string.brand_already_exists))
+            context?.shortToast(getString(R.string.brand_already_exists))
             return
         }
 
@@ -119,7 +119,7 @@ class AddBrandFragment : Fragment() {
             viewModel.insertItem(newBrand)
         }
 
-        context?.toast(R.string.brand_Saved)
+        context?.shortToast(R.string.brand_Saved)
 
         clearFocusAndHideSoftKeyboard()
 

@@ -12,7 +12,7 @@ import com.ajts.androidmads.library.SQLiteToExcel
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ExportToExcelBinding
 import com.canli.oya.traininventoryroom.utils.EXCEL_FILE_PATH
-import org.jetbrains.anko.toast
+import com.canli.oya.traininventoryroom.utils.shortToast
 import timber.log.Timber
 import java.io.File
 
@@ -46,7 +46,7 @@ class ExportingToExcelDialog : DialogFragment() {
             }
 
             override fun onError(e: Exception) {
-                context?.toast("Error while exporting")
+                context?.shortToast("Error while exporting")
                 Timber.e(e.message)
                 binding.lottieExportingAnim.cancelAnimation()
                 dismiss()

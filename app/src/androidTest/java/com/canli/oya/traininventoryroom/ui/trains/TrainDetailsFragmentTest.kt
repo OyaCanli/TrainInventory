@@ -47,7 +47,7 @@ class TrainDetailsFragmentTest{
     @Inject
     lateinit var navigator: Navigator
 
-    val sampleTrain1 = TrainEntry(trainId = 0, trainName = "Red Wagon", categoryName = "Wagon", brandName = "Marklin", modelReference = "MN", description = "In very good state", quantity = 1, scale = "1.2", locationColumn = "A", locationRow = "2")
+    val sampleTrain1 = TrainEntry(trainId = 0, trainName = "Red Wagon", categoryName = "Wagon", brandName = "Marklin", modelReference = "MN", description = "In very good state", quantity = 1, scale = "1.2", location = "2-A")
     val sampleTrain2 = TrainEntry(trainId = 1, trainName = "Blue Loco", categoryName = "Locomotif", brandName = "MDN")
     val sampleTrain3 = TrainEntry(trainId = 2, trainName = "Gare", categoryName = "Accessoire", brandName = "Marklin")
     val sampleTrainList = mutableListOf(sampleTrain1, sampleTrain2)
@@ -76,7 +76,7 @@ class TrainDetailsFragmentTest{
         onView(withId(R.id.details_description)).check(matches(withText(sampleTrain1.description)))
         onView(withId(R.id.details_quantity)).check(matches(withText(sampleTrain1.quantity.toString())))
         onView(withId(R.id.details_scale)).check(matches(withText(sampleTrain1.scale)))
-        onView(withId(R.id.details_location)).check(matches(withText("2 - A")))
+        onView(withId(R.id.details_location)).check(matches(withText("2-A")))
     }
 
     //Click on edit menu item and verify that AddTrainFragment is launched
