@@ -6,7 +6,9 @@ import androidx.paging.PagedList
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.TrainEntry
 
-class FakeBrandDataSource(private var brands : MutableList<BrandEntry> = mutableListOf(),
+
+
+class FakeBrandDataSource(private var brands : MutableList<BrandEntry> = sampleBrandList,
                                               private val trains: List<TrainEntry> = listOf()) : IBrandCategoryDataSource<BrandEntry> {
 
     private val brandsLiveData : MutableLiveData<PagedList<BrandEntry>> = MutableLiveData()
@@ -38,6 +40,7 @@ class FakeBrandDataSource(private var brands : MutableList<BrandEntry> = mutable
     }
 
     fun setData(newBrandList : MutableList<BrandEntry>){
+        if(brands == newBrandList) return
         brands = newBrandList
         updateBrandsLiveData()
     }

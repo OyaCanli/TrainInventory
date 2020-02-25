@@ -6,7 +6,7 @@ import androidx.paging.PagedList
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.TrainMinimal
 
-class FakeTrainDataSource(private var trains: MutableList<TrainEntry> = mutableListOf()) : ITrainDataSource {
+class FakeTrainDataSource(private var trains: MutableList<TrainEntry> = sampleTrainList) : ITrainDataSource {
 
     private val trainsLiveData: MutableLiveData<PagedList<TrainMinimal>> = MutableLiveData()
 
@@ -82,6 +82,7 @@ class FakeTrainDataSource(private var trains: MutableList<TrainEntry> = mutableL
     }
 
     fun setData(newTrainList : MutableList<TrainEntry>){
+        if(trains == newTrainList) return
         trains = newTrainList
         updateTrainsLiveData()
     }

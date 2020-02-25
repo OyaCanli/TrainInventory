@@ -6,7 +6,7 @@ import androidx.paging.PagedList
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.data.TrainEntry
 
-class FakeCategoryDataSource(private var categories : MutableList<CategoryEntry> = mutableListOf(),
+class FakeCategoryDataSource(private var categories : MutableList<CategoryEntry> = sampleCategoryList,
                                                  private val trains: List<TrainEntry> = listOf()) : IBrandCategoryDataSource<CategoryEntry> {
 
     private val categoriesLiveData : MutableLiveData<PagedList<CategoryEntry>> = MutableLiveData()
@@ -38,6 +38,7 @@ class FakeCategoryDataSource(private var categories : MutableList<CategoryEntry>
     }
 
     fun setData(newCategoryList : MutableList<CategoryEntry>){
+        if(categories == newCategoryList) return
         categories = newCategoryList
         updateCategoriesLiveData()
     }

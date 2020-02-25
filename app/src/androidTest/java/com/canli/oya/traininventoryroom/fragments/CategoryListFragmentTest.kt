@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.ui.brands
+package com.canli.oya.traininventoryroom.fragments
 
 import android.content.Context
 import android.os.Bundle
@@ -15,50 +15,38 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.data.source.FakeBrandDataSource
+import com.canli.oya.traininventoryroom.data.CategoryEntry
+import com.canli.oya.traininventoryroom.data.source.FakeCategoryDataSource
 import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
+import com.canli.oya.traininventoryroom.data.source.sampleCategoryList
 import com.canli.oya.traininventoryroom.di.AndroidTestApplication
 import com.canli.oya.traininventoryroom.di.TestComponent
-import com.canli.oya.traininventoryroom.ui.main.Navigator
+import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
 import com.canli.oya.traininventoryroom.utils.clickOnChildWithId
 import com.canli.oya.traininventoryroom.utils.isGone
 import com.canli.oya.traininventoryroom.utils.isVisible
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.validateMockitoUsage
-import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
 import javax.inject.Inject
 
 
 @MediumTest
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
-class BrandListFragmentTest {
+class CategoryListFragmentTest {
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
     @Inject
-    lateinit var dataSource: IBrandCategoryDataSource<BrandEntry>
-
-    @Inject
-    lateinit var navigator: Navigator
-
-    val sampleBrand1 = BrandEntry(0, "Markin")
-    val sampleBrand2 = BrandEntry(1, "MDN")
-    val sampleBrand3 = BrandEntry(2, "Legit")
-    val sampleBrandList = mutableListOf(sampleBrand1, sampleBrand2)
+    lateinit var dataSource: IBrandCategoryDataSource<CategoryEntry>
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
         val app = ApplicationProvider.getApplicationContext<AndroidTestApplication>()
         val component = app.appComponent as TestComponent
         component.inject(this)
@@ -68,8 +56,8 @@ class BrandListFragmentTest {
     @Test
     fun withEmptyList_emptyScreenIsShown() {
         runBlockingTest {
-            (dataSource as FakeBrandDataSource).setData(mutableListOf())
-            launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+            (dataSource as FakeCategoryDataSource).setData(mutableListOf())
+            launchFragmentInContainer<CategoryListFragment>(Bundle(), R.style.AppTheme)
 
             onView(withId(R.id.empty_text)).check(isVisible())
             onView(withId(R.id.empty_image)).check(isVisible())
@@ -82,8 +70,8 @@ class BrandListFragmentTest {
     fun withSampleList_emptyScreenIsNotShown() {
         runBlockingTest {
             //Set some sample data
-            (dataSource as FakeBrandDataSource).setData(sampleBrandList)
-            launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+            (dataSource as FakeCategoryDataSource).setData(sampleCategoryList)
+            launchFragmentInContainer<CategoryListFragment>(Bundle(), R.style.AppTheme)
 
             onView(withId(R.id.empty_text)).check(isGone())
             onView(withId(R.id.empty_image)).check(isGone())
@@ -91,24 +79,26 @@ class BrandListFragmentTest {
         }
     }
 
+    //Click plus on the menu and verify that add child frag becomes visible with empty edittext
     @Test
     fun clickAdd_opensEmptyAddFragment() {
         runBlockingTest {
-            (dataSource as FakeBrandDataSource).setData(sampleBrandList)
-            val scenario = launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+            (dataSource as FakeCategoryDataSource).setData(sampleCategoryList)
+            val scenario = launchFragmentInContainer<CategoryListFragment>(Bundle(), R.style.AppTheme)
 
             val context: Context = ApplicationProvider.getApplicationContext<AndroidTestApplication>()
             val addMenuItem = ActionMenuItem(context, 0, R.id.action_add, 0, 0, null)
+
             //Click on the add menu item
             scenario.onFragment { fragment ->
                 fragment.onOptionsItemSelected(addMenuItem)
             }
 
             //Check whether add category screen becomes visible
-            onView(withId(R.id.addBrand_editBrandName)).check(matches(isDisplayed()))
-            onView(withId(R.id.addBrand_editBrandName)).check(matches(withText("")))
-            onView(withId(R.id.addBrand_image)).check(matches(isDisplayed()))
-            onView(withId(R.id.addBrand_saveBtn)).check(matches(isDisplayed()))
+            onView(withId(R.id.addCategory_editCatName)).check(matches(isDisplayed()))
+            onView(withId(R.id.addCategory_editCatName)).check(matches(withText("")))
+            onView(withId(R.id.addCategory_saveBtn)).check(matches(isDisplayed()))
+
         }
     }
 
@@ -116,31 +106,15 @@ class BrandListFragmentTest {
     @Test
     fun clickEditOnItem_opensAddFragmentFilled() {
         runBlockingTest {
-            (dataSource as FakeBrandDataSource).setData(sampleBrandList)
-            launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+            (dataSource as FakeCategoryDataSource).setData(sampleCategoryList)
+            launchFragmentInContainer<CategoryListFragment>(Bundle(), R.style.AppTheme)
 
             onView(withId(R.id.list))
-                    .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(1, clickOnChildWithId(R.id.brand_item_edit_icon)))
+                    .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(1, clickOnChildWithId(R.id.category_item_edit_icon)))
 
-            //Check whether add category screen becomes visible
-            onView(withId(R.id.addBrand_editBrandName)).check(matches(isDisplayed()))
-            onView(withId(R.id.addBrand_editBrandName)).check(matches(withText("MDN")))
-            onView(withId(R.id.addBrand_image)).check(matches(isDisplayed()))
-            onView(withId(R.id.addBrand_saveBtn)).check(matches(isDisplayed()))
-        }
-    }
-
-    //Click on train icon on a category and verify that navigator temps to launch TrainListFrag with correct inputs
-    @Test
-    fun clickTrainIconOnItem_launchesTrainListFragment() {
-        runBlockingTest {
-            (dataSource as FakeBrandDataSource).setData(sampleBrandList)
-            launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
-
-            onView(withId(R.id.list))
-                    .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(1, clickOnChildWithId(R.id.brand_item_train_icon)))
-
-            verify(navigator).launchTrainList_withThisBrand("MDN")
+            onView(withId(R.id.addCategory_editCatName)).check(matches(isDisplayed()))
+            onView(withId(R.id.addCategory_editCatName)).check(matches(withText("Locomotive")))
+            onView(withId(R.id.addCategory_saveBtn)).check(matches(isDisplayed()))
         }
     }
 
@@ -148,9 +122,9 @@ class BrandListFragmentTest {
     fun swipingItem_revealsDeleteConfirmation() {
         runBlockingTest {
             //Set some sample data
-            (dataSource as FakeBrandDataSource).setData(sampleBrandList)
+            (dataSource as FakeCategoryDataSource).setData(sampleCategoryList)
 
-            launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+            launchFragmentInContainer<CategoryListFragment>(Bundle(), R.style.AppTheme)
 
             //Swipe an item
             onView(withId(R.id.list))
@@ -160,13 +134,6 @@ class BrandListFragmentTest {
             onView(withId(R.id.confirm_delete_btn)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
             onView(withId(R.id.cancel_btn)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
             onView(withText(R.string.do_you_want_to_delete)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-        }
-    }
-
-    @After
-    fun validate() {
-        kotlin.runCatching {
-            validateMockitoUsage()
         }
     }
 }
