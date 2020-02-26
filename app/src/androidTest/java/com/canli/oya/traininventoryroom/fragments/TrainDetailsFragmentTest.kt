@@ -7,6 +7,7 @@ import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,8 +20,11 @@ import com.canli.oya.traininventoryroom.data.source.sampleTrainList
 import com.canli.oya.traininventoryroom.di.AndroidTestApplication
 import com.canli.oya.traininventoryroom.di.TestComponent
 import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
+import com.canli.oya.traininventoryroom.utils.DataBindingIdlingResource
 import com.canli.oya.traininventoryroom.utils.TRAIN_ID
+import com.canli.oya.traininventoryroom.utils.monitorFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -40,6 +44,19 @@ class TrainDetailsFragmentTest{
     @Inject
     lateinit var dataSource: ITrainDataSource
 
+    // An Idling Resource that waits for Data Binding to have no pending bindings.
+    private val dataBindingIdlingResource = DataBindingIdlingResource()
+
+    @Before
+    fun registerIdlingResource() {
+        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
+    }
+
+    @After
+    fun unregisterIdlingResource() {
+        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
+    }
+
     @Before
     fun setUp() {
         val app = ApplicationProvider.getApplicationContext<AndroidTestApplication>()
@@ -52,6 +69,7 @@ class TrainDetailsFragmentTest{
         val args = Bundle()
         args.putInt(TRAIN_ID, 0)
         scenario = launchFragmentInContainer<TrainDetailsFragment>(args, R.style.AppTheme)
+        dataBindingIdlingResource.monitorFragment(scenario)
     }
 
     //Verify chosen train is displayed

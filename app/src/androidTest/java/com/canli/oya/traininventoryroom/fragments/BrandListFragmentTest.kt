@@ -8,6 +8,7 @@ import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
@@ -22,11 +23,10 @@ import com.canli.oya.traininventoryroom.data.source.sampleBrandList
 import com.canli.oya.traininventoryroom.di.AndroidTestApplication
 import com.canli.oya.traininventoryroom.di.TestComponent
 import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
-import com.canli.oya.traininventoryroom.utils.clickOnChildWithId
-import com.canli.oya.traininventoryroom.utils.isGone
-import com.canli.oya.traininventoryroom.utils.isVisible
+import com.canli.oya.traininventoryroom.utils.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -45,6 +45,19 @@ class BrandListFragmentTest {
     @Inject
     lateinit var dataSource: IBrandCategoryDataSource<BrandEntry>
 
+    // An Idling Resource that waits for Data Binding to have no pending bindings.
+    private val dataBindingIdlingResource = DataBindingIdlingResource()
+
+    @Before
+    fun registerIdlingResource() {
+        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
+    }
+
+    @After
+    fun unregisterIdlingResource() {
+        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
+    }
+
     @Before
     fun setUp() {
         val app = ApplicationProvider.getApplicationContext<AndroidTestApplication>()
@@ -57,7 +70,8 @@ class BrandListFragmentTest {
     fun withEmptyList_emptyScreenIsShown() {
         runBlockingTest {
             (dataSource as FakeBrandDataSource).setData(mutableListOf())
-            launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+            val fragmentScenario = launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+            dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
             onView(withId(R.id.empty_text)).check(isVisible())
             onView(withId(R.id.empty_image)).check(isVisible())
@@ -71,7 +85,8 @@ class BrandListFragmentTest {
         runBlockingTest {
             //Set some sample data
             (dataSource as FakeBrandDataSource).setData(sampleBrandList)
-            launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+            val fragmentScenario = launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+            dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
             onView(withId(R.id.empty_text)).check(isGone())
             onView(withId(R.id.empty_image)).check(isGone())
@@ -84,6 +99,7 @@ class BrandListFragmentTest {
         runBlockingTest {
             (dataSource as FakeBrandDataSource).setData(sampleBrandList)
             val scenario = launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+            dataBindingIdlingResource.monitorFragment(scenario)
 
             val context: Context = ApplicationProvider.getApplicationContext<AndroidTestApplication>()
             val addMenuItem = ActionMenuItem(context, 0, R.id.action_add, 0, 0, null)
@@ -105,7 +121,8 @@ class BrandListFragmentTest {
     fun clickEditOnItem_opensAddFragmentFilled() {
         runBlockingTest {
             (dataSource as FakeBrandDataSource).setData(sampleBrandList)
-            launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+            val fragmentScenario = launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+            dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
             onView(withId(R.id.list))
                     .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(1, clickOnChildWithId(R.id.brand_item_edit_icon)))
@@ -124,7 +141,8 @@ class BrandListFragmentTest {
             //Set some sample data
             (dataSource as FakeBrandDataSource).setData(sampleBrandList)
 
-            launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+            val fragmentScenario = launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+            dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
             //Swipe an item
             onView(withId(R.id.list))

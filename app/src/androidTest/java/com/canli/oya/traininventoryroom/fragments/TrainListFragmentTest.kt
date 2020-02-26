@@ -6,6 +6,7 @@ import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -20,6 +21,7 @@ import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
 import com.canli.oya.traininventoryroom.utils.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -36,6 +38,19 @@ class TrainListFragmentTest{
 
     @Inject
     lateinit var dataSource: ITrainDataSource
+
+    // An Idling Resource that waits for Data Binding to have no pending bindings.
+    private val dataBindingIdlingResource = DataBindingIdlingResource()
+
+    @Before
+    fun registerIdlingResource() {
+        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
+    }
+
+    @After
+    fun unregisterIdlingResource() {
+        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
+    }
 
     @Before
     fun setUp() {
@@ -54,7 +69,8 @@ class TrainListFragmentTest{
             //Launch the fragment in All Trains mode
             val args = Bundle()
             args.putString(INTENT_REQUEST_CODE, ALL_TRAIN)
-            launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
+            val fragmentScenario = launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
+            dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
             //Check if empty layout is displayed
             onView(withId(R.id.empty_text)).check(isVisible())
@@ -72,7 +88,8 @@ class TrainListFragmentTest{
             //Launch the fragment in ALL_TRAINS mode
             val args = Bundle()
             args.putString(INTENT_REQUEST_CODE, ALL_TRAIN)
-            launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
+            val fragmentScenario = launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
+            dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
             //Verify that empty layout is not displayed and that the list is displayed
             onView(withId(R.id.empty_text)).check(isGone())
@@ -91,7 +108,8 @@ class TrainListFragmentTest{
             val args = Bundle()
             args.putString(INTENT_REQUEST_CODE, TRAINS_OF_BRAND)
             args.putString(BRAND_NAME, "unexisting brand")
-            launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
+            val fragmentScenario = launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
+            dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
             //Check if empty layout is displayed
             onView(withId(R.id.empty_text)).check(isVisible())
@@ -110,7 +128,8 @@ class TrainListFragmentTest{
             val args = Bundle()
             args.putString(INTENT_REQUEST_CODE, TRAINS_OF_BRAND)
             args.putString(BRAND_NAME, sampleBrandName)
-            launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
+            val fragmentScenario = launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
+            dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
             onView(withId(R.id.list)).check(isVisible())
             onView(withText(sampleBrandName)).check(isVisible())
@@ -127,7 +146,8 @@ class TrainListFragmentTest{
             val args = Bundle()
             args.putString(INTENT_REQUEST_CODE, TRAINS_OF_CATEGORY)
             args.putString(CATEGORY_NAME, "Unexisting Category")
-            launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
+            val fragmentScenario = launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
+            dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
             //Check if empty layout is displayed
             onView(withId(R.id.empty_text)).check(isVisible())
@@ -146,7 +166,8 @@ class TrainListFragmentTest{
             val args = Bundle()
             args.putString(INTENT_REQUEST_CODE, TRAINS_OF_CATEGORY)
             args.putString(CATEGORY_NAME, sampleCategoryName)
-            launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
+            val fragmentScenario = launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
+            dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
             val enclosedInParenthesis = "($sampleCategoryName)"
             onView(withId(R.id.list)).check(isVisible())
@@ -163,7 +184,8 @@ class TrainListFragmentTest{
             //Launch the fragment in ALL_TRAINS mode
             val args = Bundle()
             args.putString(INTENT_REQUEST_CODE, ALL_TRAIN)
-            launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
+            val fragmentScenario = launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
+            dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
             //Swipe an item
             onView(withId(R.id.list))
