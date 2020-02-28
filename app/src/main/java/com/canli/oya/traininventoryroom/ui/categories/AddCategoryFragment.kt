@@ -35,7 +35,7 @@ class AddCategoryFragment : Fragment() {
     private var mCategoryId: Int = 0
     private var isEditCase: Boolean = false
 
-    private var categoryList : List<String> = ArrayList()
+    private var categoryList : List<String?> = ArrayList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
@@ -65,7 +65,9 @@ class AddCategoryFragment : Fragment() {
         }
 
         viewModel.allItems.observe(viewLifecycleOwner, Observer { categoryEntries ->
-            categoryList = categoryEntries.map { categoryEntry -> categoryEntry.categoryName }
+            categoryEntries?.let {
+                categoryList = it.map { categoryEntry -> categoryEntry.categoryName }
+            }
         })
     }
 

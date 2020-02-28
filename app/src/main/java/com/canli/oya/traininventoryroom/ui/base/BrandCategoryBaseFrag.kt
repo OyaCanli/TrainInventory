@@ -15,10 +15,7 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.utils.EDIT_CASE
-import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
-import com.canli.oya.traininventoryroom.utils.SwipeToDeleteCallback
-import com.canli.oya.traininventoryroom.utils.shortToast
+import com.canli.oya.traininventoryroom.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -66,8 +63,10 @@ abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteList
         addMenuItem = menu.getItem(0)
         if(viewModel.isChildFragVisible){
             addMenuItem?.setIcon((R.drawable.avd_cross_to_plus))
+            addMenuItem?.title = TITLE_CROSS
         } else {
             addMenuItem?.setIcon((R.drawable.avd_plus_to_cross))
+            addMenuItem?.title = TITLE_PLUS
         }
     }
 
@@ -92,17 +91,19 @@ abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteList
     private fun startAnimationOnMenuItem(item: MenuItem, @DrawableRes iconAtStart : Int, @DrawableRes iconAtEnd : Int) {
         if (Build.VERSION.SDK_INT >= 23) {
             //If there is an ongoing animation, cancel it
-            val previous_avd = item.icon as? AnimatedVectorDrawable
-            previous_avd?.clearAnimationCallbacks()
+            val previousAvd = item.icon as? AnimatedVectorDrawable
+            previousAvd?.clearAnimationCallbacks()
 
             //In case the drawable is different(i.e. blinking animation), set the correct starting icon
             item.setIcon(iconAtStart)
+            item.title = if(iconAtStart == R.drawable.avd_plus_to_cross) TITLE_PLUS else TITLE_CROSS
             val avd = item.icon as? AnimatedVectorDrawable
             avd?.registerAnimationCallback(object : Animatable2.AnimationCallback() {
                 override fun onAnimationStart(drawable: Drawable) {}
 
                 override fun onAnimationEnd(drawable: Drawable) {
                     item.setIcon(iconAtEnd)
+                    item.title = if(iconAtEnd == R.drawable.avd_plus_to_cross) TITLE_PLUS else TITLE_CROSS
                 }
             })
             avd?.start()

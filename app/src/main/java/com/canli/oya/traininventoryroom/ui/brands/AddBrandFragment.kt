@@ -76,7 +76,9 @@ class AddBrandFragment : Fragment() {
         }
 
         viewModel.allItems.observe(viewLifecycleOwner, Observer { brandEntries ->
-            brandList = brandEntries.map { brandEntry -> brandEntry.brandName }
+            brandEntries?.let {
+                brandList = brandEntries.map { brandEntry -> brandEntry.brandName }
+            }
         })
     }
 
