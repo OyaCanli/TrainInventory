@@ -12,7 +12,7 @@ const val BRANDS_PAGE_SIZE = 15
 class BrandDataSource @Inject constructor(private val database: TrainDatabase) : IBrandCategoryDataSource<BrandEntry> {
 
     override fun getAllItems() : LiveData<PagedList<BrandEntry>> {
-        val factory = database.brandDao().allBrands
+        val factory = database.brandDao().observeAllBrands()
         return LivePagedListBuilder(factory, BRANDS_PAGE_SIZE).build()
     }
 

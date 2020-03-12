@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.endtoend
+package com.canli.oya.traininventoryroom.endtoendtests
 
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso

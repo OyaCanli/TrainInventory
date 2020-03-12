@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.fragments
+package com.canli.oya.traininventoryroom.fragmenttests
 
 import android.content.Context
 import android.os.Bundle
@@ -16,13 +16,13 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.data.source.FakeBrandDataSource
+import com.canli.oya.traininventoryroom.data.CategoryEntry
+import com.canli.oya.traininventoryroom.data.source.FakeCategoryDataSource
 import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
-import com.canli.oya.traininventoryroom.data.source.sampleBrandList
+import com.canli.oya.traininventoryroom.data.source.sampleCategoryList
 import com.canli.oya.traininventoryroom.di.AndroidTestApplication
 import com.canli.oya.traininventoryroom.di.TestComponent
-import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
+import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
 import com.canli.oya.traininventoryroom.utils.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -37,13 +37,13 @@ import javax.inject.Inject
 @MediumTest
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
-class BrandListFragmentTest {
+class CategoryListFragmentTest {
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
     @Inject
-    lateinit var dataSource: IBrandCategoryDataSource<BrandEntry>
+    lateinit var dataSource: IBrandCategoryDataSource<CategoryEntry>
 
     // An Idling Resource that waits for Data Binding to have no pending bindings.
     private val dataBindingIdlingResource = DataBindingIdlingResource()
@@ -69,8 +69,8 @@ class BrandListFragmentTest {
     @Test
     fun withEmptyList_emptyScreenIsShown() {
         runBlockingTest {
-            (dataSource as FakeBrandDataSource).setData(mutableListOf())
-            val fragmentScenario = launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+            (dataSource as FakeCategoryDataSource).setData(mutableListOf())
+            val fragmentScenario = launchFragmentInContainer<CategoryListFragment>(Bundle(), R.style.AppTheme)
             dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
             onView(withId(R.id.empty_text)).check(isVisible())
@@ -84,8 +84,8 @@ class BrandListFragmentTest {
     fun withSampleList_emptyScreenIsNotShown() {
         runBlockingTest {
             //Set some sample data
-            (dataSource as FakeBrandDataSource).setData(sampleBrandList)
-            val fragmentScenario = launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+            (dataSource as FakeCategoryDataSource).setData(sampleCategoryList)
+            val fragmentScenario = launchFragmentInContainer<CategoryListFragment>(Bundle(), R.style.AppTheme)
             dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
             onView(withId(R.id.empty_text)).check(isGone())
@@ -94,25 +94,27 @@ class BrandListFragmentTest {
         }
     }
 
+    //Click plus on the menu and verify that add child frag becomes visible with empty edittext
     @Test
     fun clickAdd_opensEmptyAddFragment() {
         runBlockingTest {
-            (dataSource as FakeBrandDataSource).setData(sampleBrandList)
-            val scenario = launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+            (dataSource as FakeCategoryDataSource).setData(sampleCategoryList)
+            val scenario = launchFragmentInContainer<CategoryListFragment>(Bundle(), R.style.AppTheme)
             dataBindingIdlingResource.monitorFragment(scenario)
 
             val context: Context = ApplicationProvider.getApplicationContext<AndroidTestApplication>()
             val addMenuItem = ActionMenuItem(context, 0, R.id.action_add, 0, 0, null)
+
             //Click on the add menu item
             scenario.onFragment { fragment ->
                 fragment.onOptionsItemSelected(addMenuItem)
             }
 
             //Check whether add category screen becomes visible
-            onView(withId(R.id.addBrand_editBrandName)).check(matches(isDisplayed()))
-            onView(withId(R.id.addBrand_editBrandName)).check(matches(withText("")))
-            onView(withId(R.id.addBrand_image)).check(matches(isDisplayed()))
-            onView(withId(R.id.addBrand_saveBtn)).check(matches(isDisplayed()))
+            onView(withId(R.id.addCategory_editCatName)).check(matches(isDisplayed()))
+            onView(withId(R.id.addCategory_editCatName)).check(matches(withText("")))
+            onView(withId(R.id.addCategory_saveBtn)).check(matches(isDisplayed()))
+
         }
     }
 
@@ -120,18 +122,16 @@ class BrandListFragmentTest {
     @Test
     fun clickEditOnItem_opensAddFragmentFilled() {
         runBlockingTest {
-            (dataSource as FakeBrandDataSource).setData(sampleBrandList)
-            val fragmentScenario = launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+            (dataSource as FakeCategoryDataSource).setData(sampleCategoryList)
+            val fragmentScenario = launchFragmentInContainer<CategoryListFragment>(Bundle(), R.style.AppTheme)
             dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
             onView(withId(R.id.list))
-                    .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(1, clickOnChildWithId(R.id.brand_item_edit_icon)))
+                    .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(1, clickOnChildWithId(R.id.category_item_edit_icon)))
 
-            //Check whether add category screen becomes visible
-            onView(withId(R.id.addBrand_editBrandName)).check(matches(isDisplayed()))
-            onView(withId(R.id.addBrand_editBrandName)).check(matches(withText("MDN")))
-            onView(withId(R.id.addBrand_image)).check(matches(isDisplayed()))
-            onView(withId(R.id.addBrand_saveBtn)).check(matches(isDisplayed()))
+            onView(withId(R.id.addCategory_editCatName)).check(matches(isDisplayed()))
+            onView(withId(R.id.addCategory_editCatName)).check(matches(withText("Locomotive")))
+            onView(withId(R.id.addCategory_saveBtn)).check(matches(isDisplayed()))
         }
     }
 
@@ -139,9 +139,9 @@ class BrandListFragmentTest {
     fun swipingItem_revealsDeleteConfirmation() {
         runBlockingTest {
             //Set some sample data
-            (dataSource as FakeBrandDataSource).setData(sampleBrandList)
+            (dataSource as FakeCategoryDataSource).setData(sampleCategoryList)
 
-            val fragmentScenario = launchFragmentInContainer<BrandListFragment>(Bundle(), R.style.AppTheme)
+            val fragmentScenario = launchFragmentInContainer<CategoryListFragment>(Bundle(), R.style.AppTheme)
             dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
             //Swipe an item

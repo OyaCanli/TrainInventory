@@ -1,4 +1,5 @@
-package com.canli.oya.traininventoryroom.fragments
+package com.canli.oya.traininventoryroom.fragmenttests
+
 
 import android.os.Bundle
 import androidx.appcompat.view.menu.ActionMenuItem

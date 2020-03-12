@@ -4,10 +4,10 @@ import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
-import com.canli.oya.traininventoryroom.fragments.BrandListFragmentTest
-import com.canli.oya.traininventoryroom.fragments.CategoryListFragmentTest
-import com.canli.oya.traininventoryroom.fragments.TrainDetailsFragmentTest
-import com.canli.oya.traininventoryroom.fragments.TrainListFragmentTest
+import com.canli.oya.traininventoryroom.fragmenttests.BrandListFragmentTest
+import com.canli.oya.traininventoryroom.fragmenttests.CategoryListFragmentTest
+import com.canli.oya.traininventoryroom.fragmenttests.TrainDetailsFragmentTest
+import com.canli.oya.traininventoryroom.fragmenttests.TrainListFragmentTest
 import dagger.Component
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton

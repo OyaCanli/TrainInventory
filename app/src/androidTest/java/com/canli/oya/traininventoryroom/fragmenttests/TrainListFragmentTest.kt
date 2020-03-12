@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.fragments
+package com.canli.oya.traininventoryroom.fragmenttests
 
 import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule

@@ -15,20 +15,12 @@ class TestAppModule(private val app: Application) {
 
     @Provides
     @Singleton
-    fun provideContext(): Context {
-        return app
-    }
+    fun provideContext(): Context =  app
+
+    @Provides
+    fun provideDatabase() : TrainDatabase = mock(TrainDatabase::class.java)
 
     @Singleton
     @Provides
-    fun provideDatabase() : TrainDatabase {
-        return mock(TrainDatabase::class.java)
-    }
-
-    @Singleton
-    @Provides
-    fun provideNavigator() : Navigator {
-        return mock(Navigator::class.java)
-    }
-
+    fun provideNavigator() : Navigator = Navigator()
 }

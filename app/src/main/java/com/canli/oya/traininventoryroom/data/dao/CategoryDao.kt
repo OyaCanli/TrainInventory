@@ -8,7 +8,12 @@ import com.canli.oya.traininventoryroom.data.CategoryEntry
 @Dao
 interface CategoryDao : BaseDao<CategoryEntry> {
 
-    @get:Query("SELECT * FROM categories")
-    val allCategories: DataSource.Factory<Int, CategoryEntry>
+    @Query("SELECT * FROM categories")
+    fun observeAllCategories(): DataSource.Factory<Int, CategoryEntry>
 
+    @Query("SELECT * FROM categories")
+    suspend fun getCategoryList() : List<CategoryEntry>
+
+    @Query("SELECT * FROM categories WHERE categoryId = :id")
+    suspend fun getChosenCategory(id: Int): CategoryEntry
 }

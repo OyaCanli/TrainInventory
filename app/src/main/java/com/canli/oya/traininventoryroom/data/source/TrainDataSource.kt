@@ -13,11 +13,11 @@ const val TRAINS_PAGE_SIZE = 15
 class TrainDataSource @Inject constructor(private val database: TrainDatabase) : ITrainDataSource {
 
     override fun getAllTrains() : LiveData<PagedList<TrainMinimal>> {
-        val factory = database.trainDao().allTrains
+        val factory = database.trainDao().observeAllTrains()
         return LivePagedListBuilder(factory, TRAINS_PAGE_SIZE).build()
     }
 
-    override fun getChosenTrain(trainId : Int) = database.trainDao().getChosenTrainLiveData(trainId)
+    override fun getChosenTrain(trainId : Int) = database.trainDao().observeChosenTrain(trainId)
 
     override suspend fun getAllTrainNames(): List<String> = database.trainDao().getAllTrainNames()
 
@@ -30,17 +30,17 @@ class TrainDataSource @Inject constructor(private val database: TrainDatabase) :
     override suspend fun deleteTrain(trainId: Int) = database.trainDao().delete(trainId)
 
     override fun getTrainsFromThisBrand(brandName: String): LiveData<PagedList<TrainMinimal>> {
-        val factory = database.trainDao().getTrainsFromThisBrand(brandName)
+        val factory = database.trainDao().observeTrainsFromThisBrand(brandName)
         return LivePagedListBuilder(factory, TRAINS_PAGE_SIZE).build()
     }
 
     override fun getTrainsFromThisCategory(category: String) : LiveData<PagedList<TrainMinimal>> {
-        val factory = (database.trainDao().getTrainsFromThisCategory(category))
+        val factory = (database.trainDao().observeTrainsFromThisCategory(category))
         return LivePagedListBuilder(factory, TRAINS_PAGE_SIZE).build()
     }
 
     override fun searchInTrains(query: String): LiveData<PagedList<TrainMinimal>> {
-        val factory = database.trainDao().searchInTrains(query)
+        val factory = database.trainDao().searchInTrainsAndObserve(query)
         return LivePagedListBuilder(factory, TRAINS_PAGE_SIZE).build()
     }
 
