@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddCategoryBinding
-import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
@@ -50,7 +50,7 @@ class AddCategoryFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        (activity?.application as TrainApplication).appComponent.inject(this)
+        ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
 
         viewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(CategoryViewModel::class.java)
 

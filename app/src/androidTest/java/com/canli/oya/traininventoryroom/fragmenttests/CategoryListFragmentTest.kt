@@ -17,11 +17,14 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.CategoryEntry
-import com.canli.oya.traininventoryroom.data.source.FakeCategoryDataSource
 import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
-import com.canli.oya.traininventoryroom.data.source.sampleCategoryList
-import com.canli.oya.traininventoryroom.di.AndroidTestApplication
-import com.canli.oya.traininventoryroom.di.TestComponent
+import com.canli.oya.traininventoryroom.datasource.FakeCategoryDataSource
+import com.canli.oya.traininventoryroom.datasource.sampleCategoryList
+import com.canli.oya.traininventoryroom.di.ComponentProvider
+import com.canli.oya.traininventoryroom.di.TestAppModule
+import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.fake.DaggerFakeTestComponent
+import com.canli.oya.traininventoryroom.di.fake.FakeTestComponent
 import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
 import com.canli.oya.traininventoryroom.utils.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -60,31 +63,19 @@ class CategoryListFragmentTest {
 
     @Before
     fun setUp() {
-        val app = ApplicationProvider.getApplicationContext<AndroidTestApplication>()
-        val component = app.appComponent as TestComponent
-        component.inject(this)
-    }
+        val app = ApplicationProvider.getApplicationContext<TrainApplication>()
+        ComponentProvider.getInstance(app).daggerComponent = DaggerFakeTestComponent.builder()
+                .testAppModule(TestAppModule(app))
+                .build()
+        (ComponentProvider.getInstance(app).daggerComponent as FakeTestComponent).inject(this)
 
-    //Launch with an empty list. Verify that empty text and image are shown and verify that the list is not shown
-    @Test
-    fun withEmptyList_emptyScreenIsShown() {
-        runBlockingTest {
-            (dataSource as FakeCategoryDataSource).setData(mutableListOf())
-            val fragmentScenario = launchFragmentInContainer<CategoryListFragment>(Bundle(), R.style.AppTheme)
-            dataBindingIdlingResource.monitorFragment(fragmentScenario)
-
-            onView(withId(R.id.empty_text)).check(isVisible())
-            onView(withId(R.id.empty_image)).check(isVisible())
-            onView(withId(R.id.list)).check(isGone())
-        }
+        (dataSource as FakeCategoryDataSource).setData(sampleCategoryList)
     }
 
     //Launch with a sample list. Verify that empty layout is not shown and the list is shown with correct items
     @Test
     fun withSampleList_emptyScreenIsNotShown() {
         runBlockingTest {
-            //Set some sample data
-            (dataSource as FakeCategoryDataSource).setData(sampleCategoryList)
             val fragmentScenario = launchFragmentInContainer<CategoryListFragment>(Bundle(), R.style.AppTheme)
             dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
@@ -98,11 +89,10 @@ class CategoryListFragmentTest {
     @Test
     fun clickAdd_opensEmptyAddFragment() {
         runBlockingTest {
-            (dataSource as FakeCategoryDataSource).setData(sampleCategoryList)
             val scenario = launchFragmentInContainer<CategoryListFragment>(Bundle(), R.style.AppTheme)
             dataBindingIdlingResource.monitorFragment(scenario)
 
-            val context: Context = ApplicationProvider.getApplicationContext<AndroidTestApplication>()
+            val context: Context = ApplicationProvider.getApplicationContext<TrainApplication>()
             val addMenuItem = ActionMenuItem(context, 0, R.id.action_add, 0, 0, null)
 
             //Click on the add menu item
@@ -122,7 +112,6 @@ class CategoryListFragmentTest {
     @Test
     fun clickEditOnItem_opensAddFragmentFilled() {
         runBlockingTest {
-            (dataSource as FakeCategoryDataSource).setData(sampleCategoryList)
             val fragmentScenario = launchFragmentInContainer<CategoryListFragment>(Bundle(), R.style.AppTheme)
             dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
@@ -138,9 +127,6 @@ class CategoryListFragmentTest {
     @Test
     fun swipingItem_revealsDeleteConfirmation() {
         runBlockingTest {
-            //Set some sample data
-            (dataSource as FakeCategoryDataSource).setData(sampleCategoryList)
-
             val fragmentScenario = launchFragmentInContainer<CategoryListFragment>(Bundle(), R.style.AppTheme)
             dataBindingIdlingResource.monitorFragment(fragmentScenario)
 

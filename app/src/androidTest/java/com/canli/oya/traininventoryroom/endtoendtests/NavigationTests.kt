@@ -1,6 +1,7 @@
 package com.canli.oya.traininventoryroom.endtoendtests
 
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
@@ -10,6 +11,11 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.canli.oya.traininventoryroom.R
+import com.canli.oya.traininventoryroom.di.ComponentProvider
+import com.canli.oya.traininventoryroom.di.TestAppModule
+import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.inmemory.DaggerInMemoryTestComponent
+import com.canli.oya.traininventoryroom.di.inmemory.InMemoryTestComponent
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
 import com.canli.oya.traininventoryroom.utils.DataBindingIdlingResource
 import com.canli.oya.traininventoryroom.utils.hasSelectedItem
@@ -38,6 +44,15 @@ class NavigationTests {
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
     }
 
+    @Before
+    fun setUp() {
+        val app = ApplicationProvider.getApplicationContext<TrainApplication>()
+        ComponentProvider.getInstance(app).daggerComponent = DaggerInMemoryTestComponent.builder()
+                .testAppModule(TestAppModule(app))
+                .build()
+        (ComponentProvider.getInstance(app).daggerComponent as InMemoryTestComponent).inject(this)
+    }
+
     @Test
     fun bottomNavigation_correctItemsAreSetSelected(){
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
@@ -62,7 +77,7 @@ class NavigationTests {
         onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.brands)))
         onView(withText(R.string.all_brands)).check(matches(withParent(withId(R.id.toolbar))))
 
-        /*Press back again  and verify that we are back at categories screen
+        /*Press back again and verify that we are back at categories screen
         and category menu item gets selected*/
         Espresso.pressBack()
         onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.categories)))

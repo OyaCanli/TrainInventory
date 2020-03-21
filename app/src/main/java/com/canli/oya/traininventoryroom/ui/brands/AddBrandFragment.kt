@@ -19,7 +19,7 @@ import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddBrandBinding
-import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
@@ -61,7 +61,7 @@ class AddBrandFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        (activity?.application as TrainApplication).appComponent.inject(this)
+        ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
 
         viewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(BrandViewModel::class.java)
 

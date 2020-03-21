@@ -1,10 +1,12 @@
-package com.canli.oya.traininventoryroom.data.source
+package com.canli.oya.traininventoryroom.datasource
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.data.TrainEntry
+import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
+import com.canli.oya.traininventoryroom.data.source.asPagedList
 
 class FakeCategoryDataSource(private var categories : MutableList<CategoryEntry> = sampleCategoryList,
                                                  private val trains: List<TrainEntry> = listOf()) : IBrandCategoryDataSource<CategoryEntry> {

@@ -14,12 +14,15 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.source.FakeTrainDataSource
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
-import com.canli.oya.traininventoryroom.data.source.sampleTrain1
-import com.canli.oya.traininventoryroom.data.source.sampleTrainList
-import com.canli.oya.traininventoryroom.di.AndroidTestApplication
-import com.canli.oya.traininventoryroom.di.TestComponent
+import com.canli.oya.traininventoryroom.datasource.FakeTrainDataSource
+import com.canli.oya.traininventoryroom.datasource.sampleTrain1
+import com.canli.oya.traininventoryroom.datasource.sampleTrainList
+import com.canli.oya.traininventoryroom.di.ComponentProvider
+import com.canli.oya.traininventoryroom.di.TestAppModule
+import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.fake.DaggerFakeTestComponent
+import com.canli.oya.traininventoryroom.di.fake.FakeTestComponent
 import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
 import com.canli.oya.traininventoryroom.utils.DataBindingIdlingResource
 import com.canli.oya.traininventoryroom.utils.TRAIN_ID
@@ -60,9 +63,11 @@ class TrainDetailsFragmentTest{
 
     @Before
     fun setUp() {
-        val app = ApplicationProvider.getApplicationContext<AndroidTestApplication>()
-        val component = app.appComponent as TestComponent
-        component.inject(this)
+        val app = ApplicationProvider.getApplicationContext<TrainApplication>()
+        ComponentProvider.getInstance(app).daggerComponent = DaggerFakeTestComponent.builder()
+                .testAppModule(TestAppModule(app))
+                .build()
+        (ComponentProvider.getInstance(app).daggerComponent as FakeTestComponent).inject(this)
 
         //Set some sample data
         (dataSource as FakeTrainDataSource).setData(sampleTrainList)

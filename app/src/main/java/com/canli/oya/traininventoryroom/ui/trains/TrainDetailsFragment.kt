@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentTrainDetailsBinding
-import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.main.Navigator
 import com.canli.oya.traininventoryroom.utils.TRAIN_ID
@@ -43,7 +43,7 @@ class TrainDetailsFragment : Fragment() {
 
         trainId = arguments?.getInt(TRAIN_ID) ?: 0
 
-        (activity?.application as TrainApplication).appComponent.inject(this)
+        ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(TrainViewModel::class.java)
 

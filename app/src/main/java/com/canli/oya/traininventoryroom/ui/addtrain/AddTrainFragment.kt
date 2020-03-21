@@ -19,7 +19,7 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
-import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
 import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
 import com.canli.oya.traininventoryroom.utils.CHOSEN_TRAIN
@@ -90,8 +90,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     }
 
     private fun initDagger() {
-        val app = (activity?.application as TrainApplication)
-        val appComponent = app.appComponent
+        val appComponent = ComponentProvider.getInstance(requireActivity().application).daggerComponent
         DaggerAddTrainComponent.builder()
                 .appComponent(appComponent)
                 .bindChosenTrain(chosenTrain)

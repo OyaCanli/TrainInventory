@@ -14,9 +14,16 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.source.*
-import com.canli.oya.traininventoryroom.di.AndroidTestApplication
-import com.canli.oya.traininventoryroom.di.TestComponent
+import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
+import com.canli.oya.traininventoryroom.datasource.FakeTrainDataSource
+import com.canli.oya.traininventoryroom.datasource.sampleTrain1
+import com.canli.oya.traininventoryroom.datasource.sampleTrain2
+import com.canli.oya.traininventoryroom.datasource.sampleTrainList
+import com.canli.oya.traininventoryroom.di.ComponentProvider
+import com.canli.oya.traininventoryroom.di.TestAppModule
+import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.fake.DaggerFakeTestComponent
+import com.canli.oya.traininventoryroom.di.fake.FakeTestComponent
 import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
 import com.canli.oya.traininventoryroom.utils.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -54,37 +61,20 @@ class TrainListFragmentTest{
 
     @Before
     fun setUp() {
-        val app = ApplicationProvider.getApplicationContext<AndroidTestApplication>()
-        val component = app.appComponent as TestComponent
-        component.inject(this)
-    }
+        val app = ApplicationProvider.getApplicationContext<TrainApplication>()
+        ComponentProvider.getInstance(app).daggerComponent = DaggerFakeTestComponent.builder()
+                .testAppModule(TestAppModule(app))
+                .build()
+        (ComponentProvider.getInstance(app).daggerComponent as FakeTestComponent).inject(this)
 
-    //Launch with an empty list. Verify that empty text and image are shown and verify that the list is not shown
-    @Test
-    fun allTrains_withEmptyList_emptyScreenIsShown() {
-        runBlockingTest {
-            //Set an empty list as data
-            (dataSource as FakeTrainDataSource).setData(mutableListOf())
-
-            //Launch the fragment in All Trains mode
-            val args = Bundle()
-            args.putString(INTENT_REQUEST_CODE, ALL_TRAIN)
-            val fragmentScenario = launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
-            dataBindingIdlingResource.monitorFragment(fragmentScenario)
-
-            //Check if empty layout is displayed
-            onView(withId(R.id.empty_text)).check(isVisible())
-            onView(withId(R.id.empty_image)).check(isVisible())
-        }
+        //Set some sample data
+        (dataSource as FakeTrainDataSource).setData(sampleTrainList)
     }
 
     //Launch with a sample list. Verify that empty layout is not shown and the list is shown with correct items
     @Test
     fun allTrains_withSampleList_emptyScreenIsNotShown() {
         runBlockingTest {
-            //Set some sample data
-            (dataSource as FakeTrainDataSource).setData(sampleTrainList)
-
             //Launch the fragment in ALL_TRAINS mode
             val args = Bundle()
             args.putString(INTENT_REQUEST_CODE, ALL_TRAIN)
@@ -101,9 +91,6 @@ class TrainListFragmentTest{
     @Test
     fun trainsOfBrand_withNoResult_showsEmptyScreen() {
         runBlockingTest {
-            //Set some sample data
-            (dataSource as FakeTrainDataSource).setData(sampleTrainList)
-
             //Launches the fragment in TRAINS_OF_BRAND mode
             val args = Bundle()
             args.putString(INTENT_REQUEST_CODE, TRAINS_OF_BRAND)
@@ -120,9 +107,6 @@ class TrainListFragmentTest{
     @Test
     fun trainsOfBrand_withAResult_showsCorrectResult() {
         runBlockingTest {
-            //Set some sample data
-            (dataSource as FakeTrainDataSource).setData(sampleTrainList)
-
             //Launches the fragment in TRAINS_OF_BRAND mode
             val sampleBrandName = sampleTrain1.brandName
             val args = Bundle()
@@ -132,16 +116,13 @@ class TrainListFragmentTest{
             dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
             onView(withId(R.id.list)).check(isVisible())
-            onView(withText(sampleBrandName)).check(isVisible())
+            onView(withText(sampleTrain1.trainName)).check(isVisible())
         }
     }
 
     @Test
     fun trainsOfCategory_withNoResult_showsEmptyScreen() {
         runBlockingTest {
-            //Set some sample data
-            (dataSource as FakeTrainDataSource).setData(sampleTrainList)
-
             //Launch the fragment in TRAINS_OF_CATEGORY mode
             val args = Bundle()
             args.putString(INTENT_REQUEST_CODE, TRAINS_OF_CATEGORY)
@@ -158,9 +139,6 @@ class TrainListFragmentTest{
     @Test
     fun trainsOfCategory_withAResult_showsCorrectResult() {
         runBlockingTest {
-            //Set some sample data
-            (dataSource as FakeTrainDataSource).setData(sampleTrainList)
-
             //Launch the fragment in TRAINS_OF_CATEGORY mode
             val sampleCategoryName = sampleTrain2.categoryName
             val args = Bundle()
@@ -171,16 +149,13 @@ class TrainListFragmentTest{
 
             val enclosedInParenthesis = "($sampleCategoryName)"
             onView(withId(R.id.list)).check(isVisible())
-            onView(withText(enclosedInParenthesis)).check(isVisible())
+            onView(withText(sampleTrain2.trainName)).check(isVisible())
         }
     }
 
     @Test
     fun swipingItem_revealsDeleteConfirmation() {
         runBlockingTest {
-            //Set some sample data
-            (dataSource as FakeTrainDataSource).setData(sampleTrainList)
-
             //Launch the fragment in ALL_TRAINS mode
             val args = Bundle()
             args.putString(INTENT_REQUEST_CODE, ALL_TRAIN)

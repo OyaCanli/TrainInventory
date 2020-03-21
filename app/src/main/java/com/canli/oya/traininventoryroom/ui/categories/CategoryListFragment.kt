@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.CategoryEntry
-import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.base.BaseAdapter
 import com.canli.oya.traininventoryroom.ui.base.BrandCategoryBaseFrag
@@ -30,7 +30,7 @@ class CategoryListFragment : BrandCategoryBaseFrag<CategoryEntry>(), CategoryIte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (activity?.application as TrainApplication).appComponent.inject(this)
+        ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
     }
 
     override fun onCategoryItemClicked(view: View, category: CategoryEntry) {
