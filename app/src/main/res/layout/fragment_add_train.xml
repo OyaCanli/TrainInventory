@@ -11,7 +11,7 @@
         <import type="com.canli.oya.traininventoryroom.utils.BindingUtils" />
     </data>
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:id="@+id/add_train_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -241,5 +241,5 @@
             </FrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 </layout>

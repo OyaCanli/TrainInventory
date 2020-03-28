@@ -1,10 +1,13 @@
 package com.canli.oya.traininventoryroom.utils
 
+import android.os.IBinder
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import androidx.annotation.DrawableRes
 import androidx.appcompat.view.menu.ActionMenuItemView
+import androidx.test.espresso.Root
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewAssertion
@@ -16,6 +19,7 @@ import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.TypeSafeMatcher
 import timber.log.Timber
 
 
@@ -41,6 +45,26 @@ private class VisibilityMatcher(private val visibility: Int) : BaseMatcher<View?
         require(o is View) { "Object must be instance of View. Object is instance of $o" }
         return o.visibility == visibility
     }
+}
+
+class ToastMatcher : TypeSafeMatcher<Root?>() {
+
+    override fun describeTo(description: Description?) {
+        description?.appendText("is toast")
+    }
+
+    override fun matchesSafely(item: Root?): Boolean {
+        val type: Int? = item?.windowLayoutParams?.get()?.type
+        if (type == WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY) {
+            val windowToken: IBinder = item.decorView.windowToken
+            val appToken: IBinder = item.decorView.applicationWindowToken
+            if (windowToken === appToken) { // means this window isn't contained by any other windows.
+                return true
+            }
+        }
+        return false
+    }
+
 }
 
 fun clickOnChildWithId(viewId: Int) = object : ViewAction {
