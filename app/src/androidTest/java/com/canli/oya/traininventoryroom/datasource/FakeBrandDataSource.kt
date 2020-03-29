@@ -10,7 +10,8 @@ import com.canli.oya.traininventoryroom.data.source.asPagedList
 
 
 class FakeBrandDataSource(private var brands : MutableList<BrandEntry> = sampleBrandList,
-                                              private val trains: List<TrainEntry> = listOf()) : IBrandCategoryDataSource<BrandEntry> {
+                                              private val trains: List<TrainEntry> = listOf())
+    : IBrandCategoryDataSource<BrandEntry> {
 
     private val brandsLiveData : MutableLiveData<PagedList<BrandEntry>> = MutableLiveData()
 

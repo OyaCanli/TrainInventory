@@ -8,8 +8,10 @@ import com.canli.oya.traininventoryroom.di.AppComponent
 import com.canli.oya.traininventoryroom.di.DataSourceModule
 import com.canli.oya.traininventoryroom.di.TestAppModule
 import com.canli.oya.traininventoryroom.di.TestScope
+import com.canli.oya.traininventoryroom.endtoendtests.BrandTests
 import com.canli.oya.traininventoryroom.endtoendtests.CategoryTests
 import com.canli.oya.traininventoryroom.endtoendtests.NavigationTests
+import com.canli.oya.traininventoryroom.endtoendtests.TrainTests
 import dagger.Component
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -23,5 +25,7 @@ interface InMemoryTestComponent : AppComponent {
     override fun exposeCategoryDataSource() : IBrandCategoryDataSource<CategoryEntry>
 
     fun inject(target: CategoryTests)
+    fun inject(target: BrandTests)
+    fun inject(target: TrainTests)
     fun inject(target: NavigationTests)
 }
