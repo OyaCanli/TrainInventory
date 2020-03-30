@@ -249,6 +249,7 @@ class TrainTests {
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(EditText::class.java)).perform(typeText("red"), pressImeActionButton())
 
+        Thread.sleep(1000)
         onView(withText(sampleTrain1.trainName)).check(matches(isDisplayed()))
         onView(withText(sampleTrain3.trainName)).check(doesNotExist())
 

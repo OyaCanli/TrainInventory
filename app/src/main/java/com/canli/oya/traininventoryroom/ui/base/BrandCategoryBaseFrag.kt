@@ -15,7 +15,10 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.utils.*
+import com.canli.oya.traininventoryroom.utils.EDIT_CASE
+import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
+import com.canli.oya.traininventoryroom.utils.SwipeToDeleteCallback
+import com.canli.oya.traininventoryroom.utils.shortToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -62,11 +65,9 @@ abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteList
         inflater.inflate(R.menu.menu_add_item, menu)
         addMenuItem = menu.getItem(0)
         if(viewModel.isChildFragVisible){
-            addMenuItem?.setIcon((R.drawable.avd_cross_to_plus))
-            addMenuItem?.title = TITLE_CROSS
+            addMenuItem?.setMenuIcon((R.drawable.avd_cross_to_plus))
         } else {
-            addMenuItem?.setIcon((R.drawable.avd_plus_to_cross))
-            addMenuItem?.title = TITLE_PLUS
+            addMenuItem?.setMenuIcon((R.drawable.avd_plus_to_cross))
         }
     }
 
@@ -95,18 +96,18 @@ abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteList
             previousAvd?.clearAnimationCallbacks()
 
             //In case the drawable is different(i.e. blinking animation), set the correct starting icon
-            item.setIcon(iconAtStart)
-            item.title = if(iconAtStart == R.drawable.avd_plus_to_cross) TITLE_PLUS else TITLE_CROSS
+            item.setMenuIcon(iconAtStart)
             val avd = item.icon as? AnimatedVectorDrawable
             avd?.registerAnimationCallback(object : Animatable2.AnimationCallback() {
                 override fun onAnimationStart(drawable: Drawable) {}
 
                 override fun onAnimationEnd(drawable: Drawable) {
-                    item.setIcon(iconAtEnd)
-                    item.title = if(iconAtEnd == R.drawable.avd_plus_to_cross) TITLE_PLUS else TITLE_CROSS
+                    item.setMenuIcon(iconAtEnd)
                 }
             })
             avd?.start()
+        } else {
+            item.setMenuIcon(iconAtEnd)
         }
     }
 

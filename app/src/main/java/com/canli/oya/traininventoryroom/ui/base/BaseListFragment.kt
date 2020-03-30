@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.utils.SwipeToDeleteCallback
+import com.canli.oya.traininventoryroom.utils.TITLE_CROSS
+import com.canli.oya.traininventoryroom.utils.TITLE_PLUS
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -68,10 +70,15 @@ abstract class BaseListFragment<T> : Fragment(), CoroutineScope {
                 override fun onAnimationStart(drawable: Drawable) {}
 
                 override fun onAnimationEnd(drawable: Drawable) {
-                    addMenuItem.setIcon(iconToSet)
+                    addMenuItem.setMenuIcon(iconToSet)
                 }
             })
             blinkingAnim?.start()
         }
+    }
+
+    fun MenuItem.setMenuIcon(@DrawableRes iconResource : Int){
+        setIcon(iconResource)
+        title = if(iconResource == R.drawable.avd_plus_to_cross) TITLE_PLUS else TITLE_CROSS
     }
 }

@@ -75,7 +75,7 @@ class BrandTests {
     }
 
     @Test
-    fun clickAddBrand_addABrand_isAddedToBrandList() {
+    fun clickAddBrand_addABrand_isAddedToBrandList() = runBlocking {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 

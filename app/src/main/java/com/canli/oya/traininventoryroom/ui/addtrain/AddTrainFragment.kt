@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
@@ -166,8 +167,10 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         if (addViewModel.isChanged) {
             showUnsavedChangesDialog()
         } else {
-            val anim = saveMenuItem?.icon as AnimatedVectorDrawable
-            anim.start()
+            if (Build.VERSION.SDK_INT >= 23) {
+                val anim = saveMenuItem?.icon as AnimatedVectorDrawable
+                anim.start()
+            }
             parentFragmentManager.popBackStack()
         }
     }
