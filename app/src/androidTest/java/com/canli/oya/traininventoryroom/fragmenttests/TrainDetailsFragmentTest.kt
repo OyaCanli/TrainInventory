@@ -1,4 +1,5 @@
-package com.canli.oya.traininventoryroom.ui.trains
+package com.canli.oya.traininventoryroom.fragmenttests
+
 
 import android.os.Bundle
 import androidx.appcompat.view.menu.ActionMenuItem
@@ -7,28 +8,31 @@ import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.TrainEntry
-import com.canli.oya.traininventoryroom.data.source.FakeTrainDataSource
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
-import com.canli.oya.traininventoryroom.di.AndroidTestApplication
-import com.canli.oya.traininventoryroom.di.TestComponent
-import com.canli.oya.traininventoryroom.ui.main.Navigator
+import com.canli.oya.traininventoryroom.datasource.FakeTrainDataSource
+import com.canli.oya.traininventoryroom.datasource.sampleTrain1
+import com.canli.oya.traininventoryroom.datasource.sampleTrainList
+import com.canli.oya.traininventoryroom.di.ComponentProvider
+import com.canli.oya.traininventoryroom.di.TestAppModule
+import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.fake.DaggerFakeTestComponent
+import com.canli.oya.traininventoryroom.di.fake.FakeTestComponent
+import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
+import com.canli.oya.traininventoryroom.utils.DataBindingIdlingResource
 import com.canli.oya.traininventoryroom.utils.TRAIN_ID
+import com.canli.oya.traininventoryroom.utils.monitorFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
-import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
-
 import javax.inject.Inject
 
 @MediumTest
@@ -44,20 +48,26 @@ class TrainDetailsFragmentTest{
     @Inject
     lateinit var dataSource: ITrainDataSource
 
-    @Inject
-    lateinit var navigator: Navigator
+    // An Idling Resource that waits for Data Binding to have no pending bindings.
+    private val dataBindingIdlingResource = DataBindingIdlingResource()
 
-    val sampleTrain1 = TrainEntry(trainId = 0, trainName = "Red Wagon", categoryName = "Wagon", brandName = "Marklin", modelReference = "MN", description = "In very good state", quantity = 1, scale = "1.2", location = "2-A")
-    val sampleTrain2 = TrainEntry(trainId = 1, trainName = "Blue Loco", categoryName = "Locomotif", brandName = "MDN")
-    val sampleTrain3 = TrainEntry(trainId = 2, trainName = "Gare", categoryName = "Accessoire", brandName = "Marklin")
-    val sampleTrainList = mutableListOf(sampleTrain1, sampleTrain2)
+    @Before
+    fun registerIdlingResource() {
+        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
+    }
+
+    @After
+    fun unregisterIdlingResource() {
+        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
+    }
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
-        val app = ApplicationProvider.getApplicationContext<AndroidTestApplication>()
-        val component = app.appComponent as TestComponent
-        component.inject(this)
+        val app = ApplicationProvider.getApplicationContext<TrainApplication>()
+        ComponentProvider.getInstance(app).daggerComponent = DaggerFakeTestComponent.builder()
+                .testAppModule(TestAppModule(app))
+                .build()
+        (ComponentProvider.getInstance(app).daggerComponent as FakeTestComponent).inject(this)
 
         //Set some sample data
         (dataSource as FakeTrainDataSource).setData(sampleTrainList)
@@ -65,6 +75,7 @@ class TrainDetailsFragmentTest{
         val args = Bundle()
         args.putInt(TRAIN_ID, 0)
         scenario = launchFragmentInContainer<TrainDetailsFragment>(args, R.style.AppTheme)
+        dataBindingIdlingResource.monitorFragment(scenario)
     }
 
     //Verify chosen train is displayed
@@ -79,21 +90,6 @@ class TrainDetailsFragmentTest{
         onView(withId(R.id.details_location)).check(matches(withText("2-A")))
     }
 
-    //Click on edit menu item and verify that AddTrainFragment is launched
-    @Test
-    fun clickEditMenuItem_launchesAddTrainFragment() {
-
-        //Create a dummy menu item
-        val editMenuItem = ActionMenuItem(null, 0, R.id.action_edit, 0, 0, null)
-
-        //Click on the edit menu item
-        scenario.onFragment { fragment ->
-            fragment.onOptionsItemSelected(editMenuItem)
-        }
-
-        verify(navigator).launchEditTrain(sampleTrain1)
-    }
-
     //Click on delete menu item and verify that a dialog shows up
     @Test
     fun clickDeleteMenuItem_launchesAWarningDialog() {
@@ -105,12 +101,5 @@ class TrainDetailsFragmentTest{
         }
 
         onView(withText(R.string.do_you_want_to_delete)).check(matches(isDisplayed()))
-    }
-
-    @After
-    fun validate() {
-        kotlin.runCatching {
-            Mockito.validateMockitoUsage()
-        }
     }
 }

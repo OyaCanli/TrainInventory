@@ -9,12 +9,15 @@ import com.canli.oya.traininventoryroom.data.BrandEntry
 @Dao
 interface BrandDao : BaseDao<BrandEntry> {
 
-    @get:Query("SELECT * FROM brands")
-    val allBrands: DataSource.Factory<Int, BrandEntry>
+    @Query("SELECT * FROM brands")
+    fun observeAllBrands(): DataSource.Factory<Int, BrandEntry>
 
     @Query("SELECT * FROM brands")
     suspend fun getBrandList() : List<BrandEntry>
 
     @Query("SELECT * FROM brands WHERE brandId = :id")
-    fun getChosenBrand(id: Int): LiveData<BrandEntry>
+    fun observeChosenBrand(id: Int): LiveData<BrandEntry>
+
+    @Query("SELECT * FROM brands WHERE brandId = :id")
+    suspend fun getChosenBrand(id: Int): BrandEntry
 }

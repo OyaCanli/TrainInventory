@@ -13,19 +13,14 @@ class AppModule(private val app: Application) {
 
     @Provides
     @Singleton
-    fun provideContext(): Context {
-        return app
-    }
+    fun provideContext(): Context = app
 
     @Singleton
     @Provides
-    fun provideDatabase(context: Context) : TrainDatabase {
-        return TrainDatabase.getInstance(context)
-    }
+    fun provideNavigator() : Navigator = Navigator()
 
     @Singleton
     @Provides
-    fun provideNavigator() : Navigator {
-        return Navigator()
-    }
+    fun provideDatabase(context: Context) = TrainDatabase.getInstance(context)
+
 }

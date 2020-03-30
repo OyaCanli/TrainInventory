@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ActivityMainBinding
-import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
 import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        (application as TrainApplication).appComponent.inject(this)
+        ComponentProvider.getInstance(application).daggerComponent.inject(this)
 
         //Set toolbar
         setSupportActionBar(binding.toolbar)

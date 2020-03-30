@@ -18,7 +18,8 @@ import com.canli.oya.traininventoryroom.databinding.ItemConfirmDeleteBinding
 const val VIEW_TYPE_NORMAL = 1
 const val VIEW_TYPE_DELETE = 2
 
-abstract class BaseAdapter<T, L>(val context: Context, private val itemClickListener: L?, private val swipeListener: SwipeDeleteListener<T>) : PagedListAdapter<T, RecyclerView.ViewHolder>(BaseDiffCallback<T>()) {
+abstract class BaseAdapter<T, L>(val context: Context, private val itemClickListener: L?, private val swipeListener: SwipeDeleteListener<T>)
+    : PagedListAdapter<T, RecyclerView.ViewHolder>(BaseDiffCallback<T>()) {
 
     private val swipedItems = mutableListOf<Int>()
     private var itemHeight = 0

@@ -65,9 +65,9 @@ abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteList
         inflater.inflate(R.menu.menu_add_item, menu)
         addMenuItem = menu.getItem(0)
         if(viewModel.isChildFragVisible){
-            addMenuItem?.setIcon((R.drawable.avd_cross_to_plus))
+            addMenuItem?.setMenuIcon((R.drawable.avd_cross_to_plus))
         } else {
-            addMenuItem?.setIcon((R.drawable.avd_plus_to_cross))
+            addMenuItem?.setMenuIcon((R.drawable.avd_plus_to_cross))
         }
     }
 
@@ -92,20 +92,22 @@ abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteList
     private fun startAnimationOnMenuItem(item: MenuItem, @DrawableRes iconAtStart : Int, @DrawableRes iconAtEnd : Int) {
         if (Build.VERSION.SDK_INT >= 23) {
             //If there is an ongoing animation, cancel it
-            val previous_avd = item.icon as? AnimatedVectorDrawable
-            previous_avd?.clearAnimationCallbacks()
+            val previousAvd = item.icon as? AnimatedVectorDrawable
+            previousAvd?.clearAnimationCallbacks()
 
             //In case the drawable is different(i.e. blinking animation), set the correct starting icon
-            item.setIcon(iconAtStart)
+            item.setMenuIcon(iconAtStart)
             val avd = item.icon as? AnimatedVectorDrawable
             avd?.registerAnimationCallback(object : Animatable2.AnimationCallback() {
                 override fun onAnimationStart(drawable: Drawable) {}
 
                 override fun onAnimationEnd(drawable: Drawable) {
-                    item.setIcon(iconAtEnd)
+                    item.setMenuIcon(iconAtEnd)
                 }
             })
             avd?.start()
+        } else {
+            item.setMenuIcon(iconAtEnd)
         }
     }
 

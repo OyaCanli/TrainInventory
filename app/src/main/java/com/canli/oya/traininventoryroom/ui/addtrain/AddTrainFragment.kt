@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
@@ -19,7 +20,7 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
-import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
 import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
 import com.canli.oya.traininventoryroom.utils.CHOSEN_TRAIN
@@ -90,8 +91,7 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     }
 
     private fun initDagger() {
-        val app = (activity?.application as TrainApplication)
-        val appComponent = app.appComponent
+        val appComponent = ComponentProvider.getInstance(requireActivity().application).daggerComponent
         DaggerAddTrainComponent.builder()
                 .appComponent(appComponent)
                 .bindChosenTrain(chosenTrain)
@@ -167,8 +167,10 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         if (addViewModel.isChanged) {
             showUnsavedChangesDialog()
         } else {
-            val anim = saveMenuItem?.icon as AnimatedVectorDrawable
-            anim.start()
+            if (Build.VERSION.SDK_INT >= 23) {
+                val anim = saveMenuItem?.icon as AnimatedVectorDrawable
+                anim.start()
+            }
             parentFragmentManager.popBackStack()
         }
     }

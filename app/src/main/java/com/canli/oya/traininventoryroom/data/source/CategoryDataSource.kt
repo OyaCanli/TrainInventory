@@ -14,7 +14,7 @@ class CategoryDataSource @Inject constructor(private val database: TrainDatabase
 
     override fun getAllItems(): LiveData<PagedList<CategoryEntry>> {
         Timber.d("getAllCategories is called")
-        val factory = database.categoryDao().allCategories
+        val factory = database.categoryDao().observeAllCategories()
         return LivePagedListBuilder(factory, CATEGORIES_PAGE_SIZE).build()
     }
 

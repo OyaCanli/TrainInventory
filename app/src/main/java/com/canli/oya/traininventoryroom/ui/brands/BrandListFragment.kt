@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.di.TrainApplication
+import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.base.BaseAdapter
 import com.canli.oya.traininventoryroom.ui.base.BrandCategoryBaseFrag
@@ -34,7 +34,7 @@ class BrandListFragment : BrandCategoryBaseFrag<BrandEntry>(), BrandItemClickLis
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (activity?.application as TrainApplication).appComponent.inject(this)
+        ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
     }
 
     override fun onBrandItemClicked(view: View, clickedBrand: BrandEntry) {
