@@ -121,6 +121,7 @@ class CategoryTests {
         //Edit the item
         onView(withId(R.id.addCategory_editCatName)).perform(replaceText(updateCategoryName))
         onView(withId(R.id.addCategory_saveBtn)).perform(click())
+        onView(withId(R.id.action_add)).perform(click())
         //Verify the category name on the list is updated
         onView(withText(sampleCategoryName)).check(doesNotExist())
         onView(withText(updateCategoryName)).check(matches(isDisplayed()))
