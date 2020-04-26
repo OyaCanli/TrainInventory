@@ -2,20 +2,22 @@
 
 buildscript {
     ext {
-        kotlin_version = '1.3.61'
+        kotlin_version = '1.3.70'
         gradle_version = '3.5.3'
         compileSdkVersion = 28
         supportLibVersion = '1.1.0'
-        materialVersion = '1.2.0-alpha04'
-        roomVersion = '2.2.3'
+        materialVersion = '1.2.0-alpha06'
+        roomVersion = '2.2.5'
         lifecycleVersion = '2.2.0'
         glideVersion = '4.9.0'
         coroutinesVersion = '1.1.1'
         dagger_version = '2.24'
-        paging_version = '2.1.1'
+        paging_version = '2.1.2'
         espresso_version = '3.3.0-alpha02'
-        testCore_version = '1.3.0-alpha03'
-        fragmentTestingVersion = '1.2.1'
+        testCore_version = '1.3.0-beta01'
+	    junit_version = '4.12'
+	    androidX_junit_version = '1.1.2-beta01'
+        fragmentTestingVersion = '1.2.4'
         mockK_version = '1.9'
         navigation_version = '1.0.0'
         lottieVersion = '3.3.1'

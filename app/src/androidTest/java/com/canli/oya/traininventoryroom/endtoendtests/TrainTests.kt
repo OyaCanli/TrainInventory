@@ -103,6 +103,7 @@ class TrainTests {
         //Verify up button is seen instead of hamburger icon
         onView(withContentDescription(R.string.abc_action_bar_up_description)).check(matches(isDisplayed()))
 
+        //Fill in the widgets
         onView(withId(R.id.categorySpinner)).perform(click())
         onData(allOf(`is`(instanceOf(String::class.java)), `is`(sampleTrain1.categoryName))).perform(click())
         onView(withId(R.id.brandSpinner)).perform(click())
@@ -249,7 +250,6 @@ class TrainTests {
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(EditText::class.java)).perform(typeText("red"), pressImeActionButton())
 
-        Thread.sleep(1000)
         onView(withText(sampleTrain1.trainName)).check(matches(isDisplayed()))
         onView(withText(sampleTrain3.trainName)).check(doesNotExist())
 
