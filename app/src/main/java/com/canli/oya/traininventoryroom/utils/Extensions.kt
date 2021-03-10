@@ -5,7 +5,7 @@ import android.view.Gravity
 import android.widget.Toast
 import androidx.annotation.StringRes
 
-var toast : Toast? = null
+private var toast : Toast? = null
 
 fun Context.shortToast(message: String) {
     toast?.cancel()

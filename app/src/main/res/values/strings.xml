@@ -109,5 +109,11 @@
     <string name="category_already_exists">This category already exists.</string>
     <string name="brand_already_exists">This brand already exists</string>
     <string name="train_name_already_Exists">This train name is already used</string>
+    <string name="pick_the_file_to_import">Please locate the excel file to import (This is the file you previously exported)</string>
+    <string name="browse">Browse</string>
+    <string name="successfully_exported_please_backup">Successfully exported! We recommend backing up the file by uploading it on cloud or sending it to yourself</string>
+    <string name="back_up">BACK-UP</string>
+    <string name="import_from_excel">Import From Excel</string>
+    <string name="file_could_not_retrieved">File could not retrieved</string>
 
 </resources>

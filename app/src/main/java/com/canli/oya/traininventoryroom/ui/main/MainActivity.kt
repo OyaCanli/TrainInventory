@@ -26,6 +26,7 @@ import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
 import com.canli.oya.traininventoryroom.utils.shortToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import kotlinx.coroutines.*
 import timber.log.Timber
 import javax.inject.Inject
 
