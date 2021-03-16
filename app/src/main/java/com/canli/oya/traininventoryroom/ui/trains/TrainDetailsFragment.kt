@@ -47,7 +47,7 @@ class TrainDetailsFragment : Fragment() {
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(TrainViewModel::class.java)
 
-        viewModel.getChosenTrain(trainId).observe(viewLifecycleOwner, Observer { trainEntry ->
+        viewModel.getChosenTrain(trainId).observe(viewLifecycleOwner, { trainEntry ->
             trainEntry?.let {
                 binding.chosenTrain = it
                 mChosenTrain = it
@@ -70,7 +70,7 @@ class TrainDetailsFragment : Fragment() {
     }
 
     private fun openAlertDialogForDelete() {
-        val builder = AlertDialog.Builder(activity!!, R.style.alert_dialog_style)
+        val builder = AlertDialog.Builder(requireActivity(), R.style.alert_dialog_style)
         with(builder){
             setMessage(R.string.do_you_want_to_delete)
             setPositiveButton(R.string.yes_delete) { _, _ -> deleteTrain() }
@@ -82,7 +82,7 @@ class TrainDetailsFragment : Fragment() {
 
     private fun deleteTrain() {
         viewModel.deleteTrain(mChosenTrain)
-        fragmentManager?.popBackStack()
+        parentFragmentManager.popBackStack()
     }
 
 }

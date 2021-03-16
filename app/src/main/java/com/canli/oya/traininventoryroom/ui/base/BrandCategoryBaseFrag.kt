@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.utils.EDIT_CASE
@@ -144,7 +145,7 @@ abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteList
 
     override fun onDeleteConfirmed(itemToDelete: T, position : Int) {
         Timber.d("delete is confirmed")
-        launch {
+        lifecycleScope.launch {
             //First check whether this item is used by trains table
             val isUsed = withContext(Dispatchers.IO) { viewModel.isThisItemUsed(itemToDelete) }
             if (isUsed) {

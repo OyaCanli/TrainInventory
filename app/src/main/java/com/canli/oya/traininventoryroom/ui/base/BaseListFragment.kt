@@ -23,15 +23,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
-abstract class BaseListFragment<T> : Fragment(), CoroutineScope {
+abstract class BaseListFragment<T> : Fragment() {
 
     protected lateinit var binding: FragmentListBinding
     protected lateinit var adapter : BaseAdapter<T, out Any>
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
-
-    protected lateinit var job : Job
 
     init {
         retainInstance = true
@@ -43,8 +38,6 @@ abstract class BaseListFragment<T> : Fragment(), CoroutineScope {
 
         setHasOptionsMenu(true)
 
-        job = Job()
-
         adapter = getListAdapter()
 
         binding.list.adapter = adapter
@@ -55,11 +48,6 @@ abstract class BaseListFragment<T> : Fragment(), CoroutineScope {
     }
 
     abstract fun getListAdapter() : BaseAdapter<T, out Any>
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        job.cancel()
-    }
 
     protected fun blinkAddMenuItem(addMenuItem : MenuItem, @DrawableRes iconToSet : Int) {
         if (Build.VERSION.SDK_INT >= 23) {

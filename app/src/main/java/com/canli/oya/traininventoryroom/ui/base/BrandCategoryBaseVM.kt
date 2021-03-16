@@ -9,6 +9,7 @@ import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 abstract class BrandCategoryBaseVM<T>(private val dataSource: IBrandCategoryDataSource<T>,
@@ -38,7 +39,9 @@ abstract class BrandCategoryBaseVM<T>(private val dataSource: IBrandCategoryData
     }
 
     suspend fun deleteItem(item: T) {
-        dataSource.deleteItem(item)
+        viewModelScope.launch(ioDispatcher){
+            dataSource.deleteItem(item)
+        }
     }
 
     fun updateItem(item: T) {

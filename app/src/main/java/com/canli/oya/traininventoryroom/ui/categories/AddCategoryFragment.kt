@@ -52,7 +52,7 @@ class AddCategoryFragment : Fragment() {
 
         ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
 
-        viewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(CategoryViewModel::class.java)
+        viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(CategoryViewModel::class.java)
 
         if (arguments?.containsKey(INTENT_REQUEST_CODE) == true) { //This is the "edit" case
             isEditCase = true

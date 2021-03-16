@@ -168,6 +168,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // Called when you request permission to read and write to external storage
         when (requestCode) {
             REQUEST_STORAGE_PERMISSION -> {

@@ -80,7 +80,6 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
         if (trainEntries.isNullOrEmpty()) {
             viewModel.listUiState.emptyMessage = message
             viewModel.listUiState.showEmpty = true
-            //animateTrainLogo()
             if (noTrain) {
                 addMenuItem?.let { blinkAddMenuItem(it, R.drawable.avd_plus_to_save) }
             }
@@ -134,11 +133,6 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
             navigator.launchAddTrain()
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun animateTrainLogo() {
-        val animation = AnimationUtils.loadAnimation(activity, R.anim.translate_from_left)
-        binding.emptyImage.startAnimation(animation)
     }
 
     override fun onDeleteConfirmed(itemToDelete: TrainMinimal, position: Int) {

@@ -63,7 +63,7 @@ class AddBrandFragment : Fragment() {
 
         ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
 
-        viewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(BrandViewModel::class.java)
+        viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(BrandViewModel::class.java)
 
         if (arguments?.containsKey(INTENT_REQUEST_CODE) == true) { //This is the "edit" case
             isEditCase = true
