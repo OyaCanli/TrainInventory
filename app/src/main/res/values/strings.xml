@@ -107,7 +107,7 @@
     <string name="uopload_file_to">Upload file to:</string>
     <string name="open_file_with">Open file with:</string>
     <string name="category_already_exists">This category already exists.</string>
-    <string name="brand_already_exists">This brand already exists</string>
+    <string name="brand_already_exists">This brand is already added</string>
     <string name="train_name_already_Exists">This train name is already used</string>
     <string name="pick_the_file_to_import">Please locate the excel file to import (This is the file you previously exported)</string>
     <string name="browse">Browse</string>

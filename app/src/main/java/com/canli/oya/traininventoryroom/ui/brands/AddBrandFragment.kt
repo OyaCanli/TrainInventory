@@ -98,7 +98,7 @@ class AddBrandFragment : Fragment() {
             return
         }
 
-        if(brandList.contains(brandName)){
+        if(!isEditCase && brandList.contains(brandName)){
             context?.shortToast(getString(R.string.brand_already_exists))
             return
         }
