@@ -60,8 +60,8 @@
     <string name="do_you_want_to_delete">Voulez vous supprimer cet article de l\'inventaire?</string>
     <string name="edit">Modifiez</string>
     <string name="edit_train">Modifier le train</string>
-    <string name="no_categories_found">Il y a aucune catégorie définie. Appuyez sur la bouton + pour ajouter une nouvelle catégorie.</string>
-    <string name="no_trains_found">Il y a aucun train dans l\'inventaire. Appuyez sur la bouton + pour ajouter un nouveau train</string>
+    <string name="no_categories_found">Il y a aucune catégorie définie. Appuyez sur la bouton plus pour ajouter une nouvelle catégorie.</string>
+    <string name="no_trains_found">Il y a aucun train dans l\'inventaire. Appuyez sur la bouton plus pour ajouter un nouveau train</string>
     <string name="no_brands_found">Il y a aucune marque définie. Appuyez sur la bouton plus pour ajouter une nouvelle marque.</string>
     <string name="cd_chosen_train_image">Une image du train choisi</string>
     <string name="cd_details_gallery_icon">l\'image du train, quand il y en a. Cliquez pour le changer.</string>

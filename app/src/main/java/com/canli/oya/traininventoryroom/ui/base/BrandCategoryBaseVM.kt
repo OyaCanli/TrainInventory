@@ -3,19 +3,25 @@ package com.canli.oya.traininventoryroom.ui.base
 import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagedList
+import com.canli.oya.traininventoryroom.R
+import com.canli.oya.traininventoryroom.data.UIState
+import com.canli.oya.traininventoryroom.data.source.BrandDataSource
 import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 abstract class BrandCategoryBaseVM<T>(private val dataSource: IBrandCategoryDataSource<T>,
-                                      private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) : BaseListViewModel<T>() {
+                                      private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
 
-    override var allItems: LiveData<PagedList<T>> = dataSource.getAllItems()
+    var allItems: LiveData<PagedList<T>> = dataSource.getAllItems()
+
+    private val emptyMessage = if(dataSource is BrandDataSource) R.string.no_brands_found else R.string.no_categories_found
+    var listUiState : UIState = UIState(emptyMessage)
 
     var isChildFragVisible: Boolean = false
 
