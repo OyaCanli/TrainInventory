@@ -5,7 +5,7 @@
 
     <data>
         <variable name="uiState"
-            type="com.canli.oya.traininventoryroom.common.UIState"/>
+            type="com.canli.oya.traininventoryroom.data.UIState"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

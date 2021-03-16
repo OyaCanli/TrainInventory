@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.common.UIState
+import com.canli.oya.traininventoryroom.data.UIState
 
 abstract class BaseListViewModel<T> : ViewModel(){
 

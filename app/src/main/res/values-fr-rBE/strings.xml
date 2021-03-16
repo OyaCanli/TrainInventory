@@ -85,4 +85,13 @@
     <string name="export_to_excel">Exporter en Excel</string>
     <string name="successfully_exported">Successfully exported to excel</string>
     <string name="exporting_to_excel">En train d\'importer en excel. Veuillez patienter..</string>
+    <string name="uopload_file_to">"Téléchargez fichier à: "</string>
+    <string name="open_file_with">Ouvrez le fichier avec:</string>
+    <string name="category_already_exists">Cette catégorie existe déjà</string>
+    <string name="brand_already_exists">Cette marque existe déjà</string>
+    <string name="train_name_already_Exists">Ce train existe déjà</string>
+    <string name="browse">Naviguez</string>
+    <string name="send">ENVOYEZ</string>
+    <string name="successfully_exported_browse">Exporté à Excel avec succès. Voulez-vous naviguer le fichier?</string>
+    <string name="upload_file">Voulez-vous télécharger le fichier à Cloud ou le partager avec quelqu\'un?</string>
 </resources>

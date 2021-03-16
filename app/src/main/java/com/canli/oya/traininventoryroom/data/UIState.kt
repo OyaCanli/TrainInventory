@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.common
+package com.canli.oya.traininventoryroom.data
 
 import androidx.annotation.StringRes
 import androidx.databinding.BaseObservable
