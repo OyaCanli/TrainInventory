@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.SearchView
@@ -39,8 +40,8 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
 
     override fun getListAdapter(): BaseAdapter<TrainMinimal, out Any> = TrainAdapter(requireContext(), this, this)
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
 
