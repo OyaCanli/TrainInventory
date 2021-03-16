@@ -12,6 +12,7 @@ import com.canli.oya.traininventoryroom.BR
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.CategoryEntry
+import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.ItemConfirmDeleteBinding
 
 
@@ -107,7 +108,6 @@ class DeleteItemViewHolder<T>(val binding: ItemConfirmDeleteBinding) : RecyclerV
         binding.executePendingBindings()
     }
 
-
 }
 
 open class BaseDiffCallback<T> : DiffUtil.ItemCallback<T>() {
@@ -116,7 +116,16 @@ open class BaseDiffCallback<T> : DiffUtil.ItemCallback<T>() {
     }
 
     override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
-        return false //TODO : to be overriden?
+        if(oldItem is TrainEntry && newItem is TrainEntry){
+            return oldItem as TrainEntry == newItem as TrainEntry
+        }
+        if(oldItem is BrandEntry && newItem is BrandEntry){
+            return oldItem as BrandEntry == newItem as BrandEntry
+        }
+        if(oldItem is CategoryEntry && newItem is CategoryEntry){
+            return oldItem as CategoryEntry == newItem as CategoryEntry
+        }
+        return false
     }
 }
 

@@ -4,10 +4,9 @@
 
     <solid android:color="@color/colorAccent"/>
 
-    <padding android:bottom="@dimen/padding_standard"
+    <padding
         android:left="@dimen/padding_standard"
-        android:right="@dimen/padding_standard"
-        android:top="@dimen/padding_standard"/>
+        android:right="@dimen/padding_standard" />
 
     <corners android:radius="15dp" />
 

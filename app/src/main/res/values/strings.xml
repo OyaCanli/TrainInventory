@@ -102,12 +102,14 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="successfully_exported">Successfully exported to excel</string>
     <string name="exporting_to_excel">Exporting to Excel. Please wait..</string>
-    <string name="click_for_uploading"><u>Click for uploading excel file on cloud</u></string>
-    <string name="launch_excel"><u>Click here for browsing the contents of the excel file</u></string>
     <string name="uopload_file_to">Upload file to:</string>
     <string name="open_file_with">Open file with:</string>
     <string name="category_already_exists">This category already exists.</string>
-    <string name="brand_already_exists">This brand already exists</string>
+    <string name="brand_already_exists">This brand is already added</string>
     <string name="train_name_already_Exists">This train name is already used</string>
+    <string name="browse">Browse</string>
+    <string name="send">SEND</string>
+    <string name="upload_file">Would you like to upload the excel file to cloud or share with someone?</string>
+    <string name="successfully_exported_browse">Successfully exported to Excel. Would you like to browse the file?</string>
 
 </resources>

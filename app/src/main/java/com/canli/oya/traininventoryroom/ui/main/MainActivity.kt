@@ -31,7 +31,7 @@ import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
-        NavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener {
+    NavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     private lateinit var fm: FragmentManager
 
-    private lateinit var toggle : ActionBarDrawerToggle
+    private lateinit var toggle: ActionBarDrawerToggle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +57,12 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         //Set navigation drawer
         val drawer = binding.drawerLayout
         toggle = ActionBarDrawerToggle(
-                this, drawer, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+            this,
+            drawer,
+            binding.toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
         toggle.setToolbarNavigationClickListener { onBackPressed() }
 
         drawer.addDrawerListener(toggle)
@@ -91,36 +96,36 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         return true
     }
 
-    private fun checkPermissionAndExport(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkWritePermission()
-        } else {
-            navigator.launchExportToExcelFragment()
+    private fun checkPermissionAndExport() {
+        when (Build.VERSION.SDK_INT) {
+            29, 30 -> navigator.launchExportToExcelFragment()
+            in 23..28 -> checkWritePermission()
+            in 21..23 -> navigator.launchExportToExcelFragment()
         }
     }
 
     private fun checkWritePermission() {
         if (needsPermission()) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_STORAGE_PERMISSION)
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                REQUEST_STORAGE_PERMISSION
+            )
         } else {
             navigator.launchExportToExcelFragment()
         }
     }
 
     //Check whether permission is already given or not
-    private fun needsPermission() = ContextCompat.checkSelfPermission(this,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+    private fun needsPermission() = ContextCompat.checkSelfPermission(
+        this,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    ) != PackageManager.PERMISSION_GRANTED
 
-    private fun hideOrShowBottomNavigation(currentFrag: Fragment?) {
-        if (currentFrag is AddTrainFragment || currentFrag is TrainDetailsFragment) {
-            binding.navigation.visibility = View.GONE
-            toggle.isDrawerIndicatorEnabled = false
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        } else {
-            binding.navigation.visibility = View.VISIBLE
-            toggle.isDrawerIndicatorEnabled = true
-            supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        }
+    private fun toggleBottomNavigation(shouldShow: Boolean) {
+        binding.navigation.visibility = if (shouldShow) View.VISIBLE else View.GONE
+        toggle.isDrawerIndicatorEnabled = shouldShow
+        supportActionBar?.setDisplayHomeAsUpEnabled(!shouldShow)
         toggle.syncState()
     }
 
@@ -163,10 +168,18 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         clearFocusAndHideKeyboard()
         val currentFrag = fm.findFragmentById(R.id.container)
         setMenuItemChecked(currentFrag)
-        hideOrShowBottomNavigation(currentFrag)
+        //Hide bottom navigation in AddTrain and TrainDetails fragments
+        val shouldShowBottomNavigation =
+            !(currentFrag is AddTrainFragment || currentFrag is TrainDetailsFragment)
+        toggleBottomNavigation(shouldShowBottomNavigation)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // Called when you request permission to read and write to external storage
         when (requestCode) {
             REQUEST_STORAGE_PERMISSION -> {

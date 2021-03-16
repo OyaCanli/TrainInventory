@@ -28,7 +28,7 @@ class BrandListFragment : BrandCategoryBaseFrag<BrandEntry>(), BrandItemClickLis
     @Inject
     lateinit var viewModelFactory : TrainInventoryVMFactory
 
-    override fun getListAdapter(): BaseAdapter<BrandEntry, BrandItemClickListener> = BrandAdapter(context!!, this, this)
+    override fun getListAdapter(): BaseAdapter<BrandEntry, BrandItemClickListener> = BrandAdapter(requireContext(), this, this)
 
     override fun getListViewModel(): BrandCategoryBaseVM<BrandEntry> = ViewModelProvider(this, viewModelFactory).get(BrandViewModel::class.java)
 

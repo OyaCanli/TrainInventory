@@ -47,16 +47,16 @@ class AddCategoryFragment : Fragment() {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
 
-        viewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(CategoryViewModel::class.java)
+        viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(CategoryViewModel::class.java)
 
         if (arguments?.containsKey(INTENT_REQUEST_CODE) == true) { //This is the "edit" case
             isEditCase = true
-            viewModel.chosenItem.observe(viewLifecycleOwner, Observer { categoryEntry ->
+            viewModel.chosenItem.observe(viewLifecycleOwner, { categoryEntry ->
                 categoryEntry?.let {
                     binding.chosenCategory = it
                     mCategoryId = it.categoryId
@@ -64,7 +64,7 @@ class AddCategoryFragment : Fragment() {
             })
         }
 
-        viewModel.allItems.observe(viewLifecycleOwner, Observer { categoryEntries ->
+        viewModel.allItems.observe(viewLifecycleOwner, { categoryEntries ->
             categoryEntries?.let {
                 categoryList = it.map { categoryEntry -> categoryEntry.categoryName }
             }

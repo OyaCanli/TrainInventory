@@ -17,5 +17,3 @@ class TrainAdapter (context: Context, clickListener: TrainItemClickListener, swi
 interface TrainItemClickListener {
     fun onListItemClick(trainId: Int)
 }
-
-class TrainDiffCallback : BaseDiffCallback<TrainEntry>()

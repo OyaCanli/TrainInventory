@@ -58,16 +58,16 @@ class AddBrandFragment : Fragment() {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
 
-        viewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(BrandViewModel::class.java)
+        viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(BrandViewModel::class.java)
 
         if (arguments?.containsKey(INTENT_REQUEST_CODE) == true) { //This is the "edit" case
             isEditCase = true
-            viewModel.chosenItem.observe(viewLifecycleOwner, Observer { brandEntry ->
+            viewModel.chosenItem.observe(viewLifecycleOwner,  { brandEntry ->
                 brandEntry?.let {
                     binding.chosenBrand = it
                     mBrandId = it.brandId
@@ -75,7 +75,7 @@ class AddBrandFragment : Fragment() {
             })
         }
 
-        viewModel.allItems.observe(viewLifecycleOwner, Observer { brandEntries ->
+        viewModel.allItems.observe(viewLifecycleOwner, { brandEntries ->
             brandEntries?.let {
                 brandList = brandEntries.map { brandEntry -> brandEntry.brandName }
             }
@@ -98,7 +98,7 @@ class AddBrandFragment : Fragment() {
             return
         }
 
-        if(brandList.contains(brandName)){
+        if(!isEditCase && brandList.contains(brandName)){
             context?.shortToast(getString(R.string.brand_already_exists))
             return
         }

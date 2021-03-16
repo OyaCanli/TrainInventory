@@ -17,5 +17,3 @@ class CategoryAdapter (context: Context, clickListener: CategoryItemClickListene
 interface CategoryItemClickListener {
     fun onCategoryItemClicked(view: View, category: CategoryEntry)
 }
-
-class CategoryDiffCallback: BaseDiffCallback<CategoryEntry>()
