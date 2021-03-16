@@ -93,10 +93,10 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     private fun checkPermissionAndExport(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkWritePermission()
-        } else {
-            navigator.launchExportToExcelFragment()
+        when(Build.VERSION.SDK_INT){
+            29, 30 -> navigator.launchExportToExcelFragment()
+            in 23..28 -> checkWritePermission()
+            in 21..23 -> navigator.launchExportToExcelFragment()
         }
     }
 

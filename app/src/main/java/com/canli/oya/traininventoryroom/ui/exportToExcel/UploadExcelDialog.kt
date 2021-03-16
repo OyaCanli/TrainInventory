@@ -25,20 +25,19 @@ class UploadExcelDialog : DialogFragment() {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.dialog_upload_excel, container, false)
 
-        val filePath = arguments?.getString(EXCEL_FILE_PATH)
+        val uriString = arguments?.getString(EXCEL_FILE_PATH)
 
-        if (filePath.isNullOrBlank()) {
+        if (uriString.isNullOrBlank()) {
             context?.shortToast("File path was not properly received")
         } else {
-            val newFile = File(filePath)
-            val contentUri: Uri = FileProvider.getUriForFile(context!!, PROVIDER_AUTHORITY, newFile)
+            val uri = Uri.parse(uriString)
 
             binding.uploadBtn.setOnClickListener {
-                launchChooser(contentUri)
+                launchChooser(uri)
             }
 
-            binding.launchExcelBtn.setOnClickListener {
-                openExcelFile(contentUri)
+            binding.browseBtn.setOnClickListener {
+                openExcelFile(uri)
             }
         }
 

@@ -61,8 +61,8 @@
     <string name="edit">Modifiez</string>
     <string name="edit_train">Modifier le train</string>
     <string name="no_categories_found">Il y a aucune catégorie définie. Appuyez sur la bouton + pour ajouter une nouvelle catégorie.</string>
-    <string name="no_trains_found">Il y a aucune trains dans l\'inventaire. Appuyez sur la bouton + pour ajouter un nouveau train</string>
-    <string name="no_brands_found">Il y a aucune marque définie. Appuyez sur la bouton + pour ajouter une nouvelle marque.</string>
+    <string name="no_trains_found">Il y a aucun train dans l\'inventaire. Appuyez sur la bouton + pour ajouter un nouveau train</string>
+    <string name="no_brands_found">Il y a aucune marque définie. Appuyez sur la bouton plus pour ajouter une nouvelle marque.</string>
     <string name="cd_chosen_train_image">Une image du train choisi</string>
     <string name="cd_details_gallery_icon">l\'image du train, quand il y en a. Cliquez pour le changer.</string>
     <string name="cd_edit_icon">Icone pour modifier</string>
@@ -81,7 +81,7 @@
     <string name="category_name_empty">Category name cannot be empty</string>
     <string name="train_name_empty">Train name cannot be empty</string>
     <string name="plus_icon_unicode">&#xf055;</string>
-    <string name="no_items_found">Il y a aucun article. Clicquer sur le bouton plus au dessus pour en ajouter un</string>
+    <string name="no_items_found">Il y a aucun article. Appuyez sur le bouton plus au dessus pour en ajouter un</string>
     <string name="export_to_excel">Exporter en Excel</string>
     <string name="successfully_exported">Successfully exported to excel</string>
     <string name="exporting_to_excel">En train d\'importer en excel. Veuillez patienter..</string>
