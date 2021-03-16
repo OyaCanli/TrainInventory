@@ -67,7 +67,7 @@ class AddBrandFragment : Fragment() {
 
         if (arguments?.containsKey(INTENT_REQUEST_CODE) == true) { //This is the "edit" case
             isEditCase = true
-            viewModel.chosenItem.observe(viewLifecycleOwner, Observer { brandEntry ->
+            viewModel.chosenItem.observe(viewLifecycleOwner,  { brandEntry ->
                 brandEntry?.let {
                     binding.chosenBrand = it
                     mBrandId = it.brandId
@@ -75,7 +75,7 @@ class AddBrandFragment : Fragment() {
             })
         }
 
-        viewModel.allItems.observe(viewLifecycleOwner, Observer { brandEntries ->
+        viewModel.allItems.observe(viewLifecycleOwner, { brandEntries ->
             brandEntries?.let {
                 brandList = brandEntries.map { brandEntry -> brandEntry.brandName }
             }

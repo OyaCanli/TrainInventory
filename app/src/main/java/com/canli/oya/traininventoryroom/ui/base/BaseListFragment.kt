@@ -28,9 +28,6 @@ abstract class BaseListFragment<T> : Fragment() {
     protected lateinit var binding: FragmentListBinding
     protected lateinit var adapter : BaseAdapter<T, out Any>
 
-    init {
-        retainInstance = true
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(

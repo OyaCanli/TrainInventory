@@ -17,5 +17,3 @@ class BrandAdapter(context: Context, clickListener: BrandItemClickListener, swip
 interface BrandItemClickListener {
     fun onBrandItemClicked(view: View, clickedBrand: BrandEntry)
 }
-
-class BrandDiffCallback : BaseDiffCallback<BrandEntry>()

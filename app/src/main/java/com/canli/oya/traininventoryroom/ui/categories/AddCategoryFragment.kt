@@ -56,7 +56,7 @@ class AddCategoryFragment : Fragment() {
 
         if (arguments?.containsKey(INTENT_REQUEST_CODE) == true) { //This is the "edit" case
             isEditCase = true
-            viewModel.chosenItem.observe(viewLifecycleOwner, Observer { categoryEntry ->
+            viewModel.chosenItem.observe(viewLifecycleOwner, { categoryEntry ->
                 categoryEntry?.let {
                     binding.chosenCategory = it
                     mCategoryId = it.categoryId
@@ -64,7 +64,7 @@ class AddCategoryFragment : Fragment() {
             })
         }
 
-        viewModel.allItems.observe(viewLifecycleOwner, Observer { categoryEntries ->
+        viewModel.allItems.observe(viewLifecycleOwner, { categoryEntries ->
             categoryEntries?.let {
                 categoryList = it.map { categoryEntry -> categoryEntry.categoryName }
             }
