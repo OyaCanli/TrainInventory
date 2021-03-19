@@ -16,12 +16,19 @@ import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.NavController
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ActivityMainBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
 import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
+import com.canli.oya.traininventoryroom.ui.exportToExcel.ExportingToExcelDialog
 import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
 import com.canli.oya.traininventoryroom.utils.shortToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -30,17 +37,16 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
-    NavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+    FragmentManager.OnBackStackChangedListener {
 
     private lateinit var binding: ActivityMainBinding
-
-    @Inject
-    lateinit var navigator: Navigator
 
     private lateinit var fm: FragmentManager
 
     private lateinit var toggle: ActionBarDrawerToggle
+
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +57,24 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         //Set toolbar
         setSupportActionBar(binding.toolbar)
 
-        //Set bottom navigation
-        binding.navigation.setOnNavigationItemSelectedListener(this)
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
+
+        binding.navigationDrawer.setNavigationItemSelectedListener(this)
+
+       /*val appBarConfiguration = AppBarConfiguration(
+            topLevelDestinationIds = setOf (
+                R.id.categoryListFragment,
+                R.id.brandListFragment,
+                R.id.trainListFragment
+            )
+        )
+        setupActionBarWithNavController(navController, appBarConfiguration)*/
+
+        // Setting Navigation Controller with the BottomNavigationView
+        binding.navigation.setupWithNavController(navController)
+
 
         //Set navigation drawer
         val drawer = binding.drawerLayout
@@ -66,19 +88,13 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         toggle.setToolbarNavigationClickListener { onBackPressed() }
 
         drawer.addDrawerListener(toggle)
-        binding.navigationDrawer.setNavigationItemSelectedListener(this)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         toggle.syncState()
 
         fm = supportFragmentManager
         fm.addOnBackStackChangedListener(this)
-        navigator.fragmentManager = fm
 
-        //Bring the category list fragment at first launch of activity
-        if (savedInstanceState == null) {
-            navigator.launchCategoryList()
-        }
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -86,11 +102,12 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         toggle.syncState()
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.trains -> navigator.launchTrainList()
-            R.id.brands -> navigator.launchBrandList()
-            R.id.categories -> navigator.launchCategoryList()
             R.id.action_export -> checkPermissionAndExport()
         }
         return true
@@ -98,10 +115,15 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     private fun checkPermissionAndExport() {
         when (Build.VERSION.SDK_INT) {
-            29, 30 -> navigator.launchExportToExcelFragment()
+            29, 30 -> launchExportToExcelFragment()
             in 23..28 -> checkWritePermission()
-            in 21..23 -> navigator.launchExportToExcelFragment()
+            in 21..23 -> launchExportToExcelFragment()
         }
+    }
+
+    private fun launchExportToExcelFragment(){
+        val dialogFrag = ExportingToExcelDialog()
+        dialogFrag.show(supportFragmentManager, null)
     }
 
     private fun checkWritePermission() {
@@ -112,7 +134,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 REQUEST_STORAGE_PERMISSION
             )
         } else {
-            navigator.launchExportToExcelFragment()
+            launchExportToExcelFragment()
         }
     }
 
@@ -185,7 +207,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             REQUEST_STORAGE_PERMISSION -> {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // If you get permission, go ahead
-                    navigator.launchExportToExcelFragment()
+                    //navigator.launchExportToExcelFragment()
                 } else {
                     // If you do not get permission, show a Toast
                     shortToast(R.string.permission_denied)

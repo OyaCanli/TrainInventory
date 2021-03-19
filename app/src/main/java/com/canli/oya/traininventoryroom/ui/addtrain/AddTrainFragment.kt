@@ -53,6 +53,14 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
 
     private var saveMenuItem: MenuItem? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isEdit = arguments?.getBoolean(IS_EDIT) ?: false
+        if(isEdit) {
+            chosenTrain = arguments?.getParcelable(CHOSEN_TRAIN)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
@@ -65,12 +73,8 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
         binding.categorySpinner.onItemSelectedListener = this
         binding.brandSpinner.onItemSelectedListener = this
 
-        isEdit = arguments?.getBoolean(IS_EDIT) ?: false
-
         activity?.title = if (isEdit) getString(R.string.edit_train)
         else getString(R.string.add_train)
-
-        chosenTrain = arguments?.getParcelable(CHOSEN_TRAIN)
 
         initDagger()
 

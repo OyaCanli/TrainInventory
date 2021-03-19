@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'androidx.navigation.safeargs'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -136,4 +136,7 @@ dependencies {
 
     //View binding delegate
     implementation 'com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.4.4'
+
+    implementation "androidx.navigation:navigation-fragment-ktx:2.3.4"
+    implementation "androidx.navigation:navigation-ui-ktx:2.3.4"
 }

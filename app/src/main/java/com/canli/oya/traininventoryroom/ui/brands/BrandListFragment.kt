@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.di.ComponentProvider
@@ -15,15 +16,12 @@ import com.canli.oya.traininventoryroom.ui.base.BaseAdapter
 import com.canli.oya.traininventoryroom.ui.base.BrandCategoryBaseFrag
 import com.canli.oya.traininventoryroom.ui.base.BrandCategoryBaseVM
 import com.canli.oya.traininventoryroom.ui.base.SwipeDeleteListener
-import com.canli.oya.traininventoryroom.ui.main.Navigator
+import com.canli.oya.traininventoryroom.utils.TRAINS_OF_BRAND
 import com.canli.oya.traininventoryroom.utils.shortToast
 import timber.log.Timber
 import javax.inject.Inject
 
 class BrandListFragment : BrandCategoryBaseFrag<BrandEntry>(), BrandItemClickListener, SwipeDeleteListener<BrandEntry> {
-
-    @Inject
-    lateinit var navigator : Navigator
 
     @Inject
     lateinit var viewModelFactory : TrainInventoryVMFactory
@@ -40,9 +38,15 @@ class BrandListFragment : BrandCategoryBaseFrag<BrandEntry>(), BrandItemClickLis
     override fun onBrandItemClicked(view: View, clickedBrand: BrandEntry) {
         when (view.id) {
             R.id.brand_item_web_icon -> openWebSite(clickedBrand)
-            R.id.brand_item_train_icon -> navigator.launchTrainList_withThisBrand(clickedBrand.brandName)
+            R.id.brand_item_train_icon -> launchTrainListWithBrand(clickedBrand.brandName)
             R.id.brand_item_edit_icon -> editItem(clickedBrand)
         }
+    }
+
+    private fun launchTrainListWithBrand(brandName: String){
+        val action = BrandListFragmentDirections.actionBrandListFragmentToTrainListFragment(
+            TRAINS_OF_BRAND, brandName = brandName)
+        binding.root.findNavController().navigate(action)
     }
 
     private fun openWebSite(clickedBrand: BrandEntry) {

@@ -3,17 +3,15 @@ package com.canli.oya.traininventoryroom.ui.trains
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AlertDialog
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentTrainDetailsBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
-import com.canli.oya.traininventoryroom.ui.main.Navigator
 import com.canli.oya.traininventoryroom.utils.TRAIN_ID
 import javax.inject.Inject
 
@@ -24,19 +22,19 @@ class TrainDetailsFragment : Fragment(R.layout.fragment_train_details) {
     private lateinit var viewModel : TrainViewModel
 
     @Inject
-    lateinit var navigator : Navigator
-
-    @Inject
     lateinit var viewModelFactory : TrainInventoryVMFactory
     private var trainId = 0
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        trainId = arguments?.getInt(TRAIN_ID) ?: 0
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setHasOptionsMenu(true)
-
-        trainId = arguments?.getInt(TRAIN_ID) ?: 0
 
         ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
 
@@ -58,10 +56,15 @@ class TrainDetailsFragment : Fragment(R.layout.fragment_train_details) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_delete -> openAlertDialogForDelete()
-            R.id.action_edit -> navigator.launchEditTrain(mChosenTrain)
+            R.id.action_edit -> launchEditTrain()
             android.R.id.home -> activity?.onBackPressed()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun launchEditTrain(){
+        val action = TrainDetailsFragmentDirections.actionTrainDetailsFragmentToAddTrainFragment(true, mChosenTrain)
+        binding.root.findNavController().navigate(action)
     }
 
     private fun openAlertDialogForDelete() {
