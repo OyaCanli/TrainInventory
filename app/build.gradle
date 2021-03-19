@@ -133,4 +133,7 @@ dependencies {
 
     //Lottie Animations
     implementation "com.airbnb.android:lottie:$lottieVersion"
+
+    //View binding delegate
+    implementation 'com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.4.4'
 }

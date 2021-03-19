@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
@@ -31,9 +32,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSelectedListener {
+class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickListener, AdapterView.OnItemSelectedListener {
 
-    private lateinit var binding: FragmentAddTrainBinding
+    private val binding by viewBinding(FragmentAddTrainBinding::bind)
 
     private lateinit var addViewModel: AddTrainViewModel
 
@@ -52,11 +53,8 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
 
     private var saveMenuItem: MenuItem? = null
 
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_add_train, container, false)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
         //Set click listener on buttons
@@ -71,12 +69,6 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
 
         activity?.title = if (isEdit) getString(R.string.edit_train)
         else getString(R.string.add_train)
-
-        return binding.root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
         chosenTrain = arguments?.getParcelable(CHOSEN_TRAIN)
 

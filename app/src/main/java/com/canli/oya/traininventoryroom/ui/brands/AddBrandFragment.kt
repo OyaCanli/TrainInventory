@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_CLOSE
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
@@ -29,9 +30,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class AddBrandFragment : Fragment() {
+class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
 
-    private lateinit var binding: FragmentAddBrandBinding
+    private val binding by viewBinding(FragmentAddBrandBinding::bind)
 
     private lateinit var viewModel : BrandViewModel
 
@@ -44,9 +45,9 @@ class AddBrandFragment : Fragment() {
 
     private var brandList : List<String> = ArrayList()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_add_brand, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         //Set click listeners
         binding.addBrandSaveBtn.setOnClickListener{ saveBrand() }
@@ -54,12 +55,6 @@ class AddBrandFragment : Fragment() {
 
         //Request focus on the first edit text
         binding.addBrandEditBrandName.requestFocus()
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
 

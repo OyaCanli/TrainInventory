@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentTrainDetailsBinding
@@ -16,9 +17,9 @@ import com.canli.oya.traininventoryroom.ui.main.Navigator
 import com.canli.oya.traininventoryroom.utils.TRAIN_ID
 import javax.inject.Inject
 
-class TrainDetailsFragment : Fragment() {
+class TrainDetailsFragment : Fragment(R.layout.fragment_train_details) {
 
-    private lateinit var binding: FragmentTrainDetailsBinding
+    private val binding by viewBinding(FragmentTrainDetailsBinding::bind)
     private lateinit var mChosenTrain: TrainEntry
     private lateinit var viewModel : TrainViewModel
 
@@ -30,16 +31,10 @@ class TrainDetailsFragment : Fragment() {
     private var trainId = 0
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_train_details, container, false)
-        setHasOptionsMenu(true)
-
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setHasOptionsMenu(true)
 
         trainId = arguments?.getInt(TRAIN_ID) ?: 0
 

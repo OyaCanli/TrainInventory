@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddCategoryBinding
@@ -23,9 +24,9 @@ import com.canli.oya.traininventoryroom.utils.shortToast
 import javax.inject.Inject
 
 
-class AddCategoryFragment : Fragment() {
+class AddCategoryFragment : Fragment(R.layout.fragment_add_category) {
 
-    private lateinit var binding: FragmentAddCategoryBinding
+    private val binding by viewBinding(FragmentAddCategoryBinding::bind)
 
     private lateinit var viewModel : CategoryViewModel
 
@@ -37,18 +38,12 @@ class AddCategoryFragment : Fragment() {
 
     private var categoryList : List<String?> = ArrayList()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_add_category, container, false)
-
-        binding.addCategoryEditCatName.requestFocus()
-        binding.addCategorySaveBtn.setOnClickListener { saveCategory() }
-
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.addCategoryEditCatName.requestFocus()
+        binding.addCategorySaveBtn.setOnClickListener { saveCategory() }
 
         ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
 
