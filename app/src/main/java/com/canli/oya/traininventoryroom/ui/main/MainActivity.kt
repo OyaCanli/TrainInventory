@@ -5,29 +5,24 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ActivityMainBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
-import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
-import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
 import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
 import com.canli.oya.traininventoryroom.utils.shortToast
 import timber.log.Timber
 
 
-class MainActivity : AppCompatActivity(),
-    FragmentManager.OnBackStackChangedListener {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -54,63 +49,20 @@ class MainActivity : AppCompatActivity(),
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
-        binding.toolbar.setupWithNavController(navController, appBarConfiguration)
-        //setupActionBarWithNavController(navController, appBarConfiguration)
-
-        // Setting Navigation Controller with the BottomNavigationView
+        setupActionBarWithNavController(this, navController, appBarConfiguration)
         binding.navigation.setupWithNavController(navController)
 
-        supportFragmentManager.addOnBackStackChangedListener(this)
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            if(destination.id == R.id.addTrainFragment || destination.id == R.id.trainDetailsFragment) {
+                binding.navigation.visibility = View.GONE
+            } else {
+                binding.navigation.visibility = View.VISIBLE
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
-    }
-
-    private fun toggleBottomNavigation(shouldShow: Boolean) {
-        binding.navigation.visibility = if (shouldShow) View.VISIBLE else View.GONE
-        //supportActionBar?.setDisplayHomeAsUpEnabled(!shouldShow)
-    }
-
-    private fun clearFocusAndHideKeyboard() {
-        //This is for closing soft keyboard if user navigates to another fragment while keyboard was open
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        val focusedView = this.currentFocus
-        focusedView?.run {
-            clearFocus()
-            imm.hideSoftInputFromWindow(this.windowToken, 0)
-        }
-    }
-
-    private fun setMenuItemChecked(currentFrag: Fragment?) {
-        /*If user navigates with back button, active menu item doesn't adapt itself.
-        We need to set it checked programmatically.*/
-        val itemNo = when (currentFrag) {
-            is CategoryListFragment -> 0
-            is BrandListFragment -> 1
-            else -> 2
-        }
-        binding.navigation.menu.getItem(itemNo).isChecked = true
-    }
-
-    override fun onBackPressed() {
-        val currentFrag = supportFragmentManager.findFragmentById(R.id.container)
-        if (currentFrag is AddTrainFragment) {
-            currentFrag.onBackClicked()
-        } else {
-            super.onBackPressed()
-        }
-    }
-
-    override fun onBackStackChanged() {
-        Timber.d("onBackStackChanged is called")
-        clearFocusAndHideKeyboard()
-        val currentFrag = supportFragmentManager.findFragmentById(R.id.container)
-        setMenuItemChecked(currentFrag)
-        //Hide bottom navigation in AddTrain and TrainDetails fragments
-        val shouldShowBottomNavigation =
-            !(currentFrag is AddTrainFragment || currentFrag is TrainDetailsFragment)
-        toggleBottomNavigation(shouldShowBottomNavigation)
     }
 
     override fun onRequestPermissionsResult(

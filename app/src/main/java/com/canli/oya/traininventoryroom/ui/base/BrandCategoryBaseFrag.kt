@@ -1,5 +1,6 @@
 package com.canli.oya.traininventoryroom.ui.base
 
+import android.content.Context
 import android.graphics.drawable.Animatable2
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
@@ -9,6 +10,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -19,10 +21,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.utils.EDIT_CASE
-import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
-import com.canli.oya.traininventoryroom.utils.SwipeToDeleteCallback
-import com.canli.oya.traininventoryroom.utils.shortToast
+import com.canli.oya.traininventoryroom.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -87,12 +86,23 @@ abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteList
     private fun onAddClicked(item : MenuItem){
         if (viewModel.isChildFragVisible) {
             removeChildFragment()
+            activity?.clearFocusAndHideKeyboard()
             startAnimationOnMenuItem(item, R.drawable.avd_cross_to_plus, R.drawable.avd_plus_to_cross)
         } else {
             openChildFragment(getChildFragment())
             startAnimationOnMenuItem(item, R.drawable.avd_plus_to_cross, R.drawable.avd_cross_to_plus)
         }
         viewModel.isChildFragVisible = !viewModel.isChildFragVisible
+    }
+
+    private fun clearFocusAndHideKeyboard() {
+        //This is for closing soft keyboard if user navigates to another fragment while keyboard was open
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val focusedView = activity?.currentFocus
+        focusedView?.run {
+            clearFocus()
+            imm.hideSoftInputFromWindow(this.windowToken, 0)
+        }
     }
 
     private fun startAnimationOnMenuItem(item: MenuItem, @DrawableRes iconAtStart : Int, @DrawableRes iconAtEnd : Int) {

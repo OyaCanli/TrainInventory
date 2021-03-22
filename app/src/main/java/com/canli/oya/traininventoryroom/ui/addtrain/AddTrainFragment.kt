@@ -1,6 +1,7 @@
 package com.canli.oya.traininventoryroom.ui.addtrain
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.net.Uri
@@ -8,13 +9,16 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
@@ -26,6 +30,7 @@ import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
 import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
 import com.canli.oya.traininventoryroom.utils.CHOSEN_TRAIN
 import com.canli.oya.traininventoryroom.utils.IS_EDIT
+import com.canli.oya.traininventoryroom.utils.clearFocusAndHideKeyboard
 import com.canli.oya.traininventoryroom.utils.shortToast
 import com.github.dhaval2404.imagepicker.ImagePicker
 import timber.log.Timber
@@ -57,6 +62,17 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
         super.onCreate(savedInstanceState)
         chosenTrain = arguments?.getParcelable(CHOSEN_TRAIN)
         isEdit = chosenTrain != null
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                onBackClicked()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -154,10 +170,12 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
             R.id.action_save -> saveTrain()
             android.R.id.home -> onBackClicked()
         }
-        return super.onOptionsItemSelected(item)
+        return true
     }
 
     fun onBackClicked() {
+        Timber.d("onBackClicked is called")
+        activity?.clearFocusAndHideKeyboard()
         if (addViewModel.isChanged) {
             showUnsavedChangesDialog()
         } else {
@@ -165,7 +183,7 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
                 val anim = saveMenuItem?.icon as AnimatedVectorDrawable
                 anim.start()
             }
-            parentFragmentManager.popBackStack()
+            findNavController().popBackStack()
         }
     }
 
@@ -265,9 +283,10 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
         val builder = AlertDialog.Builder(requireContext(), R.style.alert_dialog_style)
         with(builder) {
             setMessage(R.string.unsaved_changes_warning)
-            setPositiveButton(getString(R.string.discard_changes)) { _, _ ->
+            setPositiveButton(getString(R.string.discard_changes)) { dialog, _ ->
                 //Changes will be discarded
-                parentFragmentManager.popBackStack()
+                findNavController().popBackStack()
+                dialog?.dismiss()
             }
             setNegativeButton(R.string.keep_editing) { dialog, _ ->
                 // User clicked the "Keep editing" button, so dismiss the dialog
