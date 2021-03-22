@@ -28,6 +28,7 @@ import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
 import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
+import com.canli.oya.traininventoryroom.ui.main.MainActivity
 import com.canli.oya.traininventoryroom.utils.CHOSEN_TRAIN
 import com.canli.oya.traininventoryroom.utils.IS_EDIT
 import com.canli.oya.traininventoryroom.utils.clearFocusAndHideKeyboard
@@ -87,8 +88,7 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
         binding.categorySpinner.onItemSelectedListener = this
         binding.brandSpinner.onItemSelectedListener = this
 
-        activity?.title = if (isEdit) getString(R.string.edit_train)
-        else getString(R.string.add_train)
+        (activity as? MainActivity)?.supportActionBar?.title = if (isEdit) getString(R.string.edit_train) else getString(R.string.add_train)
 
         initDagger()
 

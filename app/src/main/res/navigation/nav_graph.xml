@@ -51,8 +51,7 @@
 
     <fragment
         android:id="@+id/addTrainFragment"
-        android:name="com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment"
-        android:label="AddTrainFragment" >
+        android:name="com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment">
         <argument
             android:name="chosenTrain"
             app:argType="com.canli.oya.traininventoryroom.data.TrainEntry"
@@ -61,8 +60,7 @@
 
     <fragment
         android:id="@+id/trainDetailsFragment"
-        android:name="com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment"
-        android:label="TrainDetailsFragment" >
+        android:name="com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment">
         <argument
             android:name="trainId"
             app:argType="integer" />
@@ -73,16 +71,14 @@
 
     <dialog
         android:id="@+id/export_to_excel"
-        android:name="com.canli.oya.traininventoryroom.ui.exportToExcel.ExportingToExcelDialog"
-        android:label="ExportingToExcelDialog" >
+        android:name="com.canli.oya.traininventoryroom.ui.exportToExcel.ExportingToExcelDialog">
         <action
             android:id="@+id/action_export_to_excel_to_uploadExcelDialog"
             app:destination="@id/uploadExcelDialog" />
     </dialog>
     <dialog
         android:id="@+id/uploadExcelDialog"
-        android:name="com.canli.oya.traininventoryroom.ui.exportToExcel.UploadExcelDialog"
-        android:label="UploadExcelDialog" >
+        android:name="com.canli.oya.traininventoryroom.ui.exportToExcel.UploadExcelDialog">
         <argument
             android:name="excelFileUri"
             app:argType="string" />

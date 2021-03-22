@@ -12,6 +12,7 @@ import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentTrainDetailsBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
+import com.canli.oya.traininventoryroom.ui.main.MainActivity
 import com.canli.oya.traininventoryroom.utils.TRAIN_ID
 import javax.inject.Inject
 
@@ -44,7 +45,7 @@ class TrainDetailsFragment : Fragment(R.layout.fragment_train_details) {
             trainEntry?.let {
                 binding.chosenTrain = it
                 mChosenTrain = it
-                activity?.title = it.trainName
+                (activity as? MainActivity)?.supportActionBar?.title = it.trainName
             } })
     }
 

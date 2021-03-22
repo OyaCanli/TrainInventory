@@ -1,13 +1,10 @@
 package com.canli.oya.traininventoryroom.ui.main
 
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -16,10 +13,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ActivityMainBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
-import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
-import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
 import com.canli.oya.traininventoryroom.utils.shortToast
-import timber.log.Timber
 
 
 class MainActivity : AppCompatActivity() {

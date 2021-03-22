@@ -21,6 +21,7 @@ import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.base.BaseAdapter
 import com.canli.oya.traininventoryroom.ui.base.BaseListFragment
 import com.canli.oya.traininventoryroom.ui.base.SwipeDeleteListener
+import com.canli.oya.traininventoryroom.ui.main.MainActivity
 import com.canli.oya.traininventoryroom.utils.*
 import javax.inject.Inject
 
@@ -67,7 +68,7 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
             //If the fragment will be used for showing trains from a specific brand
             TRAINS_OF_BRAND -> {
                 brandName?.let {
-                    activity?.title = getString(R.string.trains_of_the_brand, it)
+                    (activity as? MainActivity)?.supportActionBar?.title = getString(R.string.trains_of_the_brand, it)
                     viewModel.getTrainsFromThisBrand(it).observe(viewLifecycleOwner, { trainEntries ->
                         evaluateResults(trainEntries, R.string.no_train_for_this_brand)
                     })
@@ -76,7 +77,7 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
             //If the fragment_list will be used for showing trains from a specific category
             TRAINS_OF_CATEGORY -> {
                 categoryName?.let {
-                    activity?.title = getString(R.string.all_from_this_Category, it)
+                    (activity as? MainActivity)?.supportActionBar?.title = getString(R.string.all_from_this_Category, it)
                     viewModel.getTrainsFromThisCategory(it).observe(viewLifecycleOwner, { trainEntries ->
                         evaluateResults(trainEntries, R.string.no_train_for_this_category)
                     })
@@ -84,7 +85,7 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
             }
             else -> {
                 //If the fragment_list is going to be use for showing all trains, which is the default behaviour
-                activity?.title = getString(R.string.all_trains)
+                (activity as? MainActivity)?.supportActionBar?.title = getString(R.string.all_trains)
                 viewModel.allItems.observe(viewLifecycleOwner, Observer { trainEntries ->
                     evaluateResults(trainEntries, R.string.no_trains_found, true)
                 })
