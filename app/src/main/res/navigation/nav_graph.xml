@@ -54,12 +54,9 @@
         android:name="com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment"
         android:label="AddTrainFragment" >
         <argument
-            android:name="isEdit"
-            app:argType="boolean" />
-        <argument
             android:name="chosenTrain"
             app:argType="com.canli.oya.traininventoryroom.data.TrainEntry"
-            app:nullable="true" />
+            app:nullable="true"/>
     </fragment>
 
     <fragment

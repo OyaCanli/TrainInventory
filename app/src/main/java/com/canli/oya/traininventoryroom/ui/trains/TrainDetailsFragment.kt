@@ -63,7 +63,7 @@ class TrainDetailsFragment : Fragment(R.layout.fragment_train_details) {
     }
 
     private fun launchEditTrain(){
-        val action = TrainDetailsFragmentDirections.actionTrainDetailsFragmentToAddTrainFragment(true, mChosenTrain)
+        val action = TrainDetailsFragmentDirections.actionTrainDetailsFragmentToAddTrainFragment(mChosenTrain)
         binding.root.findNavController().navigate(action)
     }
 

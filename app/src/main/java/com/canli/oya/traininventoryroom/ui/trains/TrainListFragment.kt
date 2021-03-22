@@ -148,7 +148,7 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
                 val anim = addMenuItem?.icon as? AnimatedVectorDrawable
                 anim?.start()
             }
-            val action = TrainListFragmentDirections.actionTrainListFragmentToAddTrainFragment(false, null)
+            val action = TrainListFragmentDirections.actionTrainListFragmentToAddTrainFragment(null)
             binding.root.findNavController().navigate(action)
         }
         return super.onOptionsItemSelected(item)
