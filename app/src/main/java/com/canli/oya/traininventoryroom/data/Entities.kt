@@ -1,6 +1,7 @@
 package com.canli.oya.traininventoryroom.data
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
@@ -17,6 +18,7 @@ import kotlinx.android.parcel.Parcelize
             ForeignKey(entity = CategoryEntry::class,
                     parentColumns = ["categoryName"], childColumns = ["categoryName"], onUpdate = CASCADE, onDelete = RESTRICT)],
         indices = [Index(value = ["brandName"]), Index(value = ["categoryName"])])
+@Keep
 data class TrainEntry(
         @PrimaryKey(autoGenerate = true) var trainId: Int = 0,
         var trainName: String? = null,

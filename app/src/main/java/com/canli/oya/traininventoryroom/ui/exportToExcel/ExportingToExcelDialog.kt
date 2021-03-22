@@ -1,20 +1,25 @@
 package com.canli.oya.traininventoryroom.ui.exportToExcel
 
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.DocumentsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
+import androidx.navigation.findNavController
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ExportToExcelBinding
-import com.canli.oya.traininventoryroom.utils.EXCEL_FILE_PATH
+import com.canli.oya.traininventoryroom.ui.main.MainActivity
+import com.canli.oya.traininventoryroom.utils.EXCEL_FILE_URI
 import com.canli.oya.traininventoryroom.utils.shortToast
 import timber.log.Timber
 
@@ -31,7 +36,11 @@ class ExportingToExcelDialog : DialogFragment() {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.dialog_exporting_to_excel, container, false)
 
-        launchCreateFileIntent()
+        when (Build.VERSION.SDK_INT) {
+            29, 30 -> launchCreateFileIntent()
+            in 23..28 -> checkWritePermission()
+            in 21..23 -> launchCreateFileIntent()
+        }
 
         return binding.root
     }
@@ -41,7 +50,6 @@ class ExportingToExcelDialog : DialogFragment() {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "application/vnd.ms-excel"
             putExtra(Intent.EXTRA_TITLE, "train_inventory.xls")
-
         }
         startActivityForResult(intent, CREATE_FILE_REQUEST)
     }
@@ -69,13 +77,8 @@ class ExportingToExcelDialog : DialogFragment() {
                     binding.lottieExportingAnim.cancelAnimation()
                     dismiss()
 
-                    val uploadExcelDialog = UploadExcelDialog()
-                    val args = Bundle()
-                    args.putString(EXCEL_FILE_PATH, uri.toString())
-                    uploadExcelDialog.arguments = args
-                    parentFragmentManager.let {
-                        uploadExcelDialog.show(it, null)
-                    }
+                    val action = ExportingToExcelDialogDirections.actionExportToExcelToUploadExcelDialog(uri.toString())
+                    activity?.findNavController(R.id.nav_host_fragment)?.navigate(action)
                 }
 
                 override fun onError(e: Exception?) {
@@ -85,5 +88,31 @@ class ExportingToExcelDialog : DialogFragment() {
                     dismiss()
                 }
             })
+    }
+
+    private fun checkWritePermission() {
+        if (needsPermission()) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                MainActivity.REQUEST_STORAGE_PERMISSION
+            )
+        } else {
+            launchCreateFileIntent()
+        }
+    }
+
+    //Check whether permission is already given or not
+    private fun needsPermission() = ContextCompat.checkSelfPermission(
+        requireContext(),
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    ) != PackageManager.PERMISSION_GRANTED
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 }

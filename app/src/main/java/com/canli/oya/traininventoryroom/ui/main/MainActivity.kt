@@ -17,10 +17,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ActivityMainBinding
@@ -31,13 +29,11 @@ import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
 import com.canli.oya.traininventoryroom.ui.exportToExcel.ExportingToExcelDialog
 import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
 import com.canli.oya.traininventoryroom.utils.shortToast
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import timber.log.Timber
-import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+class MainActivity : AppCompatActivity(),
     FragmentManager.OnBackStackChangedListener {
 
     private lateinit var binding: ActivityMainBinding
@@ -47,6 +43,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var toggle: ActionBarDrawerToggle
 
     private lateinit var navController: NavController
+
+    private val appBarConfiguration = AppBarConfiguration(
+        topLevelDestinationIds = setOf (
+            R.id.categoryListFragment,
+            R.id.brandListFragment,
+            R.id.trainListFragment
+        )
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,16 +65,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
-        binding.navigationDrawer.setNavigationItemSelectedListener(this)
+        binding.navigationDrawer.setupWithNavController(navController)
 
-       /*val appBarConfiguration = AppBarConfiguration(
-            topLevelDestinationIds = setOf (
-                R.id.categoryListFragment,
-                R.id.brandListFragment,
-                R.id.trainListFragment
-            )
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)*/
+        binding.toolbar.setupWithNavController(navController, appBarConfiguration)
+        //setupActionBarWithNavController(navController, appBarConfiguration)
 
         // Setting Navigation Controller with the BottomNavigationView
         binding.navigation.setupWithNavController(navController)
@@ -105,44 +103,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_export -> checkPermissionAndExport()
-        }
-        return true
-    }
-
-    private fun checkPermissionAndExport() {
-        when (Build.VERSION.SDK_INT) {
-            29, 30 -> launchExportToExcelFragment()
-            in 23..28 -> checkWritePermission()
-            in 21..23 -> launchExportToExcelFragment()
-        }
-    }
-
-    private fun launchExportToExcelFragment(){
-        val dialogFrag = ExportingToExcelDialog()
-        dialogFrag.show(supportFragmentManager, null)
-    }
-
-    private fun checkWritePermission() {
-        if (needsPermission()) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                REQUEST_STORAGE_PERMISSION
-            )
-        } else {
-            launchExportToExcelFragment()
-        }
-    }
-
-    //Check whether permission is already given or not
-    private fun needsPermission() = ContextCompat.checkSelfPermission(
-        this,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
-    ) != PackageManager.PERMISSION_GRANTED
 
     private fun toggleBottomNavigation(shouldShow: Boolean) {
         binding.navigation.visibility = if (shouldShow) View.VISIBLE else View.GONE
