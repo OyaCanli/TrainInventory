@@ -6,4 +6,7 @@
         android:icon="@drawable/avd_plus_to_cross"
         android:title="@string/add"
         app:showAsAction="ifRoom"/>
+    <item android:id="@+id/export_to_excel"
+        android:title="@string/export_to_excel"
+        app:showAsAction="never"/>
 </menu>

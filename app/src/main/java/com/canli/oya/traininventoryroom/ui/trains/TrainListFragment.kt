@@ -12,6 +12,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.paging.PagedList
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.TrainMinimal
@@ -142,14 +143,18 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_add) {
-            if (Build.VERSION.SDK_INT >= 23) {
-                addMenuItem?.setIcon(R.drawable.avd_plus_to_save)
-                val anim = addMenuItem?.icon as? AnimatedVectorDrawable
-                anim?.start()
+        when (item.itemId) {
+            R.id.action_add -> {
+                if (Build.VERSION.SDK_INT >= 23) {
+                    addMenuItem?.setIcon(R.drawable.avd_plus_to_save)
+                    val anim = addMenuItem?.icon as? AnimatedVectorDrawable
+                    anim?.start()
+                }
+                val action = TrainListFragmentDirections.actionTrainListFragmentToAddTrainFragment(null)
+                binding.root.findNavController().navigate(action)
             }
-            val action = TrainListFragmentDirections.actionTrainListFragmentToAddTrainFragment(null)
-            binding.root.findNavController().navigate(action)
+            R.id.export_to_excel -> NavigationUI.onNavDestinationSelected(item,
+                binding.root.findNavController())
         }
         return super.onOptionsItemSelected(item)
     }

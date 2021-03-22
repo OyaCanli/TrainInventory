@@ -15,6 +15,8 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.utils.EDIT_CASE
@@ -74,8 +76,10 @@ abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteList
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_add) {
-            onAddClicked(item)
+        when (item.itemId){
+            R.id.action_add -> onAddClicked(item)
+            R.id.export_to_excel -> NavigationUI.onNavDestinationSelected(item,
+                binding.root.findNavController())
         }
         return super.onOptionsItemSelected(item)
     }

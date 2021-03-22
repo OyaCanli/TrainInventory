@@ -1,17 +1,12 @@
 package com.canli.oya.traininventoryroom.ui.main
 
-import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -26,10 +21,8 @@ import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
 import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
-import com.canli.oya.traininventoryroom.ui.exportToExcel.ExportingToExcelDialog
 import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
 import com.canli.oya.traininventoryroom.utils.shortToast
-import com.google.android.material.navigation.NavigationView
 import timber.log.Timber
 
 
@@ -38,14 +31,10 @@ class MainActivity : AppCompatActivity(),
 
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var fm: FragmentManager
-
-    private lateinit var toggle: ActionBarDrawerToggle
-
     private lateinit var navController: NavController
 
     private val appBarConfiguration = AppBarConfiguration(
-        topLevelDestinationIds = setOf (
+        topLevelDestinationIds = setOf(
             R.id.categoryListFragment,
             R.id.brandListFragment,
             R.id.trainListFragment
@@ -65,39 +54,13 @@ class MainActivity : AppCompatActivity(),
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
-        binding.navigationDrawer.setupWithNavController(navController)
-
         binding.toolbar.setupWithNavController(navController, appBarConfiguration)
         //setupActionBarWithNavController(navController, appBarConfiguration)
 
         // Setting Navigation Controller with the BottomNavigationView
         binding.navigation.setupWithNavController(navController)
 
-
-        //Set navigation drawer
-        val drawer = binding.drawerLayout
-        toggle = ActionBarDrawerToggle(
-            this,
-            drawer,
-            binding.toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        )
-        toggle.setToolbarNavigationClickListener { onBackPressed() }
-
-        drawer.addDrawerListener(toggle)
-        supportActionBar?.setHomeButtonEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        toggle.syncState()
-
-        fm = supportFragmentManager
-        fm.addOnBackStackChangedListener(this)
-
-    }
-
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-        toggle.syncState()
+        supportFragmentManager.addOnBackStackChangedListener(this)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -106,9 +69,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun toggleBottomNavigation(shouldShow: Boolean) {
         binding.navigation.visibility = if (shouldShow) View.VISIBLE else View.GONE
-        toggle.isDrawerIndicatorEnabled = shouldShow
-        supportActionBar?.setDisplayHomeAsUpEnabled(!shouldShow)
-        toggle.syncState()
+        //supportActionBar?.setDisplayHomeAsUpEnabled(!shouldShow)
     }
 
     private fun clearFocusAndHideKeyboard() {
@@ -133,22 +94,18 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onBackPressed() {
-        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            binding.drawerLayout.closeDrawer(GravityCompat.START)
+        val currentFrag = supportFragmentManager.findFragmentById(R.id.container)
+        if (currentFrag is AddTrainFragment) {
+            currentFrag.onBackClicked()
         } else {
-            val currentFrag = fm.findFragmentById(R.id.container)
-            if (currentFrag is AddTrainFragment) {
-                currentFrag.onBackClicked()
-            } else {
-                super.onBackPressed()
-            }
+            super.onBackPressed()
         }
     }
 
     override fun onBackStackChanged() {
         Timber.d("onBackStackChanged is called")
         clearFocusAndHideKeyboard()
-        val currentFrag = fm.findFragmentById(R.id.container)
+        val currentFrag = supportFragmentManager.findFragmentById(R.id.container)
         setMenuItemChecked(currentFrag)
         //Hide bottom navigation in AddTrain and TrainDetails fragments
         val shouldShowBottomNavigation =

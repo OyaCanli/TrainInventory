@@ -12,4 +12,7 @@
         android:icon="@drawable/avd_blinking_plus"
         android:title="@string/add"
         app:showAsAction="ifRoom" />
+    <item android:id="@+id/export_to_excel"
+        android:title="@string/export_to_excel"
+        app:showAsAction="never"/>
 </menu>
