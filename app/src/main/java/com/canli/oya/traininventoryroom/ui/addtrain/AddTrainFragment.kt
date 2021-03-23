@@ -212,7 +212,7 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
         addViewModel.saveTrain()
 
         //After adding the train, go back to where user come from.
-        parentFragmentManager.popBackStack()
+        findNavController().popBackStack()
     }
 
     private fun thereAreMissingValues(): Boolean {

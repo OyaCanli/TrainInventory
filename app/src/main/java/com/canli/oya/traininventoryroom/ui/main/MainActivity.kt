@@ -14,6 +14,7 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ActivityMainBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.utils.shortToast
+import timber.log.Timber
 
 
 class MainActivity : AppCompatActivity() {

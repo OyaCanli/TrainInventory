@@ -59,28 +59,22 @@ class NavigationTests {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Verify category item is selected by default and category list fragment is on screen
-        onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.categories)))
+        onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.categoryListFragment)))
         onView(withText(R.string.all_categories)).check(matches(withParent(withId(R.id.toolbar))))
 
         //Click on brands menu item and verify that brands frag is shown and brand menu item seems selected
-        onView(withId(R.id.brands)).perform(click())
-        onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.brands)))
+        onView(withId(R.id.brandListFragment)).perform(click())
+        onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.brandListFragment)))
         onView(withText(R.string.all_brands)).check(matches(withParent(withId(R.id.toolbar))))
 
         //Click on trains menu item and verify that trains frag is shown and train menu item seems selected
-        onView(withId(R.id.trains)).perform(click())
-        onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.trains)))
+        onView(withId(R.id.trainListFragment)).perform(click())
+        onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.trainListFragment)))
         onView(withText(R.string.all_trains)).check(matches(withParent(withId(R.id.toolbar))))
 
-        //Press back and verify that we are back at brands screen and brand menu item gets selected
+        //Press back and verify that we are in home screen and category menu item is selected
         Espresso.pressBack()
-        onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.brands)))
-        onView(withText(R.string.all_brands)).check(matches(withParent(withId(R.id.toolbar))))
-
-        /*Press back again and verify that we are back at categories screen
-        and category menu item gets selected*/
-        Espresso.pressBack()
-        onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.categories)))
+        onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.categoryListFragment)))
         onView(withText(R.string.all_categories)).check(matches(withParent(withId(R.id.toolbar))))
 
         activityScenario.close()
@@ -98,7 +92,7 @@ class NavigationTests {
         onView(withId(R.id.action_add)).check(matches(withIconResource(R.drawable.avd_cross_to_plus)))
 
         //Then switch to brands frag and verify that + icon is shown on the action menu
-        onView(withId(R.id.brands)).perform(click())
+        onView(withId(R.id.brandListFragment)).perform(click())
         onView(withId(R.id.action_add)).check(matches(withIconResource(R.drawable.avd_plus_to_cross)))
 
         //Click on plus item and verify it becomes x. Then click back and verify that it return back to plus

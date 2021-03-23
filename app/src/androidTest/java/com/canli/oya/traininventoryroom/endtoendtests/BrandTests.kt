@@ -80,7 +80,7 @@ class BrandTests {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click brands from the bottom menu
-        onView(withId(R.id.brands)).perform(click())
+        onView(withId(R.id.brandListFragment)).perform(click())
 
         //Click + menu item and verify child frag becomes visible with empty fields
         onView(withId(R.id.action_add)).perform(click())
@@ -117,7 +117,7 @@ class BrandTests {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click brands from the bottom menu
-        onView(withId(R.id.brands)).perform(click())
+        onView(withId(R.id.brandListFragment)).perform(click())
 
         //Click edit on the item and verify AddBrand becomes visible with correct fields
         onView(withId(R.id.list))
@@ -152,7 +152,7 @@ class BrandTests {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click brands from the bottom menu
-        onView(withId(R.id.brands)).perform(click())
+        onView(withId(R.id.brandListFragment)).perform(click())
 
         //Click on train icon on the sample category
         onView(withId(R.id.list))
