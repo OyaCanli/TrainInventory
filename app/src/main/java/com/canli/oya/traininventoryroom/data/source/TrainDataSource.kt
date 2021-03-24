@@ -1,20 +1,23 @@
 package com.canli.oya.traininventoryroom.data.source
 
-import androidx.lifecycle.LiveData
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.canli.oya.traininventoryroom.data.TrainDatabase
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.TrainMinimal
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 const val TRAINS_PAGE_SIZE = 15
 
 class TrainDataSource @Inject constructor(private val database: TrainDatabase) : ITrainDataSource {
 
-    override fun getAllTrains() : LiveData<PagedList<TrainMinimal>> {
-        val factory = database.trainDao().observeAllTrains()
-        return LivePagedListBuilder(factory, TRAINS_PAGE_SIZE).build()
+    override fun getAllTrains() : Flow<PagingData<TrainMinimal>> {
+        val pager = Pager(config = PagingConfig(TRAINS_PAGE_SIZE, enablePlaceholders = true)) {
+            database.trainDao().observeAllTrains()
+        }
+        return pager.flow
     }
 
     override fun getChosenTrain(trainId : Int) = database.trainDao().observeChosenTrain(trainId)
@@ -29,19 +32,25 @@ class TrainDataSource @Inject constructor(private val database: TrainDatabase) :
 
     override suspend fun deleteTrain(trainId: Int) = database.trainDao().delete(trainId)
 
-    override fun getTrainsFromThisBrand(brandName: String): LiveData<PagedList<TrainMinimal>> {
-        val factory = database.trainDao().observeTrainsFromThisBrand(brandName)
-        return LivePagedListBuilder(factory, TRAINS_PAGE_SIZE).build()
+    override fun getTrainsFromThisBrand(brandName: String): Flow<PagingData<TrainMinimal>> {
+        val pager = Pager(config = PagingConfig(TRAINS_PAGE_SIZE, enablePlaceholders = true)) {
+            database.trainDao().observeTrainsFromThisBrand(brandName)
+        }
+        return pager.flow
     }
 
-    override fun getTrainsFromThisCategory(category: String) : LiveData<PagedList<TrainMinimal>> {
-        val factory = (database.trainDao().observeTrainsFromThisCategory(category))
-        return LivePagedListBuilder(factory, TRAINS_PAGE_SIZE).build()
+    override fun getTrainsFromThisCategory(category: String) : Flow<PagingData<TrainMinimal>> {
+        val pager = Pager(config = PagingConfig(TRAINS_PAGE_SIZE, enablePlaceholders = true)) {
+            database.trainDao().observeTrainsFromThisCategory(category)
+        }
+        return pager.flow
     }
 
-    override fun searchInTrains(query: String): LiveData<PagedList<TrainMinimal>> {
-        val factory = database.trainDao().searchInTrainsAndObserve(query)
-        return LivePagedListBuilder(factory, TRAINS_PAGE_SIZE).build()
+    override fun searchInTrains(query: String): Flow<PagingData<TrainMinimal>> {
+        val pager = Pager(config = PagingConfig(TRAINS_PAGE_SIZE, enablePlaceholders = true)) {
+            database.trainDao().searchInTrainsAndObserve(query)
+        }
+        return pager.flow
     }
 
 }

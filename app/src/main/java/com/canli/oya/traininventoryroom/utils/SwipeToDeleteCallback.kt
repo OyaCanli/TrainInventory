@@ -10,7 +10,7 @@ import com.canli.oya.traininventoryroom.ui.base.BaseAdapter
 import timber.log.Timber
 
 
-class SwipeToDeleteCallback<T, L>(val context : Context, private val adapter : BaseAdapter<T, L>) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+class SwipeToDeleteCallback<T : Any, L>(val context : Context, private val adapter : BaseAdapter<T, L>) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
 
     val background = ColorDrawable(context.resources.getColor(R.color.colorAccent))
 
@@ -20,7 +20,7 @@ class SwipeToDeleteCallback<T, L>(val context : Context, private val adapter : B
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        adapter.itemSwiped(viewHolder.adapterPosition)
+        adapter.itemSwiped(viewHolder.bindingAdapterPosition)
         Timber.d("OnSwiped is called")
     }
 

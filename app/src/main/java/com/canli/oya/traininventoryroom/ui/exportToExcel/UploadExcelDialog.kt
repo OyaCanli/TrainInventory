@@ -6,15 +6,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.UploadExcelBinding
-import com.canli.oya.traininventoryroom.utils.EXCEL_FILE_PATH
-import com.canli.oya.traininventoryroom.utils.PROVIDER_AUTHORITY
+import com.canli.oya.traininventoryroom.utils.EXCEL_FILE_URI
 import com.canli.oya.traininventoryroom.utils.shortToast
-import java.io.File
 
 
 class UploadExcelDialog : DialogFragment() {
@@ -25,7 +22,7 @@ class UploadExcelDialog : DialogFragment() {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.dialog_upload_excel, container, false)
 
-        val uriString = arguments?.getString(EXCEL_FILE_PATH)
+        val uriString = arguments?.getString(EXCEL_FILE_URI)
 
         if (uriString.isNullOrBlank()) {
             context?.shortToast("File path was not properly received")

@@ -1,21 +1,26 @@
 package com.canli.oya.traininventoryroom.data.source
 
-import androidx.lifecycle.LiveData
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.data.TrainDatabase
-import timber.log.Timber
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 const val CATEGORIES_PAGE_SIZE = 15
 
 class CategoryDataSource @Inject constructor(private val database: TrainDatabase) : IBrandCategoryDataSource<CategoryEntry> {
 
-    override fun getAllItems(): LiveData<PagedList<CategoryEntry>> {
-        Timber.d("getAllCategories is called")
-        val factory = database.categoryDao().observeAllCategories()
-        return LivePagedListBuilder(factory, CATEGORIES_PAGE_SIZE).build()
+    override fun getAllPagedItems(): Flow<PagingData<CategoryEntry>> {
+        val pager = Pager(config = PagingConfig(CATEGORIES_PAGE_SIZE, enablePlaceholders = true)){
+            database.categoryDao().observeAllPagedCategories()
+        }
+        return pager.flow
+    }
+
+    override fun getAllItems(): Flow<List<CategoryEntry>> {
+        return database.categoryDao().observeAllCategories()
     }
 
     override suspend fun insertItem(item: CategoryEntry) {

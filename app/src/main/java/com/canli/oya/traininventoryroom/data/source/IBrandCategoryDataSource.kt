@@ -1,10 +1,13 @@
 package com.canli.oya.traininventoryroom.data.source
 
-import androidx.lifecycle.LiveData
-import androidx.paging.PagedList
+import androidx.paging.PagingData
+import kotlinx.coroutines.flow.Flow
 
-interface IBrandCategoryDataSource<T> {
-    fun getAllItems() : LiveData<PagedList<T>>
+interface IBrandCategoryDataSource<T : Any> {
+
+    fun getAllPagedItems() : Flow<PagingData<T>>
+
+    fun getAllItems() : Flow<List<T>>
 
     suspend fun insertItem(item: T)
 

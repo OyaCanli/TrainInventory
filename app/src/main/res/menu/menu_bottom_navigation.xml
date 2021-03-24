@@ -5,19 +5,19 @@
     tools:showIn="navigation_view">
 
     <item
-        android:id="@+id/categories"
+        android:id="@+id/categoryListFragment"
         android:title="@string/categories"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_category"/>
 
     <item
-        android:id="@+id/brands"
+        android:id="@+id/brandListFragment"
         android:title="@string/brands"
         android:icon="@drawable/ic_brand"
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/trains"
+        android:id="@+id/trainListFragment"
         android:title="@string/trains"
         android:icon="@drawable/ic_train_bottom_nav"
         app:showAsAction="ifRoom"/>

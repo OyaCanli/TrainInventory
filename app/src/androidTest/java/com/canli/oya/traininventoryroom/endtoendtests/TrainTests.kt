@@ -84,7 +84,7 @@ class TrainTests {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click trains from the bottom menu
-        onView(withId(R.id.trains)).perform(click())
+        onView(withId(R.id.trainListFragment)).perform(click())
 
         //Click add button from action menu
         onView(withId(R.id.action_add)).perform(click())
@@ -134,7 +134,7 @@ class TrainTests {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click trains from the bottom menu
-        onView(withId(R.id.trains)).perform(click())
+        onView(withId(R.id.trainListFragment)).perform(click())
 
         //Click on the train item
         onView(withId(R.id.list))
@@ -172,7 +172,7 @@ class TrainTests {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click trains from the bottom menu
-        onView(withId(R.id.trains)).perform(click())
+        onView(withId(R.id.trainListFragment)).perform(click())
 
         //Click on the train item
         onView(withId(R.id.list)).perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
@@ -208,7 +208,7 @@ class TrainTests {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click trains from the bottom menu
-        onView(withId(R.id.trains)).perform(click())
+        onView(withId(R.id.trainListFragment)).perform(click())
 
         //Click on the train item
         onView(withId(R.id.list)).perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
@@ -245,7 +245,7 @@ class TrainTests {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click trains from the bottom menu
-        onView(withId(R.id.trains)).perform(click())
+        onView(withId(R.id.trainListFragment)).perform(click())
 
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(EditText::class.java)).perform(typeText("red"), pressImeActionButton())

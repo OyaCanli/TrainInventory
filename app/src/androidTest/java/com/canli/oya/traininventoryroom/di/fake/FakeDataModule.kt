@@ -1,5 +1,6 @@
 package com.canli.oya.traininventoryroom.di.fake
 
+import androidx.navigation.NavController
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.data.TrainDatabase
@@ -9,7 +10,6 @@ import com.canli.oya.traininventoryroom.datasource.FakeBrandDataSource
 import com.canli.oya.traininventoryroom.datasource.FakeCategoryDataSource
 import com.canli.oya.traininventoryroom.datasource.FakeTrainDataSource
 import com.canli.oya.traininventoryroom.di.TestScope
-import com.canli.oya.traininventoryroom.ui.main.Navigator
 import dagger.Module
 import dagger.Provides
 import org.mockito.Mockito.mock
@@ -32,8 +32,4 @@ class FakeDataModule {
     @Provides
     @TestScope
     fun provideDatabase() : TrainDatabase = mock(TrainDatabase::class.java)
-
-    @TestScope
-    @Provides
-    fun provideNavigator() : Navigator = mock(Navigator::class.java)
 }

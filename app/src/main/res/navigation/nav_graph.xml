@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/categoryListFragment">
+
+    <fragment
+        android:id="@+id/categoryListFragment"
+        android:name="com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment"
+        android:label="@string/all_categories">
+        <action
+            android:id="@+id/action_categoryListFragment_to_trainListFragment"
+            app:destination="@id/trainListFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/brandListFragment"
+        android:name="com.canli.oya.traininventoryroom.ui.brands.BrandListFragment"
+        android:label="@string/all_brands">
+        <action
+            android:id="@+id/action_brandListFragment_to_trainListFragment"
+            app:destination="@id/trainListFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/trainListFragment"
+        android:name="com.canli.oya.traininventoryroom.ui.trains.TrainListFragment"
+        android:label="@string/all_trains">
+        <action
+            android:id="@+id/action_trainListFragment_to_addTrainFragment"
+            app:destination="@id/addTrainFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"/>
+        <action
+            android:id="@+id/action_trainListFragment_to_trainDetailsFragment"
+            app:destination="@id/trainDetailsFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
+        <argument
+            android:name="intentRequestCode"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="categoryName"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="brandName"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addTrainFragment"
+        android:name="com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment">
+        <argument
+            android:name="chosenTrain"
+            app:argType="com.canli.oya.traininventoryroom.data.TrainEntry"
+            app:nullable="true"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/trainDetailsFragment"
+        android:name="com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment">
+        <argument
+            android:name="trainId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_trainDetailsFragment_to_addTrainFragment"
+            app:destination="@id/addTrainFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"/>
+    </fragment>
+
+    <dialog
+        android:id="@+id/export_to_excel"
+        android:name="com.canli.oya.traininventoryroom.ui.exportToExcel.ExportingToExcelDialog">
+        <action
+            android:id="@+id/action_export_to_excel_to_uploadExcelDialog"
+            app:destination="@id/uploadExcelDialog"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"/>
+    </dialog>
+    <dialog
+        android:id="@+id/uploadExcelDialog"
+        android:name="com.canli.oya.traininventoryroom.ui.exportToExcel.UploadExcelDialog">
+        <argument
+            android:name="excelFileUri"
+            app:argType="string" />
+    </dialog>
+</navigation>

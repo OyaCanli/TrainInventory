@@ -11,6 +11,7 @@ import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class AddTrainViewModel(val trainDataSource : ITrainDataSource,
@@ -22,7 +23,7 @@ class AddTrainViewModel(val trainDataSource : ITrainDataSource,
 
     val trainBeingModified = ObservableField<TrainEntry>()
 
-    val brandList = brandDataSource.getAllItems()
+    val brandList: Flow<List<BrandEntry>> = brandDataSource.getAllItems()
     val categoryList  = categoryDataSource.getAllItems()
 
     var trainList : List<String> = ArrayList()

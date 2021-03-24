@@ -1,6 +1,7 @@
 package com.canli.oya.traininventoryroom.ui.addtrain
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.net.Uri
@@ -8,13 +9,18 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
@@ -23,17 +29,22 @@ import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
 import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
+import com.canli.oya.traininventoryroom.ui.main.MainActivity
 import com.canli.oya.traininventoryroom.utils.CHOSEN_TRAIN
 import com.canli.oya.traininventoryroom.utils.IS_EDIT
+import com.canli.oya.traininventoryroom.utils.clearFocusAndHideKeyboard
 import com.canli.oya.traininventoryroom.utils.shortToast
 import com.github.dhaval2404.imagepicker.ImagePicker
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 
-class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSelectedListener {
+class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickListener,
+    AdapterView.OnItemSelectedListener {
 
-    private lateinit var binding: FragmentAddTrainBinding
+    private val binding by viewBinding(FragmentAddTrainBinding::bind)
 
     private lateinit var addViewModel: AddTrainViewModel
 
@@ -52,11 +63,25 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
 
     private var saveMenuItem: MenuItem? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        chosenTrain = arguments?.getParcelable(CHOSEN_TRAIN)
+        isEdit = chosenTrain != null
+    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_add_train, container, false)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
 
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                onBackClicked()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
         //Set click listener on buttons
@@ -67,18 +92,8 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         binding.categorySpinner.onItemSelectedListener = this
         binding.brandSpinner.onItemSelectedListener = this
 
-        isEdit = arguments?.getBoolean(IS_EDIT) ?: false
-
-        activity?.title = if (isEdit) getString(R.string.edit_train)
-        else getString(R.string.add_train)
-
-        return binding.root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        chosenTrain = arguments?.getParcelable(CHOSEN_TRAIN)
+        (activity as? MainActivity)?.supportActionBar?.title =
+            if (isEdit) getString(R.string.edit_train) else getString(R.string.add_train)
 
         initDagger()
 
@@ -91,12 +106,13 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     }
 
     private fun initDagger() {
-        val appComponent = ComponentProvider.getInstance(requireActivity().application).daggerComponent
+        val appComponent =
+            ComponentProvider.getInstance(requireActivity().application).daggerComponent
         DaggerAddTrainComponent.builder()
-                .appComponent(appComponent)
-                .bindChosenTrain(chosenTrain)
-                .build()
-                .inject(this)
+            .appComponent(appComponent)
+            .bindChosenTrain(chosenTrain)
+            .build()
+            .inject(this)
     }
 
     private fun setSpinners() {
@@ -107,8 +123,8 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
     }
 
     private fun getAndObserveCategories() {
-        addViewModel.categoryList.observe(viewLifecycleOwner, Observer { categoryEntries ->
-            if (!categoryEntries.isNullOrEmpty()) {
+        lifecycleScope.launch {
+            addViewModel.categoryList.collectLatest { categoryEntries ->
                 categoryAdapter.setCategories(categoryEntries)
                 categoryList = categoryAdapter.categoryList
 
@@ -116,22 +132,26 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
                     val index = categoryList.indexOf(chosenTrain?.categoryName)
                     binding.categorySpinner.setSelection(index)
                 }
+
             }
-        })
+        }
     }
 
     private fun getAndObserveBrands() {
-        addViewModel.brandList.observe(viewLifecycleOwner, Observer { brandEntries ->
-            if (!brandEntries.isNullOrEmpty()) {
-                brandAdapter.setBrands(brandEntries)
-                brandList = brandEntries
+        lifecycleScope.launch {
+            addViewModel.brandList.collectLatest { brandEntries ->
+                if (!brandEntries.isNullOrEmpty()) {
+                    brandAdapter.setBrands(brandEntries)
+                    brandList = brandEntries
 
-                if (isEdit) { //In edit mode, show the existing brandName as selected
-                    val index = brandEntries.indexOfFirst { it.brandName == chosenTrain?.brandName }.plus(1)
-                    binding.brandSpinner.setSelection(index)
+                    if (isEdit) { //In edit mode, show the existing brandName as selected
+                        val index =
+                            brandEntries.indexOfFirst { it.brandName == chosenTrain?.brandName }.plus(1)
+                        binding.brandSpinner.setSelection(index)
+                    }
                 }
             }
-        })
+        }
     }
 
     override fun onClick(v: View) {
@@ -140,10 +160,13 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
             R.id.addTrain_addCategoryBtn -> insertAddCategoryFragment()
             R.id.product_details_gallery_image -> {
                 ImagePicker.with(this)
-                        .crop(1f, 1f)                //Crop Square image(Optional)
-                        .compress(1024)            //Final image size will be less than 1 MB(Optional)
-                        .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
-                        .start()
+                    .crop(1f, 1f)                //Crop Square image(Optional)
+                    .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                    .maxResultSize(
+                        1080,
+                        1080
+                    )    //Final image resolution will be less than 1080 x 1080(Optional)
+                    .start()
             }
         }
     }
@@ -160,10 +183,12 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
             R.id.action_save -> saveTrain()
             android.R.id.home -> onBackClicked()
         }
-        return super.onOptionsItemSelected(item)
+        return true
     }
 
     fun onBackClicked() {
+        Timber.d("onBackClicked is called")
+        activity?.clearFocusAndHideKeyboard()
         if (addViewModel.isChanged) {
             showUnsavedChangesDialog()
         } else {
@@ -171,21 +196,21 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
                 val anim = saveMenuItem?.icon as AnimatedVectorDrawable
                 anim.start()
             }
-            parentFragmentManager.popBackStack()
+            findNavController().popBackStack()
         }
     }
 
     private fun insertAddCategoryFragment() {
         childFragmentManager.commit {
             setCustomAnimations(R.anim.translate_from_top, 0)
-                    .replace(R.id.childFragContainer, AddCategoryFragment())
+                .replace(R.id.childFragContainer, AddCategoryFragment())
         }
     }
 
     private fun insertAddBrandFragment() {
         childFragmentManager.commit {
             setCustomAnimations(R.anim.translate_from_top, 0)
-                    .replace(R.id.childFragContainer, AddBrandFragment())
+                .replace(R.id.childFragContainer, AddBrandFragment())
         }
     }
 
@@ -199,8 +224,11 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         // SAVE
         addViewModel.saveTrain()
 
+        //Close softkeyboard
+        activity?.clearFocusAndHideKeyboard()
+
         //After adding the train, go back to where user come from.
-        parentFragmentManager.popBackStack()
+        findNavController().popBackStack()
     }
 
     private fun thereAreMissingValues(): Boolean {
@@ -260,8 +288,8 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
             Timber.d("Path:${file?.absolutePath}")
 
             Glide.with(this)
-                    .load(file)
-                    .into(binding.productDetailsGalleryImage)
+                .load(file)
+                .into(binding.productDetailsGalleryImage)
             addViewModel.trainBeingModified.get()?.imageUri = Uri.fromFile(file).toString()
         }
     }
@@ -271,9 +299,10 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         val builder = AlertDialog.Builder(requireContext(), R.style.alert_dialog_style)
         with(builder) {
             setMessage(R.string.unsaved_changes_warning)
-            setPositiveButton(getString(R.string.discard_changes)) { _, _ ->
+            setPositiveButton(getString(R.string.discard_changes)) { dialog, _ ->
                 //Changes will be discarded
-                parentFragmentManager.popBackStack()
+                findNavController().popBackStack()
+                dialog?.dismiss()
             }
             setNegativeButton(R.string.keep_editing) { dialog, _ ->
                 // User clicked the "Keep editing" button, so dismiss the dialog
@@ -293,10 +322,12 @@ class AddTrainFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSel
         //when statement differentiate which spinners is selected
         when (spinner?.id) {
             R.id.brandSpinner -> {
-                addViewModel.trainBeingModified.get()?.brandName = if (position == 0) null else brandList[position - 1].brandName
+                addViewModel.trainBeingModified.get()?.brandName =
+                    if (position == 0) null else brandList[position - 1].brandName
             }
             R.id.categorySpinner -> {
-                addViewModel.trainBeingModified.get()?.categoryName = if (position == 0) null else categoryList[position]
+                addViewModel.trainBeingModified.get()?.categoryName =
+                    if (position == 0) null else categoryList[position]
             }
         }
     }

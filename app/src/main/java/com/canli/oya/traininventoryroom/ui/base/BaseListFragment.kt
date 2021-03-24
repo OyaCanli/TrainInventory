@@ -5,33 +5,30 @@ import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.DrawableRes
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.ItemTouchHelper
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.utils.SwipeToDeleteCallback
 import com.canli.oya.traininventoryroom.utils.TITLE_CROSS
 import com.canli.oya.traininventoryroom.utils.TITLE_PLUS
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
-abstract class BaseListFragment<T> : Fragment() {
+abstract class BaseListFragment<T : Any> : Fragment(R.layout.fragment_list) {
 
-    protected lateinit var binding: FragmentListBinding
+    protected val binding by viewBinding(FragmentListBinding::bind)
     protected lateinit var adapter : BaseAdapter<T, out Any>
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_list, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setHasOptionsMenu(true)
 
@@ -40,8 +37,6 @@ abstract class BaseListFragment<T> : Fragment() {
         binding.list.adapter = adapter
 
         ItemTouchHelper(SwipeToDeleteCallback(requireContext(), adapter)).attachToRecyclerView(binding.list)
-
-        return binding.root
     }
 
     abstract fun getListAdapter() : BaseAdapter<T, out Any>

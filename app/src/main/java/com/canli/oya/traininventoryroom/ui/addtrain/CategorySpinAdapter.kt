@@ -17,7 +17,7 @@ class CategorySpinAdapter(context : Context,
         insert(selectText, 0)
     }
 
-    fun setCategories(newList: PagedList<CategoryEntry>){
+    fun setCategories(newList: List<CategoryEntry>){
         categoryList.clear()
         categoryList.add(selectText)
         categoryList.addAll(newList.map { categoryEntry -> categoryEntry.categoryName })
