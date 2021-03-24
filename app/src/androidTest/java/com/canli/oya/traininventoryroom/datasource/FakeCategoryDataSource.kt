@@ -1,6 +1,5 @@
 package com.canli.oya.traininventoryroom.datasource
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import com.canli.oya.traininventoryroom.data.CategoryEntry
@@ -33,7 +32,7 @@ class FakeCategoryDataSource(private var categories : MutableList<CategoryEntry>
         updateCategoriesLiveData()
     }
 
-    override fun getAllItems(): LiveData<PagedList<CategoryEntry>> = categoriesLiveData
+    override fun getAllPagedItems(): Flow<PagingData<T>> = categoriesLiveData
 
     private fun updateCategoriesLiveData(){
         categoriesLiveData.value = categories.asPagedList()

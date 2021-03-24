@@ -9,6 +9,8 @@ import android.view.MenuItem
 import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.ItemTouchHelper
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
@@ -16,8 +18,10 @@ import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.utils.SwipeToDeleteCallback
 import com.canli.oya.traininventoryroom.utils.TITLE_CROSS
 import com.canli.oya.traininventoryroom.utils.TITLE_PLUS
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
-abstract class BaseListFragment<T> : Fragment(R.layout.fragment_list) {
+abstract class BaseListFragment<T : Any> : Fragment(R.layout.fragment_list) {
 
     protected val binding by viewBinding(FragmentListBinding::bind)
     protected lateinit var adapter : BaseAdapter<T, out Any>

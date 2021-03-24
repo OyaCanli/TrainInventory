@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
@@ -34,11 +35,14 @@ import com.canli.oya.traininventoryroom.utils.IS_EDIT
 import com.canli.oya.traininventoryroom.utils.clearFocusAndHideKeyboard
 import com.canli.oya.traininventoryroom.utils.shortToast
 import com.github.dhaval2404.imagepicker.ImagePicker
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 
-class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickListener, AdapterView.OnItemSelectedListener {
+class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickListener,
+    AdapterView.OnItemSelectedListener {
 
     private val binding by viewBinding(FragmentAddTrainBinding::bind)
 
@@ -88,7 +92,8 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
         binding.categorySpinner.onItemSelectedListener = this
         binding.brandSpinner.onItemSelectedListener = this
 
-        (activity as? MainActivity)?.supportActionBar?.title = if (isEdit) getString(R.string.edit_train) else getString(R.string.add_train)
+        (activity as? MainActivity)?.supportActionBar?.title =
+            if (isEdit) getString(R.string.edit_train) else getString(R.string.add_train)
 
         initDagger()
 
@@ -101,12 +106,13 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
     }
 
     private fun initDagger() {
-        val appComponent = ComponentProvider.getInstance(requireActivity().application).daggerComponent
+        val appComponent =
+            ComponentProvider.getInstance(requireActivity().application).daggerComponent
         DaggerAddTrainComponent.builder()
-                .appComponent(appComponent)
-                .bindChosenTrain(chosenTrain)
-                .build()
-                .inject(this)
+            .appComponent(appComponent)
+            .bindChosenTrain(chosenTrain)
+            .build()
+            .inject(this)
     }
 
     private fun setSpinners() {
@@ -117,8 +123,8 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
     }
 
     private fun getAndObserveCategories() {
-        addViewModel.categoryList.observe(viewLifecycleOwner, Observer { categoryEntries ->
-            if (!categoryEntries.isNullOrEmpty()) {
+        lifecycleScope.launch {
+            addViewModel.categoryList.collectLatest { categoryEntries ->
                 categoryAdapter.setCategories(categoryEntries)
                 categoryList = categoryAdapter.categoryList
 
@@ -126,22 +132,26 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
                     val index = categoryList.indexOf(chosenTrain?.categoryName)
                     binding.categorySpinner.setSelection(index)
                 }
+
             }
-        })
+        }
     }
 
     private fun getAndObserveBrands() {
-        addViewModel.brandList.observe(viewLifecycleOwner, Observer { brandEntries ->
-            if (!brandEntries.isNullOrEmpty()) {
-                brandAdapter.setBrands(brandEntries)
-                brandList = brandEntries
+        lifecycleScope.launch {
+            addViewModel.brandList.collectLatest { brandEntries ->
+                if (!brandEntries.isNullOrEmpty()) {
+                    brandAdapter.setBrands(brandEntries)
+                    brandList = brandEntries
 
-                if (isEdit) { //In edit mode, show the existing brandName as selected
-                    val index = brandEntries.indexOfFirst { it.brandName == chosenTrain?.brandName }.plus(1)
-                    binding.brandSpinner.setSelection(index)
+                    if (isEdit) { //In edit mode, show the existing brandName as selected
+                        val index =
+                            brandEntries.indexOfFirst { it.brandName == chosenTrain?.brandName }.plus(1)
+                        binding.brandSpinner.setSelection(index)
+                    }
                 }
             }
-        })
+        }
     }
 
     override fun onClick(v: View) {
@@ -150,10 +160,13 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
             R.id.addTrain_addCategoryBtn -> insertAddCategoryFragment()
             R.id.product_details_gallery_image -> {
                 ImagePicker.with(this)
-                        .crop(1f, 1f)                //Crop Square image(Optional)
-                        .compress(1024)            //Final image size will be less than 1 MB(Optional)
-                        .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
-                        .start()
+                    .crop(1f, 1f)                //Crop Square image(Optional)
+                    .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                    .maxResultSize(
+                        1080,
+                        1080
+                    )    //Final image resolution will be less than 1080 x 1080(Optional)
+                    .start()
             }
         }
     }
@@ -190,14 +203,14 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
     private fun insertAddCategoryFragment() {
         childFragmentManager.commit {
             setCustomAnimations(R.anim.translate_from_top, 0)
-                    .replace(R.id.childFragContainer, AddCategoryFragment())
+                .replace(R.id.childFragContainer, AddCategoryFragment())
         }
     }
 
     private fun insertAddBrandFragment() {
         childFragmentManager.commit {
             setCustomAnimations(R.anim.translate_from_top, 0)
-                    .replace(R.id.childFragContainer, AddBrandFragment())
+                .replace(R.id.childFragContainer, AddBrandFragment())
         }
     }
 
@@ -272,8 +285,8 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
             Timber.d("Path:${file?.absolutePath}")
 
             Glide.with(this)
-                    .load(file)
-                    .into(binding.productDetailsGalleryImage)
+                .load(file)
+                .into(binding.productDetailsGalleryImage)
             addViewModel.trainBeingModified.get()?.imageUri = Uri.fromFile(file).toString()
         }
     }
@@ -306,10 +319,12 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
         //when statement differentiate which spinners is selected
         when (spinner?.id) {
             R.id.brandSpinner -> {
-                addViewModel.trainBeingModified.get()?.brandName = if (position == 0) null else brandList[position - 1].brandName
+                addViewModel.trainBeingModified.get()?.brandName =
+                    if (position == 0) null else brandList[position - 1].brandName
             }
             R.id.categorySpinner -> {
-                addViewModel.trainBeingModified.get()?.categoryName = if (position == 0) null else categoryList[position]
+                addViewModel.trainBeingModified.get()?.categoryName =
+                    if (position == 0) null else categoryList[position]
             }
         }
     }

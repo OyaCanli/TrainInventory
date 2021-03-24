@@ -2,16 +2,13 @@ package com.canli.oya.traininventoryroom.ui.categories
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.CategoryEntry
@@ -21,6 +18,8 @@ import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
 import com.canli.oya.traininventoryroom.utils.shortToast
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -59,11 +58,11 @@ class AddCategoryFragment : Fragment(R.layout.fragment_add_category) {
             })
         }
 
-        viewModel.allItems.observe(viewLifecycleOwner, { categoryEntries ->
-            categoryEntries?.let {
-                categoryList = it.map { categoryEntry -> categoryEntry.categoryName }
+        lifecycleScope.launch {
+            viewModel.allItems.collectLatest { categoryEntries ->
+                categoryList = categoryEntries.map { it.categoryName }
             }
-        })
+        }
     }
 
     private fun saveCategory() {

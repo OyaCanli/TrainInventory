@@ -60,7 +60,7 @@ class BrandViewModelTest{
         runBlockingTest {
             brandViewModel.insertItem(sampleBrand3)
 
-            val list = brandViewModel.allItems.getOrAwaitValue().snapshot()
+            val list = brandViewModel.allPagedItems.getOrAwaitValue().snapshot()
             //Verify that the list contains the new item
             assertTrue(list.contains(sampleBrand3))
         }
@@ -72,7 +72,7 @@ class BrandViewModelTest{
         runBlockingTest {
             brandViewModel.deleteItem(sampleBrand2)
 
-            val list = brandViewModel.allItems.getOrAwaitValue().snapshot()
+            val list = brandViewModel.allPagedItems.getOrAwaitValue().snapshot()
             //Verify that the list doesn't contain that item anymore
             assertFalse(list.contains(sampleBrand2))
         }

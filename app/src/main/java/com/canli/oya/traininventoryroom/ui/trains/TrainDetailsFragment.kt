@@ -5,6 +5,7 @@ import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
@@ -14,16 +15,18 @@ import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
 import com.canli.oya.traininventoryroom.utils.TRAIN_ID
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class TrainDetailsFragment : Fragment(R.layout.fragment_train_details) {
 
     private val binding by viewBinding(FragmentTrainDetailsBinding::bind)
     private lateinit var mChosenTrain: TrainEntry
-    private lateinit var viewModel : TrainViewModel
+    private lateinit var viewModel: TrainViewModel
 
     @Inject
-    lateinit var viewModelFactory : TrainInventoryVMFactory
+    lateinit var viewModelFactory: TrainInventoryVMFactory
     private var trainId = 0
 
 
@@ -41,12 +44,11 @@ class TrainDetailsFragment : Fragment(R.layout.fragment_train_details) {
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(TrainViewModel::class.java)
 
-        viewModel.getChosenTrain(trainId).observe(viewLifecycleOwner, { trainEntry ->
-            trainEntry?.let {
-                binding.chosenTrain = it
-                mChosenTrain = it
-                (activity as? MainActivity)?.supportActionBar?.title = it.trainName
-            } })
+        viewModel.getChosenTrain(trainId).observe(viewLifecycleOwner) { trainEntry ->
+            binding.chosenTrain = trainEntry
+            mChosenTrain = trainEntry
+            (activity as? MainActivity)?.supportActionBar?.title = trainEntry.trainName
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -63,17 +65,18 @@ class TrainDetailsFragment : Fragment(R.layout.fragment_train_details) {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun launchEditTrain(){
-        val action = TrainDetailsFragmentDirections.actionTrainDetailsFragmentToAddTrainFragment(mChosenTrain)
+    private fun launchEditTrain() {
+        val action =
+            TrainDetailsFragmentDirections.actionTrainDetailsFragmentToAddTrainFragment(mChosenTrain)
         binding.root.findNavController().navigate(action)
     }
 
     private fun openAlertDialogForDelete() {
         val builder = AlertDialog.Builder(requireActivity(), R.style.alert_dialog_style)
-        with(builder){
+        with(builder) {
             setMessage(R.string.do_you_want_to_delete)
             setPositiveButton(R.string.yes_delete) { _, _ -> deleteTrain() }
-            setNegativeButton(R.string.cancel) {_, _ -> }
+            setNegativeButton(R.string.cancel) { _, _ -> }
             create()
             show()
         }

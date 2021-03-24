@@ -60,7 +60,7 @@ class CategoryViewModelTest {
     fun deleteCategory_deletesCategory() {
         runBlockingTest {
             categoryViewModel.deleteItem(sampleCategory2)
-            val list = categoryViewModel.allItems.getOrAwaitValue().snapshot()
+            val list = categoryViewModel.allPagedItems.getOrAwaitValue().snapshot()
             //Verify that the list doesn't contain the item anymore
             assertFalse(list.contains(sampleCategory2))
         }
@@ -72,7 +72,7 @@ class CategoryViewModelTest {
         runBlockingTest {
             categoryViewModel.insertItem(sampleCategory3)
             
-            val list = categoryViewModel.allItems.getOrAwaitValue().snapshot()
+            val list = categoryViewModel.allPagedItems.getOrAwaitValue().snapshot()
             //Verify that the list contains the new item
             assertTrue(list.contains(sampleCategory3))
         }

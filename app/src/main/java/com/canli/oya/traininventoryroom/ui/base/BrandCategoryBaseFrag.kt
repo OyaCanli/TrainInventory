@@ -15,21 +15,22 @@ import androidx.annotation.DrawableRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.utils.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteListener<T> {
+abstract class BrandCategoryBaseFrag<T : Any> : BaseListFragment<T>(), SwipeDeleteListener<T> {
 
-    protected lateinit var viewModel : BrandCategoryBaseVM<T>
+    protected lateinit var viewModel: BrandCategoryBaseVM<T>
 
     var addMenuItem: MenuItem? = null
 
@@ -40,34 +41,55 @@ abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteList
 
         binding.uiState = viewModel.listUiState
 
-        viewModel.allItems.observe(viewLifecycleOwner, Observer { brandEntries ->
-            if (brandEntries.isNullOrEmpty()) {
-                viewModel.listUiState.showEmpty = true
-                //If there are no items and add is not clicked, blink add button to draw user's attention
-                if(!viewModel.isChildFragVisible) {
-                    addMenuItem?.let { blinkAddMenuItem(it, R.drawable.avd_plus_to_cross) }
+        lifecycleScope.launch {
+            adapter.loadStateFlow.collectLatest {
+                when (it.refresh) {
+                    is LoadState.Loading -> {
+                        viewModel.listUiState.showLoading = true
+                    }
+                    is LoadState.NotLoading -> {
+                        viewModel.listUiState.showLoading = false
+                        if (it.append.endOfPaginationReached && adapter.itemCount < 1) {
+                            viewModel.listUiState.showEmpty = true
+                            if (!viewModel.isChildFragVisible) {
+                                addMenuItem?.let {
+                                    blinkAddMenuItem(
+                                        it,
+                                        R.drawable.avd_plus_to_cross
+                                    )
+                                }
+                            }
+                        } else {
+                            viewModel.listUiState.showList = true
+                        }
+                    }
                 }
-            } else {
-                Timber.d("fragment_list size : ${brandEntries.size}")
-                adapter.submitList(brandEntries)
-                viewModel.listUiState.showList = true
             }
-        })
+        }
+
+        lifecycleScope.launch {
+            viewModel.allPagedItems.collectLatest { brandEntries ->
+                Timber.d("Brand entries received.")
+                adapter.submitData(brandEntries)
+            }
+        }
 
         activity?.title = getTitle()
 
-        ItemTouchHelper(SwipeToDeleteCallback(requireContext(), adapter)).attachToRecyclerView(binding.list)
+        ItemTouchHelper(SwipeToDeleteCallback(requireContext(), adapter)).attachToRecyclerView(
+            binding.list
+        )
     }
 
-    abstract fun getListViewModel() : BrandCategoryBaseVM<T>
+    abstract fun getListViewModel(): BrandCategoryBaseVM<T>
 
-    abstract fun getTitle() : String
+    abstract fun getTitle(): String
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_add_item, menu)
         addMenuItem = menu.getItem(0)
-        if(viewModel.isChildFragVisible){
+        if (viewModel.isChildFragVisible) {
             addMenuItem?.setMenuIcon((R.drawable.avd_cross_to_plus))
         } else {
             addMenuItem?.setMenuIcon((R.drawable.avd_plus_to_cross))
@@ -75,22 +97,32 @@ abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteList
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId){
+        when (item.itemId) {
             R.id.action_add -> onAddClicked(item)
-            R.id.export_to_excel -> NavigationUI.onNavDestinationSelected(item,
-                binding.root.findNavController())
+            R.id.export_to_excel -> NavigationUI.onNavDestinationSelected(
+                item,
+                binding.root.findNavController()
+            )
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun onAddClicked(item : MenuItem){
+    private fun onAddClicked(item: MenuItem) {
         if (viewModel.isChildFragVisible) {
             removeChildFragment()
             activity?.clearFocusAndHideKeyboard()
-            startAnimationOnMenuItem(item, R.drawable.avd_cross_to_plus, R.drawable.avd_plus_to_cross)
+            startAnimationOnMenuItem(
+                item,
+                R.drawable.avd_cross_to_plus,
+                R.drawable.avd_plus_to_cross
+            )
         } else {
             openChildFragment(getChildFragment())
-            startAnimationOnMenuItem(item, R.drawable.avd_plus_to_cross, R.drawable.avd_cross_to_plus)
+            startAnimationOnMenuItem(
+                item,
+                R.drawable.avd_plus_to_cross,
+                R.drawable.avd_cross_to_plus
+            )
         }
         viewModel.isChildFragVisible = !viewModel.isChildFragVisible
     }
@@ -105,7 +137,11 @@ abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteList
         }
     }
 
-    private fun startAnimationOnMenuItem(item: MenuItem, @DrawableRes iconAtStart : Int, @DrawableRes iconAtEnd : Int) {
+    private fun startAnimationOnMenuItem(
+        item: MenuItem,
+        @DrawableRes iconAtStart: Int,
+        @DrawableRes iconAtEnd: Int
+    ) {
         if (Build.VERSION.SDK_INT >= 23) {
             //If there is an ongoing animation, cancel it
             val previousAvd = item.icon as? AnimatedVectorDrawable
@@ -138,7 +174,7 @@ abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteList
     private fun openChildFragment(frag: Fragment) {
         childFragmentManager.commit {
             setCustomAnimations(R.anim.translate_from_top, 0)
-                    .replace(R.id.list_addFrag_container, frag)
+                .replace(R.id.list_addFrag_container, frag)
         }
     }
 
@@ -155,9 +191,9 @@ abstract class BrandCategoryBaseFrag<T> : BaseListFragment<T>(), SwipeDeleteList
         openChildFragment(childFrag)
     }
 
-    abstract fun getChildFragment() : Fragment
+    abstract fun getChildFragment(): Fragment
 
-    override fun onDeleteConfirmed(itemToDelete: T, position : Int) {
+    override fun onDeleteConfirmed(itemToDelete: T, position: Int) {
         Timber.d("delete is confirmed")
         lifecycleScope.launch {
             //First check whether this item is used by trains table

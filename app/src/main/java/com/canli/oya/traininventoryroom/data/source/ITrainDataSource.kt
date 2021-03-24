@@ -2,14 +2,16 @@ package com.canli.oya.traininventoryroom.data.source
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
+import androidx.paging.PagingData
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.TrainMinimal
+import kotlinx.coroutines.flow.Flow
 
 interface ITrainDataSource {
 
-    fun getAllTrains() : LiveData<PagedList<TrainMinimal>>
+    fun getAllTrains() : Flow<PagingData<TrainMinimal>>
 
-    fun getChosenTrain(trainId : Int): LiveData<TrainEntry>
+    fun getChosenTrain(trainId : Int): Flow<TrainEntry>
 
     suspend fun getAllTrainNames() : List<String>
 
@@ -21,9 +23,9 @@ interface ITrainDataSource {
 
     suspend fun deleteTrain(trainId: Int)
 
-    fun getTrainsFromThisBrand(brandName: String): LiveData<PagedList<TrainMinimal>>
+    fun getTrainsFromThisBrand(brandName: String): Flow<PagingData<TrainMinimal>>
 
-    fun getTrainsFromThisCategory(category: String): LiveData<PagedList<TrainMinimal>>
+    fun getTrainsFromThisCategory(category: String): Flow<PagingData<TrainMinimal>>
 
-    fun searchInTrains(query: String): LiveData<PagedList<TrainMinimal>>
+    fun searchInTrains(query: String): Flow<PagingData<TrainMinimal>>
 }
