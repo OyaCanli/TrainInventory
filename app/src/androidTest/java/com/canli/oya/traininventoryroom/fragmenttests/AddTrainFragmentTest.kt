@@ -144,7 +144,6 @@ class AddTrainFragmentTest {
 
         //Verify a toast is shown since brand name is not chosen
         onView(withText(R.string.brand_cannot_be_empty)).inRoot(withDecorView(not(decorView))).check(matches(isDisplayed()))
-
     }
 
     @Test

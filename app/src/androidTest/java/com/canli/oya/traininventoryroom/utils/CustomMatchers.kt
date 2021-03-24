@@ -23,15 +23,15 @@ import org.hamcrest.TypeSafeMatcher
 import timber.log.Timber
 
 
-fun isVisible(): ViewAssertion? {
+fun isVisible(): ViewAssertion {
     return ViewAssertion { view, noView -> assertThat(view, VisibilityMatcher(View.VISIBLE)) }
 }
 
-fun isGone(): ViewAssertion? {
+fun isGone(): ViewAssertion {
     return ViewAssertion { view, _ -> assertThat(view, VisibilityMatcher(View.GONE)) }
 }
 
-fun isInvisible(): ViewAssertion? {
+fun isInvisible(): ViewAssertion {
     return ViewAssertion { view, _ -> assertThat(view, VisibilityMatcher(View.INVISIBLE)) }
 }
 
