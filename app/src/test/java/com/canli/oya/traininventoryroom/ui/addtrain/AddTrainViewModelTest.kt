@@ -5,6 +5,7 @@ import com.canli.oya.traininventoryroom.data.*
 import com.canli.oya.traininventoryroom.getOrAwaitValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -103,7 +104,7 @@ class AddTrainViewModelTest {
         runBlockingTest {
             val addTrainViewModel = getViewModelForAddCase()
             addTrainViewModel.saveTrain()
-            val list: MutableList<TrainMinimal> = addTrainViewModel.trainDataSource.getAllTrains().getOrAwaitValue()
+            val list = (addTrainViewModel.trainDataSource as FakeTrainDataSource).trains
             assertThat(list.size, `is`(4))
         }
     }
@@ -114,7 +115,7 @@ class AddTrainViewModelTest {
         runBlockingTest {
             val addTrainViewModel = getViewModelForEditCase()
             addTrainViewModel.saveTrain()
-            val list: MutableList<TrainMinimal> = addTrainViewModel.trainDataSource.getAllTrains().getOrAwaitValue()
+            val list = (addTrainViewModel.trainDataSource as FakeTrainDataSource).trains
             assertThat(list.size, `is`(3))
         }
     }

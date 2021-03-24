@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
-class TrainViewModel (private val dataSource: ITrainDataSource,
+class TrainViewModel (val dataSource: ITrainDataSource,
                       private val ioDispatcher : CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
 
     var allItems: Flow<PagingData<TrainMinimal>> = dataSource.getAllTrains()
@@ -28,7 +28,6 @@ class TrainViewModel (private val dataSource: ITrainDataSource,
             emit(it)
         }
     }
-
 
     fun deleteTrain(train: TrainEntry) {
         viewModelScope.launch(ioDispatcher) { dataSource.deleteTrain(train) }

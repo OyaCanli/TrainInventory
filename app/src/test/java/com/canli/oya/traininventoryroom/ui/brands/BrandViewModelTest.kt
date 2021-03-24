@@ -6,6 +6,8 @@ import com.canli.oya.traininventoryroom.data.FakeBrandDataSource
 import com.canli.oya.traininventoryroom.getOrAwaitValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat
@@ -60,9 +62,10 @@ class BrandViewModelTest{
         runBlockingTest {
             brandViewModel.insertItem(sampleBrand3)
 
-            val list = brandViewModel.allPagedItems.getOrAwaitValue().snapshot()
-            //Verify that the list contains the new item
-            assertTrue(list.contains(sampleBrand3))
+            brandViewModel.allItems.collect { list ->
+                //Verify that the list contains the new item
+                assertTrue(list.contains(sampleBrand3))
+            }
         }
     }
 
@@ -72,9 +75,10 @@ class BrandViewModelTest{
         runBlockingTest {
             brandViewModel.deleteItem(sampleBrand2)
 
-            val list = brandViewModel.allPagedItems.getOrAwaitValue().snapshot()
-            //Verify that the list doesn't contain that item anymore
-            assertFalse(list.contains(sampleBrand2))
+            brandViewModel.allItems.collect { list ->
+                //Verify that the list doesn't contain that item anymore
+                assertFalse(list.contains(sampleBrand2))
+            }
         }
     }
 

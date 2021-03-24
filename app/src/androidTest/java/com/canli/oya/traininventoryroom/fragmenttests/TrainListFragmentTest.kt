@@ -1,13 +1,15 @@
 package com.canli.oya.traininventoryroom.fragmenttests
 
 import android.os.Bundle
+import android.widget.EditText
+import androidx.appcompat.widget.SearchView
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions.swipeLeft
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -28,12 +30,14 @@ import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
 import com.canli.oya.traininventoryroom.utils.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import javax.inject.Inject
+
 
 @MediumTest
 @ExperimentalCoroutinesApi
@@ -149,7 +153,7 @@ class TrainListFragmentTest{
 
             val enclosedInParenthesis = "($sampleCategoryName)"
             onView(withId(R.id.list)).check(isVisible())
-            onView(withText(sampleTrain2.trainName)).check(isVisible())
+            onView(withText(enclosedInParenthesis)).check(isVisible())
         }
     }
 
