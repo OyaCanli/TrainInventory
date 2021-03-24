@@ -224,6 +224,9 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
         // SAVE
         addViewModel.saveTrain()
 
+        //Close softkeyboard
+        activity?.clearFocusAndHideKeyboard()
+
         //After adding the train, go back to where user come from.
         findNavController().popBackStack()
     }
