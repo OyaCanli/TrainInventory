@@ -11,7 +11,9 @@
         android:label="@string/all_categories">
         <action
             android:id="@+id/action_categoryListFragment_to_trainListFragment"
-            app:destination="@id/trainListFragment" />
+            app:destination="@id/trainListFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"/>
     </fragment>
 
     <fragment
@@ -20,7 +22,9 @@
         android:label="@string/all_brands">
         <action
             android:id="@+id/action_brandListFragment_to_trainListFragment"
-            app:destination="@id/trainListFragment" />
+            app:destination="@id/trainListFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"/>
     </fragment>
 
     <fragment
@@ -29,10 +33,14 @@
         android:label="@string/all_trains">
         <action
             android:id="@+id/action_trainListFragment_to_addTrainFragment"
-            app:destination="@id/addTrainFragment" />
+            app:destination="@id/addTrainFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"/>
         <action
             android:id="@+id/action_trainListFragment_to_trainDetailsFragment"
-            app:destination="@id/trainDetailsFragment" />
+            app:destination="@id/trainDetailsFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
         <argument
             android:name="intentRequestCode"
             app:argType="string"
@@ -66,7 +74,9 @@
             app:argType="integer" />
         <action
             android:id="@+id/action_trainDetailsFragment_to_addTrainFragment"
-            app:destination="@id/addTrainFragment" />
+            app:destination="@id/addTrainFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"/>
     </fragment>
 
     <dialog
@@ -74,7 +84,9 @@
         android:name="com.canli.oya.traininventoryroom.ui.exportToExcel.ExportingToExcelDialog">
         <action
             android:id="@+id/action_export_to_excel_to_uploadExcelDialog"
-            app:destination="@id/uploadExcelDialog" />
+            app:destination="@id/uploadExcelDialog"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"/>
     </dialog>
     <dialog
         android:id="@+id/uploadExcelDialog"
