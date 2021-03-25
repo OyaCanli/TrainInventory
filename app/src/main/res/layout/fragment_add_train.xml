@@ -21,29 +21,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/textView10"
-                style="@style/FieldStyle"
-                android:text="@string/categories"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/categorySpinner" />
-
             <Spinner
                 android:id="@+id/categorySpinner"
-                style="@style/editTextStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_standard"
                 app:layout_constraintEnd_toStartOf="@+id/addTrain_addCategoryBtn"
                 app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/barrier"
-                app:layout_constraintTop_toBottomOf="@id/childFragContainer" />
-
-            <TextView
-                android:id="@+id/textView5"
-                style="@style/FieldStyle"
-                android:text="@string/brand"
-                app:layout_constraintBottom_toBottomOf="@+id/brandSpinner"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/brandSpinner" />
+                app:layout_constraintTop_toBottomOf="@id/childFragContainer" />
 
             <Spinner
                 android:id="@+id/brandSpinner"
@@ -51,87 +37,124 @@
                 android:layout_marginTop="@dimen/margin_standard"
                 android:layout_marginEnd="@dimen/margin_standard"
                 app:layout_constraintEnd_toStartOf="@+id/addTrain_addBrandBtn"
-                app:layout_constraintStart_toEndOf="@+id/barrier"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/categorySpinner" />
 
-            <TextView
-                android:id="@+id/textView2"
-                style="@style/FieldStyle"
-                android:text="@string/reference"
-                app:layout_constraintBaseline_toBaselineOf="@+id/editReference"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <EditText
-                android:id="@+id/editReference"
-                style="@style/editTextStyle"
-                android:hint="@string/hint_reference"
-                android:inputType="textCapCharacters"
-                android:text="@={viewModel.trainBeingModified.modelReference}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.466"
-                app:layout_constraintStart_toEndOf="@+id/barrier"
-                app:layout_constraintTop_toBottomOf="@+id/brandSpinner" />
-
-            <TextView
-                android:id="@+id/textView3"
-                style="@style/FieldStyle"
-                android:text="@string/name"
-                app:layout_constraintBaseline_toBaselineOf="@+id/editTrainName"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <EditText
-                android:id="@+id/editTrainName"
-                style="@style/editTextStyle"
-                android:hint="@string/hint_train_name"
-                android:inputType="textCapWords"
-                android:text="@={viewModel.trainBeingModified.trainName}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/barrier"
-                app:layout_constraintTop_toBottomOf="@+id/editReference" />
-
-            <TextView
-                android:id="@+id/textView4"
-                style="@style/FieldStyle"
-                android:text="@string/quantity"
-                app:layout_constraintBaseline_toBaselineOf="@+id/editQuantity"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <EditText
-                android:id="@+id/editQuantity"
-                style="@style/editTextStyle"
-                android:hint="@string/hint_quantity"
-                android:inputType="number"
-                android:text="@{String.valueOf(viewModel.trainBeingModified.quantity)}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.483"
-                app:layout_constraintStart_toEndOf="@+id/barrier"
-                app:layout_constraintTop_toBottomOf="@+id/editScale" />
-
-            <EditText
-                android:id="@+id/editScale"
-                style="@style/editTextStyle"
-                android:ems="10"
-                android:hint="@string/hint_train_scale"
-                android:inputType="textPersonName"
-                android:text="@={viewModel.trainBeingModified.scale}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/barrier"
-                app:layout_constraintTop_toBottomOf="@+id/editTrainName" />
-
-            <TextView
-                android:id="@+id/textView13"
-                style="@style/FieldStyle"
-                android:text="@string/scale"
-                app:layout_constraintBaseline_toBaselineOf="@+id/editScale"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/barrier"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editReference_layout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:barrierDirection="right"
-                app:constraint_referenced_ids="textView2,textView3,textView4,textView5,textView10,textView13"
-                tools:layout_editor_absoluteX="91dp" />
+                android:layout_margin="@dimen/half_margin"
+                android:hint="@string/hint_reference"
+                style="@style/Widget.TrainInventory.TextInputLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/brandSpinner">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editReference"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textCapCharacters"
+                    android:text="@={viewModel.trainBeingModified.modelReference}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editTrainName_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/half_margin"
+                android:hint="@string/hint_train_name"
+                style="@style/Widget.TrainInventory.TextInputLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editReference_layout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTrainName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapCharacters"
+                    android:text="@={viewModel.trainBeingModified.trainName}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editScale_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/half_margin"
+                android:hint="@string/hint_train_scale"
+                style="@style/Widget.TrainInventory.TextInputLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTrainName_layout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editScale"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:text="@={viewModel.trainBeingModified.scale}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editQuantity_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/half_margin"
+                android:hint="@string/hint_quantity"
+                style="@style/Widget.TrainInventory.TextInputLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editScale_layout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editQuantity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:text="@{String.valueOf(viewModel.trainBeingModified.quantity)}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editLocation_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/half_margin"
+                android:hint="@string/hint_location"
+                style="@style/Widget.TrainInventory.TextInputLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editQuantity_layout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:ems="10"
+                    android:text="@={viewModel.trainBeingModified.location}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editTrainDescription_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/half_margin"
+                android:hint="@string/hint_train_description"
+                style="@style/Widget.TrainInventory.TextInputLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editLocation_layout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTrainDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:text="@={viewModel.trainBeingModified.description}" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <ImageView
                 android:id="@+id/product_details_gallery_image"
@@ -145,7 +168,7 @@
                 app:placeholder="@{@drawable/ic_gallery_light}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTrainDescription" />
+                app:layout_constraintTop_toBottomOf="@+id/editTrainDescription_layout" />
 
             <TextView
                 android:id="@+id/textView"
@@ -154,53 +177,7 @@
                 android:layout_marginTop="@dimen/margin_standard"
                 android:text="@string/add_image"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTrainDescription" />
-
-            <TextView
-                android:id="@+id/textView7"
-                style="@style/FieldStyle"
-                android:layout_marginTop="@dimen/margin_standard"
-                android:text="@string/description"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editLocation" />
-
-            <EditText
-                android:id="@+id/editTrainDescription"
-                style="@style/editTextStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_train_description"
-                android:inputType="textMultiLine"
-                android:text="@={viewModel.trainBeingModified.description}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView7" />
-
-            <TextView
-                android:id="@+id/textView6"
-                style="@style/FieldStyle"
-                android:layout_marginTop="@dimen/margin_standard"
-                android:layout_marginBottom="@dimen/margin_standard"
-                android:text="@string/location"
-                app:layout_constraintBottom_toBottomOf="@+id/editLocation"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/editLocation" />
-
-            <EditText
-                android:id="@+id/editLocation"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_standard"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:ems="10"
-                android:hint="@string/hint_location"
-                android:text="@={viewModel.trainBeingModified.location}"
-                android:textColorHint="@color/divider_color"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toEndOf="@+id/barrier"
-                app:layout_constraintTop_toBottomOf="@+id/editQuantity" />
+                app:layout_constraintTop_toBottomOf="@+id/editTrainDescription_layout" />
 
             <ImageButton
                 android:id="@+id/addTrain_addCategoryBtn"

@@ -39,7 +39,7 @@
     <dimen name="design_bottom_navigation_item_max_width" tools:override="true">600dp</dimen>
     <dimen name="design_bottom_navigation_active_item_max_width" tools:override="true">600dp</dimen>
 
-    <!-- Navigation drawer -->
-    <dimen name="navigation_header_icon">100dp</dimen>
-    <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="edittext_box_width">1dp</dimen>
+
+
 </resources>

@@ -24,7 +24,7 @@
     <string name="add_logo">Add logo:</string>
     <string name="website">Website:</string>
     <string name="scale">Scale:</string>
-    <string name="category_name">Category name</string>
+    <string name="category_name">Add category</string>
     <string name="add_image_from">Add image from:</string>
     <string name="select_category">--Select category--</string>
     <string name="select_brand">--Select brand--</string>
@@ -111,5 +111,6 @@
     <string name="send">SEND</string>
     <string name="upload_file">Would you like to upload the excel file to cloud or share with someone?</string>
     <string name="successfully_exported_browse">Successfully exported to Excel. Would you like to browse the file?</string>
+    <string name="website_of_the_brand">Website of the brand</string>
 
 </resources>
