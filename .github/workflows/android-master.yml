@@ -48,8 +48,6 @@ jobs:
       uses: actions/setup-java@v1
       with:
           java-version: 1.8
-    - name: Configure Gradle and spot check
-      run: ./gradlew spotlessCheck
     - name: Build project
       run: ./gradlew assemble --stacktrace
 
