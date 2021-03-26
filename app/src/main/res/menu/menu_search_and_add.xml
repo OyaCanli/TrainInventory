@@ -6,12 +6,12 @@
         android:icon="@drawable/ic_search"
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="ifRoom|collapseActionView" />
+        app:showAsAction="always|collapseActionView" />
     <item
         android:id="@+id/action_add"
         android:icon="@drawable/avd_blinking_plus"
         android:title="@string/add"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item android:id="@+id/export_to_excel"
         android:title="@string/export_to_excel"
         app:showAsAction="never"/>

@@ -33,6 +33,7 @@ import com.canli.oya.traininventoryroom.utils.isGone
 import com.canli.oya.traininventoryroom.utils.isVisible
 import com.canli.oya.traininventoryroom.utils.monitorActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
 import org.junit.After
@@ -91,8 +92,8 @@ class TrainTests {
 
         //Verify AddTrainFragment is launched with empty or default fields
         onView(withText(R.string.add_train)).check(matches(withParent(withId(R.id.toolbar))))
-        onView(withText("--Select category--")).check(matches(isDisplayed()))
-        onView(withText("--Select brand--")).check(matches(isDisplayed()))
+        onView(withText(R.string.select_category)).check(matches(isDisplayed()))
+        onView(withText(R.string.select_brand)).check(matches(isDisplayed()))
         onView(withId(R.id.editReference)).check(matches(withText("")))
         onView(withId(R.id.editTrainName)).check(matches(withText("")))
         onView(withId(R.id.editScale)).check(matches(withText("")))
@@ -100,8 +101,6 @@ class TrainTests {
         onView(withId(R.id.editTrainDescription)).check(matches(withText("")))
         //Verify bottom navigation is gone
         onView(withId(R.id.navigation)).check(isGone())
-        //Verify up button is seen instead of hamburger icon
-        onView(withContentDescription(R.string.abc_action_bar_up_description)).check(matches(isDisplayed()))
 
         //Fill in the widgets
         onView(withId(R.id.categorySpinner)).perform(click())
@@ -249,6 +248,8 @@ class TrainTests {
 
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(EditText::class.java)).perform(typeText("red"), pressImeActionButton())
+
+        delay(600) //todo: replace with idling resource
 
         onView(withText(sampleTrain1.trainName)).check(matches(isDisplayed()))
         onView(withText(sampleTrain3.trainName)).check(doesNotExist())
