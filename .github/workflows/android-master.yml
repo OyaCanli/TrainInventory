@@ -49,7 +49,7 @@ jobs:
       with:
           java-version: 1.8
     - name: Prepare CI Gradle configuration
-      run: cp .github/ci-gradle.properties ~/.gradle/gradle.properties
+      run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
     - name: Configure Gradle and spot check
       run: ./gradlew spotlessCheck
     - name: Build project
