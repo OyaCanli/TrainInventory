@@ -7,6 +7,10 @@ on:
   push:
     branches: 
      - 'master'
+     
+env:
+  ANDROID_HOME: "/Users/runner/Library/android-sdk"
+  ANDROID_SDK_TOOLS: "6609375_latest"
 
 jobs:
   build:
@@ -24,7 +28,7 @@ jobs:
       
   unit_tests:
     name: Run Unit Tests
-    runs-on: ubuntu-latest
+    runs-on: macOS-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -36,7 +40,7 @@ jobs:
         run: bash ./gradlew test --stacktrace     
 
   ui-tests:
-    runs-on: macos-latest
+    runs-on: macOS-latest
     strategy:
       fail-fast: false
       matrix:
@@ -48,9 +52,17 @@ jobs:
       uses: actions/setup-java@v1
       with:
           java-version: 1.8
+    - name: Install Android SDK
+      run: ./.github/android-sdk.sh
+    - name: Prepare CI Gradle configuration
+      run: cp .github/ci-gradle.properties ~/.gradle/gradle.properties
     - name: Build project
       run: ./gradlew assemble --stacktrace
-
+    - name: Add Android SDK to path
+      run: |
+        echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> $GITHUB_ENV
+        echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> $GITHUB_PATH
+        echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
     - name: Run instumentation tests
       uses: reactivecircus/android-emulator-runner@v2.14.2
       with:
