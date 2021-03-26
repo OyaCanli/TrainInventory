@@ -51,7 +51,7 @@ jobs:
     - name: Build project
       run: ./gradlew assemble --stacktrace
     - name: Run instumentation tests
-      uses: reactivecircus/android-emulator-runner@v2.14.2
+      uses: reactivecircus/android-emulator-runner@v2.15.0
       with:
         api-level: ${{ matrix.api-level }}
         script: ./gradlew connectedCheck --stacktrace
