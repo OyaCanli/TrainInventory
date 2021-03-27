@@ -86,7 +86,7 @@ class NavigationTests {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         /*Verify that + icon is shown on the action menu at launch. Then click on plus button.
-        Verify that + icon is replaced with x icon is shown*/
+        Verify that + icon is replaced with x icon*/
         onView(withId(R.id.action_add)).check(matches(withIconResource(R.drawable.avd_plus_to_cross)))
         onView(withId(R.id.action_add)).perform(click())
         onView(withId(R.id.action_add)).check(matches(withIconResource(R.drawable.avd_cross_to_plus)))
@@ -100,10 +100,6 @@ class NavigationTests {
         onView(withId(R.id.action_add)).check(matches(withIconResource(R.drawable.avd_cross_to_plus)))
         onView(withId(R.id.action_add)).perform(click())
         onView(withId(R.id.action_add)).check(matches(withIconResource(R.drawable.avd_plus_to_cross)))
-
-        //Then press back and verify that category frag still shows x icon as it was left
-        Espresso.pressBack()
-        onView(withId(R.id.action_add)).check(matches(withIconResource(R.drawable.avd_cross_to_plus)))
 
         activityScenario.close()
     }
