@@ -93,10 +93,9 @@ class BrandTests {
 
 /*      Add a brand, click save and verify that edittext is cleared
         and new brand is added to the list*/
-        onView(withId(R.id.addBrand_editBrandName)).perform(typeText(sampleBrandName))
-        onView(withId(R.id.addBrand_editWeb)).perform(typeText(sampleBrandName))
-        closeSoftKeyboard()
-        onView(withId(R.id.addBrand_saveBtn)).perform(click())
+        onView(withId(R.id.addBrand_editBrandName)).perform(typeText(sampleBrandName), closeSoftKeyboard())
+        onView(withId(R.id.addBrand_editWeb)).perform(typeText(sampleBrandName), closeSoftKeyboard())
+        onView(withId(R.id.addBrand_saveBtn)).perform(scrollTo(), click())
         //Verify edittext is cleared after brand is saved
         onView(withId(R.id.addBrand_editBrandName)).check(matches(withText("")))
 
