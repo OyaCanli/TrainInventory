@@ -94,4 +94,5 @@
     <string name="send">ENVOYEZ</string>
     <string name="successfully_exported_browse">Exporté à Excel avec succès. Voulez-vous naviguer le fichier?</string>
     <string name="upload_file">Voulez-vous télécharger le fichier à Cloud ou le partager avec quelqu\'un?</string>
+    <string name="website_of_the_brand">Site web de la marque</string>
 </resources>

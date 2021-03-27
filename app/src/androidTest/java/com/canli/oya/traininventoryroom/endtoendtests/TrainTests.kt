@@ -219,14 +219,14 @@ class TrainTests {
         onView(withText(sampleTrain1.categoryName)).check(matches(isDisplayed()))
         onView(withText(sampleTrain1.brandName)).check(matches(isDisplayed()))
 
-        onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
+        onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
         //Verify we are back at details screen without a warning
         onView(withText(sampleTrain1.trainName)).check(matches(withParent(withId(R.id.toolbar))))
         //Click edit button again
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.editTrainName)).perform(replaceText("modified train name"))
 
-        onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
+        onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
         onView(withText(R.string.unsaved_changes_warning)).check(matches(isDisplayed()))
 
         activityScenario.close()

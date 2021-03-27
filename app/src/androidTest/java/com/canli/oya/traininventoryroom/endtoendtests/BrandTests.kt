@@ -3,13 +3,11 @@ package com.canli.oya.traininventoryroom.endtoendtests
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -31,6 +29,7 @@ import com.canli.oya.traininventoryroom.utils.clickOnChildWithId
 import com.canli.oya.traininventoryroom.utils.monitorActivity
 import com.canli.oya.traininventoryroom.utils.withIconResource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -121,18 +120,21 @@ class BrandTests {
 
         //Click edit on the item and verify AddBrand becomes visible with correct fields
         onView(withId(R.id.list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickOnChildWithId(R.id.brand_item_edit_icon)))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickOnChildWithId(R.id.brand_item_edit_icon)))
         onView(withId(R.id.addBrand_editBrandName)).check(matches(isDisplayed()))
         onView(withId(R.id.addBrand_editBrandName)).check(matches(withText(sampleBrandName)))
         onView(withId(R.id.addBrand_editWeb)).check(matches(withText(sampleWebAddress)))
         //Verify + menu icon turned to a cancel icon
         onView(withId(R.id.action_add)).check(matches(withIconResource(R.drawable.avd_cross_to_plus)))
 
+        delay(2000)
         val updatedBrandName = "Updated brand"
         //Edit the item
-        onView(withId(R.id.addBrand_editBrandName)).perform(replaceText(updatedBrandName))
-        onView(withId(R.id.addBrand_saveBtn)).perform(click())
-        //Verify the category name on the list is updated
+        onView(withId(R.id.addBrand_editBrandName)).perform(click(), replaceText(updatedBrandName), closeSoftKeyboard())
+        onView(withId(R.id.addBrand_saveBtn)).perform(scrollTo(), click())
+        //Close the child fragment
+        onView(withId(R.id.action_add)).perform(click())
+        //Verify that the brand name on the list is updated
         onView(withText(sampleBrandName)).check(doesNotExist())
         onView(withText(updatedBrandName)).check(matches(isDisplayed()))
 

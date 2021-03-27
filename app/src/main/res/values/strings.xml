@@ -98,8 +98,6 @@
     <string name="hint_train_scale">Scale of the train</string>
     <string name="export_to_excel">Export to Excel</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="successfully_exported">Successfully exported to excel</string>
     <string name="exporting_to_excel">Exporting to Excel. Please wait..</string>
     <string name="uopload_file_to">Upload file to:</string>
