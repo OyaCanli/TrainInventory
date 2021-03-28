@@ -33,6 +33,7 @@ import com.canli.oya.traininventoryroom.utils.isGone
 import com.canli.oya.traininventoryroom.utils.isVisible
 import com.canli.oya.traininventoryroom.utils.monitorActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
 import org.junit.After
@@ -91,8 +92,8 @@ class TrainTests {
 
         //Verify AddTrainFragment is launched with empty or default fields
         onView(withText(R.string.add_train)).check(matches(withParent(withId(R.id.toolbar))))
-        onView(withText("--Select category--")).check(matches(isDisplayed()))
-        onView(withText("--Select brand--")).check(matches(isDisplayed()))
+        onView(withText(R.string.select_category)).check(matches(isDisplayed()))
+        onView(withText(R.string.select_brand)).check(matches(isDisplayed()))
         onView(withId(R.id.editReference)).check(matches(withText("")))
         onView(withId(R.id.editTrainName)).check(matches(withText("")))
         onView(withId(R.id.editScale)).check(matches(withText("")))
@@ -100,14 +101,13 @@ class TrainTests {
         onView(withId(R.id.editTrainDescription)).check(matches(withText("")))
         //Verify bottom navigation is gone
         onView(withId(R.id.navigation)).check(isGone())
-        //Verify up button is seen instead of hamburger icon
-        onView(withContentDescription(R.string.abc_action_bar_up_description)).check(matches(isDisplayed()))
 
         //Fill in the widgets
         onView(withId(R.id.categorySpinner)).perform(click())
-        onData(allOf(`is`(instanceOf(String::class.java)), `is`(sampleTrain1.categoryName))).perform(click())
+        onData(allOf(`is`(instanceOf(String::class.java)), `is`(sampleCategory1.categoryName))).perform(click())
         onView(withId(R.id.brandSpinner)).perform(click())
-        onData(allOf(`is`(instanceOf(BrandEntry::class.java)))).perform(click())
+        onView(withText(sampleBrand1.brandName)).perform(click())
+
         onView(withId(R.id.editReference)).perform(typeText(sampleTrain1.modelReference), closeSoftKeyboard())
         onView(withId(R.id.editTrainName)).perform(scrollTo(), typeText(sampleTrain1.trainName), closeSoftKeyboard())
         onView(withId(R.id.editScale)).perform(scrollTo(), click(), typeText(sampleTrain1.scale), closeSoftKeyboard())
@@ -220,14 +220,14 @@ class TrainTests {
         onView(withText(sampleTrain1.categoryName)).check(matches(isDisplayed()))
         onView(withText(sampleTrain1.brandName)).check(matches(isDisplayed()))
 
-        onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
+        onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
         //Verify we are back at details screen without a warning
         onView(withText(sampleTrain1.trainName)).check(matches(withParent(withId(R.id.toolbar))))
         //Click edit button again
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.editTrainName)).perform(replaceText("modified train name"))
 
-        onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
+        onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
         onView(withText(R.string.unsaved_changes_warning)).check(matches(isDisplayed()))
 
         activityScenario.close()
@@ -249,6 +249,8 @@ class TrainTests {
 
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(EditText::class.java)).perform(typeText("red"), pressImeActionButton())
+
+        delay(600) //todo: replace with idling resource
 
         onView(withText(sampleTrain1.trainName)).check(matches(isDisplayed()))
         onView(withText(sampleTrain3.trainName)).check(doesNotExist())

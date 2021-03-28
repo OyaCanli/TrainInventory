@@ -21,31 +21,45 @@
             android:layout_marginTop="@dimen/margin_standard"
             android:background="@drawable/rounded_background">
 
-            <TextView
-                android:id="@+id/textView8"
-                style="@style/FieldStyle"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_standard"
-                android:text="@string/brand_name"
-                android:textColor="@color/colorAccent"
-                app:layout_constraintBaseline_toBaselineOf="@+id/addBrand_editBrandName"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <EditText
-                android:id="@+id/addBrand_editBrandName"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/addBrand_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_standard"
-                android:layout_marginLeft="@dimen/margin_standard"
-                android:layout_marginTop="@dimen/half_margin"
-                android:layout_marginEnd="@dimen/margin_standard"
-                android:layout_marginRight="@dimen/margin_standard"
-                android:ems="10"
-                android:inputType="textPersonName"
-                android:text="@{chosenBrand.brandName}"
+                android:layout_margin="@dimen/half_margin"
+                android:hint="@string/brand_name"
+                style="@style/Widget.TrainInventory.TextInputLayout"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView8"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/addBrand_editBrandName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textCapWords"
+                    android:text="@{chosenBrand.brandName}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/addBrandWebsite_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/half_margin"
+                android:hint="@string/website_of_the_brand"
+                style="@style/Widget.TrainInventory.TextInputLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addBrand_layout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/addBrand_editWeb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textCapWords"
+                    android:text="@{chosenBrand.webUrl}" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/textView9"
@@ -55,7 +69,7 @@
                 android:layout_marginEnd="@dimen/margin_standard"
                 android:text="@string/add_logo"
                 android:textColor="@color/colorAccent"
-                app:layout_constraintEnd_toStartOf="@+id/addBrand_editBrandName"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/addBrand_image" />
 
             <ImageView
@@ -66,8 +80,8 @@
                 android:layout_marginTop="@dimen/margin_standard"
                 android:contentDescription="@string/cd_brand_logo_edit"
                 app:imageUrl="@{chosenBrand.brandLogoUri}"
-                app:layout_constraintStart_toStartOf="@+id/addBrand_editBrandName"
-                app:layout_constraintTop_toBottomOf="@+id/addBrand_editWeb"
+                app:layout_constraintStart_toEndOf="@+id/textView9"
+                app:layout_constraintTop_toBottomOf="@+id/addBrandWebsite_layout"
                 app:placeholder="@{@drawable/ic_gallery_light}" />
 
             <ImageButton
@@ -80,32 +94,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/addBrand_image" />
 
-            <EditText
-                android:id="@+id/addBrand_editWeb"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_standard"
-                android:layout_marginLeft="@dimen/margin_standard"
-                android:layout_marginTop="@dimen/half_margin"
-                android:layout_marginEnd="@dimen/margin_standard"
-                android:layout_marginRight="@dimen/margin_standard"
-                android:ems="10"
-                android:inputType="textEmailAddress"
-                android:text="@{chosenBrand.webUrl}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView8"
-                app:layout_constraintTop_toBottomOf="@+id/addBrand_editBrandName" />
-
-            <TextView
-                android:id="@+id/textView12"
-                style="@style/FieldStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/margin_standard"
-                android:text="@string/website"
-                android:textColor="@color/colorAccent"
-                app:layout_constraintBaseline_toBaselineOf="@+id/addBrand_editWeb"
-                app:layout_constraintEnd_toStartOf="@+id/addBrand_editWeb" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>

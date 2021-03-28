@@ -11,35 +11,35 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_standard"
-        android:background="@drawable/rounded_background">
+        android:background="@drawable/rounded_background"
+        android:layout_marginTop="@dimen/margin_standard">
 
-        <EditText
-            android:id="@+id/addCategory_editCatName"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/half_margin"
-            android:layout_marginEnd="@dimen/margin_standard"
-            android:layout_marginLeft="@dimen/margin_standard"
-            android:layout_marginRight="@dimen/margin_standard"
-            android:layout_marginStart="@dimen/margin_standard"
-            android:layout_marginTop="@dimen/margin_standard"
-            android:ems="10"
+            android:layout_marginEnd="@dimen/half_margin"
             android:hint="@string/category_name"
-            android:text="@{chosenCategory.categoryName}"
-            android:textColorHint="@color/divider_color"
-            android:inputType="textCapWords"
+            style="@style/Widget.TrainInventory.TextInputLayout"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/addCategory_saveBtn"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/addCategory_editCatName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textCapWords"
+                android:text="@{chosenCategory.categoryName}" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <ImageButton
             android:id="@+id/addCategory_saveBtn"
             style="@style/buttonStyle"
-            android:layout_marginBottom="@dimen/margin_standard"
-            android:layout_marginEnd="@dimen/margin_standard"
             android:layout_marginTop="@dimen/margin_standard"
+            android:layout_marginStart="@dimen/half_margin"
+            android:layout_marginBottom="@dimen/margin_standard"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

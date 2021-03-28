@@ -136,6 +136,7 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
     private fun clearFocusAndHideSoftKeyboard() {
         //Clear focus and hide soft keyboard
         binding.addBrandEditBrandName.text = null
+        binding.addBrandEditWeb.text = null
         val focusedView = activity?.currentFocus
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         focusedView?.clearFocus()
