@@ -151,7 +151,7 @@ class AddTrainFragmentTest {
         onView(withId(R.id.categorySpinner)).perform(click())
         onData(allOf(`is`(instanceOf(String::class.java)), `is`(sampleTrain1.categoryName))).perform(click())
         onView(withId(R.id.brandSpinner)).perform(click())
-        onData(allOf(`is`(instanceOf(BrandEntry::class.java)), `is`(sampleBrand1))).perform(click())
+        onView(withText(sampleBrand1.brandName)).perform(click())
 
         //Click on save menu item
         val saveMenuItem = ActionMenuItem(null, 0, R.id.action_save, 0, 0, null)
