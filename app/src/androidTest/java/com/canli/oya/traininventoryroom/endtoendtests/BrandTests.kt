@@ -126,7 +126,6 @@ class BrandTests {
         //Verify + menu icon turned to a cancel icon
         onView(withId(R.id.action_add)).check(matches(withIconResource(R.drawable.avd_cross_to_plus)))
 
-        delay(2000)
         val updatedBrandName = "Updated brand"
         //Edit the item
         onView(withId(R.id.addBrand_editBrandName)).perform(click(), replaceText(updatedBrandName), closeSoftKeyboard())

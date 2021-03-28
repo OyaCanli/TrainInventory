@@ -104,9 +104,9 @@ class TrainTests {
 
         //Fill in the widgets
         onView(withId(R.id.categorySpinner)).perform(click())
-        onData(allOf(`is`(instanceOf(String::class.java)), `is`(sampleTrain1.categoryName))).perform(click())
+        onData(allOf(`is`(instanceOf(String::class.java)), `is`(sampleCategory1.categoryName))).perform(click())
         onView(withId(R.id.brandSpinner)).perform(click())
-        onData(allOf(`is`(instanceOf(BrandEntry::class.java)))).perform(click())
+        onData(allOf(`is`(instanceOf(BrandEntry::class.java)), `is`(sampleBrand1))).perform(click())
         onView(withId(R.id.editReference)).perform(typeText(sampleTrain1.modelReference), closeSoftKeyboard())
         onView(withId(R.id.editTrainName)).perform(scrollTo(), typeText(sampleTrain1.trainName), closeSoftKeyboard())
         onView(withId(R.id.editScale)).perform(scrollTo(), click(), typeText(sampleTrain1.scale), closeSoftKeyboard())
