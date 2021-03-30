@@ -39,33 +39,7 @@ abstract class BrandCategoryBaseFrag<T : Any> : BaseListFragment<T>(), SwipeDele
 
         viewModel = getListViewModel()
 
-        binding.uiState = viewModel.listUiState
-
-        lifecycleScope.launch {
-            adapter.loadStateFlow.collectLatest {
-                when (it.refresh) {
-                    is LoadState.Loading -> {
-                        viewModel.listUiState.showLoading = true
-                    }
-                    is LoadState.NotLoading -> {
-                        viewModel.listUiState.showLoading = false
-                        if (it.append.endOfPaginationReached && adapter.itemCount < 1) {
-                            viewModel.listUiState.showEmpty = true
-                            if (!viewModel.isChildFragVisible) {
-                                addMenuItem?.let {
-                                    blinkAddMenuItem(
-                                        it,
-                                        R.drawable.avd_plus_to_cross
-                                    )
-                                }
-                            }
-                        } else {
-                            viewModel.listUiState.showList = true
-                        }
-                    }
-                }
-            }
-        }
+        observeUIState(viewModel.emptyMessage)
 
         lifecycleScope.launch {
             viewModel.allPagedItems.collectLatest { brandEntries ->

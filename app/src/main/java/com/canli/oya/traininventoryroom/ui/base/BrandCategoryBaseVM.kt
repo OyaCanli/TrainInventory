@@ -7,12 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.UIState
 import com.canli.oya.traininventoryroom.data.source.BrandDataSource
 import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -23,8 +24,7 @@ abstract class BrandCategoryBaseVM<T : Any>(private val dataSource: IBrandCatego
 
     var allItems: Flow<List<T>> = dataSource.getAllItems()
 
-    private val emptyMessage = if(dataSource is BrandDataSource) R.string.no_brands_found else R.string.no_categories_found
-    var listUiState : UIState = UIState(emptyMessage)
+    val emptyMessage = if(dataSource is BrandDataSource) R.string.no_brands_found else R.string.no_categories_found
 
     var isChildFragVisible: Boolean = false
 

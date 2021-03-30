@@ -7,15 +7,11 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.annotation.StringRes
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
-import androidx.paging.LoadState
-import androidx.paging.PagedList
 import androidx.paging.PagingData
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.TrainMinimal
@@ -29,7 +25,6 @@ import com.canli.oya.traininventoryroom.utils.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListener,
@@ -71,8 +66,7 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(TrainViewModel::class.java)
 
-        evaluateResults(R.string.no_trains_found)
-        binding.uiState = viewModel.listUiState
+        //observeUIState(R.string.no_trains_found)
 
         when (intentRequest) {
             //If the fragment will be used for showing trains from a specific brand
@@ -80,11 +74,11 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
                 brandName?.let {
                     (activity as? MainActivity)?.supportActionBar?.title =
                         getString(R.string.trains_of_the_brand, it)
+                    observeUIState(R.string.no_train_for_this_brand)
                     lifecycleScope.launch {
                         viewModel.getTrainsFromThisBrand(it).collectLatest { trainEntries ->
                             adapter.submitData(trainEntries)
                             mTrainList = trainEntries
-                            evaluateResults(R.string.no_train_for_this_brand)
                         }
                     }
                 }
@@ -94,11 +88,11 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
                 categoryName?.let {
                     (activity as? MainActivity)?.supportActionBar?.title =
                         getString(R.string.all_from_this_Category, it)
+                    observeUIState(R.string.no_train_for_this_category)
                     lifecycleScope.launch {
                         viewModel.getTrainsFromThisCategory(it).collectLatest { trainEntries ->
                             adapter.submitData(trainEntries)
                             mTrainList = trainEntries
-                            evaluateResults(R.string.no_train_for_this_category)
                         }
                     }
                 }
@@ -107,33 +101,11 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
                 //If the fragment_list is going to be use for showing all trains, which is the default behaviour
                 (activity as? MainActivity)?.supportActionBar?.title =
                     getString(R.string.all_trains)
+                observeUIState(R.string.no_trains_found)
                 lifecycleScope.launch {
                     viewModel.allItems.collectLatest { trainEntries ->
                         adapter.submitData(trainEntries)
                         mTrainList = trainEntries
-                        evaluateResults(R.string.no_train_for_this_brand)
-                        R.string.no_trains_found
-                    }
-                }
-            }
-        }
-    }
-
-    private fun evaluateResults(@StringRes message: Int) {
-        lifecycleScope.launch {
-            adapter.loadStateFlow.collectLatest {
-                when(it.refresh) {
-                    is LoadState.Loading -> {
-                        viewModel.listUiState.showLoading = true
-                    }
-                    is LoadState.NotLoading -> {
-                        viewModel.listUiState.showLoading = false
-                        if(it.append.endOfPaginationReached && adapter.itemCount < 1){
-                            viewModel.listUiState.showEmpty = true
-                            viewModel.listUiState.emptyMessage = message
-                        } else {
-                            viewModel.listUiState.showList = true
-                        }
                     }
                 }
             }
