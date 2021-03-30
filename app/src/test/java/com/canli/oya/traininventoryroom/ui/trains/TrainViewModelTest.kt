@@ -2,6 +2,7 @@ package com.canli.oya.traininventoryroom.ui.trains
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.paging.PagingData
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.canli.oya.traininventoryroom.data.FakeTrainDataSource
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.TrainMinimal
@@ -19,6 +20,8 @@ import org.hamcrest.core.IsEqual
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+
 
 class TrainViewModelTest{
 
@@ -36,12 +39,6 @@ class TrainViewModelTest{
     @Before
     fun setupViewModel() {
         trainViewModel = TrainViewModel(FakeTrainDataSource(sampleTrainList), Dispatchers.Unconfined)
-    }
-
-    @Test
-    fun atLaunch_defaultUIStateIsLoading() {
-        val value = trainViewModel.listUiState.showLoading
-        assertThat(value, CoreMatchers.`is`(true))
     }
 
     //delete train with id deletes the train

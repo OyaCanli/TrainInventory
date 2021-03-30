@@ -1,8 +1,11 @@
 package com.canli.oya.traininventoryroom.ui.brands
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.FakeBrandDataSource
+import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.getOrAwaitValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,6 +20,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+
 
 class BrandViewModelTest{
 
@@ -41,12 +46,6 @@ class BrandViewModelTest{
     fun atLaunch_addItemChildFragIsNotVisible() {
         val value = brandViewModel.isChildFragVisible
         assertThat(value, CoreMatchers.`is`(false))
-    }
-
-    @Test
-    fun atLaunch_defaultUIStateIsLoading() {
-        val value = brandViewModel.listUiState.showLoading
-        assertThat(value, CoreMatchers.`is`(true))
     }
 
     @Test

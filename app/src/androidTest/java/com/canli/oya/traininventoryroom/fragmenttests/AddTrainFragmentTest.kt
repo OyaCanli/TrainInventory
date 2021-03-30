@@ -163,9 +163,7 @@ class AddTrainFragmentTest {
 
         //Verify a toast is shown since train name is empty
         onView(withText(R.string.train_name_empty)).inRoot(withDecorView(not(decorView))).check(matches(isDisplayed()))
-
     }
-
 
     /*Launch in add mode. Add something and click back. Verify that a dialog is shown. */
     @Test
