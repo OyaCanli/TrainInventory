@@ -25,6 +25,7 @@ import com.canli.oya.traininventoryroom.utils.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListener,
@@ -50,12 +51,17 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        intentRequest = arguments?.getString(INTENT_REQUEST_CODE) ?: ALL_TRAIN
-        if (intentRequest == TRAINS_OF_BRAND) {
-            brandName = arguments?.getString(BRAND_NAME)
-        }
-        if (intentRequest == TRAINS_OF_CATEGORY) {
-            categoryName = arguments?.getString(CATEGORY_NAME)
+
+        if(arguments != null) {
+            intentRequest = TrainListFragmentArgs.fromBundle(requireArguments()).intentRequestCode
+            if (intentRequest == TRAINS_OF_BRAND) {
+                brandName = TrainListFragmentArgs.fromBundle(requireArguments()).brandName
+            }
+            if (intentRequest == TRAINS_OF_CATEGORY) {
+                categoryName = TrainListFragmentArgs.fromBundle(requireArguments()).categoryName
+            }
+        } else  {
+            intentRequest = ALL_TRAIN
         }
     }
 
@@ -65,8 +71,6 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
         ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(TrainViewModel::class.java)
-
-        //observeUIState(R.string.no_trains_found)
 
         when (intentRequest) {
             //If the fragment will be used for showing trains from a specific brand

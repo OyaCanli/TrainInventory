@@ -44,7 +44,7 @@
         <argument
             android:name="intentRequestCode"
             app:argType="string"
-            app:nullable="true" />
+            android:defaultValue="allTrains"/>
         <argument
             android:name="categoryName"
             android:defaultValue="@null"

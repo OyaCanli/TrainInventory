@@ -22,6 +22,7 @@ import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
+import com.canli.oya.traininventoryroom.utils.IS_EDIT
 import com.canli.oya.traininventoryroom.utils.shortToast
 import com.github.dhaval2404.imagepicker.ImagePicker
 import kotlinx.coroutines.flow.collectLatest
@@ -60,7 +61,7 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
 
         viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(BrandViewModel::class.java)
 
-        if (arguments?.containsKey(INTENT_REQUEST_CODE) == true) { //This is the "edit" case
+        if (arguments?.getBoolean(IS_EDIT) == true) { //This is the "edit" case
             isEditCase = true
             viewModel.chosenItem.observe(viewLifecycleOwner,  { brandEntry ->
                 brandEntry?.let {

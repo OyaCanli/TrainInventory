@@ -156,7 +156,7 @@ abstract class BrandCategoryBaseFrag<T : Any> : BaseListFragment<T>(), SwipeDele
         viewModel.setChosenItem(clickedItem)
         val childFrag = getChildFragment()
         val args = Bundle()
-        args.putString(INTENT_REQUEST_CODE, EDIT_CASE)
+        args.putBoolean(IS_EDIT, true)
         childFrag.arguments = args
         viewModel.isChildFragVisible = true
         addMenuItem?.let {

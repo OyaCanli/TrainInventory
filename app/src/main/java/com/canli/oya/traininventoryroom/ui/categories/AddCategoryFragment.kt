@@ -17,6 +17,7 @@ import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
+import com.canli.oya.traininventoryroom.utils.IS_EDIT
 import com.canli.oya.traininventoryroom.utils.shortToast
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -48,7 +49,7 @@ class AddCategoryFragment : Fragment(R.layout.fragment_add_category) {
 
         viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(CategoryViewModel::class.java)
 
-        if (arguments?.containsKey(INTENT_REQUEST_CODE) == true) { //This is the "edit" case
+        if (arguments?.getBoolean(IS_EDIT) == true) { //This is the "edit" case
             isEditCase = true
             viewModel.chosenItem.observe(viewLifecycleOwner, { categoryEntry ->
                 categoryEntry?.let {

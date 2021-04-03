@@ -32,7 +32,7 @@ class TrainDetailsFragment : Fragment(R.layout.fragment_train_details) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        trainId = arguments?.getInt(TRAIN_ID) ?: 0
+        trainId = TrainDetailsFragmentArgs.fromBundle(requireArguments()).trainId
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
