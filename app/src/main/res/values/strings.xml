@@ -79,7 +79,7 @@
     <string name="cd_edit_icon">Edit icon</string>
     <string name="cd_train_icon_for_brands">Train icon which shows the trains from this brand</string>
     <string name="cd_web_icon_fror_brands">Web icon for opening the website of the brand</string>
-    <string name="cd_brand_logo">Brand of the logo</string>
+    <string name="cd_brand_logo">Logo of the brand</string>
     <string name="cd_empty_icon">Train icon is shown when the list is empty</string>
     <string name="cd_chosen_train_image">An image of the chosen train</string>
     <string name="cd_details_gallery_icon">Train image if available, click for changing the image</string>

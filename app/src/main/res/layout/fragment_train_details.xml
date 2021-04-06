@@ -35,6 +35,9 @@
 
             <TextView
                 android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_standard"
                 android:text="@string/brand"
                 app:layout_constraintBaseline_toBaselineOf="@+id/details_brand"
                 app:layout_constraintStart_toStartOf="parent"
@@ -43,7 +46,6 @@
             <TextView
                 android:id="@+id/details_brand"
                 style="@style/details_plain_text"
-                android:layout_marginStart="16dp"
                 android:text="@{chosenTrain.brandName}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/barrier2"
@@ -52,6 +54,9 @@
 
             <TextView
                 android:id="@+id/textView17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_standard"
                 style="@style/yellow_descriptive_text"
                 android:text="@string/reference"
                 app:layout_constraintBaseline_toBaselineOf="@+id/details_reference"
@@ -60,7 +65,6 @@
             <TextView
                 android:id="@+id/details_reference"
                 style="@style/details_plain_text"
-                android:layout_marginStart="16dp"
                 android:text="@{chosenTrain.modelReference}"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -70,6 +74,9 @@
 
             <TextView
                 android:id="@+id/textView19"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_standard"
                 style="@style/yellow_descriptive_text"
                 android:text="@string/category"
                 app:layout_constraintBaseline_toBaselineOf="@+id/details_category"
@@ -78,7 +85,6 @@
             <TextView
                 android:id="@+id/details_category"
                 style="@style/details_plain_text"
-                android:layout_marginStart="16dp"
                 android:text="@{chosenTrain.categoryName}"
                 android:textStyle="italic"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -88,6 +94,9 @@
 
             <TextView
                 android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_standard"
                 style="@style/yellow_descriptive_text"
                 android:text="@string/description"
                 app:layout_constraintBottom_toBottomOf="@+id/details_description"
@@ -97,11 +106,6 @@
             <TextView
                 android:id="@+id/details_description"
                 style="@style/details_plain_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="@dimen/margin_standard"
                 android:text="@{chosenTrain.description}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/barrier2"
@@ -111,6 +115,9 @@
             <TextView
                 android:id="@+id/textView16"
                 style="@style/yellow_descriptive_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_standard"
                 android:text="@string/quantity"
                 app:layout_constraintBaseline_toBaselineOf="@+id/details_quantity"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -118,11 +125,6 @@
             <TextView
                 android:id="@+id/details_quantity"
                 style="@style/details_plain_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
                 android:text="@{String.valueOf(chosenTrain.quantity)}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/barrier2"
@@ -133,14 +135,15 @@
                 android:id="@+id/textView13"
                 style="@style/yellow_descriptive_text"
                 android:text="@string/scale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_standard"
                 app:layout_constraintBaseline_toBaselineOf="@+id/details_scale"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/details_scale"
                 style="@style/details_plain_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 android:text="@{chosenTrain.scale}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/barrier2"
@@ -150,6 +153,9 @@
             <TextView
                 android:id="@+id/textView18"
                 style="@style/yellow_descriptive_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_standard"
                 android:text="@string/location"
                 app:layout_constraintBaseline_toBaselineOf="@+id/details_location"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -157,11 +163,6 @@
             <TextView
                 android:id="@+id/details_location"
                 style="@style/details_plain_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
                 android:text="@{chosenTrain.location}"
                 app:layout_constraintEnd_toEndOf="parent"
