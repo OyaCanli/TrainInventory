@@ -35,60 +35,7 @@ class FilterTrainViewModel (val trainDataSource: ITrainDataSource,
 
     suspend fun filterTrains() : ArrayList<TrainMinimal> {
         val filteredList = ArrayList<TrainMinimal>()
-
-        Timber.d("filtered trains is called")
-
-        if(!keyword.isNullOrBlank()) {
-            val sb = StringBuilder("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE ")
-            val keywords = keyword!!.split(" ")
-            val wordCount = keywords.size
-            keywords.forEachIndexed { index, keyword ->
-                sb.append("(trainName LIKE '%$keyword%' OR modelReference LIKE '%$keyword%' OR description LIKE '%$keyword%') ")
-                if(index < wordCount - 1){
-                    sb.append("AND ")
-                }
-            }
-
-            if(selectedCategory.value != null) {
-                sb.append("AND categoryName = '${selectedCategory.value}' ")
-            }
-
-            if(selectedBrand.value != null) {
-                sb.append("AND brandName = '${selectedBrand.value}' ")
-            }
-
-            sb.append(";")
-
-            val query = SimpleSQLiteQuery(sb.toString())
-            filteredList.addAll(trainDataSource.searchInTrains(query))
-        } else {
-            selectedCategory.value?.let {
-                filteredList.addAll(getTrainsFromThisCategory(it))
-                Timber.d("list size: ${filteredList.size}")
-            }
-
-            if(selectedCategory.value == null) {
-                Timber.d("selected category is null")
-            }
-
-            selectedBrand.value?.let { brand ->
-                if(filteredList.isNotEmpty()){
-                    val filtered = filteredList.filter { train ->
-                        train.brandName == brand
-                    }
-                    Timber.d("list size: ${filtered.size}")
-                    filteredList.clear()
-                    filteredList.addAll(filtered)
-                } else {
-                    filteredList.addAll(getTrainsFromThisBrand(brand))
-                }
-            }
-        }
-
+        filteredList.addAll(trainDataSource.searchInTrains(keyword, selectedCategory.value, selectedBrand.value))
         return filteredList
     }
-
-
-
-
 }

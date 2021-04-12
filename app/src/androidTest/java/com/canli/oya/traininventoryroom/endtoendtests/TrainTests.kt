@@ -231,31 +231,5 @@ class TrainTests {
         onView(withText(R.string.unsaved_changes_warning)).check(matches(isDisplayed()))
 
         activityScenario.close()
-
     }
-
-    @Test
-    fun searchATrain_correctResultsShown() = runBlocking {
-        database.categoryDao().insert(sampleCategory1)
-        database.brandDao().insert(sampleBrand1)
-        database.trainDao().insert(sampleTrain1)
-        database.trainDao().insert(sampleTrain3)
-
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
-
-        //Click trains from the bottom menu
-        onView(withId(R.id.trainListFragment)).perform(click())
-
-        onView(withId(R.id.action_search)).perform(click())
-        onView(isAssignableFrom(EditText::class.java)).perform(typeText("red"), pressImeActionButton())
-
-        delay(600) //todo: replace with idling resource
-
-        onView(withText(sampleTrain1.trainName)).check(matches(isDisplayed()))
-        onView(withText(sampleTrain3.trainName)).check(doesNotExist())
-
-        activityScenario.close()
-    }
-
 }

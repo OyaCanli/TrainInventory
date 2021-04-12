@@ -35,12 +35,16 @@ class FakeCategoryDataSource(private var categories : MutableList<CategoryEntry>
         categories = newCategoryList
     }
 
-    override fun isThisItemUsed(item: CategoryEntry): Boolean {
+    override suspend fun isThisItemUsed(item: CategoryEntry): Boolean {
         val index = trains.indexOfFirst { it.categoryName == item.categoryName }
         return (index != -1)
     }
 
     override fun getAllItems(): Flow<List<CategoryEntry>> = flow {
         emit(categories)
+    }
+
+    override suspend fun getItemNames(): List<String> {
+        return categories.map { it.categoryName }
     }
 }

@@ -1,5 +1,6 @@
 package com.canli.oya.traininventoryroom.endtoendtests
 
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -24,10 +25,7 @@ import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.inmemory.DaggerInMemoryTestComponent
 import com.canli.oya.traininventoryroom.di.inmemory.InMemoryTestComponent
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
-import com.canli.oya.traininventoryroom.utils.DataBindingIdlingResource
-import com.canli.oya.traininventoryroom.utils.clickOnChildWithId
-import com.canli.oya.traininventoryroom.utils.monitorActivity
-import com.canli.oya.traininventoryroom.utils.withIconResource
+import com.canli.oya.traininventoryroom.utils.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
@@ -79,6 +77,7 @@ class CategoryTests {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click + menu item and verify child frag becomes visible with empty fields
+        onView(withId(R.id.categoryListFragment)).perform(click())
         onView(withId(R.id.action_add)).perform(click())
         onView(withId(R.id.addCategory_editCatName)).check(matches(isDisplayed()))
         onView(withId(R.id.addCategory_editCatName)).check(matches(withText("")))
@@ -111,6 +110,7 @@ class CategoryTests {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click edit on the item and verify AddCategory becomes visible with correct fields
+        onView(withId(R.id.categoryListFragment)).perform(click())
         onView(withId(R.id.list))
                 .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickOnChildWithId(R.id.category_item_edit_icon)))
         onView(withId(R.id.addCategory_editCatName)).check(matches(isDisplayed()))
@@ -142,11 +142,14 @@ class CategoryTests {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click on train icon on the sample category
+        onView(withId(R.id.categoryListFragment)).perform(click())
         onView(withId(R.id.list))
                 .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickOnChildWithId(R.id.category_item_train_icon)))
 
-        onView(withText("All Wagons")).check(matches(withParent(withId(R.id.toolbar))))
-        onView(withText(sampleTrain1.trainName)).check(matches(isDisplayed()))
+        onView(withText(R.string.search_trains)).check(matches(withParent(withId(R.id.toolbar))))
+        onView(withText(sampleTrain1.categoryName)).check(matches(isDisplayed()))
+        onView(withId(R.id.empty_image)).check(isGone())
+        onView(withId(R.id.empty_text)).check(isGone())
 
         activityScenario.close()
     }

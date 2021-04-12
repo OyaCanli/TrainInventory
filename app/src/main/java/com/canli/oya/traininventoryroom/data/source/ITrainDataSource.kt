@@ -28,5 +28,5 @@ interface ITrainDataSource {
 
     suspend fun getTrainsFromThisCategory(category: String): List<TrainMinimal>
 
-    suspend fun searchInTrains(query: SupportSQLiteQuery): List<TrainMinimal>
+    suspend fun searchInTrains(keyword: String?, category: String?, brand: String?): List<TrainMinimal>
 }

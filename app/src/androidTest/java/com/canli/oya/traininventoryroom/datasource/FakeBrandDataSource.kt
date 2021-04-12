@@ -41,8 +41,12 @@ class FakeBrandDataSource(private var brands : MutableList<BrandEntry> = sampleB
         brands = newBrandList
     }
 
-    override fun isThisItemUsed(item: BrandEntry): Boolean {
+    override suspend fun isThisItemUsed(item: BrandEntry): Boolean {
         val index = trains.indexOfFirst { it.brandName == item.brandName }
         return (index != -1)
+    }
+
+    override suspend fun getItemNames(): List<String> {
+        return brands.map { it.brandName }
     }
 }

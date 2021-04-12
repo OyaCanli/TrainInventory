@@ -84,7 +84,7 @@ class TrainDetailsFragment : Fragment(R.layout.fragment_train_details) {
 
     private fun deleteTrain() {
         viewModel.deleteTrain(mChosenTrain)
-        parentFragmentManager.popBackStack()
+        binding.root.findNavController().popBackStack()
     }
 
 }
