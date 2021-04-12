@@ -5,21 +5,22 @@
     tools:showIn="navigation_view">
 
     <item
+        android:id="@+id/trainListFragment"
+        android:title="@string/trains"
+        android:icon="@drawable/ic_train_bottom_nav" />
+
+    <item
+        android:id="@+id/filterTrainFragment"
+        android:title="@string/search"
+        android:icon="@drawable/ic_search"/>
+
+    <item
         android:id="@+id/categoryListFragment"
         android:title="@string/categories"
-        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_category"/>
 
     <item
         android:id="@+id/brandListFragment"
         android:title="@string/brands"
-        android:icon="@drawable/ic_brand"
-        app:showAsAction="ifRoom"/>
-
-    <item
-        android:id="@+id/trainListFragment"
-        android:title="@string/trains"
-        android:icon="@drawable/ic_train_bottom_nav"
-        app:showAsAction="ifRoom"/>
-
+        android:icon="@drawable/ic_brand" />
 </menu>

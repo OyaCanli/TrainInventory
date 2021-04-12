@@ -68,7 +68,7 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_search_and_add, menu)
+        inflater.inflate(R.menu.menu_add_item, menu)
         addMenuItem = menu.findItem(R.id.action_add)
     }
 
@@ -86,10 +86,6 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
             R.id.export_to_excel -> NavigationUI.onNavDestinationSelected(
                 item, binding.root.findNavController()
             )
-            R.id.action_search -> {
-                val action = TrainListFragmentDirections.actionTrainListFragmentToFilterTrainFragment()
-                binding.root.findNavController().navigate(action)
-            }
         }
         return super.onOptionsItemSelected(item)
     }
