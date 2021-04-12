@@ -5,6 +5,8 @@ import androidx.paging.DataSource
 import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.RawQuery
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.TrainMinimal
 import kotlinx.coroutines.flow.Flow
@@ -16,40 +18,37 @@ interface TrainDao : BaseDao<TrainEntry>{
     fun observeAllTrains(): PagingSource<Int, TrainMinimal>
 
     @Query("SELECT * FROM trains")
-    fun getAllTrains() : List<TrainEntry>
+    suspend fun getAllTrains() : List<TrainEntry>
 
     @Query("SELECT trainName FROM trains")
-    fun getAllTrainNames() : List<String>
+    suspend fun getAllTrainNames() : List<String>
 
     @Query("SELECT * FROM trains WHERE trainId = :id")
     fun observeChosenTrain(id: Int): Flow<TrainEntry>
 
     @Query("SELECT * FROM trains WHERE trainId = :id")
-    fun getChosenTrain(id: Int): TrainEntry
+    suspend fun getChosenTrain(id: Int): TrainEntry
 
     @Query("SELECT 1 FROM trains WHERE brandName = :brandName")
-    fun isThisBrandUsed(brandName: String): Boolean
+    suspend fun isThisBrandUsed(brandName: String): Boolean
 
     @Query("SELECT 1 FROM trains WHERE categoryName = :categoryName")
-    fun isThisCategoryUsed(categoryName: String): Boolean
+    suspend fun isThisCategoryUsed(categoryName: String): Boolean
 
     @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE brandName = :brandName")
-    fun observeTrainsFromThisBrand(brandName: String): PagingSource<Int, TrainMinimal>
+    suspend fun getTrainsFromThisBrand(brandName: String): List<TrainMinimal>
 
     @Query("SELECT * FROM trains WHERE brandName = :brandName")
-    fun getFullTrainsFromThisBrand(brandName: String): List<TrainEntry>
+    suspend fun getFullTrainsFromThisBrand(brandName: String): List<TrainEntry>
 
     @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE categoryName = :categoryName")
-    fun observeTrainsFromThisCategory(categoryName: String): PagingSource<Int, TrainMinimal>
+    suspend fun getTrainsFromThisCategory(categoryName: String): List<TrainMinimal>
 
     @Query("SELECT * FROM trains WHERE categoryName = :categoryName")
-    fun getFullTrainsFromThisCategory(categoryName: String): List<TrainEntry>
+    suspend fun getFullTrainsFromThisCategory(categoryName: String): List<TrainEntry>
 
-    @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE (trainName LIKE '%' || :query || '%') " + "OR (modelReference LIKE '%' || :query || '%') OR (description LIKE '%' || :query || '%')")
-    fun searchInTrainsAndObserve(query: String): PagingSource<Int, TrainMinimal>
-
-    @Query("SELECT * FROM trains WHERE (trainName LIKE '%' || :query || '%') " + "OR (modelReference LIKE '%' || :query || '%') OR (description LIKE '%' || :query || '%')")
-    fun searchInTrains(query: String): List<TrainEntry>
+    @RawQuery
+    suspend fun searchInTrains(query: SupportSQLiteQuery): List<TrainMinimal>
 
     @Query("DELETE FROM trains WHERE trainId = :trainId")
     suspend fun delete(trainId : Int)

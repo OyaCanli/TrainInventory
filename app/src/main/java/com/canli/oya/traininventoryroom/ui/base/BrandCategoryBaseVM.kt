@@ -57,7 +57,7 @@ abstract class BrandCategoryBaseVM<T : Any>(private val dataSource: IBrandCatego
         viewModelScope.launch(ioDispatcher) { dataSource.updateItem(item) }
     }
 
-    fun isThisItemUsed(item: T): Boolean {
+    suspend fun isThisItemUsed(item: T): Boolean {
         return dataSource.isThisItemUsed(item)
     }
 

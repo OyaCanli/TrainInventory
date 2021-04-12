@@ -44,7 +44,7 @@ class BrandListFragment : BrandCategoryBaseFrag<BrandEntry>(), BrandItemClickLis
     }
 
     private fun launchTrainListWithBrand(brandName: String){
-        val action = BrandListFragmentDirections.actionBrandListFragmentToTrainListFragment(
+        val action = BrandListFragmentDirections.actionBrandListFragmentToFilterTrainFragment(
             TRAINS_OF_BRAND, brandName = brandName)
         binding.root.findNavController().navigate(action)
     }

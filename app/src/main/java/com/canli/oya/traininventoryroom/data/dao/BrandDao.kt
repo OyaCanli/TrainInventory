@@ -20,6 +20,9 @@ interface BrandDao : BaseDao<BrandEntry> {
     @Query("SELECT * FROM brands")
     suspend fun getBrandList() : List<BrandEntry>
 
+    @Query("SELECT brandName FROM brands")
+    suspend fun getBrandNames() : List<String>
+
     @Query("SELECT * FROM brands WHERE brandId = :id")
     fun observeChosenBrand(id: Int): Flow<BrandEntry>
 

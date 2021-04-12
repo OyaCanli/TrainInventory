@@ -10,10 +10,8 @@
         android:name="com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment"
         android:label="@string/all_categories">
         <action
-            android:id="@+id/action_categoryListFragment_to_trainListFragment"
-            app:destination="@id/trainListFragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"/>
+            android:id="@+id/action_categoryListFragment_to_filterTrainFragment"
+            app:destination="@id/filterTrainFragment" />
     </fragment>
 
     <fragment
@@ -21,10 +19,8 @@
         android:name="com.canli.oya.traininventoryroom.ui.brands.BrandListFragment"
         android:label="@string/all_brands">
         <action
-            android:id="@+id/action_brandListFragment_to_trainListFragment"
-            app:destination="@id/trainListFragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"/>
+            android:id="@+id/action_brandListFragment_to_filterTrainFragment"
+            app:destination="@id/filterTrainFragment" />
     </fragment>
 
     <fragment
@@ -41,20 +37,9 @@
             app:destination="@id/trainDetailsFragment"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out" />
-        <argument
-            android:name="intentRequestCode"
-            app:argType="string"
-            android:defaultValue="allTrains"/>
-        <argument
-            android:name="categoryName"
-            android:defaultValue="@null"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="brandName"
-            android:defaultValue="@null"
-            app:argType="string"
-            app:nullable="true" />
+        <action
+            android:id="@+id/action_trainListFragment_to_filterTrainFragment"
+            app:destination="@id/filterTrainFragment" />
     </fragment>
 
     <fragment
@@ -95,4 +80,26 @@
             android:name="excelFileUri"
             app:argType="string" />
     </dialog>
+    <fragment
+        android:id="@+id/filterTrainFragment"
+        android:name="com.canli.oya.traininventoryroom.ui.searchtrain.FilterTrainFragment"
+        android:label="@string/search_trains" >
+        <argument
+            android:name="intentRequestCode"
+            app:argType="string"
+            android:defaultValue="search"/>
+        <argument
+            android:name="categoryName"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="brandName"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_filterTrainFragment_to_trainDetailsFragment"
+            app:destination="@id/trainDetailsFragment" />
+    </fragment>
 </navigation>

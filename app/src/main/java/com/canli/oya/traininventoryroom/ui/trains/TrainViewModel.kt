@@ -34,12 +34,4 @@ class TrainViewModel (val dataSource: ITrainDataSource,
     fun deleteTrain(trainId: Int) {
         viewModelScope.launch(ioDispatcher) { dataSource.deleteTrain(trainId) }
     }
-
-    ///////////// SEARCH //////////////////////////
-    fun getTrainsFromThisBrand(brandName: String) = dataSource.getTrainsFromThisBrand(brandName)
-
-    fun getTrainsFromThisCategory(category: String) = dataSource.getTrainsFromThisCategory(category)
-
-    fun searchInTrains(query: String) = dataSource.searchInTrains(query)
-
 }

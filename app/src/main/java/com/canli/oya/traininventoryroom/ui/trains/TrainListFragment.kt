@@ -40,30 +40,10 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
 
     private var addMenuItem: MenuItem? = null
 
-    private lateinit var intentRequest: String
-
-    private var brandName: String? = null
-
-    private var categoryName: String? = null
 
     override fun getListAdapter(): BaseAdapter<TrainMinimal, out Any> =
         TrainAdapter(requireContext(), this, this)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        if(arguments != null) {
-            intentRequest = TrainListFragmentArgs.fromBundle(requireArguments()).intentRequestCode
-            if (intentRequest == TRAINS_OF_BRAND) {
-                brandName = TrainListFragmentArgs.fromBundle(requireArguments()).brandName
-            }
-            if (intentRequest == TRAINS_OF_CATEGORY) {
-                categoryName = TrainListFragmentArgs.fromBundle(requireArguments()).categoryName
-            }
-        } else  {
-            intentRequest = ALL_TRAIN
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -72,53 +52,17 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(TrainViewModel::class.java)
 
-        when (intentRequest) {
-            //If the fragment will be used for showing trains from a specific brand
-            TRAINS_OF_BRAND -> {
-                brandName?.let {
-                    (activity as? MainActivity)?.supportActionBar?.title =
-                        getString(R.string.trains_of_the_brand, it)
-                    observeUIState(R.string.no_train_for_this_brand)
-                    lifecycleScope.launch {
-                        viewModel.getTrainsFromThisBrand(it).collectLatest { trainEntries ->
-                            adapter.submitData(trainEntries)
-                            mTrainList = trainEntries
-                        }
-                    }
-                }
-            }
-            //If the fragment_list will be used for showing trains from a specific category
-            TRAINS_OF_CATEGORY -> {
-                categoryName?.let {
-                    (activity as? MainActivity)?.supportActionBar?.title =
-                        getString(R.string.all_from_this_Category, it)
-                    observeUIState(R.string.no_train_for_this_category)
-                    lifecycleScope.launch {
-                        viewModel.getTrainsFromThisCategory(it).collectLatest { trainEntries ->
-                            adapter.submitData(trainEntries)
-                            mTrainList = trainEntries
-                        }
-                    }
-                }
-            }
-            else -> {
-                //If the fragment_list is going to be use for showing all trains, which is the default behaviour
-                (activity as? MainActivity)?.supportActionBar?.title =
-                    getString(R.string.all_trains)
-                observeUIState(R.string.no_trains_found)
-                lifecycleScope.launch {
-                    viewModel.allItems.collectLatest { trainEntries ->
-                        adapter.submitData(trainEntries)
-                        mTrainList = trainEntries
-                    }
-                }
+        observeUIState(R.string.no_trains_found)
+        lifecycleScope.launch {
+            viewModel.allItems.collectLatest { trainEntries ->
+                adapter.submitData(trainEntries)
+                mTrainList = trainEntries
             }
         }
     }
 
     override fun onListItemClick(trainId: Int) {
-        val action =
-            TrainListFragmentDirections.actionTrainListFragmentToTrainDetailsFragment(trainId)
+        val action = TrainListFragmentDirections.actionTrainListFragmentToTrainDetailsFragment(trainId)
         binding.root.findNavController().navigate(action)
     }
 
@@ -126,32 +70,6 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_search_and_add, menu)
         addMenuItem = menu.findItem(R.id.action_add)
-        val searchView = menu.findItem(R.id.action_search).actionView as SearchView
-        //added filter to fragment_list (dynamic change input text)
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(query: String): Boolean {
-                lifecycleScope.launch {
-                    filterTrains(query)
-                }
-                return false
-            }
-        })
-    }
-
-    private suspend fun filterTrains(query: String?) {
-        if (query.isNullOrBlank()) {
-            mTrainList?.let {
-                adapter.submitData(it)
-            }
-        } else {
-            viewModel.searchInTrains(query).collect { filteredTrains ->
-                adapter.submitData(filteredTrains)
-            }
-        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -162,14 +80,16 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
                     val anim = addMenuItem?.icon as? AnimatedVectorDrawable
                     anim?.start()
                 }
-                val action =
-                    TrainListFragmentDirections.actionTrainListFragmentToAddTrainFragment(null)
+                val action = TrainListFragmentDirections.actionTrainListFragmentToAddTrainFragment(null)
                 binding.root.findNavController().navigate(action)
             }
             R.id.export_to_excel -> NavigationUI.onNavDestinationSelected(
-                item,
-                binding.root.findNavController()
+                item, binding.root.findNavController()
             )
+            R.id.action_search -> {
+                val action = TrainListFragmentDirections.actionTrainListFragmentToFilterTrainFragment()
+                binding.root.findNavController().navigate(action)
+            }
         }
         return super.onOptionsItemSelected(item)
     }

@@ -3,6 +3,7 @@ package com.canli.oya.traininventoryroom.data.source
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.canli.oya.traininventoryroom.data.TrainDatabase
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.TrainMinimal
@@ -32,26 +33,12 @@ class TrainDataSource @Inject constructor(private val database: TrainDatabase) :
 
     override suspend fun deleteTrain(trainId: Int) = database.trainDao().delete(trainId)
 
-    override fun getTrainsFromThisBrand(brandName: String): Flow<PagingData<TrainMinimal>> {
-        val pager = Pager(config = PagingConfig(TRAINS_PAGE_SIZE, enablePlaceholders = true)) {
-            database.trainDao().observeTrainsFromThisBrand(brandName)
-        }
-        return pager.flow
-    }
+    override suspend fun getTrainsFromThisBrand(brandName: String): List<TrainMinimal> = database.trainDao().getTrainsFromThisBrand(brandName)
 
-    override fun getTrainsFromThisCategory(category: String) : Flow<PagingData<TrainMinimal>> {
-        val pager = Pager(config = PagingConfig(TRAINS_PAGE_SIZE, enablePlaceholders = true)) {
-            database.trainDao().observeTrainsFromThisCategory(category)
-        }
-        return pager.flow
-    }
+    override suspend fun getTrainsFromThisCategory(category: String): List<TrainMinimal> = database.trainDao().getTrainsFromThisCategory(category)
 
-    override fun searchInTrains(query: String): Flow<PagingData<TrainMinimal>> {
-        val pager = Pager(config = PagingConfig(TRAINS_PAGE_SIZE, enablePlaceholders = true)) {
-            database.trainDao().searchInTrainsAndObserve(query)
-        }
-        return pager.flow
-    }
+    override suspend fun searchInTrains(query: SupportSQLiteQuery): List<TrainMinimal> = database.trainDao().searchInTrains(query)
+
 
 }
 

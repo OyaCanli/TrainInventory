@@ -10,6 +10,7 @@ import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
 import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
 import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
+import com.canli.oya.traininventoryroom.ui.searchtrain.FilterTrainFragment
 import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
 import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
 import dagger.Component
@@ -34,4 +35,5 @@ interface AppComponent {
     fun inject(target: AddCategoryFragment)
     fun inject(target: AddBrandFragment)
     fun inject(target: TrainDetailsFragment)
+    fun inject(target: FilterTrainFragment)
 }

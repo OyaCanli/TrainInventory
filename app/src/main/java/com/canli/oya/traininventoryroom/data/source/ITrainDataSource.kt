@@ -3,6 +3,7 @@ package com.canli.oya.traininventoryroom.data.source
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import androidx.paging.PagingData
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.TrainMinimal
 import kotlinx.coroutines.flow.Flow
@@ -23,9 +24,9 @@ interface ITrainDataSource {
 
     suspend fun deleteTrain(trainId: Int)
 
-    fun getTrainsFromThisBrand(brandName: String): Flow<PagingData<TrainMinimal>>
+    suspend fun getTrainsFromThisBrand(brandName: String): List<TrainMinimal>
 
-    fun getTrainsFromThisCategory(category: String): Flow<PagingData<TrainMinimal>>
+    suspend fun getTrainsFromThisCategory(category: String): List<TrainMinimal>
 
-    fun searchInTrains(query: String): Flow<PagingData<TrainMinimal>>
+    suspend fun searchInTrains(query: SupportSQLiteQuery): List<TrainMinimal>
 }

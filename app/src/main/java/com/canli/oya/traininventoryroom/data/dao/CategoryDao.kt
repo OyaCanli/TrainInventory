@@ -19,6 +19,9 @@ interface CategoryDao : BaseDao<CategoryEntry> {
     @Query("SELECT * FROM categories")
     suspend fun getCategoryList() : List<CategoryEntry>
 
+    @Query("SELECT categoryName FROM categories")
+    suspend fun getCategoryNames() : List<String>
+
     @Query("SELECT * FROM categories WHERE categoryId = :id")
     suspend fun getChosenCategory(id: Int): CategoryEntry
 }
