@@ -62,11 +62,6 @@ abstract class BaseListFragment<T : Any> : Fragment(R.layout.fragment_list) {
         }
     }
 
-    fun MenuItem.setMenuIcon(@DrawableRes iconResource: Int) {
-        setIcon(iconResource)
-        title = if (iconResource == R.drawable.avd_plus_to_cross) TITLE_PLUS else TITLE_CROSS
-    }
-
     protected fun observeUIState(@StringRes message: Int) {
         lifecycleScope.launchWhenStarted {
             adapter.loadStateFlow.collectLatest {
@@ -112,4 +107,9 @@ abstract class BaseListFragment<T : Any> : Fragment(R.layout.fragment_list) {
         binding.emptyImage.visibility = View.GONE
         binding.emptyText.visibility = View.GONE
     }
+}
+
+fun MenuItem.setMenuIcon(@DrawableRes iconResource: Int) {
+    setIcon(iconResource)
+    title = if (iconResource == R.drawable.avd_plus_to_cross) TITLE_PLUS else TITLE_CROSS
 }

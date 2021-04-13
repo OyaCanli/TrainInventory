@@ -22,6 +22,10 @@ import com.canli.oya.traininventoryroom.databinding.FragmentAddBrandBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
+import com.canli.oya.traininventoryroom.ui.base.BaseListFragment
+import com.canli.oya.traininventoryroom.ui.base.BrandCategoryBaseFrag
+import com.canli.oya.traininventoryroom.ui.base.setMenuIcon
+import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
 import com.canli.oya.traininventoryroom.utils.IS_EDIT
 import com.canli.oya.traininventoryroom.utils.shortToast
@@ -136,6 +140,10 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
             currentInstance?.let {
                 remove(it)
             }
+        }
+
+        if(parentFragment is BrandListFragment) {
+            (parentFragment as BrandListFragment).addMenuItem?.setMenuIcon(R.drawable.avd_plus_to_cross)
         }
     }
 

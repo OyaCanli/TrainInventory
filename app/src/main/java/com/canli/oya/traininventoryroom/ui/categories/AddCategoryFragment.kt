@@ -16,6 +16,7 @@ import com.canli.oya.traininventoryroom.databinding.FragmentAddCategoryBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
+import com.canli.oya.traininventoryroom.ui.base.setMenuIcon
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
 import com.canli.oya.traininventoryroom.utils.IS_EDIT
 import com.canli.oya.traininventoryroom.utils.shortToast
@@ -114,6 +115,10 @@ class AddCategoryFragment : Fragment(R.layout.fragment_add_category) {
             currentInstance?.let {
                 remove(it)
             }
+        }
+
+        if(parentFragment is CategoryListFragment) {
+            (parentFragment as CategoryListFragment).addMenuItem?.setMenuIcon(R.drawable.avd_plus_to_cross)
         }
     }
 }
