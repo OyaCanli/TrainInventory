@@ -3,11 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-        <variable name="uiState"
-            type="com.canli.oya.traininventoryroom.data.UIState"/>
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,12 +18,12 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:scrollbars="vertical"
-            app:visible= "@{uiState.showList}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:itemDivider = "@{true}"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/list_addFrag_container" />
 
         <ImageView
@@ -45,8 +40,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/list_addFrag_container"
             app:layout_constraintVertical_bias="0.24"
-            app:srcCompat="@drawable/train_logo_large"
-            app:visible="@{uiState.showEmpty}" />
+            android:visibility="gone"
+            app:srcCompat="@drawable/train_logo_large" />
 
         <com.canli.oya.traininventoryroom.ui.main.IconTextView
             android:id="@+id/empty_text"
@@ -57,9 +52,8 @@
             android:layout_marginBottom="@dimen/large_margin"
             android:gravity="center"
             android:lineSpacingMultiplier="1.2"
-            android:text="@{uiState.emptyMessage}"
-            app:visible="@{uiState.showEmpty}"
             android:textSize="20sp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -71,7 +65,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_standard"
-            app:visible="@{uiState.showLoading}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

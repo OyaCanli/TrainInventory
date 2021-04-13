@@ -31,11 +31,15 @@ class CategoryDataSource @Inject constructor(private val database: TrainDatabase
         database.categoryDao().delete(item)
     }
 
-    override fun isThisItemUsed(item: CategoryEntry): Boolean {
+    override suspend fun isThisItemUsed(item: CategoryEntry): Int? {
         return database.trainDao().isThisCategoryUsed(item.categoryName)
     }
 
     override suspend fun updateItem(item: CategoryEntry) {
         database.categoryDao().update(item)
+    }
+
+    override suspend fun getItemNames(): List<String> {
+        return database.categoryDao().getCategoryNames()
     }
 }

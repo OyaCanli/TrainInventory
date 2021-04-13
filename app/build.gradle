@@ -45,10 +45,17 @@ android {
         }
     }
 
-    android {
-        lintOptions {
-            abortOnError false
+    sourceSets {
+        androidTest {
+            java.srcDirs += "src/sharedTest/java"
         }
+        test {
+            java.srcDirs += "src/sharedTest/java"
+        }
+    }
+
+    lintOptions {
+        abortOnError false
     }
 }
 

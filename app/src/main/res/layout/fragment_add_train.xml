@@ -33,9 +33,9 @@
 
             <Spinner
                 android:id="@+id/brandSpinner"
-                style="@style/editTextStyle"
-                android:layout_marginTop="@dimen/margin_standard"
-                android:layout_marginEnd="@dimen/margin_standard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_standard"
                 app:layout_constraintEnd_toStartOf="@+id/addTrain_addBrandBtn"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/categorySpinner" />
@@ -55,8 +55,6 @@
                     android:id="@+id/editReference"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="textCapCharacters"
                     android:text="@={viewModel.trainBeingModified.modelReference}" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -75,7 +73,6 @@
                     android:id="@+id/editTrainName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textCapCharacters"
                     android:text="@={viewModel.trainBeingModified.trainName}" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -172,9 +169,11 @@
 
             <TextView
                 android:id="@+id/textView"
-                style="@style/FieldStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_standard"
                 android:layout_marginTop="@dimen/margin_standard"
+                style="@style/yellow_descriptive_text"
                 android:text="@string/add_image"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editTrainDescription_layout" />

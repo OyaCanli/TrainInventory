@@ -79,7 +79,7 @@
     <string name="cd_edit_icon">Edit icon</string>
     <string name="cd_train_icon_for_brands">Train icon which shows the trains from this brand</string>
     <string name="cd_web_icon_fror_brands">Web icon for opening the website of the brand</string>
-    <string name="cd_brand_logo">Brand of the logo</string>
+    <string name="cd_brand_logo">Logo of the brand</string>
     <string name="cd_empty_icon">Train icon is shown when the list is empty</string>
     <string name="cd_chosen_train_image">An image of the chosen train</string>
     <string name="cd_details_gallery_icon">Train image if available, click for changing the image</string>
@@ -110,5 +110,10 @@
     <string name="upload_file">Would you like to upload the excel file to cloud or share with someone?</string>
     <string name="successfully_exported_browse">Successfully exported to Excel. Would you like to browse the file?</string>
     <string name="website_of_the_brand">Website of the brand</string>
+    <string name="filter_by_category">Filter by category</string>
+    <string name="filter_by_brand">Filter by brand</string>
+    <string name="hint_search_keywords">Search by keyword(s)</string>
+    <string name="search_trains">Search Trains</string>
+    <string name="no_results_for_search">No trains found with these criteria.</string>
 
 </resources>

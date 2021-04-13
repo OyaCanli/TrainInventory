@@ -40,6 +40,8 @@
     <dimen name="design_bottom_navigation_active_item_max_width" tools:override="true">600dp</dimen>
 
     <dimen name="edittext_box_width">1dp</dimen>
+    <dimen name="empty_image_dim">150dp</dimen>
+    <dimen name="search_btn_corner_radius">10dp</dimen>
 
 
 </resources>

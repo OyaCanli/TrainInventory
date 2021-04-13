@@ -15,9 +15,7 @@ import androidx.test.filters.LargeTest
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.datasource.sampleBrand1
-import com.canli.oya.traininventoryroom.datasource.sampleCategory1
-import com.canli.oya.traininventoryroom.datasource.sampleTrain1
+import com.canli.oya.traininventoryroom.datasource.*
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TestAppModule
 import com.canli.oya.traininventoryroom.di.TrainApplication
@@ -158,7 +156,7 @@ class BrandTests {
         onView(withId(R.id.list))
                 .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickOnChildWithId(R.id.brand_item_train_icon)))
 
-        onView(withText("Trains of the brand ${sampleBrand1.brandName}")).check(matches(withParent(withId(R.id.toolbar))))
+        onView(withText(R.string.search_trains)).check(matches(withParent(withId(R.id.toolbar))))
         onView(withText(sampleTrain1.trainName)).check(matches(isDisplayed()))
 
         activityScenario.close()

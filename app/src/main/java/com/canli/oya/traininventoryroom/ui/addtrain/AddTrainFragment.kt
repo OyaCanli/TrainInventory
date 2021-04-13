@@ -65,7 +65,7 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        chosenTrain = arguments?.getParcelable(CHOSEN_TRAIN)
+        chosenTrain = AddTrainFragmentArgs.fromBundle(requireArguments()).chosenTrain
         isEdit = chosenTrain != null
     }
 

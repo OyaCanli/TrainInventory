@@ -7,7 +7,7 @@ import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class FakeTrainDataSource(private var trains: MutableList<TrainEntry> = sampleTrainList) :
+class FakeTrainDataSource(var trains: MutableList<TrainEntry> = sampleTrainList) :
     ITrainDataSource {
 
     private val trainsFlow: Flow<PagingData<TrainMinimal>> = flow {
@@ -42,28 +42,46 @@ class FakeTrainDataSource(private var trains: MutableList<TrainEntry> = sampleTr
         trains.removeAt(index)
     }
 
-    override fun getTrainsFromThisBrand(brandName: String): Flow<PagingData<TrainMinimal>> {
-        val filteredList = trains.filter { it.brandName == brandName }
-        return flow {
-            emit(PagingData.from(convertTrainsToMinimalTrains(filteredList)))
-        }
-    }
-
-    override fun getTrainsFromThisCategory(category: String): Flow<PagingData<TrainMinimal>> {
-        val filteredList = trains.filter { it.categoryName == category }
-        return flow {
-            emit(PagingData.from(convertTrainsToMinimalTrains(filteredList)))
-        }
-    }
-
-    override fun searchInTrains(query: String): Flow<PagingData<TrainMinimal>> {
+    override suspend fun getTrainsFromThisBrand(brandName: String): List<TrainMinimal> {
         val filteredList = trains.filter {
-            it.trainName?.contains(query) == true || it.modelReference?.contains(query) == true
-                    || it.description?.contains(query) == true
+            it.brandName == brandName
         }
-        return flow {
-            emit(PagingData.from(convertTrainsToMinimalTrains(filteredList)))
+        return convertTrainsToMinimalTrains(filteredList)
+    }
+
+    override suspend fun getTrainsFromThisCategory(category: String): List<TrainMinimal> {
+        val filteredList = trains.filter { it.categoryName == category }
+        return convertTrainsToMinimalTrains(filteredList)
+    }
+
+    override suspend fun searchInTrains(
+        keyword: String?,
+        category: String?,
+        brand: String?
+    ): List<TrainMinimal> {
+        val filteredList = ArrayList<TrainEntry>()
+        filteredList.addAll(trains)
+        if (!keyword.isNullOrBlank()) {
+            val keywords = keyword.split(" ")
+            keywords.forEach { query ->
+                filteredList.retainAll { train ->
+                    train.trainName?.contains(query) == true || train.modelReference?.contains(query) == true
+                            || train.description?.contains(query) == true
+                }
+            }
         }
+        category?.let { category ->
+            filteredList.retainAll { train ->
+                train.categoryName == category
+            }
+        }
+
+        brand?.let { brand ->
+            filteredList.retainAll { train ->
+                train.brandName == brand
+            }
+        }
+        return convertTrainsToMinimalTrains(filteredList)
     }
 
     override fun getAllTrains(): Flow<PagingData<TrainMinimal>> = trainsFlow

@@ -8,6 +8,7 @@ import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import com.canli.oya.traininventoryroom.ui.brands.BrandViewModel
 import com.canli.oya.traininventoryroom.ui.categories.CategoryViewModel
+import com.canli.oya.traininventoryroom.ui.searchtrain.FilterTrainViewModel
 import com.canli.oya.traininventoryroom.ui.trains.TrainViewModel
 import javax.inject.Inject
 
@@ -21,6 +22,7 @@ class TrainInventoryVMFactory @Inject constructor(private val trainDataSource: I
             modelClass.isAssignableFrom(TrainViewModel::class.java) -> TrainViewModel(trainDataSource) as T
             modelClass.isAssignableFrom(BrandViewModel::class.java) -> BrandViewModel(brandDataSource) as T
             modelClass.isAssignableFrom(CategoryViewModel::class.java) -> CategoryViewModel(categoryDataSource) as T
+            modelClass.isAssignableFrom(FilterTrainViewModel::class.java) -> FilterTrainViewModel(trainDataSource, brandDataSource, categoryDataSource) as T
             else -> throw IllegalArgumentException("unknown model class $modelClass")
         }
     }

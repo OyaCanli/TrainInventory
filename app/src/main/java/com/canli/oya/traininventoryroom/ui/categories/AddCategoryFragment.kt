@@ -16,7 +16,9 @@ import com.canli.oya.traininventoryroom.databinding.FragmentAddCategoryBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
+import com.canli.oya.traininventoryroom.ui.base.setMenuIcon
 import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
+import com.canli.oya.traininventoryroom.utils.IS_EDIT
 import com.canli.oya.traininventoryroom.utils.shortToast
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -48,7 +50,7 @@ class AddCategoryFragment : Fragment(R.layout.fragment_add_category) {
 
         viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(CategoryViewModel::class.java)
 
-        if (arguments?.containsKey(INTENT_REQUEST_CODE) == true) { //This is the "edit" case
+        if (arguments?.getBoolean(IS_EDIT) == true) { //This is the "edit" case
             isEditCase = true
             viewModel.chosenItem.observe(viewLifecycleOwner, { categoryEntry ->
                 categoryEntry?.let {
@@ -90,7 +92,7 @@ class AddCategoryFragment : Fragment(R.layout.fragment_add_category) {
 
         clearFocusAndHideSoftKeyboard()
 
-        if(parentFragment is AddTrainFragment){
+        if(isEditCase || parentFragment is AddTrainFragment){
             removeFragment()
         }
     }
@@ -105,10 +107,18 @@ class AddCategoryFragment : Fragment(R.layout.fragment_add_category) {
     }
 
     private fun removeFragment() {
-        val currentInstance = parentFragmentManager.findFragmentById(R.id.childFragContainer)
+        val currentInstance = if(parentFragment is AddTrainFragment) parentFragmentManager.findFragmentById(R.id.childFragContainer)
+                            else parentFragmentManager.findFragmentById(R.id.list_addFrag_container)
+
         parentFragmentManager.commit {
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-            remove(currentInstance!!)
+            currentInstance?.let {
+                remove(it)
+            }
+        }
+
+        if(parentFragment is CategoryListFragment) {
+            (parentFragment as CategoryListFragment).addMenuItem?.setMenuIcon(R.drawable.avd_plus_to_cross)
         }
     }
 }

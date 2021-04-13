@@ -40,7 +40,7 @@ class CategoryListFragment : BrandCategoryBaseFrag<CategoryEntry>(), CategoryIte
     }
 
     private fun launchTrainListWithCategory(categoryName : String){
-        val action = CategoryListFragmentDirections.actionCategoryListFragmentToTrainListFragment(TRAINS_OF_CATEGORY, categoryName = categoryName)
+        val action = CategoryListFragmentDirections.actionCategoryListFragmentToFilterTrainFragment(TRAINS_OF_CATEGORY, categoryName = categoryName)
         binding.root.findNavController().navigate(action)
     }
 

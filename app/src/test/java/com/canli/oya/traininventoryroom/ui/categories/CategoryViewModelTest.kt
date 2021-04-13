@@ -1,20 +1,23 @@
 package com.canli.oya.traininventoryroom.ui.categories
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.canli.oya.traininventoryroom.data.CategoryEntry
-import com.canli.oya.traininventoryroom.data.FakeCategoryDataSource
-import com.canli.oya.traininventoryroom.getOrAwaitValue
+import com.canli.oya.traininventoryroom.datasource.FakeCategoryDataSource
+import com.canli.oya.traininventoryroom.utils.getOrAwaitValue
 import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.runBlockingTest
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 
 
 class CategoryViewModelTest {
@@ -32,7 +35,8 @@ class CategoryViewModelTest {
     @Before
     fun setupViewModel() {
         val sampleCategoryList = mutableListOf(sampleCategory1, sampleCategory2)
-        categoryViewModel = CategoryViewModel(FakeCategoryDataSource(sampleCategoryList),
+        categoryViewModel = CategoryViewModel(
+            FakeCategoryDataSource(sampleCategoryList),
                 Dispatchers.Unconfined
         )
     }
@@ -40,12 +44,6 @@ class CategoryViewModelTest {
     @Test
     fun atLaunch_addItemChildFragIsNotVisible() {
         assertThat(categoryViewModel.isChildFragVisible, `is`(false))
-    }
-
-    @Test
-    fun atLaunch_defaultUIStateIsLoading() {
-        val value = categoryViewModel.listUiState.showLoading
-        assertThat(value, `is`(true))
     }
 
     @Test

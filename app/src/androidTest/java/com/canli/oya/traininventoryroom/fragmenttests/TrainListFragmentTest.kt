@@ -80,9 +80,7 @@ class TrainListFragmentTest{
     fun allTrains_withSampleList_emptyScreenIsNotShown() {
         runBlockingTest {
             //Launch the fragment in ALL_TRAINS mode
-            val args = Bundle()
-            args.putString(INTENT_REQUEST_CODE, ALL_TRAIN)
-            val fragmentScenario = launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
+            val fragmentScenario = launchFragmentInContainer<TrainListFragment>(Bundle(), R.style.AppTheme)
             dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
             //Verify that empty layout is not displayed and that the list is displayed
@@ -93,77 +91,10 @@ class TrainListFragmentTest{
     }
 
     @Test
-    fun trainsOfBrand_withNoResult_showsEmptyScreen() {
-        runBlockingTest {
-            //Launches the fragment in TRAINS_OF_BRAND mode
-            val args = Bundle()
-            args.putString(INTENT_REQUEST_CODE, TRAINS_OF_BRAND)
-            args.putString(BRAND_NAME, "unexisting brand")
-            val fragmentScenario = launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
-            dataBindingIdlingResource.monitorFragment(fragmentScenario)
-
-            //Check if empty layout is displayed
-            onView(withId(R.id.empty_text)).check(isVisible())
-            onView(withId(R.id.empty_image)).check(isVisible())
-        }
-    }
-
-    @Test
-    fun trainsOfBrand_withAResult_showsCorrectResult() {
-        runBlockingTest {
-            //Launches the fragment in TRAINS_OF_BRAND mode
-            val sampleBrandName = sampleTrain1.brandName
-            val args = Bundle()
-            args.putString(INTENT_REQUEST_CODE, TRAINS_OF_BRAND)
-            args.putString(BRAND_NAME, sampleBrandName)
-            val fragmentScenario = launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
-            dataBindingIdlingResource.monitorFragment(fragmentScenario)
-
-            onView(withId(R.id.list)).check(isVisible())
-            onView(withText(sampleTrain1.trainName)).check(isVisible())
-        }
-    }
-
-    @Test
-    fun trainsOfCategory_withNoResult_showsEmptyScreen() {
-        runBlockingTest {
-            //Launch the fragment in TRAINS_OF_CATEGORY mode
-            val args = Bundle()
-            args.putString(INTENT_REQUEST_CODE, TRAINS_OF_CATEGORY)
-            args.putString(CATEGORY_NAME, "Unexisting Category")
-            val fragmentScenario = launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
-            dataBindingIdlingResource.monitorFragment(fragmentScenario)
-
-            //Check if empty layout is displayed
-            onView(withId(R.id.empty_text)).check(isVisible())
-            onView(withId(R.id.empty_image)).check(isVisible())
-        }
-    }
-
-    @Test
-    fun trainsOfCategory_withAResult_showsCorrectResult() {
-        runBlockingTest {
-            //Launch the fragment in TRAINS_OF_CATEGORY mode
-            val sampleCategoryName = sampleTrain2.categoryName
-            val args = Bundle()
-            args.putString(INTENT_REQUEST_CODE, TRAINS_OF_CATEGORY)
-            args.putString(CATEGORY_NAME, sampleCategoryName)
-            val fragmentScenario = launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
-            dataBindingIdlingResource.monitorFragment(fragmentScenario)
-
-            val enclosedInParenthesis = "($sampleCategoryName)"
-            onView(withId(R.id.list)).check(isVisible())
-            onView(withText(enclosedInParenthesis)).check(isVisible())
-        }
-    }
-
-    @Test
     fun swipingItem_revealsDeleteConfirmation() {
         runBlockingTest {
             //Launch the fragment in ALL_TRAINS mode
-            val args = Bundle()
-            args.putString(INTENT_REQUEST_CODE, ALL_TRAIN)
-            val fragmentScenario = launchFragmentInContainer<TrainListFragment>(args, R.style.AppTheme)
+            val fragmentScenario = launchFragmentInContainer<TrainListFragment>(Bundle(), R.style.AppTheme)
             dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
             //Swipe an item

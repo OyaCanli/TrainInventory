@@ -95,4 +95,9 @@
     <string name="successfully_exported_browse">Exporté à Excel avec succès. Voulez-vous naviguer le fichier?</string>
     <string name="upload_file">Voulez-vous télécharger le fichier à Cloud ou le partager avec quelqu\'un?</string>
     <string name="website_of_the_brand">Site web de la marque</string>
+    <string name="filter_by_category">Filtrez par catégorie</string>
+    <string name="filter_by_brand">Filtrez par marque</string>
+    <string name="hint_search_keywords">Recherchez par mot(s) clé(s)</string>
+    <string name="search_trains">Recherche Les Trains</string>
+    <string name="no_results_for_search">Aucun train trouvé pour ces critères</string>
 </resources>

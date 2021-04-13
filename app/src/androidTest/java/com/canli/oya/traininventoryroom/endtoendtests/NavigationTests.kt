@@ -58,24 +58,29 @@ class NavigationTests {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        //Verify category item is selected by default and category list fragment is on screen
-        onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.categoryListFragment)))
-        onView(withText(R.string.all_categories)).check(matches(withParent(withId(R.id.toolbar))))
+        //Verify train item is selected by default and train list fragment is on screen
+        onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.trainListFragment)))
+        onView(withText(R.string.all_trains)).check(matches(withParent(withId(R.id.toolbar))))
+
+        //Click on search menu item and verify that filter frag is shown and search menu item seems selected
+        onView(withId(R.id.filterTrainFragment)).perform(click())
+        onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.filterTrainFragment)))
+        onView(withText(R.string.search_trains)).check(matches(withParent(withId(R.id.toolbar))))
 
         //Click on brands menu item and verify that brands frag is shown and brand menu item seems selected
         onView(withId(R.id.brandListFragment)).perform(click())
         onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.brandListFragment)))
         onView(withText(R.string.all_brands)).check(matches(withParent(withId(R.id.toolbar))))
 
-        //Click on trains menu item and verify that trains frag is shown and train menu item seems selected
-        onView(withId(R.id.trainListFragment)).perform(click())
-        onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.trainListFragment)))
-        onView(withText(R.string.all_trains)).check(matches(withParent(withId(R.id.toolbar))))
-
-        //Press back and verify that we are in home screen and category menu item is selected
-        Espresso.pressBack()
+        //Click on categories menu item and verify that trains frag is shown and train menu item seems selected
+        onView(withId(R.id.categoryListFragment)).perform(click())
         onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.categoryListFragment)))
         onView(withText(R.string.all_categories)).check(matches(withParent(withId(R.id.toolbar))))
+
+        //Press back and verify that we are in home screen and train menu item is selected
+        Espresso.pressBack()
+        onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.trainListFragment)))
+        onView(withText(R.string.all_trains)).check(matches(withParent(withId(R.id.toolbar))))
 
         activityScenario.close()
     }
@@ -87,6 +92,7 @@ class NavigationTests {
 
         /*Verify that + icon is shown on the action menu at launch. Then click on plus button.
         Verify that + icon is replaced with x icon*/
+        onView(withId(R.id.categoryListFragment)).perform(click())
         onView(withId(R.id.action_add)).check(matches(withIconResource(R.drawable.avd_plus_to_cross)))
         onView(withId(R.id.action_add)).perform(click())
         onView(withId(R.id.action_add)).check(matches(withIconResource(R.drawable.avd_cross_to_plus)))

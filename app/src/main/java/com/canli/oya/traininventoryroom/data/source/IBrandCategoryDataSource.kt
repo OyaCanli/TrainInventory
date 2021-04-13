@@ -9,11 +9,13 @@ interface IBrandCategoryDataSource<T : Any> {
 
     fun getAllItems() : Flow<List<T>>
 
+    suspend fun getItemNames() : List<String>
+
     suspend fun insertItem(item: T)
 
     suspend fun updateItem(item: T)
 
     suspend fun deleteItem(item: T)
 
-    fun isThisItemUsed(item: T): Boolean
+    suspend fun isThisItemUsed(item: T): Int?
 }

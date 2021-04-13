@@ -1,8 +1,11 @@
 package com.canli.oya.traininventoryroom.ui.addtrain
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.canli.oya.traininventoryroom.data.*
-import com.canli.oya.traininventoryroom.getOrAwaitValue
+import com.canli.oya.traininventoryroom.datasource.FakeBrandDataSource
+import com.canli.oya.traininventoryroom.datasource.FakeCategoryDataSource
+import com.canli.oya.traininventoryroom.datasource.FakeTrainDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -12,6 +15,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 
 
 class AddTrainViewModelTest {
@@ -34,7 +38,6 @@ class AddTrainViewModelTest {
     val sampleCategory2 = CategoryEntry(1, "Locomotive")
     val sampleCategory3 = CategoryEntry(2, "Accessoire")
     val sampleCategoryList = mutableListOf(sampleCategory1, sampleCategory2, sampleCategory3)
-
 
 
     @Test

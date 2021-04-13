@@ -2,13 +2,12 @@ package com.canli.oya.traininventoryroom.daotests
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
+import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.data.CategoryEntry
-import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.data.TrainEntry
+import com.canli.oya.traininventoryroom.data.*
+import com.canli.oya.traininventoryroom.datasource.convertToMinimal
 import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -133,7 +132,7 @@ class TrainDaoTests {
                 description = "train description", imageUri = "image url", scale = "1.3")
         database.trainDao().insert(trainToInsert)
 
-        assertTrue(database.trainDao().isThisBrandUsed(firstBrand.brandName))
+        assertNotNull(database.trainDao().isThisBrandUsed(firstBrand.brandName))
     }
 
     @Test
@@ -143,7 +142,7 @@ class TrainDaoTests {
                 description = "train description", imageUri = "image url", scale = "1.3")
         database.trainDao().insert(trainToInsert)
 
-        assertFalse(database.trainDao().isThisBrandUsed(secondBrand.brandName))
+        assertNull(database.trainDao().isThisBrandUsed(secondBrand.brandName))
     }
 
     @Test
@@ -153,7 +152,7 @@ class TrainDaoTests {
                 description = "train description", imageUri = "image url", scale = "1.3")
         database.trainDao().insert(trainToInsert)
 
-        assertTrue(database.trainDao().isThisCategoryUsed(firstCategory.categoryName))
+        assertNotNull(database.trainDao().isThisCategoryUsed(firstCategory.categoryName))
     }
 
     @Test
@@ -162,8 +161,9 @@ class TrainDaoTests {
         val trainToInsert = TrainEntry(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
                 description = "train description", imageUri = "image url", scale = "1.3")
         database.trainDao().insert(trainToInsert)
-
-        assertFalse(database.trainDao().isThisCategoryUsed(secondCategory.categoryName))
+        val isThisCategoryUsed = database.trainDao().isThisCategoryUsed(secondCategory.categoryName)
+        assertNull(isThisCategoryUsed)
+        //assertFalse(isThisCategoryUsed)
     }
 
     @Test
@@ -221,14 +221,19 @@ class TrainDaoTests {
         database.trainDao().insert(thirdTrain)
 
         //Search number 1
-        val firstSearchResult = database.trainDao().searchInTrains("Blue")
-        assertTrue(firstSearchResult.contains(secondTrain))
+        val firstSearchResult = database.trainDao().searchInTrains(SimpleSQLiteQuery(getSqlStatementForQuery("Blue")))
+        assertTrue(firstSearchResult.contains(secondTrain.convertToMinimal()))
         assertEquals(firstSearchResult.size, 1)
 
         //Verify search is NOT case sensitive
-        val secondSearchResult = database.trainDao().searchInTrains("ThiRd")
-        assertTrue(secondSearchResult.contains(thirdTrain))
+        val secondSearchResult = database.trainDao().searchInTrains(SimpleSQLiteQuery(getSqlStatementForQuery("ThiRd")))
+        assertTrue(secondSearchResult.contains(thirdTrain.convertToMinimal()))
         assertEquals(secondSearchResult.size, 1)
 
+    }
+
+    private fun getSqlStatementForQuery(keyword : String) : String {
+        return "SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE " +
+                "trainName LIKE '%$keyword%' OR modelReference LIKE '%$keyword%' OR description LIKE '%$keyword%'"
     }
 }

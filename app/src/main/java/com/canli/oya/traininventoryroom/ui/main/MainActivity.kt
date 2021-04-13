@@ -25,9 +25,10 @@ class MainActivity : AppCompatActivity() {
 
     private val appBarConfiguration = AppBarConfiguration(
         topLevelDestinationIds = setOf(
+            R.id.trainListFragment,
+            R.id.filterTrainFragment,
             R.id.categoryListFragment,
-            R.id.brandListFragment,
-            R.id.trainListFragment
+            R.id.brandListFragment
         )
     )
 
