@@ -11,16 +11,16 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface BrandDao : BaseDao<BrandEntry> {
 
-    @Query("SELECT * FROM brands")
+    @Query("SELECT * FROM brands ORDER BY brandName")
     fun observeAllPagedBrands(): PagingSource<Int, BrandEntry>
 
-    @Query("SELECT * FROM brands")
+    @Query("SELECT * FROM brands ORDER BY brandName")
     fun observeAllBrands() : Flow<List<BrandEntry>>
 
-    @Query("SELECT * FROM brands")
+    @Query("SELECT * FROM brands ORDER BY brandName")
     suspend fun getBrandList() : List<BrandEntry>
 
-    @Query("SELECT brandName FROM brands")
+    @Query("SELECT brandName FROM brands ORDER BY brandName")
     suspend fun getBrandNames() : List<String>
 
     @Query("SELECT * FROM brands WHERE brandId = :id")

@@ -14,13 +14,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TrainDao : BaseDao<TrainEntry>{
 
-    @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains")
+    @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains ORDER BY trainName")
     fun observeAllTrains(): PagingSource<Int, TrainMinimal>
 
-    @Query("SELECT * FROM trains")
+    @Query("SELECT * FROM trains ORDER BY trainName")
     suspend fun getAllTrains() : List<TrainEntry>
 
-    @Query("SELECT trainName FROM trains")
+    @Query("SELECT trainName FROM trains ORDER BY trainName")
     suspend fun getAllTrainNames() : List<String>
 
     @Query("SELECT * FROM trains WHERE trainId = :id")
@@ -35,16 +35,16 @@ interface TrainDao : BaseDao<TrainEntry>{
     @Query("SELECT trainId FROM trains WHERE categoryName = :categoryName LIMIT 1")
     suspend fun isThisCategoryUsed(categoryName: String): Int?
 
-    @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE brandName = :brandName")
+    @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE brandName = :brandName ORDER BY trainName")
     suspend fun getTrainsFromThisBrand(brandName: String): List<TrainMinimal>
 
     @Query("SELECT * FROM trains WHERE brandName = :brandName")
     suspend fun getFullTrainsFromThisBrand(brandName: String): List<TrainEntry>
 
-    @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE categoryName = :categoryName")
+    @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE categoryName = :categoryName ORDER BY trainName")
     suspend fun getTrainsFromThisCategory(categoryName: String): List<TrainMinimal>
 
-    @Query("SELECT * FROM trains WHERE categoryName = :categoryName")
+    @Query("SELECT * FROM trains WHERE categoryName = :categoryName ORDER BY trainName")
     suspend fun getFullTrainsFromThisCategory(categoryName: String): List<TrainEntry>
 
     @RawQuery
