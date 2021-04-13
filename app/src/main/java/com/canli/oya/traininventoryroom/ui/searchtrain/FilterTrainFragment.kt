@@ -118,7 +118,9 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
         })
 
         val criteriaObserver: (t: String?) -> Unit = {
-            startFiltering()
+            if(it != null) {
+                startFiltering()
+            }
         }
 
         viewModel.selectedBrand.observe(viewLifecycleOwner, criteriaObserver)
@@ -132,6 +134,7 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
     }
 
     private fun startFiltering() {
+        setUILoading()
         lifecycleScope.launch {
             val filteredTrains = viewModel.filterTrains()
             if (filteredTrains.isEmpty()) {
