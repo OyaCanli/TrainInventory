@@ -91,7 +91,7 @@ class AddCategoryFragment : Fragment(R.layout.fragment_add_category) {
 
         clearFocusAndHideSoftKeyboard()
 
-        if(parentFragment is AddTrainFragment){
+        if(isEditCase || parentFragment is AddTrainFragment){
             removeFragment()
         }
     }
@@ -106,10 +106,14 @@ class AddCategoryFragment : Fragment(R.layout.fragment_add_category) {
     }
 
     private fun removeFragment() {
-        val currentInstance = parentFragmentManager.findFragmentById(R.id.childFragContainer)
+        val currentInstance = if(parentFragment is AddTrainFragment) parentFragmentManager.findFragmentById(R.id.childFragContainer)
+                            else parentFragmentManager.findFragmentById(R.id.list_addFrag_container)
+
         parentFragmentManager.commit {
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-            remove(currentInstance!!)
+            currentInstance?.let {
+                remove(it)
+            }
         }
     }
 }

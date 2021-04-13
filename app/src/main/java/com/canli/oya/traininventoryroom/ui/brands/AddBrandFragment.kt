@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_CLOSE
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
@@ -121,16 +122,20 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
 
         clearFocusAndHideSoftKeyboard()
 
-        if(parentFragment is AddTrainFragment){
+        if(isEditCase || parentFragment is AddTrainFragment){
             removeFragment()
         }
     }
 
     private fun removeFragment() {
-        val currentInstance = parentFragmentManager.findFragmentById(R.id.childFragContainer)
+        val currentInstance = if(parentFragment is AddTrainFragment) parentFragmentManager.findFragmentById(R.id.childFragContainer)
+        else parentFragmentManager.findFragmentById(R.id.list_addFrag_container)
+
         parentFragmentManager.commit {
-            setTransition(TRANSIT_FRAGMENT_CLOSE)
-            remove(currentInstance!!)
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+            currentInstance?.let {
+                remove(it)
+            }
         }
     }
 
