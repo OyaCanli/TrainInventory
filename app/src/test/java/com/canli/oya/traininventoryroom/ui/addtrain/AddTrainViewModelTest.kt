@@ -3,7 +3,9 @@ package com.canli.oya.traininventoryroom.ui.addtrain
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.canli.oya.traininventoryroom.data.*
-import com.canli.oya.traininventoryroom.getOrAwaitValue
+import com.canli.oya.traininventoryroom.datasource.FakeBrandDataSource
+import com.canli.oya.traininventoryroom.datasource.FakeCategoryDataSource
+import com.canli.oya.traininventoryroom.datasource.FakeTrainDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

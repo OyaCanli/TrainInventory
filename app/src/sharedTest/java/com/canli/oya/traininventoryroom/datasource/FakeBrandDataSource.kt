@@ -1,12 +1,16 @@
-package com.canli.oya.traininventoryroom.data
+package com.canli.oya.traininventoryroom.datasource
 
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingData
+import com.canli.oya.traininventoryroom.data.BrandEntry
+import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
+
 class FakeBrandDataSource(private var brands : MutableList<BrandEntry> = sampleBrandList,
-                          private val trains: List<TrainEntry> = listOf())
+                                              private val trains: List<TrainEntry> = listOf())
     : IBrandCategoryDataSource<BrandEntry> {
 
     private val brandsFlow : Flow<PagingData<BrandEntry>> = flow {
@@ -37,8 +41,12 @@ class FakeBrandDataSource(private var brands : MutableList<BrandEntry> = sampleB
         brands = newBrandList
     }
 
-    override fun isThisItemUsed(item: BrandEntry): Boolean {
+    override suspend fun isThisItemUsed(item: BrandEntry): Int? {
         val index = trains.indexOfFirst { it.brandName == item.brandName }
-        return (index != -1)
+        return if (index == -1) null else return 1
+    }
+
+    override suspend fun getItemNames(): List<String> {
+        return brands.map { it.brandName }
     }
 }

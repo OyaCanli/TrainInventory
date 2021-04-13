@@ -35,7 +35,7 @@ class BrandDataSource @Inject constructor(private val database: TrainDatabase) :
         database.brandDao().delete(item)
     }
 
-    override suspend fun isThisItemUsed(item: BrandEntry): Boolean {
+    override suspend fun isThisItemUsed(item: BrandEntry): Int? {
         return database.trainDao().isThisBrandUsed(item.brandName)
     }
 

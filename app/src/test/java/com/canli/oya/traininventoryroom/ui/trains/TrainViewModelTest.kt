@@ -3,11 +3,9 @@ package com.canli.oya.traininventoryroom.ui.trains
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.paging.PagingData
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.canli.oya.traininventoryroom.data.FakeTrainDataSource
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.TrainMinimal
-import com.canli.oya.traininventoryroom.data.convertToMinimal
-import com.canli.oya.traininventoryroom.getOrAwaitValue
+import com.canli.oya.traininventoryroom.datasource.FakeTrainDataSource
 import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.Dispatchers

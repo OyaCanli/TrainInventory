@@ -7,7 +7,7 @@ import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class FakeTrainDataSource(private var trains: MutableList<TrainEntry> = sampleTrainList) :
+class FakeTrainDataSource(var trains: MutableList<TrainEntry> = sampleTrainList) :
     ITrainDataSource {
 
     private val trainsFlow: Flow<PagingData<TrainMinimal>> = flow {

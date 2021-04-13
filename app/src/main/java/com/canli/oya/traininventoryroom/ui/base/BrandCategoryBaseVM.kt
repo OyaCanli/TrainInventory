@@ -58,7 +58,7 @@ abstract class BrandCategoryBaseVM<T : Any>(private val dataSource: IBrandCatego
     }
 
     suspend fun isThisItemUsed(item: T): Boolean {
-        return dataSource.isThisItemUsed(item)
+        return dataSource.isThisItemUsed(item) != null
     }
 
 }

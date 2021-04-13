@@ -29,11 +29,11 @@ interface TrainDao : BaseDao<TrainEntry>{
     @Query("SELECT * FROM trains WHERE trainId = :id")
     suspend fun getChosenTrain(id: Int): TrainEntry
 
-    @Query("SELECT 1 FROM trains WHERE brandName = :brandName")
-    suspend fun isThisBrandUsed(brandName: String): Boolean
+    @Query("SELECT trainId FROM trains WHERE brandName = :brandName LIMIT 1")
+    suspend fun isThisBrandUsed(brandName: String): Int?
 
-    @Query("SELECT 1 FROM trains WHERE categoryName = :categoryName")
-    suspend fun isThisCategoryUsed(categoryName: String): Boolean
+    @Query("SELECT trainId FROM trains WHERE categoryName = :categoryName LIMIT 1")
+    suspend fun isThisCategoryUsed(categoryName: String): Int?
 
     @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE brandName = :brandName")
     suspend fun getTrainsFromThisBrand(brandName: String): List<TrainMinimal>

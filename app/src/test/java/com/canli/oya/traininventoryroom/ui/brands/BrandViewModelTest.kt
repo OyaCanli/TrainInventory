@@ -4,9 +4,11 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.data.FakeBrandDataSource
+import com.canli.oya.traininventoryroom.datasource.FakeBrandDataSource
+
 import com.canli.oya.traininventoryroom.di.TrainApplication
-import com.canli.oya.traininventoryroom.getOrAwaitValue
+import com.canli.oya.traininventoryroom.utils.getOrAwaitValue
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -38,7 +40,8 @@ class BrandViewModelTest{
 
     @Before
     fun setupViewModel() {
-        brandViewModel = BrandViewModel(FakeBrandDataSource(sampleList),
+        brandViewModel = BrandViewModel(
+            FakeBrandDataSource(sampleList),
                 Dispatchers.Unconfined)
     }
 

@@ -45,9 +45,8 @@ class TrainDataSource @Inject constructor(private val database: TrainDatabase) :
         category: String?,
         brand: String?
     ): ArrayList<TrainMinimal> {
-        val filteredList = ArrayList<TrainMinimal>()
 
-        Timber.d("filtered trains is called")
+        val filteredList = ArrayList<TrainMinimal>()
 
         if(!keyword.isNullOrBlank()) {
             val sb = StringBuilder("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE ")

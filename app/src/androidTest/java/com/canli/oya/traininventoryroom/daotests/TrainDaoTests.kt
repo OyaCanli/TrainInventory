@@ -132,7 +132,7 @@ class TrainDaoTests {
                 description = "train description", imageUri = "image url", scale = "1.3")
         database.trainDao().insert(trainToInsert)
 
-        assertTrue(database.trainDao().isThisBrandUsed(firstBrand.brandName))
+        assertNotNull(database.trainDao().isThisBrandUsed(firstBrand.brandName))
     }
 
     @Test
@@ -142,7 +142,7 @@ class TrainDaoTests {
                 description = "train description", imageUri = "image url", scale = "1.3")
         database.trainDao().insert(trainToInsert)
 
-        assertFalse(database.trainDao().isThisBrandUsed(secondBrand.brandName))
+        assertNull(database.trainDao().isThisBrandUsed(secondBrand.brandName))
     }
 
     @Test
@@ -152,7 +152,7 @@ class TrainDaoTests {
                 description = "train description", imageUri = "image url", scale = "1.3")
         database.trainDao().insert(trainToInsert)
 
-        assertTrue(database.trainDao().isThisCategoryUsed(firstCategory.categoryName))
+        assertNotNull(database.trainDao().isThisCategoryUsed(firstCategory.categoryName))
     }
 
     @Test
@@ -162,7 +162,8 @@ class TrainDaoTests {
                 description = "train description", imageUri = "image url", scale = "1.3")
         database.trainDao().insert(trainToInsert)
         val isThisCategoryUsed = database.trainDao().isThisCategoryUsed(secondCategory.categoryName)
-        assertFalse(isThisCategoryUsed)
+        assertNull(isThisCategoryUsed)
+        //assertFalse(isThisCategoryUsed)
     }
 
     @Test

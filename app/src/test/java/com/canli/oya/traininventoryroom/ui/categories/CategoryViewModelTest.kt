@@ -3,8 +3,8 @@ package com.canli.oya.traininventoryroom.ui.categories
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.canli.oya.traininventoryroom.data.CategoryEntry
-import com.canli.oya.traininventoryroom.data.FakeCategoryDataSource
-import com.canli.oya.traininventoryroom.getOrAwaitValue
+import com.canli.oya.traininventoryroom.datasource.FakeCategoryDataSource
+import com.canli.oya.traininventoryroom.utils.getOrAwaitValue
 import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +35,8 @@ class CategoryViewModelTest {
     @Before
     fun setupViewModel() {
         val sampleCategoryList = mutableListOf(sampleCategory1, sampleCategory2)
-        categoryViewModel = CategoryViewModel(FakeCategoryDataSource(sampleCategoryList),
+        categoryViewModel = CategoryViewModel(
+            FakeCategoryDataSource(sampleCategoryList),
                 Dispatchers.Unconfined
         )
     }
