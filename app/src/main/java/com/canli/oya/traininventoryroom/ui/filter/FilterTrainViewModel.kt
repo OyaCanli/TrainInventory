@@ -1,8 +1,7 @@
-package com.canli.oya.traininventoryroom.ui.searchtrain
+package com.canli.oya.traininventoryroom.ui.filter
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.sqlite.db.SimpleSQLiteQuery
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.data.TrainMinimal
@@ -10,8 +9,6 @@ import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import timber.log.Timber
-import java.lang.StringBuilder
 
 
 class FilterTrainViewModel (val trainDataSource: ITrainDataSource,

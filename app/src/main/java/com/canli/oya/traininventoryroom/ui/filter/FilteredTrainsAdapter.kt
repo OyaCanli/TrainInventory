@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.ui.searchtrain
+package com.canli.oya.traininventoryroom.ui.filter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

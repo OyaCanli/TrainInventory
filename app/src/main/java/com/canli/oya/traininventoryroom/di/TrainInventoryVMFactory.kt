@@ -8,7 +8,7 @@ import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import com.canli.oya.traininventoryroom.ui.brands.BrandViewModel
 import com.canli.oya.traininventoryroom.ui.categories.CategoryViewModel
-import com.canli.oya.traininventoryroom.ui.searchtrain.FilterTrainViewModel
+import com.canli.oya.traininventoryroom.ui.filter.FilterTrainViewModel
 import com.canli.oya.traininventoryroom.ui.trains.TrainViewModel
 import javax.inject.Inject
 
