@@ -4,13 +4,11 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.sqlite.db.SimpleSQLiteQuery
-import androidx.sqlite.db.SupportSQLiteQuery
 import com.canli.oya.traininventoryroom.data.TrainDatabase
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.TrainMinimal
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
-import java.lang.StringBuilder
 import javax.inject.Inject
 
 const val TRAINS_PAGE_SIZE = 15
@@ -67,7 +65,7 @@ class TrainDataSource @Inject constructor(private val database: TrainDatabase) :
                 sb.append("AND brandName = '$brand' ")
             }
 
-            sb.append(";")
+            sb.append("ORDER BY trainName;")
 
             val query = SimpleSQLiteQuery(sb.toString())
             filteredList.addAll(database.trainDao().searchInTrains(query))

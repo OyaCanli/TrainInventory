@@ -62,11 +62,12 @@ class FakeTrainDataSource(var trains: MutableList<TrainEntry> = sampleTrainList)
         val filteredList = ArrayList<TrainEntry>()
         filteredList.addAll(trains)
         if (!keyword.isNullOrBlank()) {
-            val keywords = keyword.split(" ")
+            val keywords = keyword.toLowerCase().split(" ")
             keywords.forEach { query ->
                 filteredList.retainAll { train ->
-                    train.trainName?.contains(query) == true || train.modelReference?.contains(query) == true
-                            || train.description?.contains(query) == true
+                    train.trainName?.toLowerCase()?.contains(query) == true
+                            || train.modelReference?.toLowerCase()?.contains(query) == true
+                            || train.description?.toLowerCase()?.contains(query) == true
                 }
             }
         }
