@@ -16,7 +16,6 @@ import com.canli.oya.traininventoryroom.R
 fun ImageView.setImageWithGlide(url: String?, placeHolder: Drawable) {
     GlideApp.with(context)
             .load(url)
-            .centerCrop()
             .placeholder(placeHolder)
             .into(this)
 }
