@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -50,11 +50,15 @@
     </style>
 
     <style name="alert_dialog_style" parent="Theme.AppCompat.DayNight.Dialog.Alert">
-        <item name="android:textColor">@color/colorAccent</item>
         <item name="android:background">@color/window_background</item>
         <item name="android:textColorPrimary">@color/textColorLight</item>
-        <item name="textColorAlertDialogListItem">@color/textColorLight</item>
-        <item name="android:textColorSecondary">@color/textColorLight</item>
+        <item name="buttonBarPositiveButtonStyle">@style/alert_dialog_action_btn_Style</item>
+        <item name="buttonBarNegativeButtonStyle">@style/alert_dialog_action_btn_Style</item>
+    </style>
+
+    <style name="alert_dialog_action_btn_Style">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:background">@android:color/transparent</item>
     </style>
 
     <style name="name_style">
