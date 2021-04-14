@@ -53,7 +53,6 @@ class BrandSpinAdapter(private val mContext: Context, var brandList: List<BrandE
                 logoImage.visibility = View.VISIBLE
                 GlideApp.with(mContext)
                         .load(imageUri)
-                        .centerCrop()
                         .into(logoImage)
             }
         }

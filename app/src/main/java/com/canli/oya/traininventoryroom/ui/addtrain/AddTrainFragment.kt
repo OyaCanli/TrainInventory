@@ -8,15 +8,15 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.*
-import android.view.inputmethod.InputMethodManager
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.AdapterView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -30,8 +30,6 @@ import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
 import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
-import com.canli.oya.traininventoryroom.utils.CHOSEN_TRAIN
-import com.canli.oya.traininventoryroom.utils.IS_EDIT
 import com.canli.oya.traininventoryroom.utils.clearFocusAndHideKeyboard
 import com.canli.oya.traininventoryroom.utils.shortToast
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -160,11 +158,10 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
             R.id.addTrain_addCategoryBtn -> insertAddCategoryFragment()
             R.id.product_details_gallery_image -> {
                 ImagePicker.with(this)
-                    .crop(1f, 1f)                //Crop Square image(Optional)
                     .compress(1024)            //Final image size will be less than 1 MB(Optional)
                     .maxResultSize(
-                        1080,
-                        1080
+                        500,
+                        500
                     )    //Final image resolution will be less than 1080 x 1080(Optional)
                     .start()
             }

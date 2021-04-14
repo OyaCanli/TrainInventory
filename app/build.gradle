@@ -125,7 +125,7 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:$dagger_version"
 
     //Image picker
-    implementation 'com.github.dhaval2404:imagepicker:1.7.1'
+    implementation 'com.github.dhaval2404:imagepicker:1.8'
 
     //Paging library
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
