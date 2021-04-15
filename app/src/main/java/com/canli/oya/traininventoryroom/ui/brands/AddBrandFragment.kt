@@ -9,11 +9,9 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_CLOSE
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.map
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
@@ -22,11 +20,7 @@ import com.canli.oya.traininventoryroom.databinding.FragmentAddBrandBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
-import com.canli.oya.traininventoryroom.ui.base.BaseListFragment
-import com.canli.oya.traininventoryroom.ui.base.BrandCategoryBaseFrag
 import com.canli.oya.traininventoryroom.ui.base.setMenuIcon
-import com.canli.oya.traininventoryroom.ui.categories.CategoryListFragment
-import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
 import com.canli.oya.traininventoryroom.utils.IS_EDIT
 import com.canli.oya.traininventoryroom.utils.shortToast
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -85,9 +79,8 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
 
     private fun launchImagePicker() {
         ImagePicker.with(this)
-                .crop(1f, 1f)                //Crop Square image(Optional)
-                .compress(1024)            //Final image size will be less than 1 MB(Optional)
-                .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
+                .compress(512)            //Final image size will be less than 1 MB(Optional)
+                .maxResultSize(200, 200)    //Final image resolution will be less than 1080 x 1080(Optional)
                 .start()
     }
 

@@ -16,6 +16,7 @@ interface FakeTestComponent : AppComponent {
     fun inject(target: CategoryListFragmentTest)
     fun inject(target: BrandListFragmentTest)
     fun inject(target: TrainListFragmentTest)
+    fun inject(target: FilterTrainFragmentTests)
     fun inject(target: TrainDetailsFragmentTest)
     fun inject(target : EmptyScreenTests)
 }

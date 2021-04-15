@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.ui.searchtrain
+package com.canli.oya.traininventoryroom.ui.filter
 
 import android.os.Bundle
 import android.text.Editable
@@ -6,20 +6,15 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.AdapterView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.TrainMinimal
 import com.canli.oya.traininventoryroom.databinding.FragmentFilterTrainBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.trains.TrainItemClickListener
-import com.canli.oya.traininventoryroom.ui.trains.TrainListFragmentDirections
-import com.canli.oya.traininventoryroom.utils.ALL_TRAIN
 import com.canli.oya.traininventoryroom.utils.TRAINS_OF_BRAND
 import com.canli.oya.traininventoryroom.utils.TRAINS_OF_CATEGORY
 import com.canli.oya.traininventoryroom.utils.clearFocusAndHideKeyboard

@@ -26,3 +26,8 @@ The repo contains lots of integration tests and also unit tests and it uses Gith
   <img src="screenshots/screenshot6.png" width="400" />
   <img src="screenshots/screenshot7.png" width="400" />
 </p>
+
+<p float="left">
+  <img src="screenshots/screenshot8.png" width="400" />
+  <img src="screenshots/screenshot9.png" width="400" />
+</p>

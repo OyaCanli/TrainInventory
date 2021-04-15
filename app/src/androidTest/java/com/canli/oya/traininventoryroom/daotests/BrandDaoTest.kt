@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.data.source
+package com.canli.oya.traininventoryroom.daotests
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
