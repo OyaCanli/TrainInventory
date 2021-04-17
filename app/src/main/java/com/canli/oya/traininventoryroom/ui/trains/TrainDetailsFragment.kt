@@ -1,11 +1,13 @@
 package com.canli.oya.traininventoryroom.ui.trains
 
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
@@ -14,9 +16,6 @@ import com.canli.oya.traininventoryroom.databinding.FragmentTrainDetailsBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
-import com.canli.oya.traininventoryroom.utils.TRAIN_ID
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class TrainDetailsFragment : Fragment(R.layout.fragment_train_details) {
@@ -83,7 +82,7 @@ class TrainDetailsFragment : Fragment(R.layout.fragment_train_details) {
     }
 
     private fun deleteTrain() {
-        viewModel.deleteTrain(mChosenTrain)
+        viewModel.deleteTrain(mChosenTrain.trainId)
         binding.root.findNavController().popBackStack()
     }
 
