@@ -26,9 +26,15 @@ class TrainViewModel (val dataSource: ITrainDataSource,
         }
     }
 
-    fun deleteTrain(trainId: Int) {
+    fun sendTrainToTrash(trainId: Int) {
         val date = LocalDate.now().toEpochDay()
-        viewModelScope.launch(ioDispatcher) { dataSource.deleteTrain(trainId, date) }
+        viewModelScope.launch(ioDispatcher) { dataSource.sendTrainToTrash(trainId, date) }
+    }
+
+    fun deleteTrainPermanently(trainId: Int){
+        viewModelScope.launch(ioDispatcher) {
+            dataSource.deleteTrainPermanently(trainId)
+        }
     }
 
     fun getTrainsInTrash() : LiveData<List<TrainMinimal>> = liveData {
@@ -36,7 +42,6 @@ class TrainViewModel (val dataSource: ITrainDataSource,
             emit(it)
         }
     }
-
 
     suspend fun restoreTrain(trainId: Int) = dataSource.restoreTrainFromTrash(trainId)
 

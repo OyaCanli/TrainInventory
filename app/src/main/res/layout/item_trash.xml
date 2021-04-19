@@ -12,7 +12,7 @@
             type="int" />
         <variable
             name="itemClick"
-            type="com.canli.oya.traininventoryroom.ui.trains.TrainItemClickListener" />
+            type="com.canli.oya.traininventoryroom.ui.trash.TrashItemClickListener" />
 
         <import type="com.canli.oya.traininventoryroom.utils.BindingUtils" />
     </data>
@@ -43,8 +43,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text="@{item.trainName}"
-            app:layout_constraintEnd_toStartOf="@+id/restore_btn"
-            app:layout_constraintStart_toEndOf="@+id/train_item_image"
+            app:layout_constraintEnd_toStartOf="@+id/train_item_restore"
+            app:layout_constraintStart_toEndOf="@+id/train_item_number"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Train name" />
 
@@ -53,35 +53,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginStart="@dimen/half_margin"
             android:text="@{item.brandName}"
             android:textSize="@dimen/normalTextSize"
-            app:layout_constraintStart_toEndOf="@+id/train_item_image"
+            app:layout_constraintStart_toStartOf="@+id/train_item_train_name"
             app:layout_constraintTop_toBottomOf="@+id/train_item_train_name"
             tools:text="Brand name" />
-
-        <ImageView
-            android:id="@+id/train_item_image"
-            android:layout_width="@dimen/product_item_image_dim"
-            android:layout_height="@dimen/product_item_image_dim"
-            android:layout_margin="@dimen/margin_standard"
-            android:contentDescription="@string/cd_product_image"
-            app:imageUrl="@{item.imageUri}"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/train_item_number"
-            app:layout_constraintTop_toTopOf="parent"
-            app:placeholder="@{@drawable/ic_train_color}" />
 
         <TextView
             android:id="@+id/train_item_reference"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/half_margin"
-            android:layout_marginStart="@dimen/half_margin"
             android:text="@{item.modelReference}"
             android:textSize="@dimen/normalTextSize"
-            app:layout_constraintStart_toEndOf="@+id/train_item_image"
+            app:layout_constraintStart_toStartOf="@+id/train_item_brand"
             app:layout_constraintTop_toBottomOf="@+id/train_item_brand"
             tools:text="reference" />
 
@@ -98,15 +83,26 @@
             tools:text="(Vagon)" />
 
         <ImageView
-            android:id="@+id/restore_btn"
+            android:id="@+id/train_item_restore"
             android:layout_width="@dimen/restore_btn_size"
             android:layout_height="@dimen/restore_btn_size"
             app:srcCompat="@drawable/ic_restore"
             android:contentDescription="@string/cd_restore_train"
-            android:onClick="@{() ->  itemClick.onListItemClick(item.trainId)}"
+            android:onClick="@{() ->  itemClick.onRestoreClicked(item.trainId)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/train_item_delete"
+            android:layout_width="@dimen/restore_btn_size"
+            android:layout_height="@dimen/restore_btn_size"
+            android:layout_margin="@dimen/margin_standard"
+            android:onClick="@{() -> itemClick.onDeleteClicked(item.trainId)}"
+            app:layout_constraintBottom_toBottomOf="@+id/train_item_restore"
+            app:layout_constraintEnd_toStartOf="@+id/train_item_restore"
+            app:layout_constraintTop_toTopOf="@+id/train_item_restore"
+            app:srcCompat="@drawable/ic_delete_accent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

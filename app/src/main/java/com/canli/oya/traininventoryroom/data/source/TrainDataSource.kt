@@ -30,7 +30,11 @@ class TrainDataSource @Inject constructor(private val database: TrainDatabase) :
 
     override suspend fun updateTrain(train: TrainEntry) = database.trainDao().update(train)
 
-    override suspend fun deleteTrain(trainId: Int, dateOfDeletion : Long) = database.trainDao().sendToThrash(trainId, dateOfDeletion)
+    override suspend fun sendTrainToTrash(trainId: Int, dateOfDeletion : Long) = database.trainDao().sendToThrash(trainId, dateOfDeletion)
+
+    override suspend fun deleteTrainPermanently(trainId: Int) {
+        database.trainDao().deletePermanently(trainId)
+    }
 
     override suspend fun getTrainsFromThisBrand(brandName: String): List<TrainMinimal> = database.trainDao().getTrainsFromThisBrand(brandName)
 

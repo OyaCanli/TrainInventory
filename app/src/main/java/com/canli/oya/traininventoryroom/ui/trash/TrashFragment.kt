@@ -2,6 +2,7 @@ package com.canli.oya.traininventoryroom.ui.trash
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -10,14 +11,14 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.FragmentTrashBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
-import com.canli.oya.traininventoryroom.ui.trains.TrainItemClickListener
 import com.canli.oya.traininventoryroom.ui.trains.TrainViewModel
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 
-class TrashFragment : Fragment(R.layout.fragment_trash), TrainItemClickListener {
+class TrashFragment : Fragment(R.layout.fragment_trash), TrashItemClickListener {
 
     private val binding by viewBinding(FragmentTrashBinding::bind)
 
@@ -36,7 +37,8 @@ class TrashFragment : Fragment(R.layout.fragment_trash), TrainItemClickListener 
         trashAdapter = TrashAdapter(this)
         binding.trashList.adapter = trashAdapter
 
-        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(TrainViewModel::class.java)
+        viewModel =
+            ViewModelProvider(requireActivity(), viewModelFactory).get(TrainViewModel::class.java)
 
         lifecycleScope.launch {
             viewModel.getTrainsInTrash().observe(viewLifecycleOwner) { trashList ->
@@ -49,12 +51,6 @@ class TrashFragment : Fragment(R.layout.fragment_trash), TrainItemClickListener 
                     setUISuccess()
                 }
             }
-        }
-    }
-
-    override fun onListItemClick(trainId: Int) {
-        lifecycleScope.launch {
-            viewModel.restoreTrain(trainId)
         }
     }
 
@@ -78,5 +74,26 @@ class TrashFragment : Fragment(R.layout.fragment_trash), TrainItemClickListener 
         binding.loadingIndicator.visibility = View.GONE
         binding.emptyImage.visibility = View.GONE
         binding.emptyText.visibility = View.GONE
+    }
+
+    override fun onRestoreClicked(trainId: Int) {
+        lifecycleScope.launch {
+            viewModel.restoreTrain(trainId)
+        }
+    }
+
+    override fun onDeleteClicked(trainId: Int) {
+        val builder = AlertDialog.Builder(requireActivity(), R.style.alert_dialog_style)
+        with(builder) {
+            setMessage(getString(R.string.do_you_want_to_permanently_delete_train))
+            setPositiveButton(R.string.yes_delete) { _, _ ->
+                GlobalScope.launch {
+                    viewModel.deleteTrainPermanently(trainId)
+                }
+            }
+            setNegativeButton(R.string.cancel) { _, _ -> }
+            create()
+            show()
+        }
     }
 }

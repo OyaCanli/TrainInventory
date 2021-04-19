@@ -17,7 +17,9 @@ interface ITrainDataSource {
 
     suspend fun updateTrain(train: TrainEntry)
 
-    suspend fun deleteTrain(trainId: Int, dateOfDeletion : Long)
+    suspend fun sendTrainToTrash(trainId: Int, dateOfDeletion : Long)
+
+    suspend fun deleteTrainPermanently(trainId: Int)
 
     suspend fun getTrainsFromThisBrand(brandName: String): List<TrainMinimal>
 

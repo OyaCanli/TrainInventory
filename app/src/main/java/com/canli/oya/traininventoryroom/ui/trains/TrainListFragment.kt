@@ -89,7 +89,7 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
     }
 
     override fun onDeleteConfirmed(itemToDelete: TrainMinimal, position: Int) {
-        viewModel.deleteTrain(itemToDelete.trainId)
+        viewModel.sendTrainToTrash(itemToDelete.trainId)
         adapter.itemDeleted(position)
     }
 
