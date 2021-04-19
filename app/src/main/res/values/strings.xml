@@ -118,5 +118,6 @@
     <string name="trash">Trash</string>
     <string name="no_trains_in_trash">No trains in the trash</string>
     <string name="cd_restore_train">Restore train</string>
+    <string name="category_used_by_trains_in_trash">This category is used by some trains in your TRASH folder. Deleting this category will cause those trains to be permanently deleted. Do you want to delete it anyway?</string>
 
 </resources>

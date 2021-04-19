@@ -12,8 +12,6 @@ import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -59,6 +57,14 @@ abstract class BrandCategoryBaseVM<T : Any>(private val dataSource: IBrandCatego
 
     suspend fun isThisItemUsed(item: T): Boolean {
         return dataSource.isThisItemUsed(item) != null
+    }
+
+    suspend fun isThisItemUsedInTrash(item: T): Boolean {
+        return dataSource.isThisItemUsedInTrash(item) != null
+    }
+
+    suspend fun deleteTrainsInTrashWithThisItem(item: T){
+        dataSource.deleteTrainsInTrashWithThisItem(item)
     }
 
 }

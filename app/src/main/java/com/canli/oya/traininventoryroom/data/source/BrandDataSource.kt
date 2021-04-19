@@ -42,4 +42,12 @@ class BrandDataSource @Inject constructor(private val database: TrainDatabase) :
     override suspend fun getItemNames(): List<String> {
         return database.brandDao().getBrandNames()
     }
+
+    override suspend fun isThisItemUsedInTrash(item: BrandEntry): Int? {
+        return database.trainDao().isThisBrandUsedInTrash(item.brandName)
+    }
+
+    override suspend fun deleteTrainsInTrashWithThisItem(item: BrandEntry) {
+        database.trainDao().deleteTrainsInTrashWithThisBrand(item.brandName)
+    }
 }

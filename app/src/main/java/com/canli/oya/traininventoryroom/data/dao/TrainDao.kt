@@ -30,8 +30,14 @@ interface TrainDao : BaseDao<TrainEntry>{
     @Query("SELECT trainId FROM trains WHERE dateOfDeletion IS NULL AND brandName = :brandName LIMIT 1")
     suspend fun isThisBrandUsed(brandName: String): Int?
 
+    @Query("SELECT trainId FROM trains WHERE dateOfDeletion IS NOT NULL AND brandName = :brandName LIMIT 1")
+    suspend fun isThisBrandUsedInTrash(brandName: String): Int?
+
     @Query("SELECT trainId FROM trains WHERE dateOfDeletion IS NULL AND categoryName = :categoryName LIMIT 1")
     suspend fun isThisCategoryUsed(categoryName: String): Int?
+
+    @Query("SELECT trainId FROM trains WHERE dateOfDeletion IS NOT NULL AND categoryName = :categoryName LIMIT 1")
+    suspend fun isThisCategoryUsedInTrash(categoryName: String): Int?
 
     @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE dateOfDeletion IS NULL AND brandName = :brandName ORDER BY trainName")
     suspend fun getTrainsFromThisBrand(brandName: String): List<TrainMinimal>
@@ -59,4 +65,10 @@ interface TrainDao : BaseDao<TrainEntry>{
 
     @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE dateOfDeletion IS NOT NULL")
     fun getAllTrainsInTrash(): Flow<List<TrainMinimal>>
+
+    @Query("DELETE FROM trains WHERE dateOfDeletion IS NOT NULL AND categoryName = :categoryName")
+    fun deleteTrainsInTrashWithThisCategory(categoryName: String)
+
+    @Query("DELETE FROM trains WHERE dateOfDeletion IS NOT NULL AND brandName = :brandName")
+    fun deleteTrainsInTrashWithThisBrand(brandName: String)
 }
