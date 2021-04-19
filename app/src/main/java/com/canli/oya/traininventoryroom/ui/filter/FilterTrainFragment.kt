@@ -174,6 +174,7 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
         binding.root.findNavController().navigate(action)
     }
 
+
     protected fun setUIEmpty(emptyMessage: Int) {
         binding.searchList.visibility = View.GONE
         binding.loadingIndicator.visibility = View.GONE

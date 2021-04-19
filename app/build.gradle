@@ -27,6 +27,7 @@ android {
 
     buildFeatures {
         dataBinding true
+        viewBinding true
     }
 
     compileOptions {
@@ -65,6 +66,8 @@ dependencies {
     implementation "androidx.appcompat:appcompat:1.2.0"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0-beta01'
     implementation "com.google.android.material:material:$rootProject.materialVersion"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
     // Dependencies for local unit tests
     testImplementation "junit:junit:$rootProject.junit_version"

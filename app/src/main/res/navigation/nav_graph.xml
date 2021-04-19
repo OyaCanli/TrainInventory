@@ -99,4 +99,8 @@
             android:id="@+id/action_filterTrainFragment_to_trainDetailsFragment"
             app:destination="@id/trainDetailsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/trashFragment"
+        android:name="com.canli.oya.traininventoryroom.ui.trash.TrashFragment"
+        android:label="@string/trash" />
 </navigation>

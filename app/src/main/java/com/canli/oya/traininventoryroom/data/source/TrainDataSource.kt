@@ -90,5 +90,9 @@ class TrainDataSource @Inject constructor(private val database: TrainDatabase) :
 
         return filteredList
     }
+
+    override suspend fun getAllTrainsInTrash() = database.trainDao().getAllTrainsInTrash()
+
+    override suspend fun restoreTrainFromTrash(trainId : Int) = database.trainDao().restoreFromThrash(trainId)
 }
 

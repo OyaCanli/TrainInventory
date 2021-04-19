@@ -18,10 +18,12 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
-import androidx.paging.LoadState
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.utils.*
+import com.canli.oya.traininventoryroom.utils.IS_EDIT
+import com.canli.oya.traininventoryroom.utils.SwipeToDeleteCallback
+import com.canli.oya.traininventoryroom.utils.clearFocusAndHideKeyboard
+import com.canli.oya.traininventoryroom.utils.shortToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -76,6 +78,9 @@ abstract class BrandCategoryBaseFrag<T : Any> : BaseListFragment<T>(), SwipeDele
             R.id.export_to_excel -> NavigationUI.onNavDestinationSelected(
                 item,
                 binding.root.findNavController()
+            )
+            R.id.trashFragment -> NavigationUI.onNavDestinationSelected(
+                item, binding.root.findNavController()
             )
         }
         return super.onOptionsItemSelected(item)

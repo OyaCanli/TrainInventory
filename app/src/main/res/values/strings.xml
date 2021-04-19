@@ -115,5 +115,8 @@
     <string name="hint_search_keywords">Search by keyword(s)</string>
     <string name="search_trains">Search Trains</string>
     <string name="no_results_for_search">No trains found with these criteria.</string>
+    <string name="trash">Trash</string>
+    <string name="no_trains_in_trash">No trains in the trash</string>
+    <string name="cd_restore_train">Restore train</string>
 
 </resources>

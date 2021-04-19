@@ -24,4 +24,8 @@ interface ITrainDataSource {
     suspend fun getTrainsFromThisCategory(category: String): List<TrainMinimal>
 
     suspend fun searchInTrains(keyword: String?, category: String?, brand: String?): List<TrainMinimal>
+
+    suspend fun getAllTrainsInTrash() : Flow<List<TrainMinimal>>
+
+    suspend fun restoreTrainFromTrash(trainId : Int)
 }

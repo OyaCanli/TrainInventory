@@ -9,4 +9,7 @@
     <item android:id="@+id/export_to_excel"
         android:title="@string/export_to_excel"
         app:showAsAction="never"/>
+    <item android:id="@+id/trashFragment"
+        android:title="@string/trash"
+        app:showAsAction="never"/>
 </menu>

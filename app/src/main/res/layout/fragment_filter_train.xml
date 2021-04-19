@@ -69,6 +69,7 @@
             android:scrollbars="vertical"
             android:visibility="gone"
             app:itemDivider="@{true}"
+            tools:listitem="@layout/item_train"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

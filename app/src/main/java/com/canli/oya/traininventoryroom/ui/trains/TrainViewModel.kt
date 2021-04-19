@@ -1,5 +1,6 @@
 package com.canli.oya.traininventoryroom.ui.trains
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
@@ -29,4 +30,14 @@ class TrainViewModel (val dataSource: ITrainDataSource,
         val date = LocalDate.now().toEpochDay()
         viewModelScope.launch(ioDispatcher) { dataSource.deleteTrain(trainId, date) }
     }
+
+    fun getTrainsInTrash() : LiveData<List<TrainMinimal>> = liveData {
+        dataSource.getAllTrainsInTrash().collect {
+            emit(it)
+        }
+    }
+
+
+    suspend fun restoreTrain(trainId: Int) = dataSource.restoreTrainFromTrash(trainId)
+
 }
