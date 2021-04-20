@@ -100,4 +100,9 @@
     <string name="hint_search_keywords">Recherchez par mot(s) clé(s)</string>
     <string name="search_trains">Recherche Les Trains</string>
     <string name="no_results_for_search">Aucun train trouvé pour ces critères</string>
+    <string name="trash">Corbeille</string>
+    <string name="no_trains_in_trash">Aucun train dans la corbeille</string>
+    <string name="cd_restore_train">Restaure le train</string>
+    <string name="category_used_by_trains_in_trash">Cette catégorie est utilisé par certains trains dans la CORBEILLE. Effacer cette catégorie va provoquer la suppression d\'eux. Voulez-vous l\'effacer quand même?</string>
+    <string name="do_you_want_to_permanently_delete_train">Voulez-vous effacer définitivement ce train?</string>
 </resources>

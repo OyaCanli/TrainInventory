@@ -42,4 +42,12 @@ class CategoryDataSource @Inject constructor(private val database: TrainDatabase
     override suspend fun getItemNames(): List<String> {
         return database.categoryDao().getCategoryNames()
     }
+
+    override suspend fun isThisItemUsedInTrash(item: CategoryEntry): Int? {
+        return database.trainDao().isThisCategoryUsedInTrash(item.categoryName)
+    }
+
+    override suspend fun deleteTrainsInTrashWithThisItem(item: CategoryEntry) {
+        database.trainDao().deleteTrainsInTrashWithThisCategory(item.categoryName)
+    }
 }

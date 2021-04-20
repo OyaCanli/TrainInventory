@@ -30,9 +30,11 @@ class TrainDataSource @Inject constructor(private val database: TrainDatabase) :
 
     override suspend fun updateTrain(train: TrainEntry) = database.trainDao().update(train)
 
-    override suspend fun deleteTrain(train: TrainEntry) = database.trainDao().delete(train)
+    override suspend fun sendTrainToTrash(trainId: Int, dateOfDeletion : Long) = database.trainDao().sendToThrash(trainId, dateOfDeletion)
 
-    override suspend fun deleteTrain(trainId: Int) = database.trainDao().delete(trainId)
+    override suspend fun deleteTrainPermanently(trainId: Int) {
+        database.trainDao().deletePermanently(trainId)
+    }
 
     override suspend fun getTrainsFromThisBrand(brandName: String): List<TrainMinimal> = database.trainDao().getTrainsFromThisBrand(brandName)
 
@@ -65,7 +67,8 @@ class TrainDataSource @Inject constructor(private val database: TrainDatabase) :
                 sb.append("AND brandName = '$brand' ")
             }
 
-            sb.append("ORDER BY trainName;")
+            //TODO: add an option to search in trash or not
+            sb.append("AND dateOfDeletion IS NULL ORDER BY trainName;")
 
             val query = SimpleSQLiteQuery(sb.toString())
             filteredList.addAll(database.trainDao().searchInTrains(query))
@@ -91,5 +94,9 @@ class TrainDataSource @Inject constructor(private val database: TrainDatabase) :
 
         return filteredList
     }
+
+    override suspend fun getAllTrainsInTrash() = database.trainDao().getAllTrainsInTrash()
+
+    override suspend fun restoreTrainFromTrash(trainId : Int) = database.trainDao().restoreFromThrash(trainId)
 }
 

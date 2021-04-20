@@ -18,4 +18,8 @@ interface IBrandCategoryDataSource<T : Any> {
     suspend fun deleteItem(item: T)
 
     suspend fun isThisItemUsed(item: T): Int?
+
+    suspend fun isThisItemUsedInTrash(item: T): Int?
+
+    suspend fun deleteTrainsInTrashWithThisItem(item: T)
 }

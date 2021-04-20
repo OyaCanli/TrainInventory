@@ -12,17 +12,21 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.DrawableRes
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
-import androidx.paging.LoadState
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.utils.*
+import com.canli.oya.traininventoryroom.utils.IS_EDIT
+import com.canli.oya.traininventoryroom.utils.SwipeToDeleteCallback
+import com.canli.oya.traininventoryroom.utils.clearFocusAndHideKeyboard
+import com.canli.oya.traininventoryroom.utils.shortToast
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -76,6 +80,9 @@ abstract class BrandCategoryBaseFrag<T : Any> : BaseListFragment<T>(), SwipeDele
             R.id.export_to_excel -> NavigationUI.onNavDestinationSelected(
                 item,
                 binding.root.findNavController()
+            )
+            R.id.trashFragment -> NavigationUI.onNavDestinationSelected(
+                item, binding.root.findNavController()
             )
         }
         return super.onOptionsItemSelected(item)
@@ -171,11 +178,31 @@ abstract class BrandCategoryBaseFrag<T : Any> : BaseListFragment<T>(), SwipeDele
         Timber.d("delete is confirmed")
         lifecycleScope.launch {
             //First check whether this item is used by trains table
-            val isUsed = withContext(Dispatchers.IO) { viewModel.isThisItemUsed(itemToDelete) }
-            if (isUsed) {
+            val isActivelyUsed = withContext(Dispatchers.IO) { viewModel.isThisItemUsed(itemToDelete) }
+            val isUsedInTrashedItems = withContext(Dispatchers.IO) { viewModel.isThisItemUsedInTrash(itemToDelete) }
+            if (isActivelyUsed) {
                 // If it is used, show a warning and don't let user delete this
                 context?.shortToast(R.string.cannot_erase_category)
                 adapter.cancelDelete(position)
+            } else if(isUsedInTrashedItems) {
+                val builder = AlertDialog.Builder(requireActivity(), R.style.alert_dialog_style)
+                with(builder) {
+                    setMessage(getString(R.string.category_used_by_trains_in_trash))
+                    setPositiveButton(R.string.yes_delete) { _, _ ->
+                        GlobalScope.launch {
+                            withContext(Dispatchers.IO) {
+                                viewModel.deleteTrainsInTrashWithThisItem(itemToDelete)
+                                viewModel.deleteItem(itemToDelete)
+                            }
+                            adapter.itemDeleted(position)
+                        }
+                    }
+                    setNegativeButton(R.string.cancel) { _, _ ->
+                        adapter.cancelDelete(position)
+                    }
+                    create()
+                    show()
+                }
             } else {
                 //If it is not used, erase the item
                 viewModel.deleteItem(itemToDelete)

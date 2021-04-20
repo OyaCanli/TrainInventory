@@ -17,7 +17,8 @@ import kotlinx.android.parcel.Parcelize
                 onUpdate = CASCADE, onDelete = RESTRICT),
             ForeignKey(entity = CategoryEntry::class,
                     parentColumns = ["categoryName"], childColumns = ["categoryName"], onUpdate = CASCADE, onDelete = RESTRICT)],
-        indices = [Index(value = ["brandName"]), Index(value = ["categoryName"])])
+        indices = [Index(value = ["brandName"]), Index(value = ["categoryName"])]
+)
 @Keep
 data class TrainEntry(
         @PrimaryKey(autoGenerate = true) var trainId: Int = 0,
@@ -29,7 +30,8 @@ data class TrainEntry(
         var imageUri: String? = null,
         var description: String? = null,
         var location: String? = null,
-        var scale: String? = null) : Parcelable
+        var scale: String? = null,
+        var dateOfDeletion: Long? = null) : Parcelable
 
 data class TrainMinimal(val trainId: Int = 0,
                         val trainName: String? = null,

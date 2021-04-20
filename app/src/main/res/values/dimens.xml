@@ -42,6 +42,8 @@
     <dimen name="edittext_box_width">1dp</dimen>
     <dimen name="empty_image_dim">150dp</dimen>
     <dimen name="search_btn_corner_radius">10dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+    <dimen name="restore_btn_size">60dp</dimen>
 
 
 </resources>

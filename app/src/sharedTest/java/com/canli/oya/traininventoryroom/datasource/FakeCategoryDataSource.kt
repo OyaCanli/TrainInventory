@@ -9,7 +9,8 @@ import kotlinx.coroutines.flow.flow
 
 
 class FakeCategoryDataSource(private var categories : MutableList<CategoryEntry> = sampleCategoryList,
-                                                 private val trains: List<TrainEntry> = listOf()) : IBrandCategoryDataSource<CategoryEntry> {
+                                                 private val trains: MutableList<TrainEntry> = mutableListOf()
+) : IBrandCategoryDataSource<CategoryEntry> {
 
     private val categoryFlow : Flow<PagingData<CategoryEntry>> = flow {
         emit(PagingData.from(categories))
@@ -46,5 +47,20 @@ class FakeCategoryDataSource(private var categories : MutableList<CategoryEntry>
 
     override suspend fun getItemNames(): List<String> {
         return categories.map { it.categoryName }
+    }
+
+    override suspend fun isThisItemUsedInTrash(item: CategoryEntry): Int? {
+        val trainsInTrash = trains.filter {
+            it.dateOfDeletion != null
+        }
+        //Search brand in trash folder
+        val index = trainsInTrash.indexOfFirst { it.categoryName == item.categoryName }
+        return if (index == -1) null else return 1
+    }
+
+    override suspend fun deleteTrainsInTrashWithThisItem(item: CategoryEntry) {
+        trains.removeAll {
+            it.dateOfDeletion != null && it.categoryName == item.categoryName
+        }
     }
 }

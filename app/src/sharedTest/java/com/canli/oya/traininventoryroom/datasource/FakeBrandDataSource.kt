@@ -1,6 +1,5 @@
 package com.canli.oya.traininventoryroom.datasource
 
-import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingData
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.TrainEntry
@@ -10,7 +9,8 @@ import kotlinx.coroutines.flow.flow
 
 
 class FakeBrandDataSource(private var brands : MutableList<BrandEntry> = sampleBrandList,
-                                              private val trains: List<TrainEntry> = listOf())
+                                              private val trains: MutableList<TrainEntry> = mutableListOf()
+)
     : IBrandCategoryDataSource<BrandEntry> {
 
     private val brandsFlow : Flow<PagingData<BrandEntry>> = flow {
@@ -48,5 +48,20 @@ class FakeBrandDataSource(private var brands : MutableList<BrandEntry> = sampleB
 
     override suspend fun getItemNames(): List<String> {
         return brands.map { it.brandName }
+    }
+
+    override suspend fun isThisItemUsedInTrash(item: BrandEntry): Int? {
+        val trainsInTrash = trains.filter {
+            it.dateOfDeletion != null
+        }
+        //Search brand in trash folder
+        val index = trainsInTrash.indexOfFirst { it.brandName == item.brandName }
+        return if (index == -1) null else return 1
+    }
+
+    override suspend fun deleteTrainsInTrashWithThisItem(item: BrandEntry) {
+        trains.removeAll {
+            it.dateOfDeletion != null && it.brandName == item.brandName
+        }
     }
 }

@@ -7,7 +7,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -20,12 +19,8 @@ import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.base.BaseAdapter
 import com.canli.oya.traininventoryroom.ui.base.BaseListFragment
 import com.canli.oya.traininventoryroom.ui.base.SwipeDeleteListener
-import com.canli.oya.traininventoryroom.ui.main.MainActivity
-import com.canli.oya.traininventoryroom.utils.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListener,
@@ -50,7 +45,7 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
 
         ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
 
-        viewModel = ViewModelProvider(this, viewModelFactory).get(TrainViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(TrainViewModel::class.java)
 
         observeUIState(R.string.no_trains_found)
         lifecycleScope.launch {
@@ -86,12 +81,15 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
             R.id.export_to_excel -> NavigationUI.onNavDestinationSelected(
                 item, binding.root.findNavController()
             )
+            R.id.trashFragment -> NavigationUI.onNavDestinationSelected(
+                item, binding.root.findNavController()
+            )
         }
         return super.onOptionsItemSelected(item)
     }
 
     override fun onDeleteConfirmed(itemToDelete: TrainMinimal, position: Int) {
-        viewModel.deleteTrain(itemToDelete.trainId)
+        viewModel.sendTrainToTrash(itemToDelete.trainId)
         adapter.itemDeleted(position)
     }
 

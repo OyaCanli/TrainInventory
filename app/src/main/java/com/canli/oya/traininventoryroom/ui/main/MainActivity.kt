@@ -14,7 +14,6 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ActivityMainBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.utils.shortToast
-import timber.log.Timber
 
 
 class MainActivity : AppCompatActivity() {
@@ -49,7 +48,8 @@ class MainActivity : AppCompatActivity() {
         binding.navigation.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            if(destination.id == R.id.addTrainFragment || destination.id == R.id.trainDetailsFragment) {
+            if(destination.id == R.id.addTrainFragment || destination.id == R.id.trainDetailsFragment
+                || destination.id == R.id.trashFragment) {
                 binding.navigation.visibility = View.GONE
             } else {
                 binding.navigation.visibility = View.VISIBLE
