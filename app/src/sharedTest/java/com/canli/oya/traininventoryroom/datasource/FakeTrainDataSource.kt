@@ -6,12 +6,16 @@ import com.canli.oya.traininventoryroom.data.TrainMinimal
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.time.LocalDate
 
 class FakeTrainDataSource(var trains: MutableList<TrainEntry> = sampleTrainList) :
     ITrainDataSource {
 
     private val trainsFlow: Flow<PagingData<TrainMinimal>> = flow {
-        emit(PagingData.from(convertTrainsToMinimalTrains(trains)))
+        val notDeletedTrains = trains.filter {
+            it.dateOfDeletion == null
+        }
+        emit(PagingData.from(convertTrainsToMinimalTrains(notDeletedTrains)))
     }
 
     override fun getChosenTrain(trainId: Int): Flow<TrainEntry> {
@@ -22,7 +26,9 @@ class FakeTrainDataSource(var trains: MutableList<TrainEntry> = sampleTrainList)
     }
 
     override suspend fun getAllTrainNames(): List<String> =
-        trains.map { train -> train.trainName!! }
+        trains
+            .filter{it.dateOfDeletion == null}
+            .map { train -> train.trainName!! }
 
     override suspend fun insertTrain(train: TrainEntry) {
         trains.add(train)
@@ -33,24 +39,27 @@ class FakeTrainDataSource(var trains: MutableList<TrainEntry> = sampleTrainList)
         trains[index] = train
     }
 
-    override suspend fun deleteTrain(train: TrainEntry) {
-        trains.remove(train)
+    override suspend fun sendTrainToTrash(trainId: Int, dateOfDeletion: Long) {
+        val index = trains.indexOfFirst { it.trainId == trainId }
+        trains[index].dateOfDeletion = LocalDate.now().toEpochDay()
     }
 
-    override suspend fun deleteTrain(trainId: Int) {
+    override suspend fun deleteTrainPermanently(trainId: Int) {
         val index = trains.indexOfFirst { it.trainId == trainId }
         trains.removeAt(index)
     }
 
     override suspend fun getTrainsFromThisBrand(brandName: String): List<TrainMinimal> {
-        val filteredList = trains.filter {
-            it.brandName == brandName
-        }
+        val filteredList = trains
+            .filter { it.dateOfDeletion == null }
+            .filter { it.brandName == brandName }
         return convertTrainsToMinimalTrains(filteredList)
     }
 
     override suspend fun getTrainsFromThisCategory(category: String): List<TrainMinimal> {
-        val filteredList = trains.filter { it.categoryName == category }
+        val filteredList = trains
+            .filter { it.dateOfDeletion == null }
+            .filter { it.categoryName == category }
         return convertTrainsToMinimalTrains(filteredList)
     }
 
@@ -71,6 +80,10 @@ class FakeTrainDataSource(var trains: MutableList<TrainEntry> = sampleTrainList)
                 }
             }
         }
+        filteredList.retainAll {
+            it.dateOfDeletion == null
+            //TODO : might add a checkbox to search including trash
+        }
         category?.let { category ->
             filteredList.retainAll { train ->
                 train.categoryName == category
@@ -83,6 +96,18 @@ class FakeTrainDataSource(var trains: MutableList<TrainEntry> = sampleTrainList)
             }
         }
         return convertTrainsToMinimalTrains(filteredList)
+    }
+
+    override suspend fun getAllTrainsInTrash(): Flow<List<TrainMinimal>> = flow {
+        val deletedTrains = trains.filter {
+            it.dateOfDeletion != null
+        }
+        emit(convertTrainsToMinimalTrains(deletedTrains))
+    }
+
+    override suspend fun restoreTrainFromTrash(trainId: Int) {
+        val index = trains.indexOfFirst { it.trainId == trainId }
+        trains[index].dateOfDeletion = null
     }
 
     override fun getAllTrains(): Flow<PagingData<TrainMinimal>> = trainsFlow
