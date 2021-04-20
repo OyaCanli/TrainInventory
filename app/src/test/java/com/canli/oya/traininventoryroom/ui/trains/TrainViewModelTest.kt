@@ -1,24 +1,15 @@
 package com.canli.oya.traininventoryroom.ui.trains
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.paging.PagingData
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.canli.oya.traininventoryroom.data.TrainEntry
-import com.canli.oya.traininventoryroom.data.TrainMinimal
 import com.canli.oya.traininventoryroom.datasource.FakeTrainDataSource
 import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.core.IsEqual
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
 
 class TrainViewModelTest{
@@ -44,7 +35,7 @@ class TrainViewModelTest{
     @Test
     fun deleteTrainWithId_deletesTheTrain() {
         runBlockingTest {
-            trainViewModel.deleteTrain(sampleTrain1.trainId)
+            trainViewModel.sendTrainToTrash(sampleTrain1.trainId)
 
             val list = (trainViewModel.dataSource as FakeTrainDataSource).trains
             assertFalse(list.contains(sampleTrain1))
@@ -56,7 +47,7 @@ class TrainViewModelTest{
     @Test
     fun deleteTrainEntry_deletesTheTrain() {
         runBlockingTest {
-            trainViewModel.deleteTrain(sampleTrain1)
+            trainViewModel.sendTrainToTrash(sampleTrain1.trainId)
 
             val list = (trainViewModel.dataSource as FakeTrainDataSource).trains
             assertFalse(list.contains(sampleTrain1))

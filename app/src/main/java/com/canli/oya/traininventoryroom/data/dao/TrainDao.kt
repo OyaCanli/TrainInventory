@@ -71,4 +71,7 @@ interface TrainDao : BaseDao<TrainEntry>{
 
     @Query("DELETE FROM trains WHERE dateOfDeletion IS NOT NULL AND brandName = :brandName")
     fun deleteTrainsInTrashWithThisBrand(brandName: String)
+
+    @Query("DELETE FROM trains WHERE dateOfDeletion IS NOT NULL AND dateOfDeletion < :date")
+    fun cleanOldItemsInTrash(date: Long)
 }
