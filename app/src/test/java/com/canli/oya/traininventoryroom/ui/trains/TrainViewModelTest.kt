@@ -3,10 +3,10 @@ package com.canli.oya.traininventoryroom.ui.trains
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.datasource.FakeTrainDataSource
-import junit.framework.Assert.assertFalse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -33,24 +33,13 @@ class TrainViewModelTest{
     //delete train with id deletes the train
     @ExperimentalCoroutinesApi
     @Test
-    fun deleteTrainWithId_deletesTheTrain() {
+    fun deleteTrain_sendsItToTrash() {
         runBlockingTest {
             trainViewModel.sendTrainToTrash(sampleTrain1.trainId)
 
             val list = (trainViewModel.dataSource as FakeTrainDataSource).trains
-            assertFalse(list.contains(sampleTrain1))
-        }
-    }
-
-    //delete train with item deletes the train
-    @ExperimentalCoroutinesApi
-    @Test
-    fun deleteTrainEntry_deletesTheTrain() {
-        runBlockingTest {
-            trainViewModel.sendTrainToTrash(sampleTrain1.trainId)
-
-            val list = (trainViewModel.dataSource as FakeTrainDataSource).trains
-            assertFalse(list.contains(sampleTrain1))
+            val index = list.indexOfFirst { it.trainId == sampleTrain1.trainId }
+            assertTrue(list[index].dateOfDeletion != null)
         }
     }
 
