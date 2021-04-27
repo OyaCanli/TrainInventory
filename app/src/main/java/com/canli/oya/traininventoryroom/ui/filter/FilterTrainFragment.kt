@@ -14,8 +14,8 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.FragmentFilterTrainBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
+import com.canli.oya.traininventoryroom.ui.base.BaseTrainAdapter
 import com.canli.oya.traininventoryroom.ui.common.TrainItemClickListener
-import com.canli.oya.traininventoryroom.ui.common.TrainListAdapter
 import com.canli.oya.traininventoryroom.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -30,7 +30,7 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
 
     private lateinit var viewModel: FilterTrainViewModel
 
-    private lateinit var trainAdapter: TrainListAdapter
+    private lateinit var trainAdapter: BaseTrainAdapter
 
     @Inject
     lateinit var viewModelFactory: TrainInventoryVMFactory
@@ -63,7 +63,7 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(FilterTrainViewModel::class.java)
 
-        trainAdapter = TrainListAdapter(this)
+        trainAdapter = FilteredTrainsAdapter(this)
         binding.list.adapter = trainAdapter
 
         binding.searchCategorySpinner.onItemSelectedListener = this

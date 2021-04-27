@@ -20,7 +20,7 @@ import com.canli.oya.traininventoryroom.ui.common.ISwipeableAdapter
 const val VIEW_TYPE_NORMAL = 1
 const val VIEW_TYPE_DELETE = 2
 
-abstract class BaseAdapter<T : Any, L>(val context: Context, private val itemClickListener: L?, private val swipeListener: SwipeDeleteListener<T>)
+abstract class BaseListAdapter<T : Any, L>(val context: Context, private val itemClickListener: L?, private val swipeListener: SwipeDeleteListener<T>)
     : ListAdapter<T, RecyclerView.ViewHolder>(BaseDiffCallback<T>()), ISwipeableAdapter {
 
     private val swipedItems = mutableListOf<Int>()

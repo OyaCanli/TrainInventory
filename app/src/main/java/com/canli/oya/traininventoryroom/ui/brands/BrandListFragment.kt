@@ -12,7 +12,7 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
-import com.canli.oya.traininventoryroom.ui.base.BaseAdapter
+import com.canli.oya.traininventoryroom.ui.base.BaseListAdapter
 import com.canli.oya.traininventoryroom.ui.base.BrandCategoryBaseFrag
 import com.canli.oya.traininventoryroom.ui.base.BrandCategoryBaseVM
 import com.canli.oya.traininventoryroom.ui.base.SwipeDeleteListener
@@ -26,7 +26,7 @@ class BrandListFragment : BrandCategoryBaseFrag<BrandEntry>(), BrandItemClickLis
     @Inject
     lateinit var viewModelFactory : TrainInventoryVMFactory
 
-    override fun getListAdapter(): BaseAdapter<BrandEntry, BrandItemClickListener> = BrandAdapter(requireContext(), this, this)
+    override fun getListAdapter(): BaseListAdapter<BrandEntry, BrandItemClickListener> = BrandAdapter(requireContext(), this, this)
 
     override fun getListViewModel(): BrandCategoryBaseVM<BrandEntry> = ViewModelProvider(this, viewModelFactory).get(BrandViewModel::class.java)
 

@@ -21,7 +21,7 @@ abstract class BaseListFragment<T : Any> : Fragment(R.layout.fragment_list) {
 
     protected val binding by viewBinding(FragmentListBinding::bind)
 
-    protected lateinit var adapter: BaseAdapter<T, out Any>
+    protected lateinit var adapter: BaseListAdapter<T, out Any>
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -38,7 +38,7 @@ abstract class BaseListFragment<T : Any> : Fragment(R.layout.fragment_list) {
         )
     }
 
-    abstract fun getListAdapter(): BaseAdapter<T, out Any>
+    abstract fun getListAdapter(): BaseListAdapter<T, out Any>
 
     protected fun blinkAddMenuItem(addMenuItem: MenuItem, @DrawableRes iconToSet: Int) {
         if (Build.VERSION.SDK_INT >= 23) {

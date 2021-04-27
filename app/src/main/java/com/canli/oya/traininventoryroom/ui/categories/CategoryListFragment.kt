@@ -9,7 +9,7 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
-import com.canli.oya.traininventoryroom.ui.base.BaseAdapter
+import com.canli.oya.traininventoryroom.ui.base.BaseListAdapter
 import com.canli.oya.traininventoryroom.ui.base.BrandCategoryBaseFrag
 import com.canli.oya.traininventoryroom.ui.base.BrandCategoryBaseVM
 import com.canli.oya.traininventoryroom.utils.TRAINS_OF_CATEGORY
@@ -22,7 +22,7 @@ class CategoryListFragment : BrandCategoryBaseFrag<CategoryEntry>(), CategoryIte
     @Inject
     lateinit var viewModelFactory : TrainInventoryVMFactory
 
-    override fun getListAdapter(): BaseAdapter<CategoryEntry, out Any> = CategoryAdapter(requireContext(), this, this)
+    override fun getListAdapter(): BaseListAdapter<CategoryEntry, out Any> = CategoryAdapter(requireContext(), this, this)
 
     override fun getListViewModel(): BrandCategoryBaseVM<CategoryEntry> = ViewModelProvider(this, viewModelFactory).get(CategoryViewModel::class.java)
 
