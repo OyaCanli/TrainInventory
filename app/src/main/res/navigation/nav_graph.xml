@@ -101,6 +101,6 @@
     </fragment>
     <fragment
         android:id="@+id/trashFragment"
-        android:name="com.canli.oya.traininventoryroom.ui.trash.TrashFragment"
+        android:name="com.canli.oya.traininventoryroom.ui.trash.TrashListFragment"
         android:label="@string/trash" />
 </navigation>

@@ -14,10 +14,9 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.FragmentFilterTrainBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
-import com.canli.oya.traininventoryroom.ui.trains.TrainItemClickListener
-import com.canli.oya.traininventoryroom.utils.TRAINS_OF_BRAND
-import com.canli.oya.traininventoryroom.utils.TRAINS_OF_CATEGORY
-import com.canli.oya.traininventoryroom.utils.clearFocusAndHideKeyboard
+import com.canli.oya.traininventoryroom.ui.common.TrainItemClickListener
+import com.canli.oya.traininventoryroom.ui.common.TrainListAdapter
+import com.canli.oya.traininventoryroom.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -31,7 +30,7 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
 
     private lateinit var viewModel: FilterTrainViewModel
 
-    private lateinit var trainAdapter: FilteredTrainsAdapter
+    private lateinit var trainAdapter: TrainListAdapter
 
     @Inject
     lateinit var viewModelFactory: TrainInventoryVMFactory
@@ -41,6 +40,7 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
     private var brandName: String? = null
 
     private var categoryName: String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,8 +63,8 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(FilterTrainViewModel::class.java)
 
-        trainAdapter = FilteredTrainsAdapter(this)
-        binding.searchList.adapter = trainAdapter
+        trainAdapter = TrainListAdapter(this)
+        binding.list.adapter = trainAdapter
 
         binding.searchCategorySpinner.onItemSelectedListener = this
         binding.searchBrandSpinner.onItemSelectedListener = this
@@ -125,20 +125,19 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
             activity?.clearFocusAndHideKeyboard()
             startFiltering()
         }
-
     }
 
     private fun startFiltering() {
-        setUILoading()
+        binding.showLoading()
         lifecycleScope.launch {
             val filteredTrains = viewModel.filterTrains()
             if (filteredTrains.isEmpty()) {
-                setUIEmpty(R.string.no_results_for_search)
+                binding.showEmpty(R.string.no_results_for_search)
                 Timber.d("Filtered trains list is empty")
             } else {
                 trainAdapter.submitList(filteredTrains)
                 Timber.d("Filtered trains list size : ${filteredTrains.size}")
-                setUISuccess()
+                binding.showList()
             }
         }
     }
@@ -168,32 +167,9 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
         }
     }
 
-    override fun onListItemClick(trainId: Int) {
+    override fun onListItemClick(view : View, trainId: Int) {
         val action =
             FilterTrainFragmentDirections.actionFilterTrainFragmentToTrainDetailsFragment(trainId)
         binding.root.findNavController().navigate(action)
-    }
-
-
-    protected fun setUIEmpty(emptyMessage: Int) {
-        binding.searchList.visibility = View.GONE
-        binding.loadingIndicator.visibility = View.GONE
-        binding.emptyImage.visibility = View.VISIBLE
-        binding.emptyText.setText(emptyMessage)
-        binding.emptyText.visibility = View.VISIBLE
-    }
-
-    protected fun setUILoading() {
-        binding.loadingIndicator.visibility = View.VISIBLE
-        binding.emptyImage.visibility = View.GONE
-        binding.emptyText.visibility = View.GONE
-        binding.searchList.visibility = View.GONE
-    }
-
-    protected fun setUISuccess() {
-        binding.searchList.visibility = View.VISIBLE
-        binding.loadingIndicator.visibility = View.GONE
-        binding.emptyImage.visibility = View.GONE
-        binding.emptyText.visibility = View.GONE
     }
 }

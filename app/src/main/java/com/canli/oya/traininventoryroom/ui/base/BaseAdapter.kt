@@ -5,9 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.paging.PagedListAdapter
-import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.canli.oya.traininventoryroom.BR
 import com.canli.oya.traininventoryroom.R
@@ -15,13 +14,14 @@ import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.ItemConfirmDeleteBinding
+import com.canli.oya.traininventoryroom.ui.common.ISwipeableAdapter
 
 
 const val VIEW_TYPE_NORMAL = 1
 const val VIEW_TYPE_DELETE = 2
 
 abstract class BaseAdapter<T : Any, L>(val context: Context, private val itemClickListener: L?, private val swipeListener: SwipeDeleteListener<T>)
-    : PagingDataAdapter<T, RecyclerView.ViewHolder>(BaseDiffCallback<T>()) {
+    : ListAdapter<T, RecyclerView.ViewHolder>(BaseDiffCallback<T>()), ISwipeableAdapter {
 
     private val swipedItems = mutableListOf<Int>()
     private var itemHeight = 0
@@ -63,7 +63,7 @@ abstract class BaseAdapter<T : Any, L>(val context: Context, private val itemCli
         return context.resources.getDimension(itemHeightRes).toInt()
     }
 
-    fun itemSwiped(position: Int) {
+    override fun onItemSwiped(position: Int) {
         if (!swipedItems.contains(position)) {
             swipedItems.add(position)
         }

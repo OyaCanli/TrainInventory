@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.ui.trash
+package com.canli.oya.traininventoryroom.ui.common
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,20 +6,24 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.canli.oya.traininventoryroom.data.TrainMinimal
-import com.canli.oya.traininventoryroom.databinding.ItemTrashBinding
+import com.canli.oya.traininventoryroom.databinding.ItemTrainBinding
 
-class TrashAdapter (private val clickListener : TrashItemClickListener) : ListAdapter<TrainMinimal, TrashAdapter.ViewHolder>(TrainDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder.from(parent)
+class TrainListAdapter(private val clickListener : TrainItemClickListener) : ListAdapter<TrainMinimal, TrainListAdapter.ViewHolder>(
+    TrainDiffCallback()
+) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+        ViewHolder.from(parent)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentGrapheme = getItem(position)
         holder.bind(currentGrapheme, clickListener, position)
     }
 
-    class ViewHolder private constructor(val binding: ItemTrashBinding) : RecyclerView.ViewHolder(binding.root){
+    class ViewHolder private constructor(val binding: ItemTrainBinding) : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(currentTrain: TrainMinimal, listener: TrashItemClickListener?, position: Int){
+        fun bind(currentTrain: TrainMinimal, listener: TrainItemClickListener?, position: Int){
             binding.item = currentTrain
             binding.itemClick = listener
             binding.position = position
@@ -29,7 +33,7 @@ class TrashAdapter (private val clickListener : TrashItemClickListener) : ListAd
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ItemTrashBinding.inflate(layoutInflater, parent, false)
+                val binding = ItemTrainBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(binding)
             }
         }
@@ -45,9 +49,4 @@ class TrashAdapter (private val clickListener : TrashItemClickListener) : ListAd
             return oldItem == newItem
         }
     }
-}
-
-interface TrashItemClickListener {
-    fun onRestoreClicked(trainId : Int)
-    fun onDeleteClicked(trainId : Int)
 }

@@ -12,7 +12,7 @@
             type="int" />
         <variable
             name="itemClick"
-            type="com.canli.oya.traininventoryroom.ui.trains.TrainItemClickListener" />
+            type="com.canli.oya.traininventoryroom.ui.common.TrainItemClickListener" />
 
         <import type="com.canli.oya.traininventoryroom.utils.BindingUtils" />
     </data>
@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/train_item_height"
         android:background="@color/window_background"
-        android:onClick="@{() ->  itemClick.onListItemClick(item.trainId)}"
+        android:onClick="@{(view) ->  itemClick.onListItemClick(view, item.trainId)}"
         android:padding="@dimen/half_padding">
 
         <TextView

@@ -13,7 +13,7 @@ import com.canli.oya.traininventoryroom.ui.filter.FilterTrainFragment
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
 import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
 import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
-import com.canli.oya.traininventoryroom.ui.trash.TrashFragment
+import com.canli.oya.traininventoryroom.ui.trash.TrashListFragment
 import dagger.Component
 import javax.inject.Singleton
 
@@ -37,5 +37,5 @@ interface AppComponent {
     fun inject(target: AddBrandFragment)
     fun inject(target: TrainDetailsFragment)
     fun inject(target: FilterTrainFragment)
-    fun inject(target: TrashFragment)
+    fun inject(target: TrashListFragment)
 }

@@ -1,11 +1,8 @@
 package com.canli.oya.traininventoryroom.data.source
 
-import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
 
 interface IBrandCategoryDataSource<T : Any> {
-
-    fun getAllPagedItems() : Flow<PagingData<T>>
 
     fun getAllItems() : Flow<List<T>>
 

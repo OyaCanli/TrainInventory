@@ -12,7 +12,7 @@
             type="int" />
         <variable
             name="itemClick"
-            type="com.canli.oya.traininventoryroom.ui.trash.TrashItemClickListener" />
+            type="com.canli.oya.traininventoryroom.ui.common.TrainItemClickListener" />
 
         <import type="com.canli.oya.traininventoryroom.utils.BindingUtils" />
     </data>
@@ -88,7 +88,7 @@
             android:layout_height="@dimen/restore_btn_size"
             app:srcCompat="@drawable/ic_restore"
             android:contentDescription="@string/cd_restore_train"
-            android:onClick="@{() ->  itemClick.onRestoreClicked(item.trainId)}"
+            android:onClick="@{(view) ->  itemClick.onListItemClick(view, item.trainId)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -98,7 +98,7 @@
             android:layout_width="@dimen/restore_btn_size"
             android:layout_height="@dimen/restore_btn_size"
             android:layout_margin="@dimen/margin_standard"
-            android:onClick="@{() -> itemClick.onDeleteClicked(item.trainId)}"
+            android:onClick="@{(view) ->  itemClick.onListItemClick(view, item.trainId)}"
             app:layout_constraintBottom_toBottomOf="@+id/train_item_restore"
             app:layout_constraintEnd_toStartOf="@+id/train_item_restore"
             app:layout_constraintTop_toTopOf="@+id/train_item_restore"

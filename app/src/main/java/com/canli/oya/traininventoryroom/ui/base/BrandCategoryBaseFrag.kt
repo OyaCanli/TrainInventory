@@ -21,10 +21,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.utils.IS_EDIT
-import com.canli.oya.traininventoryroom.utils.SwipeToDeleteCallback
-import com.canli.oya.traininventoryroom.utils.clearFocusAndHideKeyboard
-import com.canli.oya.traininventoryroom.utils.shortToast
+import com.canli.oya.traininventoryroom.ui.common.SwipeToDeleteCallback
+import com.canli.oya.traininventoryroom.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
@@ -43,12 +41,17 @@ abstract class BrandCategoryBaseFrag<T : Any> : BaseListFragment<T>(), SwipeDele
 
         viewModel = getListViewModel()
 
-        observeUIState(viewModel.emptyMessage)
+        binding.showLoading()
 
         lifecycleScope.launch {
-            viewModel.allPagedItems.collectLatest { brandEntries ->
+            viewModel.allItems.collectLatest { brandEntries ->
                 Timber.d("Brand entries received.")
-                adapter.submitData(brandEntries)
+                if(brandEntries.isEmpty()){
+                    binding.showEmpty(R.string.no_brands_found)
+                } else {
+                    adapter.submitList(brandEntries)
+                    binding.showList()
+                }
             }
         }
 

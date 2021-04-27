@@ -3,7 +3,7 @@
 buildscript {
     ext {
         kotlin_version = '1.4.31'
-        gradle_version = '4.2.0-beta05'
+        gradle_version = '4.2.0-rc01'
         compileSdkVersion = 30
         supportLibVersion = '1.1.0'
         coroutinesVersion = '1.4.3'
