@@ -26,10 +26,6 @@ class FilterTrainViewModel (val trainDataSource: ITrainDataSource,
 
     suspend fun getCategoryNames() = categoryDataSource.getItemNames()
 
-    suspend fun getTrainsFromThisBrand(brandName: String) = trainDataSource.getTrainsFromThisBrand(brandName)
-
-    suspend fun getTrainsFromThisCategory(category: String) = trainDataSource.getTrainsFromThisCategory(category)
-
     suspend fun filterTrains() : ArrayList<TrainMinimal> {
         val filteredList = ArrayList<TrainMinimal>()
         filteredList.addAll(trainDataSource.searchInTrains(keyword, selectedCategory.value, selectedBrand.value))

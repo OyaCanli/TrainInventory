@@ -81,7 +81,7 @@ class FilterTrainFragmentTests {
 
         //Check if empty layout is displayed
         onView(withId(R.id.empty_text)).check(isVisible())
-        onView(withId(R.id.search_list)).check(isGone())
+        onView(withId(R.id.list)).check(isGone())
     }
 
 
@@ -98,7 +98,7 @@ class FilterTrainFragmentTests {
 
         onView(withId(R.id.empty_text)).check(isGone())
         onView(withId(R.id.empty_image)).check(isGone())
-        onView(withId(R.id.search_list)).check(isVisible())
+        onView(withId(R.id.list)).check(isVisible())
         onView(withText(sampleTrain1.trainName)).check(isVisible())
     }
 
@@ -118,7 +118,7 @@ class FilterTrainFragmentTests {
 
         //Check if empty layout is displayed
         onView(withId(R.id.empty_text)).check(isVisible())
-        onView(withId(R.id.search_list)).check(isGone())
+        onView(withId(R.id.list)).check(isGone())
     }
 
 
@@ -135,7 +135,7 @@ class FilterTrainFragmentTests {
 
         onView(withId(R.id.empty_text)).check(isGone())
         onView(withId(R.id.empty_image)).check(isGone())
-        onView(withId(R.id.search_list)).check(isVisible())
+        onView(withId(R.id.list)).check(isVisible())
         val enclosedInParenthesis = "($sampleCategoryName)"
         onView(withText(enclosedInParenthesis)).check(isVisible())
     }
@@ -150,7 +150,7 @@ class FilterTrainFragmentTests {
 
         onView(withId(R.id.empty_text)).check(isGone())
         onView(withId(R.id.empty_image)).check(isGone())
-        onView(withId(R.id.search_list)).check(isGone())
+        onView(withId(R.id.list)).check(isGone())
 
         onView(withText(R.string.filter_by_category)).check(matches(isDisplayed()))
         onView(withText(R.string.filter_by_brand)).check(matches(isDisplayed()))

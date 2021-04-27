@@ -3,9 +3,12 @@ package com.canli.oya.traininventoryroom.ui.trains
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.datasource.FakeTrainDataSource
+import com.canli.oya.traininventoryroom.utils.getOrAwaitValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.setMain
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -25,9 +28,25 @@ class TrainViewModelTest{
     val sampleTrain3 = TrainEntry(trainId = 2, trainName = "Gare", categoryName = "Accessoire", brandName = "Marklin")
     val sampleTrainList = mutableListOf(sampleTrain1, sampleTrain2)
 
+    private val mainThreadSurrogate = newSingleThreadContext("UI thread")
+
+    @Before
+    fun setUp() {
+        Dispatchers.setMain(mainThreadSurrogate)
+    }
+
     @Before
     fun setupViewModel() {
         trainViewModel = TrainViewModel(FakeTrainDataSource(sampleTrainList), Dispatchers.Unconfined)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun getChosenTrain_returnCorrectTrain() {
+        runBlockingTest {
+            val chosenTrain = trainViewModel.getChosenTrain(sampleTrain2.trainId).getOrAwaitValue()
+            assertTrue(chosenTrain.trainName == sampleTrain2.trainName)
+        }
     }
 
     //delete train with id deletes the train
@@ -43,52 +62,16 @@ class TrainViewModelTest{
         }
     }
 
-/*    //getTrainsFromThisBrand returns correct trains
     @ExperimentalCoroutinesApi
     @Test
-    fun getTrainsFromThisBrand_returnsCorrectTrains() {
+    fun deleteTrainPermanently_deletesPermanently(){
         runBlockingTest {
-            val expectedValue = PagingData.from(mutableListOf(sampleTrain1.convertToMinimal()))
-            trainViewModel.getTrainsFromThisBrand("Marklin").collect {
-                assertTrue(it == expectedValue)
-            }
+            trainViewModel.deleteTrainPermanently(sampleTrain1.trainId)
+
+            val list = (trainViewModel.dataSource as FakeTrainDataSource).trains
+            val index = list.indexOfFirst { it.trainId == sampleTrain1.trainId }
+            assertTrue(index == -1)
         }
     }
-
-    //getTrainsFromThisCategory returns correct trains
-    @ExperimentalCoroutinesApi
-    @Test
-    fun getTrainsFromThisCategory_returnsCorrectTrains() {
-        runBlockingTest {
-            val expectedValue = PagingData.from(mutableListOf(sampleTrain2.convertToMinimal()))
-            trainViewModel.getTrainsFromThisCategory("Locomotif").collect {
-                assertTrue(it == expectedValue)
-            }
-        }
-    }
-
-    //Search in trains with valid query returns correct trains
-    @ExperimentalCoroutinesApi
-    @Test
-    fun searchInTrains_returnsCorrectTrains() {
-        runBlockingTest {
-            val expectedValue = PagingData.from(mutableListOf(sampleTrain1.convertToMinimal()))
-            trainViewModel.searchInTrains("Red").collect {
-                assertTrue(it == expectedValue)
-            }
-        }
-    }
-
-    //Search in trains with empty query returns nothing
-    @ExperimentalCoroutinesApi
-    @Test
-    fun searchInTrains_whenNoResult_returnsEmptyList() {
-        runBlockingTest {
-            val expectedValue = PagingData.from(mutableListOf())
-            trainViewModel.searchInTrains("").collect {
-                assertTrue(it == expectedValue)
-            }
-        }
-    }*/
 
 }
