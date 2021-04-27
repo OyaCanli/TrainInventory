@@ -11,7 +11,7 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
-import com.canli.oya.traininventoryroom.ui.base.BaseTrainAdapter
+import com.canli.oya.traininventoryroom.ui.base.TrainBaseAdapter
 import com.canli.oya.traininventoryroom.ui.common.TrainItemClickListener
 import com.canli.oya.traininventoryroom.ui.trains.TrainViewModel
 import com.canli.oya.traininventoryroom.utils.showEmpty
@@ -32,7 +32,7 @@ class TrashListFragment : Fragment(R.layout.fragment_list), TrainItemClickListen
     @Inject
     lateinit var viewModelFactory: TrainInventoryVMFactory
 
-    private lateinit var trashAdapter: BaseTrainAdapter
+    private lateinit var trashAdapter: TrainBaseAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

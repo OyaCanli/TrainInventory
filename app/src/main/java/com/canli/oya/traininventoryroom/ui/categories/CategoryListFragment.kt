@@ -9,9 +9,9 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
+import com.canli.oya.traininventoryroom.ui.base.BCBaseViewModel
 import com.canli.oya.traininventoryroom.ui.base.BaseListAdapter
 import com.canli.oya.traininventoryroom.ui.base.BrandCategoryBaseFrag
-import com.canli.oya.traininventoryroom.ui.base.BrandCategoryBaseVM
 import com.canli.oya.traininventoryroom.utils.TRAINS_OF_CATEGORY
 import timber.log.Timber
 import javax.inject.Inject
@@ -24,7 +24,7 @@ class CategoryListFragment : BrandCategoryBaseFrag<CategoryEntry>(), CategoryIte
 
     override fun getListAdapter(): BaseListAdapter<CategoryEntry, out Any> = CategoryAdapter(requireContext(), this, this)
 
-    override fun getListViewModel(): BrandCategoryBaseVM<CategoryEntry> = ViewModelProvider(this, viewModelFactory).get(CategoryViewModel::class.java)
+    override fun getListViewModel(): BCBaseViewModel<CategoryEntry> = ViewModelProvider(this, viewModelFactory).get(CategoryViewModel::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

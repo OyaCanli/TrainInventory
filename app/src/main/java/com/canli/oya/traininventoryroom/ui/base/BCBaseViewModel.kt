@@ -14,8 +14,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-abstract class BrandCategoryBaseVM<T : Any>(private val dataSource: IBrandCategoryDataSource<T>,
-                                      private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
+abstract class BCBaseViewModel<T : Any>(private val dataSource: IBrandCategoryDataSource<T>,
+                                        private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
 
     var allItems: Flow<List<T>> = dataSource.getAllItems()
 

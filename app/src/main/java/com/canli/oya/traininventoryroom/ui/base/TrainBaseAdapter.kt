@@ -13,7 +13,7 @@ import com.canli.oya.traininventoryroom.data.TrainMinimal
 import com.canli.oya.traininventoryroom.ui.common.TrainItemClickListener
 
 
-abstract class BaseTrainAdapter(private val clickListener : TrainItemClickListener) : ListAdapter<TrainMinimal, BaseTrainAdapter.ViewHolder>(
+abstract class TrainBaseAdapter(private val clickListener : TrainItemClickListener) : ListAdapter<TrainMinimal, TrainBaseAdapter.ViewHolder>(
     TrainDiffCallback()
 ) {
 
