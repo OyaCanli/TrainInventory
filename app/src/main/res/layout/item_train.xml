@@ -25,7 +25,7 @@
         android:padding="@dimen/half_padding">
 
         <TextView
-            android:id="@+id/train_item_number"
+            android:id="@+id/trash_item_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/half_margin"
@@ -33,31 +33,31 @@
             android:layout_marginTop="8dp"
             android:textSize="@dimen/largeTextSize"
             app:numerator="@{position}"
-            app:layout_constraintBaseline_toBaselineOf="@+id/train_item_train_name"
+            app:layout_constraintBaseline_toBaselineOf="@+id/trash_item_train_name"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="1." />
 
         <TextView
-            android:id="@+id/train_item_train_name"
+            android:id="@+id/trash_item_train_name"
             style="@style/name_style"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text="@{item.trainName}"
             app:layout_constraintEnd_toStartOf="@+id/train_item_image"
-            app:layout_constraintStart_toEndOf="@+id/train_item_number"
+            app:layout_constraintStart_toEndOf="@+id/trash_item_number"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Train name" />
 
         <TextView
-            android:id="@+id/train_item_brand"
+            android:id="@+id/trash_item_brand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@{item.brandName}"
             android:textSize="@dimen/normalTextSize"
-            app:layout_constraintStart_toStartOf="@+id/train_item_train_name"
-            app:layout_constraintTop_toBottomOf="@+id/train_item_train_name"
+            app:layout_constraintStart_toStartOf="@+id/trash_item_train_name"
+            app:layout_constraintTop_toBottomOf="@+id/trash_item_train_name"
             tools:text="Brand name" />
 
         <ImageView
@@ -74,26 +74,26 @@
             app:placeholder="@{@drawable/ic_train_color}" />
 
         <TextView
-            android:id="@+id/train_item_reference"
+            android:id="@+id/trash_item_reference"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@{item.modelReference}"
             android:textSize="@dimen/normalTextSize"
-            app:layout_constraintStart_toStartOf="@+id/train_item_brand"
-            app:layout_constraintTop_toBottomOf="@+id/train_item_brand"
+            app:layout_constraintStart_toStartOf="@+id/trash_item_brand"
+            app:layout_constraintTop_toBottomOf="@+id/trash_item_brand"
             tools:text="reference" />
 
         <TextView
-            android:id="@+id/train_item_category"
+            android:id="@+id/trash_item_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/half_margin"
             android:text="@{BindingUtils.encloseInParenthesis(item.categoryName)}"
             android:textSize="@dimen/normalTextSize"
             android:textStyle="italic"
-            app:layout_constraintBaseline_toBaselineOf="@+id/train_item_brand"
-            app:layout_constraintStart_toEndOf="@+id/train_item_brand"
+            app:layout_constraintBaseline_toBaselineOf="@+id/trash_item_brand"
+            app:layout_constraintStart_toEndOf="@+id/trash_item_brand"
             tools:text="(Vagon)" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

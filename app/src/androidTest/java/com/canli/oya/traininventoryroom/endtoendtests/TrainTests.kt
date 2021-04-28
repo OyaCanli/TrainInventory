@@ -1,39 +1,32 @@
 package com.canli.oya.traininventoryroom.endtoendtests
 
-import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.Espresso.onData
-import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.BrandEntry
 import com.canli.oya.traininventoryroom.data.TrainDatabase
 import com.canli.oya.traininventoryroom.datasource.sampleBrand1
 import com.canli.oya.traininventoryroom.datasource.sampleCategory1
 import com.canli.oya.traininventoryroom.datasource.sampleTrain1
-import com.canli.oya.traininventoryroom.datasource.sampleTrain3
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TestAppModule
 import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.inmemory.DaggerInMemoryTestComponent
 import com.canli.oya.traininventoryroom.di.inmemory.InMemoryTestComponent
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
-import com.canli.oya.traininventoryroom.utils.DataBindingIdlingResource
-import com.canli.oya.traininventoryroom.utils.isGone
-import com.canli.oya.traininventoryroom.utils.isVisible
-import com.canli.oya.traininventoryroom.utils.monitorActivity
+import com.canli.oya.traininventoryroom.utils.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
 import org.junit.After
@@ -108,11 +101,11 @@ class TrainTests {
         onView(withId(R.id.brandSpinner)).perform(click())
         onView(withText(sampleBrand1.brandName)).perform(click())
 
-        onView(withId(R.id.editReference)).perform(typeText(sampleTrain1.modelReference), closeSoftKeyboard())
-        onView(withId(R.id.editTrainName)).perform(scrollTo(), typeText(sampleTrain1.trainName), closeSoftKeyboard())
-        onView(withId(R.id.editScale)).perform(scrollTo(), click(), typeText(sampleTrain1.scale), closeSoftKeyboard())
-        onView(withId(R.id.editLocation)).perform(scrollTo(), typeText(sampleTrain1.location), closeSoftKeyboard())
-        onView(withId(R.id.editTrainDescription)).perform(scrollTo(), typeText(sampleTrain1.description), closeSoftKeyboard())
+        onView(withId(R.id.editReference)).perform(typeText(sampleTrain1.modelReference), ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.editTrainName)).perform(scrollTo(), typeText(sampleTrain1.trainName), ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.editScale)).perform(scrollTo(), click(), typeText(sampleTrain1.scale), ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.editLocation)).perform(scrollTo(), typeText(sampleTrain1.location), ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.editTrainDescription)).perform(scrollTo(), typeText(sampleTrain1.description), ViewActions.closeSoftKeyboard())
 
         //Click save button from action menu
         onView(withId(R.id.action_save)).perform(click())
@@ -220,6 +213,7 @@ class TrainTests {
         onView(withText(sampleTrain1.categoryName)).check(matches(isDisplayed()))
         onView(withText(sampleTrain1.brandName)).check(matches(isDisplayed()))
 
+        //Click up
         onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
         //Verify we are back at details screen without a warning
         onView(withText(sampleTrain1.trainName)).check(matches(withParent(withId(R.id.toolbar))))
@@ -229,6 +223,46 @@ class TrainTests {
 
         onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
         onView(withText(R.string.unsaved_changes_warning)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun deleteATrain_findItOnTrashAndRestoreIt()= runBlocking {
+        database.categoryDao().insert(sampleCategory1)
+        database.brandDao().insert(sampleBrand1)
+        database.trainDao().insert(sampleTrain1)
+
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        //Swipe and delete item
+        onView(withId(R.id.list))
+            .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, swipeLeft()))
+        onView(withId(R.id.list)).perform(
+            actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickOnChildWithId(R.id.confirm_delete_btn)))
+
+        //Navigate to trash
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        onView(withText(R.string.trash)).perform(click())
+
+        //Verify that deleted item is seen in the trash
+        onView(withText(R.string.trash)).check(matches(isDisplayed()))
+        onView(withText(sampleTrain1.trainName)).check(matches(isDisplayed()))
+
+        //Click on restore
+        onView(withId(R.id.list)).perform(
+            actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickOnChildWithId(R.id.trash_item_restore)))
+
+        //Verify it disappears from trash
+        onView(withId(R.id.empty_image)).check(matches(isDisplayed()))
+
+        //Navigate up
+        onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+
+        //Check that the train is added back in train list
+        onView(withText(R.string.all_trains)).check(matches(isDisplayed()))
+        onView(withText(sampleTrain1.trainName)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
