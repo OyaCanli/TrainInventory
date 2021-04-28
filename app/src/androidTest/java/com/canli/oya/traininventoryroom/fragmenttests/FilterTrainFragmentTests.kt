@@ -136,8 +136,7 @@ class FilterTrainFragmentTests {
         onView(withId(R.id.empty_text)).check(isGone())
         onView(withId(R.id.empty_image)).check(isGone())
         onView(withId(R.id.list)).check(isVisible())
-        val enclosedInParenthesis = "($sampleCategoryName)"
-        onView(withText(enclosedInParenthesis)).check(isVisible())
+        onView(withText(sampleTrain2.trainName)).check(isVisible())
     }
 
 
