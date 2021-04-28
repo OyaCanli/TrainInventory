@@ -25,6 +25,7 @@ import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.base.SwipeDeleteListener
 import com.canli.oya.traininventoryroom.ui.common.SwipeToDeleteCallback
 import com.canli.oya.traininventoryroom.ui.common.TrainItemClickListener
+import com.canli.oya.traininventoryroom.utils.blinkAddMenuItem
 import com.canli.oya.traininventoryroom.utils.showEmpty
 import com.canli.oya.traininventoryroom.utils.showList
 import com.canli.oya.traininventoryroom.utils.showLoading
@@ -93,6 +94,7 @@ class TrainListFragment : Fragment(R.layout.fragment_list), TrainItemClickListen
                         if (adapter.itemCount < 1) {
                             binding.showEmpty(message)
                             Timber.d("list is empty")
+                            addMenuItem?.blinkAddMenuItem(R.drawable.avd_plus_to_save)
                         } else {
                             binding.showList()
                             Timber.d("list is not empty")
