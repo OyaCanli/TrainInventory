@@ -1,8 +1,5 @@
 package com.canli.oya.traininventoryroom.data.dao
 
-import androidx.lifecycle.LiveData
-import androidx.paging.DataSource
-import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import com.canli.oya.traininventoryroom.data.BrandEntry
@@ -10,9 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BrandDao : BaseDao<BrandEntry> {
-
-    @Query("SELECT * FROM brands ORDER BY brandName")
-    fun observeAllPagedBrands(): PagingSource<Int, BrandEntry>
 
     @Query("SELECT * FROM brands ORDER BY brandName")
     fun observeAllBrands() : Flow<List<BrandEntry>>

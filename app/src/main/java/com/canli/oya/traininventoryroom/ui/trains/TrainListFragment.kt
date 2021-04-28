@@ -7,26 +7,39 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.annotation.StringRes
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import androidx.paging.LoadState
 import androidx.paging.PagingData
+import androidx.recyclerview.widget.ItemTouchHelper
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.TrainMinimal
+import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
-import com.canli.oya.traininventoryroom.ui.base.BaseAdapter
-import com.canli.oya.traininventoryroom.ui.base.BaseListFragment
 import com.canli.oya.traininventoryroom.ui.base.SwipeDeleteListener
+import com.canli.oya.traininventoryroom.ui.common.SwipeToDeleteCallback
+import com.canli.oya.traininventoryroom.ui.common.TrainItemClickListener
+import com.canli.oya.traininventoryroom.utils.showEmpty
+import com.canli.oya.traininventoryroom.utils.showList
+import com.canli.oya.traininventoryroom.utils.showLoading
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
-class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListener,
-    SwipeDeleteListener<TrainMinimal> {
+class TrainListFragment : Fragment(R.layout.fragment_list), TrainItemClickListener, SwipeDeleteListener<TrainMinimal> {
 
     private lateinit var viewModel: TrainViewModel
+
+    private val binding by viewBinding(FragmentListBinding::bind)
+
+    private lateinit var adapter : TrainPagingAdapter
 
     @Inject
     lateinit var viewModelFactory: TrainInventoryVMFactory
@@ -36,18 +49,25 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
     private var addMenuItem: MenuItem? = null
 
 
-    override fun getListAdapter(): BaseAdapter<TrainMinimal, out Any> =
-        TrainAdapter(requireContext(), this, this)
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
 
+        setHasOptionsMenu(true)
+
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(TrainViewModel::class.java)
 
+        adapter = TrainPagingAdapter(requireContext(), this, this)
+
+        binding.list.adapter = adapter
+
+        ItemTouchHelper(SwipeToDeleteCallback(requireContext(), adapter)).attachToRecyclerView(
+            binding.list
+        )
+
         observeUIState(R.string.no_trains_found)
+
         lifecycleScope.launch {
             viewModel.allItems.collectLatest { trainEntries ->
                 adapter.submitData(trainEntries)
@@ -56,9 +76,31 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
         }
     }
 
-    override fun onListItemClick(trainId: Int) {
-        val action = TrainListFragmentDirections.actionTrainListFragmentToTrainDetailsFragment(trainId)
-        binding.root.findNavController().navigate(action)
+    private fun observeUIState(@StringRes message: Int) {
+        Timber.d("observeUIState is called")
+        binding.showLoading()
+
+        lifecycleScope.launchWhenStarted {
+            adapter.loadStateFlow.collectLatest {
+                Timber.d("New LoadState is received")
+                when (it.refresh) {
+                    is LoadState.Loading -> {
+                        binding.showLoading()
+                        Timber.d("state is Loading")
+                    }
+                    is LoadState.NotLoading -> {
+                        Timber.d("state is Not-Loading")
+                        if (adapter.itemCount < 1) {
+                            binding.showEmpty(message)
+                            Timber.d("list is empty")
+                        } else {
+                            binding.showList()
+                            Timber.d("list is not empty")
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -97,5 +139,10 @@ class TrainListFragment : BaseListFragment<TrainMinimal>(), TrainItemClickListen
 
     fun scrollToTop() {
         binding.list.smoothScrollToPosition(0)
+    }
+
+    override fun onListItemClick(view: View, trainId: Int) {
+        val action = TrainListFragmentDirections.actionTrainListFragmentToTrainDetailsFragment(trainId)
+        binding.root.findNavController().navigate(action)
     }
 }

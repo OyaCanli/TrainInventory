@@ -6,7 +6,10 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.canli.oya.traininventoryroom.data.*
+import com.canli.oya.traininventoryroom.data.BrandEntry
+import com.canli.oya.traininventoryroom.data.CategoryEntry
+import com.canli.oya.traininventoryroom.data.TrainDatabase
+import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.datasource.convertToMinimal
 import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,6 +22,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.time.LocalDate
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -116,13 +120,39 @@ class TrainDaoTests {
         database.trainDao().insert(secondTrain)
 
         //Delete first train
-        database.trainDao().delete(firstTrain)
+        database.trainDao().deletePermanently(firstTrain.trainId)
 
         //Verify first train is deleted and the second train is still on database
         val allTrains = database.trainDao().getAllTrains()
 
         assertFalse(allTrains.contains(firstTrain))
         assertTrue(allTrains.contains(secondTrain))
+    }
+
+    //Insert two trains than recycle one train and verify it is no more in trains list
+    //And that it is in trash list instead
+    @Test
+    fun recycleTrain_verifySendToTrash() = runBlockingTest {
+        //Insert two trains
+        val firstTrain = TrainEntry(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
+            description = "train description", imageUri = "image url", scale = "1.3")
+        val secondTrain = TrainEntry(trainId = 3, trainName = "Blue train", brandName = secondBrand.brandName, categoryName = secondCategory.categoryName,
+            description = "second train description", imageUri = "second image url", scale = "3.5")
+        database.trainDao().insert(firstTrain)
+        database.trainDao().insert(secondTrain)
+
+        //Delete first train
+        val date = LocalDate.now().toEpochDay()
+        database.trainDao().sendToThrash(firstTrain.trainId, date)
+
+        //Verify first train is not in the trains list anymore and the second train is still there
+        val allTrains = database.trainDao().getAllTrains()
+        assertFalse(allTrains.contains(firstTrain))
+        assertTrue(allTrains.contains(secondTrain))
+
+        //Verify that first train is in trash
+        val trashedTrains = database.trainDao().getAllTrainsInTrash()
+        assertTrue(trashedTrains.contains(firstTrain.convertToMinimal()))
     }
 
     @Test

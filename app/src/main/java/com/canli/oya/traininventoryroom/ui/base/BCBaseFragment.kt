@@ -20,11 +20,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ItemTouchHelper
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.utils.IS_EDIT
-import com.canli.oya.traininventoryroom.utils.SwipeToDeleteCallback
-import com.canli.oya.traininventoryroom.utils.clearFocusAndHideKeyboard
-import com.canli.oya.traininventoryroom.utils.shortToast
+import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
+import com.canli.oya.traininventoryroom.ui.common.SwipeToDeleteCallback
+import com.canli.oya.traininventoryroom.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
@@ -32,23 +32,42 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-abstract class BrandCategoryBaseFrag<T : Any> : BaseListFragment<T>(), SwipeDeleteListener<T> {
+abstract class BrandCategoryBaseFrag<T : Any> : Fragment(R.layout.fragment_list), SwipeDeleteListener<T> {
 
-    protected lateinit var viewModel: BrandCategoryBaseVM<T>
+    protected lateinit var viewModel: BCBaseViewModel<T>
+
+    protected val binding by viewBinding(FragmentListBinding::bind)
+
+    protected lateinit var adapter: BaseListAdapter<T, out Any>
 
     var addMenuItem: MenuItem? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setHasOptionsMenu(true)
+
+        adapter = getListAdapter()
+
+        binding.list.adapter = adapter
+
+        ItemTouchHelper(SwipeToDeleteCallback(requireContext(), adapter)).attachToRecyclerView(
+            binding.list
+        )
+
         viewModel = getListViewModel()
 
-        observeUIState(viewModel.emptyMessage)
+        binding.showLoading()
 
         lifecycleScope.launch {
-            viewModel.allPagedItems.collectLatest { brandEntries ->
+            viewModel.allItems.collectLatest { brandEntries ->
                 Timber.d("Brand entries received.")
-                adapter.submitData(brandEntries)
+                if(brandEntries.isEmpty()){
+                    binding.showEmpty(R.string.no_brands_found)
+                } else {
+                    adapter.submitList(brandEntries)
+                    binding.showList()
+                }
             }
         }
 
@@ -59,7 +78,25 @@ abstract class BrandCategoryBaseFrag<T : Any> : BaseListFragment<T>(), SwipeDele
         )
     }
 
-    abstract fun getListViewModel(): BrandCategoryBaseVM<T>
+    abstract fun getListAdapter(): BaseListAdapter<T, out Any>
+
+    protected fun blinkAddMenuItem(addMenuItem: MenuItem, @DrawableRes iconToSet: Int) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            addMenuItem.setIcon(R.drawable.avd_blinking_plus)
+            val blinkingAnim = addMenuItem.icon as? AnimatedVectorDrawable
+            blinkingAnim?.clearAnimationCallbacks()
+            blinkingAnim?.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+                override fun onAnimationStart(drawable: Drawable) {}
+
+                override fun onAnimationEnd(drawable: Drawable) {
+                    addMenuItem.setMenuIcon(iconToSet)
+                }
+            })
+            blinkingAnim?.start()
+        }
+    }
+
+    abstract fun getListViewModel(): BCBaseViewModel<T>
 
     abstract fun getTitle(): String
 
@@ -213,4 +250,9 @@ abstract class BrandCategoryBaseFrag<T : Any> : BaseListFragment<T>(), SwipeDele
 
     override fun onDeleteCanceled(position: Int) = adapter.cancelDelete(position)
 
+}
+
+fun MenuItem.setMenuIcon(@DrawableRes iconResource: Int) {
+    setIcon(iconResource)
+    title = if (iconResource == R.drawable.avd_plus_to_cross) TITLE_PLUS else TITLE_CROSS
 }

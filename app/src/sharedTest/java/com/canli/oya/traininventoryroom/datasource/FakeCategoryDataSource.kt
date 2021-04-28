@@ -1,6 +1,5 @@
 package com.canli.oya.traininventoryroom.datasource
 
-import androidx.paging.PagingData
 import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
@@ -12,9 +11,6 @@ class FakeCategoryDataSource(private var categories : MutableList<CategoryEntry>
                                                  private val trains: MutableList<TrainEntry> = mutableListOf()
 ) : IBrandCategoryDataSource<CategoryEntry> {
 
-    private val categoryFlow : Flow<PagingData<CategoryEntry>> = flow {
-        emit(PagingData.from(categories))
-    }
 
     override suspend fun insertItem(item: CategoryEntry) {
         categories.add(item)
@@ -28,8 +24,6 @@ class FakeCategoryDataSource(private var categories : MutableList<CategoryEntry>
         val index = categories.indexOfFirst { it.categoryId == item.categoryId }
         categories[index] = item
     }
-
-    override fun getAllPagedItems(): Flow<PagingData<CategoryEntry>> = categoryFlow
 
     fun setData(newCategoryList : MutableList<CategoryEntry>){
         if(categories == newCategoryList) return

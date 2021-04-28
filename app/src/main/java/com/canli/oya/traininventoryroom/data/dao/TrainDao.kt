@@ -64,7 +64,10 @@ interface TrainDao : BaseDao<TrainEntry>{
     suspend fun restoreFromThrash(trainId : Int)
 
     @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE dateOfDeletion IS NOT NULL")
-    fun getAllTrainsInTrash(): Flow<List<TrainMinimal>>
+    fun observeAllTrainsInTrash(): Flow<List<TrainMinimal>>
+
+    @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE dateOfDeletion IS NOT NULL")
+    fun getAllTrainsInTrash(): List<TrainMinimal>
 
     @Query("DELETE FROM trains WHERE dateOfDeletion IS NOT NULL AND categoryName = :categoryName")
     fun deleteTrainsInTrashWithThisCategory(categoryName: String)

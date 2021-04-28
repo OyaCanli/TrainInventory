@@ -63,7 +63,7 @@
             app:layout_constraintTop_toBottomOf="@+id/search_keywords_layout" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/search_list"
+            android:id="@+id/list"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:scrollbars="vertical"

@@ -1,15 +1,13 @@
 package com.canli.oya.traininventoryroom.fragmenttests
 
 import android.os.Bundle
-import android.widget.EditText
-import androidx.appcompat.widget.SearchView
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -18,8 +16,6 @@ import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import com.canli.oya.traininventoryroom.datasource.FakeTrainDataSource
-import com.canli.oya.traininventoryroom.datasource.sampleTrain1
-import com.canli.oya.traininventoryroom.datasource.sampleTrain2
 import com.canli.oya.traininventoryroom.datasource.sampleTrainList
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TestAppModule
@@ -27,10 +23,12 @@ import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.di.fake.DaggerFakeTestComponent
 import com.canli.oya.traininventoryroom.di.fake.FakeTestComponent
 import com.canli.oya.traininventoryroom.ui.trains.TrainListFragment
-import com.canli.oya.traininventoryroom.utils.*
+import com.canli.oya.traininventoryroom.utils.DataBindingIdlingResource
+import com.canli.oya.traininventoryroom.utils.isGone
+import com.canli.oya.traininventoryroom.utils.isVisible
+import com.canli.oya.traininventoryroom.utils.monitorFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule

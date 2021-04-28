@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.source.BrandDataSource
 import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
@@ -15,10 +14,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-abstract class BrandCategoryBaseVM<T : Any>(private val dataSource: IBrandCategoryDataSource<T>,
-                                      private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
-
-    var allPagedItems: Flow<PagingData<T>> = dataSource.getAllPagedItems()
+abstract class BCBaseViewModel<T : Any>(private val dataSource: IBrandCategoryDataSource<T>,
+                                        private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
 
     var allItems: Flow<List<T>> = dataSource.getAllItems()
 
