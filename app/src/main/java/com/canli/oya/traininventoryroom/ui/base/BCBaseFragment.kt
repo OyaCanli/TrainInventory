@@ -61,10 +61,15 @@ abstract class BrandCategoryBaseFrag<T : Any> : Fragment(R.layout.fragment_list)
 
         lifecycleScope.launch {
             viewModel.allItems.collectLatest { brandEntries ->
-                Timber.d("Brand entries received.")
+
                 if(brandEntries.isEmpty()){
+                    Timber.d("nO BRANDS FOUND")
                     binding.showEmpty(R.string.no_brands_found)
+                    if (!viewModel.isChildFragVisible) {
+                        addMenuItem?.blinkAddMenuItem(R.drawable.avd_plus_to_cross)
+                    }
                 } else {
+                    Timber.d("Brand entries received.")
                     adapter.submitList(brandEntries)
                     binding.showList()
                 }
@@ -79,22 +84,6 @@ abstract class BrandCategoryBaseFrag<T : Any> : Fragment(R.layout.fragment_list)
     }
 
     abstract fun getListAdapter(): BaseListAdapter<T, out Any>
-
-    protected fun blinkAddMenuItem(addMenuItem: MenuItem, @DrawableRes iconToSet: Int) {
-        if (Build.VERSION.SDK_INT >= 23) {
-            addMenuItem.setIcon(R.drawable.avd_blinking_plus)
-            val blinkingAnim = addMenuItem.icon as? AnimatedVectorDrawable
-            blinkingAnim?.clearAnimationCallbacks()
-            blinkingAnim?.registerAnimationCallback(object : Animatable2.AnimationCallback() {
-                override fun onAnimationStart(drawable: Drawable) {}
-
-                override fun onAnimationEnd(drawable: Drawable) {
-                    addMenuItem.setMenuIcon(iconToSet)
-                }
-            })
-            blinkingAnim?.start()
-        }
-    }
 
     abstract fun getListViewModel(): BCBaseViewModel<T>
 

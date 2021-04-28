@@ -4,8 +4,6 @@ Application has the feature to export sql database to excel file.
 There is a trash folder for deleted trains. Items in trash are deleted after 30 days, with the help of WorkManager.
 Icons on the action menu are animated vector drawables(AVD) that I designed in ShapeShifter.
 
-Some fragments were soo much similar that I (probably over)used inheritance.
-
 The repo contains lots of integration tests and also unit tests and it uses Github Actions for Continuous Integration.
 
 ## Screenshots
