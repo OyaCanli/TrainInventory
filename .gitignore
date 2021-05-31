@@ -1,2 +1,5 @@
 /build
 .idea
+/keystore.properties
+/app/keystore.jks
+/private_key.pepk
