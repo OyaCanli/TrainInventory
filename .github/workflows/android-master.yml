@@ -21,7 +21,7 @@ jobs:
         distribution: 'adopt'
         java-version: '11'
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew buildDebug
       
   unit_tests:
     name: Run Unit Tests
@@ -52,11 +52,9 @@ jobs:
           distribution: 'adopt'
           java-version: '11'
       - name: Build project
-        run: ./gradlew assemble --stacktrace
+        run: ./gradlew assembleDebug --stacktrace
       - name: Run instumentation tests
         uses: reactivecircus/android-emulator-runner@v2.15.0
         with:
           api-level: ${{ matrix.api-level }}
           script: ./gradlew connectedCheck --stacktrace
-      - name: Final checks
-        run: ./gradlew check --stacktrace
