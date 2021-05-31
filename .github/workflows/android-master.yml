@@ -19,7 +19,7 @@ jobs:
       uses: actions/setup-java@v2
       with:
         distribution: 'adopt'
-        java-version: 11
+        java-version: '11'
     - name: Build with Gradle
       run: ./gradlew build
       
@@ -33,7 +33,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
            distribution: 'adopt'
-           java-version: 11
+           java-version: '11'
       - name: Unit tests
         run: bash ./gradlew test --stacktrace     
 
@@ -50,13 +50,11 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
-          java-version: 11
-    - name: Build project
-      run: ./gradlew assemble --stacktrace
-    - name: Run instumentation tests
-      uses: reactivecircus/android-emulator-runner@v2.15.0
-      with:
-        api-level: ${{ matrix.api-level }}
-        script: ./gradlew connectedCheck --stacktrace
-    - name: Final checks
-      run: ./gradlew check --stacktrace
+          java-version: '11'
+      - name: Build project
+        run: ./gradlew assemble --stacktrace
+      - name: Run instumentation tests
+        uses: reactivecircus/android-emulator-runner@v2.15.0
+        with:
+          api-level: ${{ matrix.api-level }}
+          script: ./gradlew connectedCheck --stacktrace
