@@ -59,24 +59,23 @@ abstract class BrandCategoryBaseFrag<T : Any> : Fragment(R.layout.fragment_list)
 
         binding.showLoading()
 
-        lifecycleScope.launch {
-            viewModel.allItems.collectLatest { brandEntries ->
+        activity?.title = getTitle()
 
-                if(brandEntries.isEmpty()){
-                    Timber.d("nO BRANDS FOUND")
-                    binding.showEmpty(R.string.no_brands_found)
+        lifecycleScope.launch {
+            viewModel.allItems.collectLatest { entries ->
+                if(entries.isEmpty()){
+                    Timber.d("No items FOUND")
+                    binding.showEmpty(getEmptyMessage())
                     if (!viewModel.isChildFragVisible) {
                         addMenuItem?.blinkAddMenuItem(R.drawable.avd_plus_to_cross)
                     }
                 } else {
-                    Timber.d("Brand entries received.")
-                    adapter.submitList(brandEntries)
+                    Timber.d("Items received.")
+                    adapter.submitList(entries)
                     binding.showList()
                 }
             }
         }
-
-        activity?.title = getTitle()
 
         ItemTouchHelper(SwipeToDeleteCallback(requireContext(), adapter)).attachToRecyclerView(
             binding.list
@@ -88,6 +87,8 @@ abstract class BrandCategoryBaseFrag<T : Any> : Fragment(R.layout.fragment_list)
     abstract fun getListViewModel(): BCBaseViewModel<T>
 
     abstract fun getTitle(): String
+
+    abstract fun getEmptyMessage() : Int
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)

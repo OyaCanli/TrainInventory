@@ -47,4 +47,6 @@ class CategoryListFragment : BrandCategoryBaseFrag<CategoryEntry>(), CategoryIte
     override fun getChildFragment(): Fragment = AddCategoryFragment()
 
     override fun getTitle(): String = getString(R.string.all_categories)
+
+    override fun getEmptyMessage(): Int = R.string.no_categories_found
 }

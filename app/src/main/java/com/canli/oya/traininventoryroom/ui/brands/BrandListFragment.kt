@@ -72,5 +72,8 @@ class BrandListFragment : BrandCategoryBaseFrag<BrandEntry>(), BrandItemClickLis
     override fun getChildFragment(): Fragment = AddBrandFragment()
 
     override fun getTitle(): String  = getString(R.string.all_brands)
+
+    override fun getEmptyMessage(): Int = R.string.no_brands_found
+
 }
 
