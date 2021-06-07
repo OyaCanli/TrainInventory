@@ -5,7 +5,7 @@
 
     <data>
         <variable name="item"
-            type="com.canli.oya.traininventoryroom.data.entities.BrandEntity"/>
+            type="com.canlioya.core.models.Brand"/>
         <variable
             name="position"
             type="int" />

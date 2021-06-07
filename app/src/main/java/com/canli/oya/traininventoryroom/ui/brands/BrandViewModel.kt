@@ -1,15 +1,13 @@
 package com.canli.oya.traininventoryroom.ui.brands
 
 
-import com.canli.oya.traininventoryroom.data.entities.BrandEntity
-import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
-
-
+import com.canli.oya.traininventoryroom.interactors.BrandCategoryInteractors
 import com.canli.oya.traininventoryroom.ui.base.BCBaseViewModel
+import com.canlioya.core.models.Brand
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 
-class BrandViewModel(dataSource : IBrandCategoryDataSource<BrandEntity>,
+class BrandViewModel(interactors : BrandCategoryInteractors<Brand>,
                      ioDispatcher: CoroutineDispatcher = Dispatchers.IO)
-    : BCBaseViewModel<BrandEntity>(dataSource, ioDispatcher)
+    : BCBaseViewModel<Brand>(interactors, ioDispatcher)

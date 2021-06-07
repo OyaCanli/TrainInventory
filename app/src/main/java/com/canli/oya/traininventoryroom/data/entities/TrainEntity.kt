@@ -6,6 +6,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.canlioya.core.models.Train
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -32,3 +33,29 @@ data class TrainEntity(
     var location: String? = null,
     var scale: String? = null,
     var dateOfDeletion: Long? = null) : Parcelable
+
+fun TrainEntity.toTrain() = Train(
+    this.trainId,
+    this.trainName,
+    this.modelReference,
+    this.brandName,
+    this.categoryName,
+    this.quantity,
+    this.imageUri,
+    this.description,
+    this.location,
+    this.scale,
+    this.dateOfDeletion
+)
+
+fun Train.toTrainEntity() = TrainEntity(this.trainId,
+    this.trainName,
+    this.modelReference,
+    this.brandName,
+    this.categoryName,
+    this.quantity,
+    this.imageUri,
+    this.description,
+    this.location,
+    this.scale,
+    this.dateOfDeletion)

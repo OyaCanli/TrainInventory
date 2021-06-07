@@ -18,7 +18,6 @@ import androidx.paging.PagingData
 import androidx.recyclerview.widget.ItemTouchHelper
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.TrainMinimal
 import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
@@ -29,6 +28,7 @@ import com.canli.oya.traininventoryroom.utils.blinkAddMenuItem
 import com.canli.oya.traininventoryroom.utils.showEmpty
 import com.canli.oya.traininventoryroom.utils.showList
 import com.canli.oya.traininventoryroom.utils.showLoading
+import com.canlioya.core.models.TrainMinimal
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber

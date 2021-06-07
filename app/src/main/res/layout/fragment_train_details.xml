@@ -6,7 +6,7 @@
     <data>
         <variable
             name="chosenTrain"
-            type="com.canli.oya.traininventoryroom.data.entities.TrainEntity" />
+            type="com.canlioya.core.models.Train" />
     </data>
 
     <ScrollView

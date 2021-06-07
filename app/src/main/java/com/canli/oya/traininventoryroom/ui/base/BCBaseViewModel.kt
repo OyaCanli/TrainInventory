@@ -5,21 +5,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.source.BrandDataSource
-import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
+import com.canli.oya.traininventoryroom.interactors.BrandCategoryInteractors
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-abstract class BCBaseViewModel<T : Any>(private val dataSource: IBrandCategoryDataSource<T>,
+abstract class BCBaseViewModel<T : Any>(private val interactors: BrandCategoryInteractors<T>,
                                         private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
 
-    var allItems: Flow<List<T>> = dataSource.getAllItems()
+    var allItems: Flow<List<T>> = interactors.getAllItems()
 
-    val emptyMessage = if(dataSource is BrandDataSource) R.string.no_brands_found else R.string.no_categories_found
+    //todo: val emptyMessage = if(dataSource is BrandDataSource) R.string.no_brands_found else R.string.no_categories_found
 
     var isChildFragVisible: Boolean = false
 
@@ -35,7 +33,7 @@ abstract class BCBaseViewModel<T : Any>(private val dataSource: IBrandCategoryDa
     fun insertItem(item: T) {
         viewModelScope.launch(ioDispatcher) {
             try {
-                dataSource.insertItem(item)
+                interactors.addItem(item)
             } catch (e : SQLiteConstraintException){
                 Timber.e("Same category exists")
             }
@@ -44,24 +42,24 @@ abstract class BCBaseViewModel<T : Any>(private val dataSource: IBrandCategoryDa
 
     suspend fun deleteItem(item: T) {
         viewModelScope.launch(ioDispatcher){
-            dataSource.deleteItem(item)
+            interactors.deleteItem(item)
         }
     }
 
     fun updateItem(item: T) {
-        viewModelScope.launch(ioDispatcher) { dataSource.updateItem(item) }
+        viewModelScope.launch(ioDispatcher) { interactors.updateItem(item) }
     }
 
     suspend fun isThisItemUsed(item: T): Boolean {
-        return dataSource.isThisItemUsed(item) != null
+        return interactors.isThisItemUsed(item)
     }
 
     suspend fun isThisItemUsedInTrash(item: T): Boolean {
-        return dataSource.isThisItemUsedInTrash(item) != null
+        return interactors.isThisItemUsedInTrash(item)
     }
 
     suspend fun deleteTrainsInTrashWithThisItem(item: T){
-        dataSource.deleteTrainsInTrashWithThisItem(item)
+        interactors.deleteTrainsInTrashWithThisItem(item)
     }
 
 }

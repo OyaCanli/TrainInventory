@@ -23,8 +23,6 @@ import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.entities.BrandEntity
-import com.canli.oya.traininventoryroom.data.entities.TrainEntity
 import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
@@ -32,6 +30,8 @@ import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
 import com.canli.oya.traininventoryroom.utils.clearFocusAndHideKeyboard
 import com.canli.oya.traininventoryroom.utils.shortToast
+import com.canlioya.core.models.Brand
+import com.canlioya.core.models.Train
 import com.github.dhaval2404.imagepicker.ImagePicker
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -51,9 +51,9 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
 
     private var isEdit: Boolean = false
 
-    var chosenTrain: TrainEntity? = null
+    var chosenTrain: Train? = null
 
-    private var brandList: List<BrandEntity> = ArrayList()
+    private var brandList: List<Brand> = ArrayList()
     private var categoryList: List<String> = ArrayList()
 
     private lateinit var categoryAdapter: CategorySpinAdapter

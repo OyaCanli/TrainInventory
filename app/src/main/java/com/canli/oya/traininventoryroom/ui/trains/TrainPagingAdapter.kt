@@ -8,7 +8,6 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.TrainMinimal
 import com.canli.oya.traininventoryroom.databinding.ItemConfirmDeleteBinding
 import com.canli.oya.traininventoryroom.databinding.ItemTrainBinding
 import com.canli.oya.traininventoryroom.ui.base.DeleteItemViewHolder
@@ -17,6 +16,7 @@ import com.canli.oya.traininventoryroom.ui.base.VIEW_TYPE_DELETE
 import com.canli.oya.traininventoryroom.ui.base.VIEW_TYPE_NORMAL
 import com.canli.oya.traininventoryroom.ui.common.ISwipeableAdapter
 import com.canli.oya.traininventoryroom.ui.common.TrainItemClickListener
+import com.canlioya.core.models.TrainMinimal
 
 class TrainPagingAdapter(
     private val context: Context,

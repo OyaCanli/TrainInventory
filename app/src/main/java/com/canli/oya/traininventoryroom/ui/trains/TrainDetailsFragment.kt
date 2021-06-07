@@ -11,17 +11,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.entities.TrainEntity
 import com.canli.oya.traininventoryroom.databinding.FragmentTrainDetailsBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
+import com.canlioya.core.models.Train
 import javax.inject.Inject
 
 class TrainDetailsFragment : Fragment(R.layout.fragment_train_details) {
 
     private val binding by viewBinding(FragmentTrainDetailsBinding::bind)
-    private lateinit var mChosenTrain: TrainEntity
+    private lateinit var mChosenTrain: Train
     private lateinit var viewModel: TrainViewModel
 
     @Inject

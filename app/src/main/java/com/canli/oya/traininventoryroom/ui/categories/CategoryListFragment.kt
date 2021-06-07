@@ -6,32 +6,32 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.entities.CategoryEntity
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.base.BCBaseViewModel
 import com.canli.oya.traininventoryroom.ui.base.BaseListAdapter
 import com.canli.oya.traininventoryroom.ui.base.BrandCategoryBaseFrag
 import com.canli.oya.traininventoryroom.utils.TRAINS_OF_CATEGORY
+import com.canlioya.core.models.Category
 import timber.log.Timber
 import javax.inject.Inject
 
 
-class CategoryListFragment : BrandCategoryBaseFrag<CategoryEntity>(), CategoryItemClickListener {
+class CategoryListFragment : BrandCategoryBaseFrag<Category>(), CategoryItemClickListener {
 
     @Inject
     lateinit var viewModelFactory : TrainInventoryVMFactory
 
-    override fun getListAdapter(): BaseListAdapter<CategoryEntity, out Any> = CategoryAdapter(requireContext(), this, this)
+    override fun getListAdapter(): BaseListAdapter<Category, out Any> = CategoryAdapter(requireContext(), this, this)
 
-    override fun getListViewModel(): BCBaseViewModel<CategoryEntity> = ViewModelProvider(this, viewModelFactory).get(CategoryViewModel::class.java)
+    override fun getListViewModel(): BCBaseViewModel<Category> = ViewModelProvider(this, viewModelFactory).get(CategoryViewModel::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
     }
 
-    override fun onCategoryItemClicked(view: View, category: CategoryEntity) {
+    override fun onCategoryItemClicked(view: View, category: Category) {
         Timber.d("Category item clicked")
         when(view.id){
             R.id.category_item_train_icon -> launchTrainListWithCategory(category.categoryName)

@@ -2,11 +2,13 @@ package com.canli.oya.traininventoryroom.data.source
 
 import com.canli.oya.traininventoryroom.data.TrainDatabase
 import com.canli.oya.traininventoryroom.data.entities.BrandEntity
+import com.canlioya.core.data.IBrandCategoryDataSource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
-class BrandDataSource @Inject constructor(private val database: TrainDatabase) : IBrandCategoryDataSource<BrandEntity> {
+class BrandDataSource @Inject constructor(private val database: TrainDatabase) :
+    IBrandCategoryDataSource<BrandEntity> {
 
     override fun getAllItems(): Flow<List<BrandEntity>> {
         return database.brandDao().observeAllBrands()
@@ -24,16 +26,16 @@ class BrandDataSource @Inject constructor(private val database: TrainDatabase) :
         database.brandDao().delete(item)
     }
 
-    override suspend fun isThisItemUsed(item: BrandEntity): Int? {
-        return database.trainDao().isThisBrandUsed(item.brandName)
+    override suspend fun isThisItemUsed(item: BrandEntity): Boolean {
+        return database.trainDao().isThisBrandUsed(item.brandName) != null
     }
 
     override suspend fun getItemNames(): List<String> {
         return database.brandDao().getBrandNames()
     }
 
-    override suspend fun isThisItemUsedInTrash(item: BrandEntity): Int? {
-        return database.trainDao().isThisBrandUsedInTrash(item.brandName)
+    override suspend fun isThisItemUsedInTrash(item: BrandEntity): Boolean {
+        return database.trainDao().isThisBrandUsedInTrash(item.brandName) != null
     }
 
     override suspend fun deleteTrainsInTrashWithThisItem(item: BrandEntity) {

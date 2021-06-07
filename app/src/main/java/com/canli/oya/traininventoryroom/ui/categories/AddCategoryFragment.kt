@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.entities.CategoryEntity
 import com.canli.oya.traininventoryroom.databinding.FragmentAddCategoryBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
@@ -19,6 +18,7 @@ import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.ui.base.setMenuIcon
 import com.canli.oya.traininventoryroom.utils.IS_EDIT
 import com.canli.oya.traininventoryroom.utils.shortToast
+import com.canlioya.core.models.Category
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -81,10 +81,10 @@ class AddCategoryFragment : Fragment(R.layout.fragment_add_category) {
         }
 
         if(isEditCase){
-            val categoryToUpdate = CategoryEntity(mCategoryId, categoryName)
+            val categoryToUpdate = Category(mCategoryId, categoryName)
             viewModel.updateItem(categoryToUpdate)
         } else {
-            val newCategory = CategoryEntity(categoryName = categoryName)
+            val newCategory = Category(categoryName = categoryName)
             //Insert the category by the intermediance of view model
             viewModel.insertItem(newCategory)
         }

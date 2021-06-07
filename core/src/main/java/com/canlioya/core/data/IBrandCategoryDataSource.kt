@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.data.source
+package com.canlioya.core.data
 
 import kotlinx.coroutines.flow.Flow
 
@@ -14,9 +14,9 @@ interface IBrandCategoryDataSource<T : Any> {
 
     suspend fun deleteItem(item: T)
 
-    suspend fun isThisItemUsed(item: T): Int?
+    suspend fun isThisItemUsed(item: T): Boolean
 
-    suspend fun isThisItemUsedInTrash(item: T): Int?
+    suspend fun isThisItemUsedInTrash(item: T): Boolean
 
     suspend fun deleteTrainsInTrashWithThisItem(item: T)
 }

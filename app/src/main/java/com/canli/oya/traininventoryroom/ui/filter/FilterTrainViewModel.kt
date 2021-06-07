@@ -2,19 +2,20 @@ package com.canli.oya.traininventoryroom.ui.filter
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-
-import com.canli.oya.traininventoryroom.data.TrainMinimal
-import com.canli.oya.traininventoryroom.data.entities.BrandEntity
-import com.canli.oya.traininventoryroom.data.entities.CategoryEntity
-import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
-import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
+import com.canli.oya.traininventoryroom.interactors.BrandCategoryInteractors
+import com.canli.oya.traininventoryroom.interactors.TrainInteractors
+import com.canlioya.core.models.Brand
+import com.canlioya.core.models.Category
+import com.canlioya.core.models.TrainMinimal
 import kotlinx.coroutines.CoroutineDispatcher
+
+
 import kotlinx.coroutines.Dispatchers
 
 
-class FilterTrainViewModel (val trainDataSource: ITrainDataSource,
-                            val brandDataSource: IBrandCategoryDataSource<BrandEntity>,
-                            val categoryDataSource : IBrandCategoryDataSource<CategoryEntity>,
+class FilterTrainViewModel (val trainInteractors: TrainInteractors,
+                            val brandInteractors: BrandCategoryInteractors<Brand>,
+                            val categoryInteractors : BrandCategoryInteractors<Category>,
                             private val ioDispatcher : CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
 
     var selectedBrand : MutableLiveData<String?> = MutableLiveData(null)
@@ -23,13 +24,13 @@ class FilterTrainViewModel (val trainDataSource: ITrainDataSource,
 
     var keyword : String? = null
 
-    suspend fun getBrandNames() = brandDataSource.getItemNames()
+    suspend fun getBrandNames() = brandInteractors.getItemNames()
 
-    suspend fun getCategoryNames() = categoryDataSource.getItemNames()
+    suspend fun getCategoryNames() = categoryInteractors.getItemNames()
 
     suspend fun filterTrains() : ArrayList<TrainMinimal> {
         val filteredList = ArrayList<TrainMinimal>()
-        filteredList.addAll(trainDataSource.searchInTrains(keyword, selectedCategory.value, selectedBrand.value))
+        filteredList.addAll(trainInteractors.searchInTrains(keyword, selectedCategory.value, selectedBrand.value))
         return filteredList
     }
 }

@@ -3,7 +3,7 @@ package com.canli.oya.traininventoryroom.ui.addtrain
 import android.content.Context
 import android.widget.ArrayAdapter
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.entities.CategoryEntity
+import com.canlioya.core.models.Category
 
 
 class CategorySpinAdapter(context : Context,
@@ -17,7 +17,7 @@ class CategorySpinAdapter(context : Context,
         insert(selectText, 0)
     }
 
-    fun setCategories(newList: List<CategoryEntity>){
+    fun setCategories(newList: List<Category>){
         categoryList.clear()
         categoryList.add(selectText)
         categoryList.addAll(newList.map { categoryEntry -> categoryEntry.categoryName })

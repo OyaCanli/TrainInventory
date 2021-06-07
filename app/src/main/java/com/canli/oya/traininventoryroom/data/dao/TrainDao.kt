@@ -5,8 +5,8 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import com.canli.oya.traininventoryroom.data.TrainMinimal
 import com.canli.oya.traininventoryroom.data.entities.TrainEntity
+import com.canlioya.core.models.TrainMinimal
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -17,9 +17,6 @@ interface TrainDao : BaseDao<TrainEntity>{
 
     @Query("SELECT * FROM trains WHERE dateOfDeletion IS NULL ORDER BY trainName")
     suspend fun getAllTrains() : List<TrainEntity>
-
-/*    @Query("SELECT trainName FROM trains WHERE dateOfDeletion IS NULL ORDER BY trainName")
-    suspend fun getAllTrainNames() : List<String>*/
 
     @Query("SELECT trainId FROM trains WHERE dateOfDeletion IS NULL AND trainName = :trainName LIMIT 1")
     suspend fun isThisTrainNameUsed(trainName: String): Int?

@@ -6,7 +6,7 @@
 
         <variable
             name="chosenBrand"
-            type="com.canli.oya.traininventoryroom.data.entities.BrandEntity" />
+            type="com.canlioya.core.models.Brand" />
     </data>
 
     <ScrollView

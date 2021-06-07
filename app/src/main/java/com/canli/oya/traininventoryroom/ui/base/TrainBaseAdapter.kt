@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.canli.oya.traininventoryroom.BR
-import com.canli.oya.traininventoryroom.data.TrainMinimal
 import com.canli.oya.traininventoryroom.ui.common.TrainItemClickListener
+import com.canlioya.core.models.TrainMinimal
 
 
 abstract class TrainBaseAdapter(private val clickListener : TrainItemClickListener) : ListAdapter<TrainMinimal, TrainBaseAdapter.ViewHolder>(
