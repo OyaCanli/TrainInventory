@@ -1,8 +1,7 @@
 package com.canli.oya.traininventoryroom.di.fake
 
-import androidx.navigation.NavController
-import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.data.CategoryEntry
+import com.canli.oya.traininventoryroom.data.BrandEntity
+import com.canli.oya.traininventoryroom.data.CategoryEntity
 import com.canli.oya.traininventoryroom.data.TrainDatabase
 import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
@@ -23,11 +22,11 @@ class FakeDataModule {
 
     @Provides
     @TestScope
-    fun provideCategoryDataSource() : IBrandCategoryDataSource<CategoryEntry> = FakeCategoryDataSource()
+    fun provideCategoryDataSource() : IBrandCategoryDataSource<CategoryEntity> = FakeCategoryDataSource()
 
     @Provides
     @TestScope
-    fun provideBrandDataSource() : IBrandCategoryDataSource<BrandEntry> = FakeBrandDataSource()
+    fun provideBrandDataSource() : IBrandCategoryDataSource<BrandEntity> = FakeBrandDataSource()
 
     @Provides
     @TestScope

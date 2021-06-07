@@ -1,21 +1,21 @@
 package com.canli.oya.traininventoryroom.data.source
 
 import androidx.paging.PagingData
-import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.TrainMinimal
+import com.canli.oya.traininventoryroom.data.entities.TrainEntity
 import kotlinx.coroutines.flow.Flow
 
 interface ITrainDataSource {
 
     fun getAllTrains() : Flow<PagingData<TrainMinimal>>
 
-    fun getChosenTrain(trainId : Int): Flow<TrainEntry>
+    fun getChosenTrain(trainId : Int): Flow<TrainEntity>
 
-    suspend fun getAllTrainNames() : List<String>
+    suspend fun isThisTrainUsed(trainName : String) : Boolean
 
-    suspend fun insertTrain(train: TrainEntry)
+    suspend fun insertTrain(train: TrainEntity)
 
-    suspend fun updateTrain(train: TrainEntry)
+    suspend fun updateTrain(train: TrainEntity)
 
     suspend fun sendTrainToTrash(trainId: Int, dateOfDeletion : Long)
 

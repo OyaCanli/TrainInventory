@@ -10,8 +10,8 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.data.CategoryEntry
+import com.canli.oya.traininventoryroom.data.BrandEntity
+import com.canli.oya.traininventoryroom.data.CategoryEntity
 import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import com.canli.oya.traininventoryroom.datasource.FakeBrandDataSource
@@ -44,9 +44,9 @@ class EmptyScreenTests {
     var instantExecutorRule = InstantTaskExecutorRule()
 
     @Inject
-    lateinit var categoryDataSource: IBrandCategoryDataSource<CategoryEntry>
+    lateinit var categoryDataSource: IBrandCategoryDataSource<CategoryEntity>
     @Inject
-    lateinit var brandDataSource: IBrandCategoryDataSource<BrandEntry>
+    lateinit var brandDataSource: IBrandCategoryDataSource<BrandEntity>
     @Inject
     lateinit var trainDataSource: ITrainDataSource
 

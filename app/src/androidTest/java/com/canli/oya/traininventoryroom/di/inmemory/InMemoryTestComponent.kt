@@ -1,7 +1,7 @@
 package com.canli.oya.traininventoryroom.di.inmemory
 
-import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.data.CategoryEntry
+import com.canli.oya.traininventoryroom.data.BrandEntity
+import com.canli.oya.traininventoryroom.data.CategoryEntity
 import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import com.canli.oya.traininventoryroom.di.AppComponent
@@ -21,8 +21,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 interface InMemoryTestComponent : AppComponent {
 
     override fun exposeTrainDataSource() : ITrainDataSource
-    override fun exposeBrandDataSource() : IBrandCategoryDataSource<BrandEntry>
-    override fun exposeCategoryDataSource() : IBrandCategoryDataSource<CategoryEntry>
+    override fun exposeBrandDataSource() : IBrandCategoryDataSource<BrandEntity>
+    override fun exposeCategoryDataSource() : IBrandCategoryDataSource<CategoryEntity>
 
     fun inject(target: CategoryTests)
     fun inject(target: BrandTests)

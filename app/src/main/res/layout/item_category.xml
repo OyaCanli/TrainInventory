@@ -6,7 +6,7 @@
     <data>
         <variable
             name="item"
-            type="com.canli.oya.traininventoryroom.data.CategoryEntry" />
+            type="com.canli.oya.traininventoryroom.data.entities.CategoryEntity" />
         <variable
             name="position"
             type="int" />

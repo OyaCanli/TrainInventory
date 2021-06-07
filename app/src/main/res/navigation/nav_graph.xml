@@ -43,7 +43,7 @@
         android:name="com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment">
         <argument
             android:name="chosenTrain"
-            app:argType="com.canli.oya.traininventoryroom.data.TrainEntry"
+            app:argType="com.canli.oya.traininventoryroom.data.entities.TrainEntity"
             app:nullable="true"
             android:defaultValue="@null"/>
     </fragment>

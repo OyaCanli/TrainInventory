@@ -1,14 +1,14 @@
 package com.canli.oya.traininventoryroom.datasource
 
 import androidx.paging.PagingData
-import com.canli.oya.traininventoryroom.data.TrainEntry
+import com.canli.oya.traininventoryroom.data.TrainEntity
 import com.canli.oya.traininventoryroom.data.TrainMinimal
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.time.LocalDate
 
-class FakeTrainDataSource(var trains: MutableList<TrainEntry> = sampleTrainList) :
+class FakeTrainDataSource(var trains: MutableList<TrainEntity> = sampleTrainList) :
     ITrainDataSource {
 
     private val trainsFlow: Flow<PagingData<TrainMinimal>> = flow {
@@ -18,7 +18,7 @@ class FakeTrainDataSource(var trains: MutableList<TrainEntry> = sampleTrainList)
         emit(PagingData.from(convertTrainsToMinimalTrains(notDeletedTrains)))
     }
 
-    override fun getChosenTrain(trainId: Int): Flow<TrainEntry> {
+    override fun getChosenTrain(trainId: Int): Flow<TrainEntity> {
         val index = trains.indexOfFirst { it.trainId == trainId }
         return flow {
             emit(trains[index])
@@ -30,11 +30,11 @@ class FakeTrainDataSource(var trains: MutableList<TrainEntry> = sampleTrainList)
             .filter{it.dateOfDeletion == null}
             .map { train -> train.trainName!! }
 
-    override suspend fun insertTrain(train: TrainEntry) {
+    override suspend fun insertTrain(train: TrainEntity) {
         trains.add(train)
     }
 
-    override suspend fun updateTrain(train: TrainEntry) {
+    override suspend fun updateTrain(train: TrainEntity) {
         val index = trains.indexOfFirst { it.trainId == train.trainId }
         trains[index] = train
     }
@@ -68,7 +68,7 @@ class FakeTrainDataSource(var trains: MutableList<TrainEntry> = sampleTrainList)
         category: String?,
         brand: String?
     ): List<TrainMinimal> {
-        val filteredList = ArrayList<TrainEntry>()
+        val filteredList = ArrayList<TrainEntity>()
         filteredList.addAll(trains)
         if (!keyword.isNullOrBlank()) {
             val keywords = keyword.toLowerCase().split(" ")
@@ -112,16 +112,16 @@ class FakeTrainDataSource(var trains: MutableList<TrainEntry> = sampleTrainList)
 
     override fun getAllTrains(): Flow<PagingData<TrainMinimal>> = trainsFlow
 
-    private fun convertTrainsToMinimalTrains(trainsToConvert: List<TrainEntry>): List<TrainMinimal> {
+    private fun convertTrainsToMinimalTrains(trainsToConvert: List<TrainEntity>): List<TrainMinimal> {
         return trainsToConvert.map { it.convertToMinimal() }
     }
 
-    fun setData(newTrainList: MutableList<TrainEntry>) {
+    fun setData(newTrainList: MutableList<TrainEntity>) {
         if (trains == newTrainList) return
         trains = newTrainList
     }
 }
 
-fun TrainEntry.convertToMinimal() =
+fun TrainEntity.convertToMinimal() =
     TrainMinimal(trainId, trainName, modelReference, brandName, categoryName, imageUri)
 

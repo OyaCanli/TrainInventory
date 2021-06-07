@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.CategoryEntry
+import com.canli.oya.traininventoryroom.data.entities.CategoryEntity
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.base.BCBaseViewModel
@@ -17,21 +17,21 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class CategoryListFragment : BrandCategoryBaseFrag<CategoryEntry>(), CategoryItemClickListener {
+class CategoryListFragment : BrandCategoryBaseFrag<CategoryEntity>(), CategoryItemClickListener {
 
     @Inject
     lateinit var viewModelFactory : TrainInventoryVMFactory
 
-    override fun getListAdapter(): BaseListAdapter<CategoryEntry, out Any> = CategoryAdapter(requireContext(), this, this)
+    override fun getListAdapter(): BaseListAdapter<CategoryEntity, out Any> = CategoryAdapter(requireContext(), this, this)
 
-    override fun getListViewModel(): BCBaseViewModel<CategoryEntry> = ViewModelProvider(this, viewModelFactory).get(CategoryViewModel::class.java)
+    override fun getListViewModel(): BCBaseViewModel<CategoryEntity> = ViewModelProvider(this, viewModelFactory).get(CategoryViewModel::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
     }
 
-    override fun onCategoryItemClicked(view: View, category: CategoryEntry) {
+    override fun onCategoryItemClicked(view: View, category: CategoryEntity) {
         Timber.d("Category item clicked")
         when(view.id){
             R.id.category_item_train_icon -> launchTrainListWithCategory(category.categoryName)

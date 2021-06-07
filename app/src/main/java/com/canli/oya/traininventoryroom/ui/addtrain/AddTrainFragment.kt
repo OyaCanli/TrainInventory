@@ -23,8 +23,8 @@ import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.data.TrainEntry
+import com.canli.oya.traininventoryroom.data.entities.BrandEntity
+import com.canli.oya.traininventoryroom.data.entities.TrainEntity
 import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
@@ -51,9 +51,9 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
 
     private var isEdit: Boolean = false
 
-    var chosenTrain: TrainEntry? = null
+    var chosenTrain: TrainEntity? = null
 
-    private var brandList: List<BrandEntry> = ArrayList()
+    private var brandList: List<BrandEntity> = ArrayList()
     private var categoryList: List<String> = ArrayList()
 
     private lateinit var categoryAdapter: CategorySpinAdapter
@@ -177,7 +177,11 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         Timber.d("onOptionsItemSelected")
         when (item.itemId) {
-            R.id.action_save -> saveTrain()
+            R.id.action_save -> {
+                lifecycleScope.launch {
+                    saveTrain()
+                }
+            }
             android.R.id.home -> onBackClicked()
         }
         return true
@@ -211,7 +215,7 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
         }
     }
 
-    private fun saveTrain() {
+    private suspend fun saveTrain() {
 
         // DATA VALIDATION
         if (thereAreMissingValues()) return
@@ -247,8 +251,8 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
         }
     }
 
-    private fun trainNameAlreadyExists(): Boolean {
-        if (addViewModel.trainList.contains(addViewModel.trainBeingModified.get()?.trainName)) {
+    private suspend fun trainNameAlreadyExists(): Boolean {
+        if (addViewModel.isThisTrainNameUsed(addViewModel.trainBeingModified.get()?.trainName!!)) {
             context?.shortToast(R.string.train_name_already_Exists)
             return true
         }

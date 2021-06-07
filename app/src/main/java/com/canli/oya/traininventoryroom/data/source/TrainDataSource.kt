@@ -5,8 +5,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.TrainMinimal
+import com.canli.oya.traininventoryroom.data.entities.TrainEntity
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 import javax.inject.Inject
@@ -24,11 +24,13 @@ class TrainDataSource @Inject constructor(private val database: TrainDatabase) :
 
     override fun getChosenTrain(trainId : Int) = database.trainDao().observeChosenTrain(trainId)
 
-    override suspend fun getAllTrainNames(): List<String> = database.trainDao().getAllTrainNames()
+    override suspend fun isThisTrainUsed(trainName: String): Boolean {
+        return database.trainDao().isThisTrainNameUsed(trainName) != null
+    }
 
-    override suspend fun insertTrain(train: TrainEntry) = database.trainDao().insert(train)
+    override suspend fun insertTrain(train: TrainEntity) = database.trainDao().insert(train)
 
-    override suspend fun updateTrain(train: TrainEntry) = database.trainDao().update(train)
+    override suspend fun updateTrain(train: TrainEntity) = database.trainDao().update(train)
 
     override suspend fun sendTrainToTrash(trainId: Int, dateOfDeletion : Long) = database.trainDao().sendToThrash(trainId, dateOfDeletion)
 

@@ -1,7 +1,7 @@
 package com.canli.oya.traininventoryroom.ui.trains
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.canli.oya.traininventoryroom.data.TrainEntry
+import com.canli.oya.traininventoryroom.data.TrainEntity
 import com.canli.oya.traininventoryroom.datasource.FakeTrainDataSource
 import com.canli.oya.traininventoryroom.utils.getOrAwaitValue
 import kotlinx.coroutines.Dispatchers
@@ -23,9 +23,9 @@ class TrainViewModelTest{
     // Subject under test
     private lateinit var trainViewModel: TrainViewModel
 
-    val sampleTrain1 = TrainEntry(trainId = 0, trainName = "Red Wagon", categoryName = "Wagon", brandName = "Marklin")
-    val sampleTrain2 = TrainEntry(trainId = 1, trainName = "Blue Loco", categoryName = "Locomotif", brandName = "MDN")
-    val sampleTrain3 = TrainEntry(trainId = 2, trainName = "Gare", categoryName = "Accessoire", brandName = "Marklin")
+    val sampleTrain1 = TrainEntity(trainId = 0, trainName = "Red Wagon", categoryName = "Wagon", brandName = "Marklin")
+    val sampleTrain2 = TrainEntity(trainId = 1, trainName = "Blue Loco", categoryName = "Locomotif", brandName = "MDN")
+    val sampleTrain3 = TrainEntity(trainId = 2, trainName = "Gare", categoryName = "Accessoire", brandName = "Marklin")
     val sampleTrainList = mutableListOf(sampleTrain1, sampleTrain2)
 
     private val mainThreadSurrogate = newSingleThreadContext("UI thread")

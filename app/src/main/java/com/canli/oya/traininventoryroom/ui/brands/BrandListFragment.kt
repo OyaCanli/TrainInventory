@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.BrandEntry
+import com.canli.oya.traininventoryroom.data.entities.BrandEntity
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.base.BCBaseViewModel
@@ -21,21 +21,21 @@ import com.canli.oya.traininventoryroom.utils.shortToast
 import timber.log.Timber
 import javax.inject.Inject
 
-class BrandListFragment : BrandCategoryBaseFrag<BrandEntry>(), BrandItemClickListener, SwipeDeleteListener<BrandEntry> {
+class BrandListFragment : BrandCategoryBaseFrag<BrandEntity>(), BrandItemClickListener, SwipeDeleteListener<BrandEntity> {
 
     @Inject
     lateinit var viewModelFactory : TrainInventoryVMFactory
 
-    override fun getListAdapter(): BaseListAdapter<BrandEntry, BrandItemClickListener> = BrandAdapter(requireContext(), this, this)
+    override fun getListAdapter(): BaseListAdapter<BrandEntity, BrandItemClickListener> = BrandAdapter(requireContext(), this, this)
 
-    override fun getListViewModel(): BCBaseViewModel<BrandEntry> = ViewModelProvider(this, viewModelFactory).get(BrandViewModel::class.java)
+    override fun getListViewModel(): BCBaseViewModel<BrandEntity> = ViewModelProvider(this, viewModelFactory).get(BrandViewModel::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
     }
 
-    override fun onBrandItemClicked(view: View, clickedBrand: BrandEntry) {
+    override fun onBrandItemClicked(view: View, clickedBrand: BrandEntity) {
         when (view.id) {
             R.id.brand_item_web_icon -> openWebSite(clickedBrand)
             R.id.brand_item_train_icon -> launchTrainListWithBrand(clickedBrand.brandName)
@@ -49,7 +49,7 @@ class BrandListFragment : BrandCategoryBaseFrag<BrandEntry>(), BrandItemClickLis
         binding.root.findNavController().navigate(action)
     }
 
-    private fun openWebSite(clickedBrand: BrandEntry) {
+    private fun openWebSite(clickedBrand: BrandEntity) {
         val urlString = clickedBrand.webUrl
         var webUri: Uri? = null
         if (!TextUtils.isEmpty(urlString)) {

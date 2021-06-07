@@ -5,7 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.canli.oya.traininventoryroom.data.BrandEntry
+import com.canli.oya.traininventoryroom.data.BrandEntity
 import com.canli.oya.traininventoryroom.data.TrainDatabase
 import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
@@ -44,14 +44,14 @@ class BrandDaoTest {
     @Test
     fun insertBrand_verifyBrandIsInserted() = runBlockingTest {
         //Insert a brand
-        val insertedBrand = BrandEntry(brandId = 5, brandName = "Marklin", brandLogoUri = "brand logo uri", webUrl =  "https://www.google.com/")
+        val insertedBrand = BrandEntity(brandId = 5, brandName = "Marklin", brandLogoUri = "brand logo uri", webUrl =  "https://www.google.com/")
         database.brandDao().insert(insertedBrand)
 
         //Get back the brand
         val loadedBrand = database.brandDao().getChosenBrand(insertedBrand.brandId)
 
         //Verify it has expected values
-        assertThat(loadedBrand as? BrandEntry, notNullValue())
+        assertThat(loadedBrand as? BrandEntity, notNullValue())
         assertThat(loadedBrand.brandId, `is`(insertedBrand.brandId))
         assertThat(loadedBrand.brandName, `is`(insertedBrand.brandName))
         assertThat(loadedBrand.brandLogoUri, `is`(insertedBrand.brandLogoUri))
@@ -61,7 +61,7 @@ class BrandDaoTest {
     @Test
     fun updateBrand_verifyUpdated() = runBlockingTest {
         //Insert a brand
-        val insertedBrand = BrandEntry(brandId = 5, brandName = "Marklin", brandLogoUri = "brand logo uri", webUrl =  "https://www.google.com/")
+        val insertedBrand = BrandEntity(brandId = 5, brandName = "Marklin", brandLogoUri = "brand logo uri", webUrl =  "https://www.google.com/")
         database.brandDao().insert(insertedBrand)
 
         //Update the brand
@@ -74,7 +74,7 @@ class BrandDaoTest {
         val loadedBrand = database.brandDao().getChosenBrand(insertedBrand.brandId)
 
         //Verify it has updated values
-        assertThat(loadedBrand as? BrandEntry, notNullValue())
+        assertThat(loadedBrand as? BrandEntity, notNullValue())
         assertThat(loadedBrand.brandId, `is`(insertedBrand.brandId))
         assertThat(loadedBrand.brandName, `is`(insertedBrand.brandName))
         assertThat(loadedBrand.brandLogoUri, `is`(insertedBrand.brandLogoUri))
@@ -84,8 +84,8 @@ class BrandDaoTest {
     @Test
     fun deleteBrand_verifyDeleted() = runBlockingTest {
         //Insert two brands
-        val firstBrand = BrandEntry(brandId = 5, brandName = "Marklin", brandLogoUri = "first brand logo uri", webUrl =  "https://www.google.com/")
-        val secondBrand = BrandEntry(brandId = 6, brandName = "MDN", brandLogoUri = "second brand logo uri", webUrl =  "https://github.com/")
+        val firstBrand = BrandEntity(brandId = 5, brandName = "Marklin", brandLogoUri = "first brand logo uri", webUrl =  "https://www.google.com/")
+        val secondBrand = BrandEntity(brandId = 6, brandName = "MDN", brandLogoUri = "second brand logo uri", webUrl =  "https://github.com/")
         database.brandDao().insert(firstBrand)
         database.brandDao().insert(secondBrand)
 

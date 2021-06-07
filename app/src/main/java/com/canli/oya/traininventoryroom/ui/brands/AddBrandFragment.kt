@@ -15,7 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.BrandEntry
+import com.canli.oya.traininventoryroom.data.entities.BrandEntity
 import com.canli.oya.traininventoryroom.databinding.FragmentAddBrandBinding
 import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
@@ -106,11 +106,11 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
 
         if (isEditCase) {
             //Construct a new BrandEntry object from this data with ID included
-            val brandToUpdate = BrandEntry(mBrandId, brandName, imagePath, webAddress)
+            val brandToUpdate = BrandEntity(mBrandId, brandName, imagePath, webAddress)
             viewModel.updateItem(brandToUpdate)
         } else {
             //Construct a new BrandEntry object from this data (without ID)
-            val newBrand = BrandEntry(brandName = brandName, brandLogoUri = imagePath, webUrl = webAddress)
+            val newBrand = BrandEntity(brandName = brandName, brandLogoUri = imagePath, webUrl = webAddress)
             //Insert to database in a background thread
             viewModel.insertItem(newBrand)
         }

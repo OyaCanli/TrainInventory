@@ -2,9 +2,9 @@ package com.canli.oya.traininventoryroom.ui.addtrain
 
 import android.content.Context
 import android.widget.ArrayAdapter
-import androidx.paging.PagedList
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.CategoryEntry
+import com.canli.oya.traininventoryroom.data.entities.CategoryEntity
+
 
 class CategorySpinAdapter(context : Context,
                           val categoryList : ArrayList<String> = arrayListOf() )
@@ -17,7 +17,7 @@ class CategorySpinAdapter(context : Context,
         insert(selectText, 0)
     }
 
-    fun setCategories(newList: List<CategoryEntry>){
+    fun setCategories(newList: List<CategoryEntity>){
         categoryList.clear()
         categoryList.add(selectText)
         categoryList.addAll(newList.map { categoryEntry -> categoryEntry.categoryName })

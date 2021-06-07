@@ -1,41 +1,41 @@
 package com.canli.oya.traininventoryroom.datasource
 
-import com.canli.oya.traininventoryroom.data.CategoryEntry
-import com.canli.oya.traininventoryroom.data.TrainEntry
+import com.canli.oya.traininventoryroom.data.CategoryEntity
+import com.canli.oya.traininventoryroom.data.TrainEntity
 import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 
-class FakeCategoryDataSource(private var categories : MutableList<CategoryEntry> = sampleCategoryList,
-                                                 private val trains: MutableList<TrainEntry> = mutableListOf()
-) : IBrandCategoryDataSource<CategoryEntry> {
+class FakeCategoryDataSource(private var categories : MutableList<CategoryEntity> = sampleCategoryList,
+                             private val trains: MutableList<TrainEntity> = mutableListOf()
+) : IBrandCategoryDataSource<CategoryEntity> {
 
 
-    override suspend fun insertItem(item: CategoryEntry) {
+    override suspend fun insertItem(item: CategoryEntity) {
         categories.add(item)
     }
 
-    override suspend fun deleteItem(item: CategoryEntry) {
+    override suspend fun deleteItem(item: CategoryEntity) {
         categories.remove(item)
     }
 
-    override suspend fun updateItem(item: CategoryEntry) {
+    override suspend fun updateItem(item: CategoryEntity) {
         val index = categories.indexOfFirst { it.categoryId == item.categoryId }
         categories[index] = item
     }
 
-    fun setData(newCategoryList : MutableList<CategoryEntry>){
+    fun setData(newCategoryList : MutableList<CategoryEntity>){
         if(categories == newCategoryList) return
         categories = newCategoryList
     }
 
-    override suspend fun isThisItemUsed(item: CategoryEntry): Int? {
+    override suspend fun isThisItemUsed(item: CategoryEntity): Int? {
         val index = trains.indexOfFirst { it.categoryName == item.categoryName }
         return if(index == -1) null else 1
     }
 
-    override fun getAllItems(): Flow<List<CategoryEntry>> = flow {
+    override fun getAllItems(): Flow<List<CategoryEntity>> = flow {
         emit(categories)
     }
 
@@ -43,7 +43,7 @@ class FakeCategoryDataSource(private var categories : MutableList<CategoryEntry>
         return categories.map { it.categoryName }
     }
 
-    override suspend fun isThisItemUsedInTrash(item: CategoryEntry): Int? {
+    override suspend fun isThisItemUsedInTrash(item: CategoryEntity): Int? {
         val trainsInTrash = trains.filter {
             it.dateOfDeletion != null
         }
@@ -52,7 +52,7 @@ class FakeCategoryDataSource(private var categories : MutableList<CategoryEntry>
         return if (index == -1) null else return 1
     }
 
-    override suspend fun deleteTrainsInTrashWithThisItem(item: CategoryEntry) {
+    override suspend fun deleteTrainsInTrashWithThisItem(item: CategoryEntity) {
         trains.removeAll {
             it.dateOfDeletion != null && it.categoryName == item.categoryName
         }

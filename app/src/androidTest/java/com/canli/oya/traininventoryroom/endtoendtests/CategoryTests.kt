@@ -1,6 +1,5 @@
 package com.canli.oya.traininventoryroom.endtoendtests
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -14,7 +13,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.CategoryEntry
+import com.canli.oya.traininventoryroom.data.CategoryEntity
 import com.canli.oya.traininventoryroom.data.TrainDatabase
 import com.canli.oya.traininventoryroom.datasource.sampleBrand1
 import com.canli.oya.traininventoryroom.datasource.sampleCategory1
@@ -103,7 +102,7 @@ class CategoryTests {
     @Test
     fun editAndUpdateCategory_categoryIsUpdatedOnTheList() = runBlocking {
         //Insert a sample category to the database
-        val sampleCategory = CategoryEntry(categoryName = sampleCategoryName)
+        val sampleCategory = CategoryEntity(categoryName = sampleCategoryName)
         database.categoryDao().insert(sampleCategory)
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)

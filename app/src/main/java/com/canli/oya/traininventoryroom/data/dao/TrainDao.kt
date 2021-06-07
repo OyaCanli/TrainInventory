@@ -5,27 +5,30 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.data.TrainMinimal
+import com.canli.oya.traininventoryroom.data.entities.TrainEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface TrainDao : BaseDao<TrainEntry>{
+interface TrainDao : BaseDao<TrainEntity>{
 
     @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE dateOfDeletion IS NULL ORDER BY trainName")
     fun observeAllTrains(): PagingSource<Int, TrainMinimal>
 
     @Query("SELECT * FROM trains WHERE dateOfDeletion IS NULL ORDER BY trainName")
-    suspend fun getAllTrains() : List<TrainEntry>
+    suspend fun getAllTrains() : List<TrainEntity>
 
-    @Query("SELECT trainName FROM trains WHERE dateOfDeletion IS NULL ORDER BY trainName")
-    suspend fun getAllTrainNames() : List<String>
+/*    @Query("SELECT trainName FROM trains WHERE dateOfDeletion IS NULL ORDER BY trainName")
+    suspend fun getAllTrainNames() : List<String>*/
+
+    @Query("SELECT trainId FROM trains WHERE dateOfDeletion IS NULL AND trainName = :trainName LIMIT 1")
+    suspend fun isThisTrainNameUsed(trainName: String): Int?
 
     @Query("SELECT * FROM trains WHERE trainId = :id")
-    fun observeChosenTrain(id: Int): Flow<TrainEntry>
+    fun observeChosenTrain(id: Int): Flow<TrainEntity>
 
     @Query("SELECT * FROM trains WHERE trainId = :id")
-    suspend fun getChosenTrain(id: Int): TrainEntry
+    suspend fun getChosenTrain(id: Int): TrainEntity
 
     @Query("SELECT trainId FROM trains WHERE dateOfDeletion IS NULL AND brandName = :brandName LIMIT 1")
     suspend fun isThisBrandUsed(brandName: String): Int?
@@ -43,13 +46,13 @@ interface TrainDao : BaseDao<TrainEntry>{
     suspend fun getTrainsFromThisBrand(brandName: String): List<TrainMinimal>
 
     @Query("SELECT * FROM trains WHERE dateOfDeletion IS NULL AND brandName = :brandName")
-    suspend fun getFullTrainsFromThisBrand(brandName: String): List<TrainEntry>
+    suspend fun getFullTrainsFromThisBrand(brandName: String): List<TrainEntity>
 
     @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE dateOfDeletion IS NULL AND categoryName = :categoryName ORDER BY trainName")
     suspend fun getTrainsFromThisCategory(categoryName: String): List<TrainMinimal>
 
     @Query("SELECT * FROM trains WHERE dateOfDeletion IS NULL AND categoryName = :categoryName ORDER BY trainName")
-    suspend fun getFullTrainsFromThisCategory(categoryName: String): List<TrainEntry>
+    suspend fun getFullTrainsFromThisCategory(categoryName: String): List<TrainEntity>
 
     @RawQuery
     suspend fun searchInTrains(query: SupportSQLiteQuery): List<TrainMinimal>

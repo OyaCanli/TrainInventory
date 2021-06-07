@@ -16,7 +16,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.CategoryEntry
+import com.canli.oya.traininventoryroom.data.CategoryEntity
 import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import com.canli.oya.traininventoryroom.datasource.FakeCategoryDataSource
 import com.canli.oya.traininventoryroom.datasource.sampleCategoryList
@@ -46,7 +46,7 @@ class CategoryListFragmentTest {
     var instantExecutorRule = InstantTaskExecutorRule()
 
     @Inject
-    lateinit var dataSource: IBrandCategoryDataSource<CategoryEntry>
+    lateinit var dataSource: IBrandCategoryDataSource<CategoryEntity>
 
     // An Idling Resource that waits for Data Binding to have no pending bindings.
     private val dataBindingIdlingResource = DataBindingIdlingResource()

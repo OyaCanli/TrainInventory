@@ -13,7 +13,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.BrandEntry
+import com.canli.oya.traininventoryroom.data.BrandEntity
 import com.canli.oya.traininventoryroom.data.TrainDatabase
 import com.canli.oya.traininventoryroom.datasource.*
 import com.canli.oya.traininventoryroom.di.ComponentProvider
@@ -27,7 +27,6 @@ import com.canli.oya.traininventoryroom.utils.clickOnChildWithId
 import com.canli.oya.traininventoryroom.utils.monitorActivity
 import com.canli.oya.traininventoryroom.utils.withIconResource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -106,7 +105,7 @@ class BrandTests {
     @Test
     fun editAndUpdateBrand_brandIsUpdatedOnTheList() = runBlocking {
         //Insert a sample category to the database
-        val sampleBrand = BrandEntry(brandName = sampleBrandName, webUrl = sampleWebAddress)
+        val sampleBrand = BrandEntity(brandName = sampleBrandName, webUrl = sampleWebAddress)
         database.brandDao().insert(sampleBrand)
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)

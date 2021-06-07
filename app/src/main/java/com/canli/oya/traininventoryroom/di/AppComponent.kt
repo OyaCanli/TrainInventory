@@ -1,8 +1,8 @@
 package com.canli.oya.traininventoryroom.di
 
-import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.data.TrainDatabase
+import com.canli.oya.traininventoryroom.data.entities.BrandEntity
+import com.canli.oya.traininventoryroom.data.entities.CategoryEntity
 import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
 import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
 import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
@@ -23,9 +23,9 @@ interface AppComponent {
 
     fun exposeTrainDataSource() : ITrainDataSource
 
-    fun exposeBrandDataSource() : IBrandCategoryDataSource<BrandEntry>
+    fun exposeBrandDataSource() : IBrandCategoryDataSource<BrandEntity>
 
-    fun exposeCategoryDataSource() : IBrandCategoryDataSource<CategoryEntry>
+    fun exposeCategoryDataSource() : IBrandCategoryDataSource<CategoryEntity>
 
     fun exposeDatabase() : TrainDatabase
 

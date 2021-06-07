@@ -1,8 +1,7 @@
 package com.canli.oya.traininventoryroom.ui.categories
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.canli.oya.traininventoryroom.data.CategoryEntry
+import com.canli.oya.traininventoryroom.data.CategoryEntity
 import com.canli.oya.traininventoryroom.datasource.FakeCategoryDataSource
 import com.canli.oya.traininventoryroom.utils.getOrAwaitValue
 import junit.framework.Assert.assertFalse
@@ -11,13 +10,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
 
 class CategoryViewModelTest {
@@ -28,9 +25,9 @@ class CategoryViewModelTest {
     // Subject under test
     private lateinit var categoryViewModel: CategoryViewModel
 
-    val sampleCategory1 = CategoryEntry(0, "Wagon")
-    val sampleCategory2 = CategoryEntry(1, "Locomotive")
-    val sampleCategory3 = CategoryEntry(2, "Accessoire")
+    val sampleCategory1 = CategoryEntity(0, "Wagon")
+    val sampleCategory2 = CategoryEntity(1, "Locomotive")
+    val sampleCategory3 = CategoryEntity(2, "Accessoire")
 
     @Before
     fun setupViewModel() {
@@ -48,7 +45,7 @@ class CategoryViewModelTest {
 
     @Test
     fun getChosenCategory_returnsTheCategorySet() {
-        val sampleCategory = CategoryEntry(0, "category")
+        val sampleCategory = CategoryEntity(0, "category")
         categoryViewModel.setChosenItem(sampleCategory)
         val value = categoryViewModel.chosenItem.getOrAwaitValue()
         assertThat(value, `is`(sampleCategory))

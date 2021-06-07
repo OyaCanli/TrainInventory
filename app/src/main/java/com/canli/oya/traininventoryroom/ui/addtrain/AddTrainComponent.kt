@@ -1,6 +1,7 @@
 package com.canli.oya.traininventoryroom.ui.addtrain
 
-import com.canli.oya.traininventoryroom.data.TrainEntry
+
+import com.canli.oya.traininventoryroom.data.entities.TrainEntity
 import com.canli.oya.traininventoryroom.di.AppComponent
 import dagger.BindsInstance
 import dagger.Component
@@ -19,7 +20,7 @@ interface AddTrainComponent{
         fun build(): AddTrainComponent
 
         @BindsInstance
-        fun bindChosenTrain(chosenTrain : TrainEntry?): Builder
+        fun bindChosenTrain(chosenTrain : TrainEntity?): Builder
 
         fun appComponent(appComponent: AppComponent) : Builder
     }
