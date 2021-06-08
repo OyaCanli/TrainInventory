@@ -2,15 +2,13 @@ package com.canli.oya.traininventoryroom.ui.brands
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.di.ComponentProvider
-import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.base.BCBaseViewModel
 import com.canli.oya.traininventoryroom.ui.base.BaseListAdapter
 import com.canli.oya.traininventoryroom.ui.base.BrandCategoryBaseFrag
@@ -18,22 +16,17 @@ import com.canli.oya.traininventoryroom.ui.base.SwipeDeleteListener
 import com.canli.oya.traininventoryroom.utils.TRAINS_OF_BRAND
 import com.canli.oya.traininventoryroom.utils.shortToast
 import com.canlioya.core.models.Brand
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class BrandListFragment : BrandCategoryBaseFrag<Brand>(), BrandItemClickListener, SwipeDeleteListener<Brand> {
 
-    @Inject
-    lateinit var viewModelFactory : TrainInventoryVMFactory
+    private val brandViewModel : BrandViewModel by viewModels()
 
     override fun getListAdapter(): BaseListAdapter<Brand, BrandItemClickListener> = BrandAdapter(requireContext(), this, this)
 
-    override fun getListViewModel(): BCBaseViewModel<Brand> = ViewModelProvider(this, viewModelFactory).get(BrandViewModel::class.java)
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
-    }
+    override fun getListViewModel(): BCBaseViewModel<Brand> = brandViewModel
 
     override fun onBrandItemClicked(view: View, clickedBrand: Brand) {
         when (view.id) {

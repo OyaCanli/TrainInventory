@@ -1,5 +1,6 @@
 package com.canli.oya.traininventoryroom.ui.trains
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
@@ -15,7 +16,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 
-class TrainViewModel (private val interactors: TrainInteractors,
+class TrainViewModel @ViewModelInject constructor(private val interactors: TrainInteractors,
                       private val ioDispatcher : CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
 
     var allItems: Flow<PagingData<TrainMinimal>> = interactors.getAllTrains()

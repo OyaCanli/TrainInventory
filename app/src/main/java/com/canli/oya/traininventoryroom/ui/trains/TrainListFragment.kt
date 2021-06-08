@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -19,7 +20,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
-import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.base.SwipeDeleteListener
 import com.canli.oya.traininventoryroom.ui.common.SwipeToDeleteCallback
@@ -29,21 +29,20 @@ import com.canli.oya.traininventoryroom.utils.showEmpty
 import com.canli.oya.traininventoryroom.utils.showList
 import com.canli.oya.traininventoryroom.utils.showLoading
 import com.canlioya.core.models.TrainMinimal
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class TrainListFragment : Fragment(R.layout.fragment_list), TrainItemClickListener, SwipeDeleteListener<TrainMinimal> {
 
-    private lateinit var viewModel: TrainViewModel
+    private val viewModel: TrainViewModel by activityViewModels()
 
     private val binding by viewBinding(FragmentListBinding::bind)
 
     private lateinit var adapter : TrainPagingAdapter
-
-    @Inject
-    lateinit var viewModelFactory: TrainInventoryVMFactory
 
     private var mTrainList: PagingData<TrainMinimal>? = null
 
@@ -53,11 +52,7 @@ class TrainListFragment : Fragment(R.layout.fragment_list), TrainItemClickListen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
-
         setHasOptionsMenu(true)
-
-        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(TrainViewModel::class.java)
 
         adapter = TrainPagingAdapter(requireContext(), this, this)
 

@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 const val TRAINS_PAGE_SIZE = 15
 
-class TrainDataSource @Inject constructor(private val database: TrainDatabase) : ITrainDataSource {
+class TrainDataSource (private val database: TrainDatabase) : ITrainDataSource {
 
     override fun getAllTrains() : Flow<PagingData<TrainMinimal>> {
         val pager = Pager(config = PagingConfig(TRAINS_PAGE_SIZE, enablePlaceholders = true)) {

@@ -1,5 +1,6 @@
 package com.canli.oya.traininventoryroom.ui.filter
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.canli.oya.traininventoryroom.interactors.BrandCategoryInteractors
@@ -13,7 +14,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 
-class FilterTrainViewModel (val trainInteractors: TrainInteractors,
+class FilterTrainViewModel @ViewModelInject constructor(val trainInteractors: TrainInteractors,
                             val brandInteractors: BrandCategoryInteractors<Brand>,
                             val categoryInteractors : BrandCategoryInteractors<Category>,
                             private val ioDispatcher : CoroutineDispatcher = Dispatchers.IO) : ViewModel() {

@@ -2,6 +2,9 @@ package com.canli.oya.traininventoryroom.ui.addtrain
 
 
 import androidx.databinding.ObservableField
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.canli.oya.traininventoryroom.interactors.BrandCategoryInteractors
@@ -14,16 +17,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-class AddTrainViewModel(val trainInteractors: TrainInteractors,
-                        brandInteractors: BrandCategoryInteractors<Brand>,
-                        categoryInteractors: BrandCategoryInteractors<Category>,
-                        private val chosenTrain: Train?,
-                        private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO)
+class AddTrainViewModel @ViewModelInject constructor(val trainInteractors: TrainInteractors,
+                                                     brandInteractors: BrandCategoryInteractors<Brand>,
+                                                     categoryInteractors: BrandCategoryInteractors<Category>,
+                                                     @Assisted private val savedStateHandle: SavedStateHandle,
+                                                     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO)
     : ViewModel() {
+
+    private val chosenTrain: Train? = savedStateHandle.get<Train>("chosenTrain")
 
     val trainBeingModified = ObservableField<Train>()
 
-    val brandList: Flow<List<Brand>> = brandInteractors.getAllItems()
+    val brandList = brandInteractors.getAllItems()
     val categoryList  = categoryInteractors.getAllItems()
 
     var isEdit: Boolean

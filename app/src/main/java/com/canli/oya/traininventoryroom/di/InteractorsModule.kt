@@ -10,17 +10,20 @@ import com.canlioya.core.usecases.brandcategory.*
 import com.canlioya.core.usecases.trains.*
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 import javax.inject.Singleton
 
 @Module
+@InstallIn(ApplicationComponent::class)
 class InteractorsModule {
 
     @Provides
     @Singleton
     fun provideTrainInteractor(dataSource : ITrainDataSource) = TrainInteractors(
-        AddTrain(dataSource),
-    UpdateTrain(dataSource), SendTrainToTrash(dataSource), GetAllTrains(dataSource), GetChosenTrain(dataSource),
-        DeleteTrainPermanently(dataSource), GetAllTrainsInTrash(dataSource), RestoreTrainFromTrash(dataSource),
+        AddTrain(dataSource), UpdateTrain(dataSource), SendTrainToTrash(dataSource),
+        GetAllTrains(dataSource), GetChosenTrain(dataSource), DeleteTrainPermanently(dataSource),
+        GetAllTrainsInTrash(dataSource), RestoreTrainFromTrash(dataSource),
         VerifyUniquenessOfTrainName(dataSource), SearchInTrains(dataSource)
     )
 

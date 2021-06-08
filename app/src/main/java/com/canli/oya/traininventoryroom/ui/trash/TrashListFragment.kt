@@ -4,46 +4,36 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
-import com.canli.oya.traininventoryroom.di.ComponentProvider
-import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.base.TrainBaseAdapter
 import com.canli.oya.traininventoryroom.ui.common.TrainItemClickListener
 import com.canli.oya.traininventoryroom.ui.trains.TrainViewModel
 import com.canli.oya.traininventoryroom.utils.showEmpty
 import com.canli.oya.traininventoryroom.utils.showList
 import com.canli.oya.traininventoryroom.utils.showLoading
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class TrashListFragment : Fragment(R.layout.fragment_list), TrainItemClickListener {
 
     private val binding by viewBinding(FragmentListBinding::bind)
 
-    private lateinit var viewModel: TrainViewModel
-
-    @Inject
-    lateinit var viewModelFactory: TrainInventoryVMFactory
+    private val viewModel: TrainViewModel by activityViewModels()
 
     private lateinit var trashAdapter: TrainBaseAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
-
         trashAdapter = TrashTrainAdapter(this)
         binding.list.adapter = trashAdapter
-
-        viewModel =
-            ViewModelProvider(requireActivity(), viewModelFactory).get(TrainViewModel::class.java)
 
         lifecycleScope.launch {
             binding.showLoading()

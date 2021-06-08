@@ -1,20 +1,37 @@
 package com.canli.oya.traininventoryroom.di
 
-import com.canli.oya.traininventoryroom.data.entities.BrandEntity
-import com.canli.oya.traininventoryroom.data.entities.CategoryEntity
+
+import android.content.Context
+import com.canli.oya.traininventoryroom.data.TrainDatabase
 import com.canli.oya.traininventoryroom.data.source.*
-import dagger.Binds
+import com.canlioya.core.data.IBrandCategoryDataSource
+import com.canlioya.core.data.ITrainDataSource
+import com.canlioya.core.models.Brand
+import com.canlioya.core.models.Category
 import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Singleton
 
 @Module
-interface DataSourceModule {
+@InstallIn(ApplicationComponent::class)
+class DataSourceModule {
 
-    @Binds
-    fun provideTrainDataSource(impl : TrainDataSource) : ITrainDataSource
+    @Singleton
+    @Provides
+    fun provideDatabase(@ApplicationContext context: Context) = TrainDatabase.getInstance(context)
 
-    @Binds
-    fun provideCategoryDataSource(impl : CategoryDataSource) : IBrandCategoryDataSource<CategoryEntity>
+    @Singleton
+    @Provides
+    fun provideTrainDataSource(database: TrainDatabase) : ITrainDataSource = TrainDataSource(database)
 
-    @Binds
-    fun provideBrandDataSource(impl : BrandDataSource) : IBrandCategoryDataSource<BrandEntity>
+    @Singleton
+    @Provides
+    fun provideCategoryDataSource(database: TrainDatabase) : IBrandCategoryDataSource<Category> = CategoryDataSource(database)
+
+    @Singleton
+    @Provides
+    fun provideBrandDataSource(database: TrainDatabase) : IBrandCategoryDataSource<Brand> = BrandDataSource(database)
 }

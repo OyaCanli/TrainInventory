@@ -15,8 +15,10 @@ import android.view.View
 import android.widget.AdapterView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -24,7 +26,6 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
-import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
 import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
@@ -33,21 +34,19 @@ import com.canli.oya.traininventoryroom.utils.shortToast
 import com.canlioya.core.models.Brand
 import com.canlioya.core.models.Train
 import com.github.dhaval2404.imagepicker.ImagePicker
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickListener,
     AdapterView.OnItemSelectedListener {
 
     private val binding by viewBinding(FragmentAddTrainBinding::bind)
 
-    private lateinit var addViewModel: AddTrainViewModel
-
-    @Inject
-    lateinit var viewModelFactory: AddTrainFactory
+    private val addViewModel: AddTrainViewModel by viewModels()
 
     private var isEdit: Boolean = false
 
@@ -90,27 +89,14 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
         binding.categorySpinner.onItemSelectedListener = this
         binding.brandSpinner.onItemSelectedListener = this
 
-        (activity as? MainActivity)?.supportActionBar?.title =
+        (activity as? AppCompatActivity)?.supportActionBar?.title =
             if (isEdit) getString(R.string.edit_train) else getString(R.string.add_train)
 
-        initDagger()
-
-        addViewModel = ViewModelProvider(this, viewModelFactory).get(AddTrainViewModel::class.java)
         binding.viewModel = addViewModel
 
         setSpinners()
         getAndObserveCategories()
         getAndObserveBrands()
-    }
-
-    private fun initDagger() {
-        val appComponent =
-            ComponentProvider.getInstance(requireActivity().application).daggerComponent
-        DaggerAddTrainComponent.builder()
-            .appComponent(appComponent)
-            .bindChosenTrain(chosenTrain)
-            .build()
-            .inject(this)
     }
 
     private fun setSpinners() {

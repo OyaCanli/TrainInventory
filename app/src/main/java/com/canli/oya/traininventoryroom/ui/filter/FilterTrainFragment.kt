@@ -6,34 +6,31 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.AdapterView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.FragmentFilterTrainBinding
-import com.canli.oya.traininventoryroom.di.ComponentProvider
-import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.base.TrainBaseAdapter
 import com.canli.oya.traininventoryroom.ui.common.TrainItemClickListener
 import com.canli.oya.traininventoryroom.utils.*
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemClickListener,
     AdapterView.OnItemSelectedListener {
 
     private val binding by viewBinding(FragmentFilterTrainBinding::bind)
 
-    private lateinit var viewModel: FilterTrainViewModel
+    private val viewModel: FilterTrainViewModel by viewModels()
 
     private lateinit var trainAdapter: TrainBaseAdapter
-
-    @Inject
-    lateinit var viewModelFactory: TrainInventoryVMFactory
 
     private lateinit var intentRequest: String
 
@@ -58,10 +55,6 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
-
-        viewModel = ViewModelProvider(this, viewModelFactory).get(FilterTrainViewModel::class.java)
 
         trainAdapter = FilteredTrainsAdapter(this)
         binding.list.adapter = trainAdapter

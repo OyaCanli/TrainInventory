@@ -8,13 +8,14 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.canli.oya.traininventoryroom.cleantrash.CleanTrashWork
 import com.facebook.drawee.backends.pipeline.Fresco
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-
-open class TrainApplication: Application() {
+@HiltAndroidApp
+class TrainApplication: Application() {
     override fun onCreate() {
         super.onCreate()
 

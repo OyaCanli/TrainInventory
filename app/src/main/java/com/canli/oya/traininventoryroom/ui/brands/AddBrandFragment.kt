@@ -10,34 +10,30 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.FragmentAddBrandBinding
-import com.canli.oya.traininventoryroom.di.ComponentProvider
-import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.ui.base.setMenuIcon
 import com.canli.oya.traininventoryroom.utils.IS_EDIT
 import com.canli.oya.traininventoryroom.utils.shortToast
 import com.canlioya.core.models.Brand
 import com.github.dhaval2404.imagepicker.ImagePicker
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
 
     private val binding by viewBinding(FragmentAddBrandBinding::bind)
 
-    private lateinit var viewModel : BrandViewModel
-
-    @Inject
-    lateinit var viewModelFactory : TrainInventoryVMFactory
+    private val viewModel : BrandViewModel by viewModels() //todo check its scope
 
     private var mBrandId: Int = 0
     private var mLogoUri: Uri? = null
@@ -55,10 +51,6 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
 
         //Request focus on the first edit text
         binding.addBrandEditBrandName.requestFocus()
-
-        ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
-
-        viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(BrandViewModel::class.java)
 
         if (arguments?.getBoolean(IS_EDIT) == true) { //This is the "edit" case
             isEditCase = true

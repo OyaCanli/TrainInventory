@@ -7,25 +7,27 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.FragmentTrainDetailsBinding
-import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
 import com.canlioya.core.models.Train
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class TrainDetailsFragment : Fragment(R.layout.fragment_train_details) {
 
     private val binding by viewBinding(FragmentTrainDetailsBinding::bind)
-    private lateinit var mChosenTrain: Train
-    private lateinit var viewModel: TrainViewModel
 
-    @Inject
-    lateinit var viewModelFactory: TrainInventoryVMFactory
+    private lateinit var mChosenTrain: Train
+
+    private val viewModel: TrainViewModel by activityViewModels()
+
     private var trainId = 0
 
 
@@ -38,10 +40,6 @@ class TrainDetailsFragment : Fragment(R.layout.fragment_train_details) {
         super.onViewCreated(view, savedInstanceState)
 
         setHasOptionsMenu(true)
-
-        ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
-
-        viewModel = ViewModelProvider(this, viewModelFactory).get(TrainViewModel::class.java)
 
         viewModel.getChosenTrain(trainId).observe(viewLifecycleOwner) { trainEntry ->
             binding.chosenTrain = trainEntry
