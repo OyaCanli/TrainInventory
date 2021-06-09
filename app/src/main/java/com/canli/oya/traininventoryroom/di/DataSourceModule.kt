@@ -13,6 +13,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
 
 @Module
@@ -34,4 +36,8 @@ class DataSourceModule {
     @Singleton
     @Provides
     fun provideBrandDataSource(database: TrainDatabase) : IBrandCategoryDataSource<Brand> = BrandDataSource(database)
+
+    @IODispatcher
+    @Provides
+    fun providesIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 }

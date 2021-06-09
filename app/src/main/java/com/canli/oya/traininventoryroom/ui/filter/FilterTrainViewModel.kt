@@ -3,6 +3,8 @@ package com.canli.oya.traininventoryroom.ui.filter
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.canli.oya.traininventoryroom.di.IODispatcher
 import com.canli.oya.traininventoryroom.interactors.BrandCategoryInteractors
 import com.canli.oya.traininventoryroom.interactors.TrainInteractors
 import com.canlioya.core.models.Brand
@@ -12,12 +14,24 @@ import kotlinx.coroutines.CoroutineDispatcher
 
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 
-class FilterTrainViewModel @ViewModelInject constructor(val trainInteractors: TrainInteractors,
-                            val brandInteractors: BrandCategoryInteractors<Brand>,
-                            val categoryInteractors : BrandCategoryInteractors<Category>,
-                            private val ioDispatcher : CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
+class FilterTrainViewModel @ViewModelInject constructor(private val trainInteractors: TrainInteractors,
+                            private val brandInteractors: BrandCategoryInteractors<Brand>,
+                            private val categoryInteractors : BrandCategoryInteractors<Category>,
+                            @IODispatcher private val ioDispatcher: CoroutineDispatcher) : ViewModel() {
+
+    private val _brandNames : MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
+    val brandNames: StateFlow<List<String>>
+        get() = _brandNames
+
+    private val _categoryNames : MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
+    val categoryNames: StateFlow<List<String>>
+        get() = _categoryNames
 
     var selectedBrand : MutableLiveData<String?> = MutableLiveData(null)
 
@@ -25,9 +39,12 @@ class FilterTrainViewModel @ViewModelInject constructor(val trainInteractors: Tr
 
     var keyword : String? = null
 
-    suspend fun getBrandNames() = brandInteractors.getItemNames()
-
-    suspend fun getCategoryNames() = categoryInteractors.getItemNames()
+    init {
+        viewModelScope.launch(ioDispatcher) {
+            _brandNames.value = brandInteractors.getItemNames()
+            _categoryNames.value = categoryInteractors.getItemNames()
+        }
+    }
 
     suspend fun filterTrains() : ArrayList<TrainMinimal> {
         val filteredList = ArrayList<TrainMinimal>()

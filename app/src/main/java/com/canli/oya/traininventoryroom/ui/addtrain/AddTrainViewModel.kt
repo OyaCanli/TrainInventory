@@ -7,6 +7,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.canli.oya.traininventoryroom.di.IODispatcher
 import com.canli.oya.traininventoryroom.interactors.BrandCategoryInteractors
 import com.canli.oya.traininventoryroom.interactors.TrainInteractors
 import com.canlioya.core.models.Brand
@@ -21,7 +22,7 @@ class AddTrainViewModel @ViewModelInject constructor(val trainInteractors: Train
                                                      brandInteractors: BrandCategoryInteractors<Brand>,
                                                      categoryInteractors: BrandCategoryInteractors<Category>,
                                                      @Assisted private val savedStateHandle: SavedStateHandle,
-                                                     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO)
+                                                     @IODispatcher private val ioDispatcher: CoroutineDispatcher)
     : ViewModel() {
 
     private val chosenTrain: Train? = savedStateHandle.get<Train>("chosenTrain")

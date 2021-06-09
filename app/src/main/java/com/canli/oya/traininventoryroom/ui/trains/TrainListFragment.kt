@@ -10,7 +10,6 @@ import android.view.View
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -20,7 +19,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
-import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.base.SwipeDeleteListener
 import com.canli.oya.traininventoryroom.ui.common.SwipeToDeleteCallback
 import com.canli.oya.traininventoryroom.ui.common.TrainItemClickListener
@@ -33,7 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class TrainListFragment : Fragment(R.layout.fragment_list), TrainItemClickListener, SwipeDeleteListener<TrainMinimal> {

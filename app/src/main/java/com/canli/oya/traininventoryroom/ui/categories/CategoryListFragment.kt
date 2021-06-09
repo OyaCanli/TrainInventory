@@ -11,9 +11,10 @@ import com.canli.oya.traininventoryroom.ui.base.BaseListAdapter
 import com.canli.oya.traininventoryroom.ui.base.BrandCategoryBaseFrag
 import com.canli.oya.traininventoryroom.utils.TRAINS_OF_CATEGORY
 import com.canlioya.core.models.Category
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
-
+@AndroidEntryPoint
 class CategoryListFragment : BrandCategoryBaseFrag<Category>(), CategoryItemClickListener {
 
     private val categoryViewModel : CategoryViewModel by viewModels()

@@ -1,15 +1,13 @@
 package com.canli.oya.traininventoryroom.data.entities
 
-import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.canlioya.core.models.Train
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
+
 @Entity(tableName = "trains",
     foreignKeys = [ForeignKey(entity = BrandEntity::class,
         parentColumns = ["brandName"], childColumns = ["brandName"],
@@ -32,7 +30,7 @@ data class TrainEntity(
     var description: String? = null,
     var location: String? = null,
     var scale: String? = null,
-    var dateOfDeletion: Long? = null) : Parcelable
+    var dateOfDeletion: Long? = null)
 
 fun TrainEntity.toTrain() = Train(
     this.trainId,

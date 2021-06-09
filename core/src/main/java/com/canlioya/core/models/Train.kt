@@ -1,6 +1,9 @@
 package com.canlioya.core.models
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Train(
     var trainId: Int = 0,
     var trainName: String? = null,
@@ -12,4 +15,4 @@ data class Train(
     var description: String? = null,
     var location: String? = null,
     var scale: String? = null,
-    var dateOfDeletion: Long? = null)
+    var dateOfDeletion: Long? = null) : Parcelable

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import com.canli.oya.traininventoryroom.di.IODispatcher
 import com.canli.oya.traininventoryroom.interactors.TrainInteractors
 import com.canlioya.core.models.TrainMinimal
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,7 +18,7 @@ import java.time.LocalDate
 
 
 class TrainViewModel @ViewModelInject constructor(private val interactors: TrainInteractors,
-                      private val ioDispatcher : CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
+                                                  @IODispatcher private val ioDispatcher: CoroutineDispatcher) : ViewModel() {
 
     var allItems: Flow<PagingData<TrainMinimal>> = interactors.getAllTrains()
 

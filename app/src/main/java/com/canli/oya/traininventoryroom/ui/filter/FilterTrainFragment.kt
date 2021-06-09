@@ -7,8 +7,9 @@ import android.view.View
 import android.widget.AdapterView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
@@ -19,6 +20,7 @@ import com.canli.oya.traininventoryroom.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -62,36 +64,18 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
         binding.searchCategorySpinner.onItemSelectedListener = this
         binding.searchBrandSpinner.onItemSelectedListener = this
 
-        lifecycleScope.launch {
-            val categoryList = async(Dispatchers.IO) {
-                viewModel.getCategoryNames()
-            }
-            val brandList = async(Dispatchers.IO) {
-                viewModel.getBrandNames()
-            }
-            binding.searchCategorySpinner.adapter = FilterBySpinnerAdapter(
-                requireContext(),
-                categoryList.await(),
-                getString(R.string.filter_by_category)
-            )
-            binding.searchBrandSpinner.adapter = FilterBySpinnerAdapter(
-                requireContext(),
-                brandList.await(),
-                getString(R.string.filter_by_brand)
-            )
-
-            when (intentRequest) {
-                TRAINS_OF_CATEGORY -> {
-                    categoryName?.let {
-                        val index = categoryList.await().indexOf(it)
-                        binding.searchCategorySpinner.setSelection(index)
-                    }
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.categoryNames.collectLatest {
+                    setCategorySpinner(it)
                 }
-                TRAINS_OF_BRAND -> {
-                    brandName?.let {
-                        val index = brandList.await().indexOf(it)
-                        binding.searchBrandSpinner.setSelection(index)
-                    }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.brandNames.collectLatest {
+                    setBrandSpinner(it)
                 }
             }
         }
@@ -106,7 +90,7 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
         })
 
         val criteriaObserver: (t: String?) -> Unit = {
-            if(it != null) {
+            if (it != null) {
                 startFiltering()
             }
         }
@@ -117,6 +101,38 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
         binding.searchBtn.setOnClickListener {
             activity?.clearFocusAndHideKeyboard()
             startFiltering()
+        }
+    }
+
+    private fun setCategorySpinner(categories : List<String>) {
+        if(categories.isNotEmpty()){
+            binding.searchCategorySpinner.adapter = FilterBySpinnerAdapter(
+                requireContext(),
+                categories,
+                getString(R.string.filter_by_category)
+            )
+            if (intentRequest == TRAINS_OF_CATEGORY) {
+                categoryName?.let { categoryName ->
+                    val index = categories.indexOf(categoryName)
+                    binding.searchCategorySpinner.setSelection(index)
+                }
+            }
+        }
+    }
+
+    private fun setBrandSpinner(brands : List<String>){
+        if(brands.isNotEmpty()){
+            binding.searchBrandSpinner.adapter = FilterBySpinnerAdapter(
+                requireContext(),
+                brands,
+                getString(R.string.filter_by_brand)
+            )
+            if (intentRequest == TRAINS_OF_BRAND) {
+                brandName?.let { brandName ->
+                    val index = brands.indexOf(brandName)
+                    binding.searchBrandSpinner.setSelection(index)
+                }
+            }
         }
     }
 
@@ -160,7 +176,7 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
         }
     }
 
-    override fun onListItemClick(view : View, trainId: Int) {
+    override fun onListItemClick(view: View, trainId: Int) {
         val action =
             FilterTrainFragmentDirections.actionFilterTrainFragmentToTrainDetailsFragment(trainId)
         binding.root.findNavController().navigate(action)
