@@ -27,7 +27,7 @@ class AddCategoryFragment : Fragment(R.layout.fragment_add_category) {
 
     private val binding by viewBinding(FragmentAddCategoryBinding::bind)
 
-    private val viewModel : CategoryViewModel by viewModels() //todo : check its scope
+    private val viewModel : CategoryViewModel by viewModels({requireParentFragment()})
 
     private var mCategoryId: Int = 0
     private var isEditCase: Boolean = false

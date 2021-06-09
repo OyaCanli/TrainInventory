@@ -33,7 +33,7 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
 
     private val binding by viewBinding(FragmentAddBrandBinding::bind)
 
-    private val viewModel : BrandViewModel by viewModels() //todo check its scope
+    private val viewModel : BrandViewModel by viewModels({requireParentFragment()})
 
     private var mBrandId: Int = 0
     private var mLogoUri: Uri? = null
