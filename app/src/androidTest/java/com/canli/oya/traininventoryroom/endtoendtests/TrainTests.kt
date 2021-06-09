@@ -1,12 +1,12 @@
 package com.canli.oya.traininventoryroom.endtoendtests
 
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
@@ -16,45 +16,69 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.TrainDatabase
+import com.canli.oya.traininventoryroom.data.entities.toBrandEntity
+import com.canli.oya.traininventoryroom.data.entities.toCategoryEntity
+import com.canli.oya.traininventoryroom.data.entities.toTrainEntity
 import com.canli.oya.traininventoryroom.datasource.sampleBrand1
 import com.canli.oya.traininventoryroom.datasource.sampleCategory1
 import com.canli.oya.traininventoryroom.datasource.sampleTrain1
-import com.canli.oya.traininventoryroom.di.ComponentProvider
-import com.canli.oya.traininventoryroom.di.TestAppModule
-import com.canli.oya.traininventoryroom.di.TrainApplication
-import com.canli.oya.traininventoryroom.di.inmemory.DaggerInMemoryTestComponent
-import com.canli.oya.traininventoryroom.di.inmemory.InMemoryTestComponent
+import com.canli.oya.traininventoryroom.di.AppModule
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
 import com.canli.oya.traininventoryroom.utils.*
+import com.canlioya.core.models.Brand
+import com.canlioya.core.models.Category
+import com.canlioya.core.models.Train
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import javax.inject.Inject
+import javax.inject.Singleton
 
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @LargeTest
+@UninstallModules(AppModule::class)
+@HiltAndroidTest
 class TrainTests {
+
+    @Module
+    @InstallIn(ApplicationComponent::class)
+    class InMemoryDataModule {
+
+        @Singleton
+        @Provides
+        fun provideDatabase() : TrainDatabase = Room.inMemoryDatabaseBuilder(
+            ApplicationProvider.getApplicationContext(),
+            TrainDatabase::class.java
+        ).build()
+    }
+
+    @get:Rule
+    var hiltRule = HiltAndroidRule(this)
+
+    @Before
+    fun init() {
+        hiltRule.inject()
+    }
 
     // An Idling Resource that waits for Data Binding to have no pending bindings.
     private val dataBindingIdlingResource = DataBindingIdlingResource()
 
     @Inject
     lateinit var database: TrainDatabase
-
-    @Before
-    fun setUp() {
-        val app = ApplicationProvider.getApplicationContext<TrainApplication>()
-        ComponentProvider.getInstance(app).daggerComponent = DaggerInMemoryTestComponent.builder()
-                .testAppModule(TestAppModule(app))
-                .build()
-        (ComponentProvider.getInstance(app).daggerComponent as InMemoryTestComponent).inject(this)
-    }
 
     @After
     fun closeDb() = database.close()
@@ -71,8 +95,8 @@ class TrainTests {
 
     @Test
     fun clickAddTrain_isLaunchedWithEmptyAndDefaultValues() = runBlocking {
-        database.categoryDao().insert(sampleCategory1)
-        database.brandDao().insert(sampleBrand1)
+        database.categoryDao().insert(sampleCategory1.toCategoryEntity())
+        database.brandDao().insert(sampleBrand1.toBrandEntity())
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
@@ -101,11 +125,11 @@ class TrainTests {
         onView(withId(R.id.brandSpinner)).perform(click())
         onView(withText(sampleBrand1.brandName)).perform(click())
 
-        onView(withId(R.id.editReference)).perform(typeText(sampleTrain1.modelReference), ViewActions.closeSoftKeyboard())
-        onView(withId(R.id.editTrainName)).perform(scrollTo(), typeText(sampleTrain1.trainName), ViewActions.closeSoftKeyboard())
-        onView(withId(R.id.editScale)).perform(scrollTo(), click(), typeText(sampleTrain1.scale), ViewActions.closeSoftKeyboard())
-        onView(withId(R.id.editLocation)).perform(scrollTo(), typeText(sampleTrain1.location), ViewActions.closeSoftKeyboard())
-        onView(withId(R.id.editTrainDescription)).perform(scrollTo(), typeText(sampleTrain1.description), ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.editReference)).perform(typeText(sampleTrain1.modelReference), closeSoftKeyboard())
+        onView(withId(R.id.editTrainName)).perform(scrollTo(), typeText(sampleTrain1.trainName), closeSoftKeyboard())
+        onView(withId(R.id.editScale)).perform(scrollTo(), click(), typeText(sampleTrain1.scale), closeSoftKeyboard())
+        onView(withId(R.id.editLocation)).perform(scrollTo(), typeText(sampleTrain1.location), closeSoftKeyboard())
+        onView(withId(R.id.editTrainDescription)).perform(scrollTo(), typeText(sampleTrain1.description), closeSoftKeyboard())
 
         //Click save button from action menu
         onView(withId(R.id.action_save)).perform(click())
@@ -119,9 +143,7 @@ class TrainTests {
 
     @Test
     fun showTrainDetails_deleteItem() = runBlocking {
-        database.categoryDao().insert(sampleCategory1)
-        database.brandDao().insert(sampleBrand1)
-        database.trainDao().insert(sampleTrain1)
+        addSampleData(sampleCategory1, sampleBrand1, sampleTrain1)
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
@@ -157,9 +179,7 @@ class TrainTests {
 
     @Test
     fun editTrain_clickBack_warnOnlyIfModified(): Unit = runBlocking {
-        database.categoryDao().insert(sampleCategory1)
-        database.brandDao().insert(sampleBrand1)
-        database.trainDao().insert(sampleTrain1)
+        addSampleData(sampleCategory1, sampleBrand1, sampleTrain1)
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
@@ -193,9 +213,7 @@ class TrainTests {
 
     @Test
     fun editTrain_clickUp_warnOnlyIfModified(): Unit = runBlocking {
-        database.categoryDao().insert(sampleCategory1)
-        database.brandDao().insert(sampleBrand1)
-        database.trainDao().insert(sampleTrain1)
+        addSampleData(sampleCategory1, sampleBrand1, sampleTrain1)
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
@@ -229,9 +247,7 @@ class TrainTests {
 
     @Test
     fun deleteATrain_findItOnTrashAndRestoreIt()= runBlocking {
-        database.categoryDao().insert(sampleCategory1)
-        database.brandDao().insert(sampleBrand1)
-        database.trainDao().insert(sampleTrain1)
+        addSampleData(sampleCategory1, sampleBrand1, sampleTrain1)
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
@@ -265,5 +281,15 @@ class TrainTests {
         onView(withText(sampleTrain1.trainName)).check(matches(isDisplayed()))
 
         activityScenario.close()
+    }
+
+    private suspend fun addSampleData(
+        sampleCategory1: Category,
+        sampleBrand1: Brand,
+        sampleTrain1: Train
+    ) {
+        database.categoryDao().insert(sampleCategory1.toCategoryEntity())
+        database.brandDao().insert(sampleBrand1.toBrandEntity())
+        database.trainDao().insert(sampleTrain1.toTrainEntity())
     }
 }

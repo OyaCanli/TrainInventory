@@ -1,9 +1,10 @@
 package com.canli.oya.traininventoryroom.di
 
 
-import android.content.Context
 import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.data.source.*
+import com.canli.oya.traininventoryroom.data.source.BrandDataSource
+import com.canli.oya.traininventoryroom.data.source.CategoryDataSource
+import com.canli.oya.traininventoryroom.data.source.TrainDataSource
 import com.canlioya.core.data.IBrandCategoryDataSource
 import com.canlioya.core.data.ITrainDataSource
 import com.canlioya.core.models.Brand
@@ -12,7 +13,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
@@ -21,9 +21,6 @@ import javax.inject.Singleton
 @InstallIn(ApplicationComponent::class)
 class DataSourceModule {
 
-    @Singleton
-    @Provides
-    fun provideDatabase(@ApplicationContext context: Context) = TrainDatabase.getInstance(context)
 
     @Singleton
     @Provides

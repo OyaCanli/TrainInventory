@@ -6,10 +6,11 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.canli.oya.traininventoryroom.data.BrandEntity
-import com.canli.oya.traininventoryroom.data.CategoryEntity
 import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.data.TrainEntity
+import com.canli.oya.traininventoryroom.data.entities.BrandEntity
+import com.canli.oya.traininventoryroom.data.entities.CategoryEntity
+import com.canli.oya.traininventoryroom.data.entities.TrainEntity
+import com.canli.oya.traininventoryroom.data.entities.toTrain
 import com.canli.oya.traininventoryroom.datasource.convertToMinimal
 import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -152,7 +153,7 @@ class TrainDaoTests {
 
         //Verify that first train is in trash
         val trashedTrains = database.trainDao().getAllTrainsInTrash()
-        assertTrue(trashedTrains.contains(firstTrain.convertToMinimal()))
+        assertTrue(trashedTrains.contains(firstTrain.toTrain().convertToMinimal()))
     }
 
     @Test
@@ -252,12 +253,12 @@ class TrainDaoTests {
 
         //Search number 1
         val firstSearchResult = database.trainDao().searchInTrains(SimpleSQLiteQuery(getSqlStatementForQuery("Blue")))
-        assertTrue(firstSearchResult.contains(secondTrain.convertToMinimal()))
+        assertTrue(firstSearchResult.contains(secondTrain.toTrain().convertToMinimal()))
         assertEquals(firstSearchResult.size, 1)
 
         //Verify search is NOT case sensitive
         val secondSearchResult = database.trainDao().searchInTrains(SimpleSQLiteQuery(getSqlStatementForQuery("ThiRd")))
-        assertTrue(secondSearchResult.contains(thirdTrain.convertToMinimal()))
+        assertTrue(secondSearchResult.contains(thirdTrain.toTrain().convertToMinimal()))
         assertEquals(secondSearchResult.size, 1)
 
     }
