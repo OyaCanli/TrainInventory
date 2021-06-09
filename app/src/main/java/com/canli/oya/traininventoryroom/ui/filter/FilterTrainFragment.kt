@@ -111,12 +111,17 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
                 categories,
                 getString(R.string.filter_by_category)
             )
+            binding.searchCategorySpinner.setVisible(true)
+            binding.showList()
             if (intentRequest == TRAINS_OF_CATEGORY) {
                 categoryName?.let { categoryName ->
                     val index = categories.indexOf(categoryName)
                     binding.searchCategorySpinner.setSelection(index)
                 }
             }
+        } else {
+            binding.showEmpty(R.string.please_add_items)
+            binding.searchCategorySpinner.setVisible(false)
         }
     }
 
@@ -127,12 +132,17 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
                 brands,
                 getString(R.string.filter_by_brand)
             )
+            binding.searchBrandSpinner.setVisible(true)
+            binding.showList()
             if (intentRequest == TRAINS_OF_BRAND) {
                 brandName?.let { brandName ->
                     val index = brands.indexOf(brandName)
                     binding.searchBrandSpinner.setSelection(index)
                 }
             }
+        } else {
+            binding.showEmpty(R.string.please_add_items)
+            binding.searchBrandSpinner.setVisible(false)
         }
     }
 
