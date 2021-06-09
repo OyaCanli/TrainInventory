@@ -10,7 +10,7 @@ interface ITrainDataSource {
 
     fun getAllTrains() : Flow<PagingData<TrainMinimal>>
 
-    fun getChosenTrain(trainId : Int): Flow<Train>
+    fun getChosenTrain(trainId : Int): Flow<Train?>
 
     suspend fun isThisTrainNameUsed(trainName : String) : Boolean
 

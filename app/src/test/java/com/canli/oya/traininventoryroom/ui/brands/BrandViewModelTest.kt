@@ -1,8 +1,7 @@
 package com.canli.oya.traininventoryroom.ui.brands
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.canli.oya.traininventoryroom.data.BrandEntity
-import com.canli.oya.traininventoryroom.datasource.FakeBrandDataSource
+import com.canli.oya.traininventoryroom.datasource.*
 
 import com.canli.oya.traininventoryroom.utils.getOrAwaitValue
 
@@ -28,15 +27,10 @@ class BrandViewModelTest{
     // Subject under test
     private lateinit var brandViewModel: BrandViewModel
 
-    val sampleBrand1 = BrandEntity(0, "Markin")
-    val sampleBrand2 = BrandEntity(1, "MDN")
-    val sampleBrand3 = BrandEntity(2, "Legit")
-    val sampleList = mutableListOf(sampleBrand1, sampleBrand2)
-
     @Before
     fun setupViewModel() {
         brandViewModel = BrandViewModel(
-            FakeBrandDataSource(sampleList),
+            provideBrandInteractor(FakeBrandDataSource(sampleBrandList)),
                 Dispatchers.Unconfined)
     }
 

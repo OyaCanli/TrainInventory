@@ -1,9 +1,9 @@
 package com.canli.oya.traininventoryroom.ui.categories
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.canli.oya.traininventoryroom.data.CategoryEntity
-import com.canli.oya.traininventoryroom.datasource.FakeCategoryDataSource
+import com.canli.oya.traininventoryroom.datasource.*
 import com.canli.oya.traininventoryroom.utils.getOrAwaitValue
+import com.canlioya.core.models.Category
 import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.Dispatchers
@@ -25,15 +25,10 @@ class CategoryViewModelTest {
     // Subject under test
     private lateinit var categoryViewModel: CategoryViewModel
 
-    val sampleCategory1 = CategoryEntity(0, "Wagon")
-    val sampleCategory2 = CategoryEntity(1, "Locomotive")
-    val sampleCategory3 = CategoryEntity(2, "Accessoire")
-
     @Before
     fun setupViewModel() {
-        val sampleCategoryList = mutableListOf(sampleCategory1, sampleCategory2)
         categoryViewModel = CategoryViewModel(
-            FakeCategoryDataSource(sampleCategoryList),
+            provideCategoryInteractor(FakeCategoryDataSource(sampleCategoryList)),
                 Dispatchers.Unconfined
         )
     }
@@ -45,7 +40,7 @@ class CategoryViewModelTest {
 
     @Test
     fun getChosenCategory_returnsTheCategorySet() {
-        val sampleCategory = CategoryEntity(0, "category")
+        val sampleCategory = Category(0, "category")
         categoryViewModel.setChosenItem(sampleCategory)
         val value = categoryViewModel.chosenItem.getOrAwaitValue()
         assertThat(value, `is`(sampleCategory))

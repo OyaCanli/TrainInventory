@@ -24,7 +24,7 @@ class TrainViewModel @ViewModelInject constructor(private val interactors: Train
 
     fun getChosenTrain(trainId: Int) = liveData(ioDispatcher) {
         interactors.getChosenTrain(trainId).collectLatest {
-            emit(it)
+            it?.let {emit(it) }
         }
     }
 

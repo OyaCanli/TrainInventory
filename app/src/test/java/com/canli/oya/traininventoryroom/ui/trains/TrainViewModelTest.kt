@@ -1,14 +1,18 @@
 package com.canli.oya.traininventoryroom.ui.trains
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.canli.oya.traininventoryroom.data.TrainEntity
 import com.canli.oya.traininventoryroom.datasource.FakeTrainDataSource
+import com.canli.oya.traininventoryroom.datasource.provideTrainInteractor
+import com.canli.oya.traininventoryroom.datasource.sampleTrain1
+import com.canli.oya.traininventoryroom.datasource.sampleTrainList
 import com.canli.oya.traininventoryroom.utils.getOrAwaitValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -23,12 +27,9 @@ class TrainViewModelTest{
     // Subject under test
     private lateinit var trainViewModel: TrainViewModel
 
-    val sampleTrain1 = TrainEntity(trainId = 0, trainName = "Red Wagon", categoryName = "Wagon", brandName = "Marklin")
-    val sampleTrain2 = TrainEntity(trainId = 1, trainName = "Blue Loco", categoryName = "Locomotif", brandName = "MDN")
-    val sampleTrain3 = TrainEntity(trainId = 2, trainName = "Gare", categoryName = "Accessoire", brandName = "Marklin")
-    val sampleTrainList = mutableListOf(sampleTrain1, sampleTrain2)
-
     private val mainThreadSurrogate = newSingleThreadContext("UI thread")
+
+    private lateinit var fakeTrainDataSource : FakeTrainDataSource
 
     @Before
     fun setUp() {
@@ -37,15 +38,16 @@ class TrainViewModelTest{
 
     @Before
     fun setupViewModel() {
-        trainViewModel = TrainViewModel(FakeTrainDataSource(sampleTrainList), Dispatchers.Unconfined)
+        fakeTrainDataSource = FakeTrainDataSource(sampleTrainList)
+        trainViewModel = TrainViewModel(provideTrainInteractor(fakeTrainDataSource), Dispatchers.Unconfined)
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun getChosenTrain_returnCorrectTrain() {
         runBlockingTest {
-            val chosenTrain = trainViewModel.getChosenTrain(sampleTrain2.trainId).getOrAwaitValue()
-            assertTrue(chosenTrain.trainName == sampleTrain2.trainName)
+            val chosenTrain = trainViewModel.getChosenTrain(sampleTrain1.trainId).getOrAwaitValue()
+            assertThat(chosenTrain?.trainName, `is`(sampleTrain1.trainName))
         }
     }
 
@@ -56,7 +58,7 @@ class TrainViewModelTest{
         runBlockingTest {
             trainViewModel.sendTrainToTrash(sampleTrain1.trainId)
 
-            val list = (trainViewModel.dataSource as FakeTrainDataSource).trains
+            val list = fakeTrainDataSource.trains
             val index = list.indexOfFirst { it.trainId == sampleTrain1.trainId }
             assertTrue(list[index].dateOfDeletion != null)
         }
@@ -68,8 +70,8 @@ class TrainViewModelTest{
         runBlockingTest {
             trainViewModel.deleteTrainPermanently(sampleTrain1.trainId)
 
-            val list = (trainViewModel.dataSource as FakeTrainDataSource).trains
-            val index = list.indexOfFirst { it.trainId == sampleTrain1.trainId }
+            val list = fakeTrainDataSource.trains
+            val index = list.indexOfFirst { it.trainName == sampleTrain1.trainName }
             assertTrue(index == -1)
         }
     }
