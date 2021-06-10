@@ -19,16 +19,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
 import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
 import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
-import com.canli.oya.traininventoryroom.ui.main.MainActivity
+import com.canli.oya.traininventoryroom.utils.bindImage
 import com.canli.oya.traininventoryroom.utils.clearFocusAndHideKeyboard
 import com.canli.oya.traininventoryroom.utils.shortToast
 import com.canlioya.core.models.Brand
@@ -274,10 +272,10 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
 
             Timber.d("Path:${file?.absolutePath}")
 
-            Glide.with(this)
-                .load(file)
-                .into(binding.productDetailsGalleryImage)
-            addViewModel.trainBeingModified.get()?.imageUri = Uri.fromFile(file).toString()
+            val uri = Uri.fromFile(file).toString()
+            binding.productDetailsGalleryImage.bindImage(uri)
+
+            addViewModel.trainBeingModified.get()?.imageUri = uri
         }
     }
 

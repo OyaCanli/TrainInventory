@@ -13,12 +13,12 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.FragmentAddBrandBinding
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.ui.base.setMenuIcon
 import com.canli.oya.traininventoryroom.utils.IS_EDIT
+import com.canli.oya.traininventoryroom.utils.bindImage
 import com.canli.oya.traininventoryroom.utils.shortToast
 import com.canlioya.core.models.Brand
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -150,10 +150,8 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
 
             Timber.e("Path:${file?.absolutePath}")
 
-            Glide.with(this)
-                    .load(file)
-                    .into(binding.addBrandImage)
             mLogoUri = Uri.fromFile(file)
+            binding.addBrandImage.bindImage(mLogoUri.toString())
         }
     }
 }

@@ -7,6 +7,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
@@ -125,11 +126,11 @@ class TrainTests {
         onView(withId(R.id.brandSpinner)).perform(click())
         onView(withText(sampleBrand1.brandName)).perform(click())
 
-        onView(withId(R.id.editReference)).perform(typeText(sampleTrain1.modelReference), closeSoftKeyboard())
-        onView(withId(R.id.editTrainName)).perform(scrollTo(), typeText(sampleTrain1.trainName), closeSoftKeyboard())
-        onView(withId(R.id.editScale)).perform(scrollTo(), click(), typeText(sampleTrain1.scale), closeSoftKeyboard())
-        onView(withId(R.id.editLocation)).perform(scrollTo(), typeText(sampleTrain1.location), closeSoftKeyboard())
-        onView(withId(R.id.editTrainDescription)).perform(scrollTo(), typeText(sampleTrain1.description), closeSoftKeyboard())
+        onView(withId(R.id.editReference)).perform(typeText(sampleTrain1.modelReference), ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.editTrainName)).perform(scrollTo(), typeText(sampleTrain1.trainName), ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.editScale)).perform(scrollTo(), click(), typeText(sampleTrain1.scale), ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.editLocation)).perform(scrollTo(), typeText(sampleTrain1.location), ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.editTrainDescription)).perform(scrollTo(), typeText(sampleTrain1.description), ViewActions.closeSoftKeyboard())
 
         //Click save button from action menu
         onView(withId(R.id.action_save)).perform(click())

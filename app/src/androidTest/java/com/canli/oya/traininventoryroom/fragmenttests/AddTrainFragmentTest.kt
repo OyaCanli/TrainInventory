@@ -4,74 +4,96 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import com.canli.oya.traininventoryroom.HiltFragmentScenario
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.datasource.sampleBrand1
-import com.canli.oya.traininventoryroom.datasource.sampleTrain1
-import com.canli.oya.traininventoryroom.di.ComponentProvider
-import com.canli.oya.traininventoryroom.di.TestAppModule
-import com.canli.oya.traininventoryroom.di.TrainApplication
-import com.canli.oya.traininventoryroom.di.fake.DaggerFakeTestComponent
+import com.canli.oya.traininventoryroom.data.TrainDatabase
+import com.canli.oya.traininventoryroom.datasource.*
+import com.canli.oya.traininventoryroom.di.DataSourceModule
+import com.canli.oya.traininventoryroom.di.IODispatcher
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.utils.CHOSEN_TRAIN
-import com.canli.oya.traininventoryroom.utils.DataBindingIdlingResource
 import com.canli.oya.traininventoryroom.utils.IS_EDIT
-import com.canli.oya.traininventoryroom.utils.monitorFragment
+import com.canlioya.core.data.IBrandCategoryDataSource
+import com.canlioya.core.data.ITrainDataSource
+import com.canlioya.core.models.Brand
+import com.canlioya.core.models.Category
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.*
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
+import org.mockito.Mockito
+import javax.inject.Singleton
 
 
 @MediumTest
 @ExperimentalCoroutinesApi
+@UninstallModules(DataSourceModule::class)
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class AddTrainFragmentTest {
 
+    @Module
+    @InstallIn(ApplicationComponent::class)
+    object FakeDataModule {
+
+        @Provides
+        @Singleton
+        fun provideTrainDataSource() : ITrainDataSource = FakeTrainDataSource()
+
+        @Provides
+        @Singleton
+        fun provideCategoryDataSource() : IBrandCategoryDataSource<Category> = FakeCategoryDataSource()
+
+        @Provides
+        @Singleton
+        fun provideBrandDataSource() : IBrandCategoryDataSource<Brand> = FakeBrandDataSource()
+
+        @Provides
+        @Singleton
+        fun provideDatabase() : TrainDatabase = Mockito.mock(TrainDatabase::class.java)
+
+        @IODispatcher
+        @Provides
+        fun providesIODispatcher(): CoroutineDispatcher = Dispatchers.Unconfined
+    }
+
+    var hiltRule = HiltAndroidRule(this)
+
     @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
-
-    // An Idling Resource that waits for Data Binding to have no pending bindings.
-    private val dataBindingIdlingResource = DataBindingIdlingResource()
+    var rule = RuleChain.outerRule(hiltRule).
+    around(InstantTaskExecutorRule())
 
     @Before
-    fun registerIdlingResource() {
-        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
-    }
-
-    @After
-    fun unregisterIdlingResource() {
-        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
-    }
-
-    @Before
-    fun setUp() {
-        val app = ApplicationProvider.getApplicationContext<TrainApplication>()
-        ComponentProvider.getInstance(app).daggerComponent = DaggerFakeTestComponent.builder()
-                .testAppModule(TestAppModule(app))
-                .build()
+    fun init() {
+        hiltRule.inject()
     }
 
     //Launch frag in add mode. Verify that all widgets are empty or have default values
     @Test
     fun inAddMode_allWidgetsShowEmptyOrDefaultValues() = runBlockingTest {
         //Launch fragment in add mode
-        val fragmentScenario = launchFragmentInContainer<AddTrainFragment>(Bundle(), R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        HiltFragmentScenario.launchInContainer(AddTrainFragment::class.java, Bundle())
 
         onView(withText(R.string.select_category)).check(matches(isDisplayed()))
         onView(withText(R.string.select_brand)).check(matches(isDisplayed()))
@@ -87,8 +109,7 @@ class AddTrainFragmentTest {
         //Launch fragment in add mode
         val args = Bundle()
         args.putParcelable(CHOSEN_TRAIN, sampleTrain1)
-        val fragmentScenario = launchFragmentInContainer<AddTrainFragment>(args, R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        HiltFragmentScenario.launchInContainer(AddTrainFragment::class.java, args)
 
         onView(withText(sampleTrain1.brandName)).check(matches(isDisplayed()))
         onView(withText(sampleTrain1.categoryName)).check(matches(isDisplayed()))
@@ -102,8 +123,7 @@ class AddTrainFragmentTest {
     @Test
     fun inAddMode_saveWithoutCategory_showsAToast() = runBlockingTest {
         //Launch fragment in add mode
-        val fragmentScenario = launchFragmentInContainer<AddTrainFragment>(Bundle(), R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        val fragmentScenario = HiltFragmentScenario.launchInContainer(AddTrainFragment::class.java, Bundle())
 
         //Click on save menu item
         val saveMenuItem = ActionMenuItem(null, 0, R.id.action_save, 0, 0, null)
@@ -122,8 +142,7 @@ class AddTrainFragmentTest {
         //Launch fragment in add mode
         val args = Bundle()
         args.putBoolean(IS_EDIT, false)
-        val fragmentScenario = launchFragmentInContainer<AddTrainFragment>(args, R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        val fragmentScenario = HiltFragmentScenario.launchInContainer(AddTrainFragment::class.java, args)
 
         onView(withId(R.id.categorySpinner)).perform(click())
         onData(allOf(`is`(instanceOf(String::class.java)), `is`(sampleTrain1.categoryName))).perform(click())
@@ -143,8 +162,7 @@ class AddTrainFragmentTest {
     @Test
     fun inAddMode_saveWithoutTrainName_showsAToast() = runBlockingTest {
         //Launch fragment in add mode
-        val fragmentScenario = launchFragmentInContainer<AddTrainFragment>(Bundle(), R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        val fragmentScenario = HiltFragmentScenario.launchInContainer(AddTrainFragment::class.java, Bundle())
 
         onView(withId(R.id.categorySpinner)).perform(click())
         onData(allOf(`is`(instanceOf(String::class.java)), `is`(sampleTrain1.categoryName))).perform(click())
@@ -169,8 +187,7 @@ class AddTrainFragmentTest {
         //Launch fragment in add mode
         val args = Bundle()
         args.putBoolean(IS_EDIT, false)
-        val fragmentScenario = launchFragmentInContainer<AddTrainFragment>(args, R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        val fragmentScenario = HiltFragmentScenario.launchInContainer(AddTrainFragment::class.java, args)
 
         //Type something in a field
         onView(withId(R.id.editTrainName)).perform(scrollTo(), typeText(sampleTrain1.trainName), closeSoftKeyboard())
@@ -189,8 +206,7 @@ class AddTrainFragmentTest {
         val args = Bundle()
         args.putBoolean(IS_EDIT, true)
         args.putParcelable(CHOSEN_TRAIN, sampleTrain1)
-        val fragmentScenario = launchFragmentInContainer<AddTrainFragment>(args, R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        val fragmentScenario = HiltFragmentScenario.launchInContainer(AddTrainFragment::class.java, args)
 
         //Type something in a field
         onView(withId(R.id.editTrainName)).perform(scrollTo(), replaceText("changed train name"), closeSoftKeyboard())

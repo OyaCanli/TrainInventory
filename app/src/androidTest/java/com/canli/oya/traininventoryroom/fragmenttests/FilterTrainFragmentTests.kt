@@ -2,71 +2,82 @@ package com.canli.oya.traininventoryroom.fragmenttests
 
 import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import com.canli.oya.traininventoryroom.HiltFragmentScenario
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
+import com.canli.oya.traininventoryroom.data.TrainDatabase
 import com.canli.oya.traininventoryroom.datasource.*
-import com.canli.oya.traininventoryroom.di.ComponentProvider
-import com.canli.oya.traininventoryroom.di.TestAppModule
-import com.canli.oya.traininventoryroom.di.TrainApplication
-import com.canli.oya.traininventoryroom.di.fake.DaggerFakeTestComponent
-import com.canli.oya.traininventoryroom.di.fake.FakeTestComponent
+import com.canli.oya.traininventoryroom.di.DataSourceModule
+import com.canli.oya.traininventoryroom.di.IODispatcher
 import com.canli.oya.traininventoryroom.ui.filter.FilterTrainFragment
 import com.canli.oya.traininventoryroom.utils.*
+import com.canlioya.core.data.IBrandCategoryDataSource
+import com.canlioya.core.data.ITrainDataSource
+import com.canlioya.core.models.Brand
+import com.canlioya.core.models.Category
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
-import javax.inject.Inject
+import org.mockito.Mockito
 
 @MediumTest
 @ExperimentalCoroutinesApi
+@HiltAndroidTest
+@UninstallModules(DataSourceModule::class)
 @RunWith(AndroidJUnit4::class)
 class FilterTrainFragmentTests {
 
+    @Module
+    @InstallIn(ApplicationComponent::class)
+    object FakeDataModule {
+
+        @Provides
+        fun provideTrainDataSource() : ITrainDataSource = FakeTrainDataSource()
+
+        @Provides
+        fun provideCategoryDataSource() : IBrandCategoryDataSource<Category> = FakeCategoryDataSource()
+
+        @Provides
+        fun provideBrandDataSource() : IBrandCategoryDataSource<Brand> = FakeBrandDataSource()
+
+        @Provides
+        fun provideDatabase() : TrainDatabase = Mockito.mock(TrainDatabase::class.java)
+
+        @IODispatcher
+        @Provides
+        fun providesIODispatcher(): CoroutineDispatcher = Dispatchers.Unconfined
+    }
+
+    var hiltRule = HiltAndroidRule(this)
+
     @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
-
-    @Inject
-    lateinit var dataSource: ITrainDataSource
-
-    // An Idling Resource that waits for Data Binding to have no pending bindings.
-    private val dataBindingIdlingResource = DataBindingIdlingResource()
-
-    @Before
-    fun registerIdlingResource() {
-        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
-    }
-
-    @After
-    fun unregisterIdlingResource() {
-        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
-    }
+    var rule = RuleChain.outerRule(hiltRule).
+    around(InstantTaskExecutorRule())
 
     @Before
     fun setUp() {
-        val app = ApplicationProvider.getApplicationContext<TrainApplication>()
-        ComponentProvider.getInstance(app).daggerComponent = DaggerFakeTestComponent.builder()
-            .testAppModule(TestAppModule(app))
-            .build()
-        (ComponentProvider.getInstance(app).daggerComponent as FakeTestComponent).inject(this)
-
-        //Set some sample data
-        (dataSource as FakeTrainDataSource).setData(sampleTrainList)
+        hiltRule.inject()
     }
 
     @Test
@@ -75,15 +86,12 @@ class FilterTrainFragmentTests {
         val args = Bundle()
         args.putString(INTENT_REQUEST_CODE, TRAINS_OF_BRAND)
         args.putString(BRAND_NAME, sampleBrand3.brandName)
-        val fragmentScenario =
-            launchFragmentInContainer<FilterTrainFragment>(args, R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, args)
 
         //Check if empty layout is displayed
         onView(withId(R.id.empty_text)).check(isVisible())
         onView(withId(R.id.list)).check(isGone())
     }
-
 
     @Test
     fun trainsOfBrand_withAResult_showsCorrectResult() = runBlockingTest {
@@ -92,9 +100,7 @@ class FilterTrainFragmentTests {
         val args = Bundle()
         args.putString(INTENT_REQUEST_CODE, TRAINS_OF_BRAND)
         args.putString(BRAND_NAME, sampleBrandName)
-        val fragmentScenario =
-            launchFragmentInContainer<FilterTrainFragment>(args, R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, args)
 
         onView(withId(R.id.empty_text)).check(isGone())
         onView(withId(R.id.empty_image)).check(isGone())
@@ -109,9 +115,7 @@ class FilterTrainFragmentTests {
         val args = Bundle()
         args.putString(INTENT_REQUEST_CODE, TRAINS_OF_CATEGORY)
         args.putString(CATEGORY_NAME, sampleCategory3.categoryName)
-        val fragmentScenario =
-            launchFragmentInContainer<FilterTrainFragment>(args, R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, args)
 
         //Check category passed is shown as selected on the spinner
         onView(withText(sampleCategory3.categoryName)).check(matches(isDisplayed()))
@@ -129,9 +133,7 @@ class FilterTrainFragmentTests {
         val args = Bundle()
         args.putString(INTENT_REQUEST_CODE, TRAINS_OF_CATEGORY)
         args.putString(CATEGORY_NAME, sampleCategoryName)
-        val fragmentScenario =
-            launchFragmentInContainer<FilterTrainFragment>(args, R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, args)
 
         onView(withId(R.id.empty_text)).check(isGone())
         onView(withId(R.id.empty_image)).check(isGone())
@@ -143,13 +145,10 @@ class FilterTrainFragmentTests {
     @Test
     fun launchedWithNoArgs_showsDefaults() = runBlockingTest {
         //Launch the fragment without args
-        val fragmentScenario =
-            launchFragmentInContainer<FilterTrainFragment>(Bundle(), R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, Bundle())
 
         onView(withId(R.id.empty_text)).check(isGone())
         onView(withId(R.id.empty_image)).check(isGone())
-        onView(withId(R.id.list)).check(isGone())
 
         onView(withText(R.string.filter_by_category)).check(matches(isDisplayed()))
         onView(withText(R.string.filter_by_brand)).check(matches(isDisplayed()))
@@ -160,9 +159,7 @@ class FilterTrainFragmentTests {
     @Test
     fun launchedWithNoArgs_enterKeyword_showCorrectResults() = runBlockingTest {
         //Launch the fragment without args
-        val fragmentScenario =
-            launchFragmentInContainer<FilterTrainFragment>(Bundle(), R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, Bundle())
 
         //Type a keyword
         onView(withId(R.id.search_keywords)).perform(typeText("red"), closeSoftKeyboard())
@@ -179,9 +176,7 @@ class FilterTrainFragmentTests {
     @Test
     fun launchedWithNoArgs_enterKeyword_showsNoResults() = runBlockingTest {
         //Launch the fragment without args
-        val fragmentScenario =
-            launchFragmentInContainer<FilterTrainFragment>(Bundle(), R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, Bundle())
 
         //Type a keyword
         onView(withId(R.id.search_keywords)).perform(typeText("NotTHere"), closeSoftKeyboard())
@@ -195,9 +190,7 @@ class FilterTrainFragmentTests {
     @Test
     fun chooseCategoryAndEnterKeyword_showsNoResults() = runBlockingTest {
         //Launch the fragment without args
-        val fragmentScenario =
-            launchFragmentInContainer<FilterTrainFragment>(Bundle(), R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, Bundle())
 
         //Choose a category
         onView(withId(R.id.search_categorySpinner)).perform(click())
@@ -215,9 +208,7 @@ class FilterTrainFragmentTests {
     @Test
     fun chooseBrandAndEnterKeyword_showsNoResults() = runBlockingTest {
         //Launch the fragment without args
-        val fragmentScenario =
-            launchFragmentInContainer<FilterTrainFragment>(Bundle(), R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, Bundle())
 
         //Choose a brand
         onView(withId(R.id.search_brandSpinner)).perform(click())
@@ -235,9 +226,7 @@ class FilterTrainFragmentTests {
     @Test
     fun chooseCategoryAndEnterKeyword_showsResults() = runBlockingTest {
         //Launch the fragment without args
-        val fragmentScenario =
-            launchFragmentInContainer<FilterTrainFragment>(Bundle(), R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, Bundle())
 
         //Choose a category
         onView(withId(R.id.search_categorySpinner)).perform(click())
@@ -256,9 +245,7 @@ class FilterTrainFragmentTests {
     @Test
     fun chooseBrandAndEnterKeyword_showsResults() = runBlockingTest {
         //Launch the fragment without args
-        val fragmentScenario =
-            launchFragmentInContainer<FilterTrainFragment>(Bundle(), R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(fragmentScenario)
+        HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, Bundle())
 
         //Choose a brand
         onView(withId(R.id.search_brandSpinner)).perform(click())
@@ -278,9 +265,7 @@ class FilterTrainFragmentTests {
     fun chooseCategoryBrandAndEnterKeyword_showsResults() =
         runBlockingTest {
             //Launch the fragment without args
-            val fragmentScenario =
-                launchFragmentInContainer<FilterTrainFragment>(Bundle(), R.style.AppTheme)
-            dataBindingIdlingResource.monitorFragment(fragmentScenario)
+            HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, Bundle())
 
             //Choose a category
             onView(withId(R.id.search_categorySpinner)).perform(click())
@@ -303,9 +288,7 @@ class FilterTrainFragmentTests {
     fun chooseCategoryBrandAndEnterKeyword_showsNoResults() =
         runBlockingTest {
             //Launch the fragment without args
-            val fragmentScenario =
-                launchFragmentInContainer<FilterTrainFragment>(Bundle(), R.style.AppTheme)
-            dataBindingIdlingResource.monitorFragment(fragmentScenario)
+            HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, Bundle())
 
             //Choose a category
             onView(withId(R.id.search_categorySpinner)).perform(click())

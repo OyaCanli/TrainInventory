@@ -4,78 +4,88 @@ package com.canli.oya.traininventoryroom.fragmenttests
 import android.os.Bundle
 import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.testing.FragmentScenario
-import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import com.canli.oya.traininventoryroom.EmptyFragmentActivity
+import com.canli.oya.traininventoryroom.HiltFragmentScenario
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
+import com.canli.oya.traininventoryroom.data.TrainDatabase
+import com.canli.oya.traininventoryroom.datasource.FakeBrandDataSource
+import com.canli.oya.traininventoryroom.datasource.FakeCategoryDataSource
 import com.canli.oya.traininventoryroom.datasource.FakeTrainDataSource
 import com.canli.oya.traininventoryroom.datasource.sampleTrain1
-import com.canli.oya.traininventoryroom.datasource.sampleTrainList
-import com.canli.oya.traininventoryroom.di.ComponentProvider
-import com.canli.oya.traininventoryroom.di.TestAppModule
-import com.canli.oya.traininventoryroom.di.TrainApplication
-import com.canli.oya.traininventoryroom.di.fake.DaggerFakeTestComponent
-import com.canli.oya.traininventoryroom.di.fake.FakeTestComponent
+import com.canli.oya.traininventoryroom.di.DataSourceModule
+import com.canli.oya.traininventoryroom.di.IODispatcher
 import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
-import com.canli.oya.traininventoryroom.utils.DataBindingIdlingResource
 import com.canli.oya.traininventoryroom.utils.TRAIN_ID
-import com.canli.oya.traininventoryroom.utils.monitorFragment
+import com.canlioya.core.data.IBrandCategoryDataSource
+import com.canlioya.core.data.ITrainDataSource
+import com.canlioya.core.models.Brand
+import com.canlioya.core.models.Category
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
-import javax.inject.Inject
+import org.mockito.Mockito
 
 @MediumTest
 @ExperimentalCoroutinesApi
+@HiltAndroidTest
+@UninstallModules(DataSourceModule::class)
 @RunWith(AndroidJUnit4::class)
-class TrainDetailsFragmentTest{
+class TrainDetailsFragmentTest {
 
-    private lateinit var scenario: FragmentScenario<TrainDetailsFragment>
+    @Module
+    @InstallIn(ApplicationComponent::class)
+    object FakeDataModule {
+
+        @Provides
+        fun provideTrainDataSource() : ITrainDataSource = FakeTrainDataSource()
+
+        @Provides
+        fun provideCategoryDataSource() : IBrandCategoryDataSource<Category> = FakeCategoryDataSource()
+
+        @Provides
+        fun provideBrandDataSource() : IBrandCategoryDataSource<Brand> = FakeBrandDataSource()
+
+        @Provides
+        fun provideDatabase() : TrainDatabase = Mockito.mock(TrainDatabase::class.java)
+
+        @IODispatcher
+        @Provides
+        fun providesIODispatcher(): CoroutineDispatcher = Dispatchers.Unconfined
+    }
+
+    var hiltRule = HiltAndroidRule(this)
 
     @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
+    var rule = RuleChain.outerRule(hiltRule).
+    around(InstantTaskExecutorRule())
 
-    @Inject
-    lateinit var dataSource: ITrainDataSource
+    private lateinit var scenario: HiltFragmentScenario<TrainDetailsFragment, EmptyFragmentActivity>
 
-    // An Idling Resource that waits for Data Binding to have no pending bindings.
-    private val dataBindingIdlingResource = DataBindingIdlingResource()
-
-    @Before
-    fun registerIdlingResource() {
-        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
-    }
-
-    @After
-    fun unregisterIdlingResource() {
-        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
-    }
 
     @Before
     fun setUp() {
-        val app = ApplicationProvider.getApplicationContext<TrainApplication>()
-        ComponentProvider.getInstance(app).daggerComponent = DaggerFakeTestComponent.builder()
-                .testAppModule(TestAppModule(app))
-                .build()
-        (ComponentProvider.getInstance(app).daggerComponent as FakeTestComponent).inject(this)
-
-        //Set some sample data
-        (dataSource as FakeTrainDataSource).setData(sampleTrainList)
+        hiltRule.inject()
 
         val args = Bundle()
-        args.putInt(TRAIN_ID, 0)
-        scenario = launchFragmentInContainer<TrainDetailsFragment>(args, R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(scenario)
+        args.putInt(TRAIN_ID, sampleTrain1.trainId)
+        scenario = HiltFragmentScenario.launchInContainer(TrainDetailsFragment::class.java, args)
     }
 
     //Verify chosen train is displayed
@@ -87,7 +97,7 @@ class TrainDetailsFragmentTest{
         onView(withId(R.id.details_description)).check(matches(withText(sampleTrain1.description)))
         onView(withId(R.id.details_quantity)).check(matches(withText(sampleTrain1.quantity.toString())))
         onView(withId(R.id.details_scale)).check(matches(withText(sampleTrain1.scale)))
-        onView(withId(R.id.details_location)).check(matches(withText("2-A")))
+        onView(withId(R.id.details_location)).check(matches(withText(sampleTrain1.location)))
     }
 
     //Click on delete menu item and verify that a dialog shows up
