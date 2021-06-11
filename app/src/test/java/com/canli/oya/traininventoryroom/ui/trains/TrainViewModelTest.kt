@@ -57,10 +57,9 @@ class TrainViewModelTest{
     fun deleteTrain_sendsItToTrash() {
         runBlockingTest {
             trainViewModel.sendTrainToTrash(sampleTrain1.trainId)
-
-            val list = fakeTrainDataSource.trains
-            val index = list.indexOfFirst { it.trainId == sampleTrain1.trainId }
-            assertTrue(list[index].dateOfDeletion != null)
+            val list = fakeTrainDataSource.getPlainTrainsForTesting()
+            val deletedTrain = list.find { it.trainId == sampleTrain1.trainId }
+            assertTrue(deletedTrain == null)
         }
     }
 

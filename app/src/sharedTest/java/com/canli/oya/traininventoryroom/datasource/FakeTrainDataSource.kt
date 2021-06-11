@@ -112,6 +112,12 @@ class FakeTrainDataSource(var trains: MutableList<Train> = sampleTrainList) :
 
     override fun getAllTrains(): Flow<PagingData<TrainMinimal>> = trainsFlow
 
+    fun getPlainTrainsForTesting(): List<TrainMinimal> {
+        return trains.filter { it.dateOfDeletion == null }
+            .map { it.convertToMinimal() }
+    }
+
+
     private fun convertTrainsToMinimalTrains(trainsToConvert: List<Train>): List<TrainMinimal> {
         return trainsToConvert.map { it.convertToMinimal() }
     }

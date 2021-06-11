@@ -5,7 +5,6 @@ import androidx.room.Room
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -24,9 +23,7 @@ import com.canli.oya.traininventoryroom.datasource.sampleCategory1
 import com.canli.oya.traininventoryroom.datasource.sampleTrain1
 import com.canli.oya.traininventoryroom.di.AppModule
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
-import com.canli.oya.traininventoryroom.utils.DataBindingIdlingResource
 import com.canli.oya.traininventoryroom.utils.clickOnChildWithId
-import com.canli.oya.traininventoryroom.utils.monitorActivity
 import com.canli.oya.traininventoryroom.utils.withIconResource
 import dagger.Module
 import dagger.Provides
@@ -72,9 +69,6 @@ class BrandTests {
         hiltRule.inject()
     }
 
-    // An Idling Resource that waits for Data Binding to have no pending bindings.
-    private val dataBindingIdlingResource = DataBindingIdlingResource()
-
     @Inject
     lateinit var database: TrainDatabase
 
@@ -84,20 +78,9 @@ class BrandTests {
     @After
     fun closeDb() = database.close()
 
-    @Before
-    fun registerIdlingResource() {
-        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
-    }
-
-    @After
-    fun unregisterIdlingResource() {
-        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
-    }
-
     @Test
     fun clickAddBrand_addABrand_isAddedToBrandList() = runBlocking {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click brands from the bottom menu
         onView(withId(R.id.brandListFragment)).perform(click())
@@ -133,7 +116,6 @@ class BrandTests {
         database.brandDao().insert(sampleBrand)
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click brands from the bottom menu
         onView(withId(R.id.brandListFragment)).perform(click())
@@ -170,7 +152,6 @@ class BrandTests {
         database.trainDao().insert(sampleTrain1.toTrainEntity())
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click brands from the bottom menu
         onView(withId(R.id.brandListFragment)).perform(click())

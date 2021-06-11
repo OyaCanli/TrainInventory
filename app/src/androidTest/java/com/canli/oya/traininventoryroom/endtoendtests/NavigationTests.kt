@@ -5,7 +5,6 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -15,9 +14,7 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.TrainDatabase
 import com.canli.oya.traininventoryroom.di.AppModule
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
-import com.canli.oya.traininventoryroom.utils.DataBindingIdlingResource
 import com.canli.oya.traininventoryroom.utils.hasSelectedItem
-import com.canli.oya.traininventoryroom.utils.monitorActivity
 import com.canli.oya.traininventoryroom.utils.withIconResource
 import dagger.Module
 import dagger.Provides
@@ -27,7 +24,6 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -60,23 +56,9 @@ class NavigationTests {
         hiltRule.inject()
     }
 
-    // An Idling Resource that waits for Data Binding to have no pending bindings.
-    private val dataBindingIdlingResource = DataBindingIdlingResource()
-
-    @Before
-    fun registerIdlingResource() {
-        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
-    }
-
-    @After
-    fun unregisterIdlingResource() {
-        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
-    }
-
     @Test
     fun bottomNavigation_correctItemsAreSetSelected(){
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Verify train item is selected by default and train list fragment is on screen
         onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.trainListFragment)))
@@ -108,7 +90,6 @@ class NavigationTests {
     @Test
     fun clickedPlusIcon_BecomesCancelIcon() = runBlocking {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         /*Verify that + icon is shown on the action menu at launch. Then click on plus button.
         Verify that + icon is replaced with x icon*/

@@ -5,7 +5,6 @@ import androidx.room.Room
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -24,7 +23,9 @@ import com.canli.oya.traininventoryroom.datasource.sampleCategory1
 import com.canli.oya.traininventoryroom.datasource.sampleTrain1
 import com.canli.oya.traininventoryroom.di.AppModule
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
-import com.canli.oya.traininventoryroom.utils.*
+import com.canli.oya.traininventoryroom.utils.clickOnChildWithId
+import com.canli.oya.traininventoryroom.utils.isGone
+import com.canli.oya.traininventoryroom.utils.withIconResource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -65,9 +66,6 @@ class CategoryTests {
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
-    // An Idling Resource that waits for Data Binding to have no pending bindings.
-    private val dataBindingIdlingResource = DataBindingIdlingResource()
-
     @Inject
     lateinit var database: TrainDatabase
 
@@ -83,20 +81,10 @@ class CategoryTests {
     @After
     fun closeDb() = database.close()
 
-    @Before
-    fun registerIdlingResource() {
-        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
-    }
-
-    @After
-    fun unregisterIdlingResource() {
-        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
-    }
 
     @Test
     fun clickAddCategory_addACategory_isAddedToTheCategoryList() = runBlockingTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click + menu item and verify child frag becomes visible with empty fields
         onView(withId(R.id.categoryListFragment)).perform(click())
@@ -129,7 +117,6 @@ class CategoryTests {
         database.categoryDao().insert(sampleCategory)
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click edit on the item and verify AddCategory becomes visible with correct fields
         onView(withId(R.id.categoryListFragment)).perform(click())
@@ -161,7 +148,6 @@ class CategoryTests {
         database.trainDao().insert(sampleTrain1.toTrainEntity())
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click on train icon on the sample category
         onView(withId(R.id.categoryListFragment)).perform(click())

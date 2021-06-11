@@ -6,7 +6,6 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -25,7 +24,9 @@ import com.canli.oya.traininventoryroom.datasource.sampleCategory1
 import com.canli.oya.traininventoryroom.datasource.sampleTrain1
 import com.canli.oya.traininventoryroom.di.AppModule
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
-import com.canli.oya.traininventoryroom.utils.*
+import com.canli.oya.traininventoryroom.utils.clickOnChildWithId
+import com.canli.oya.traininventoryroom.utils.isGone
+import com.canli.oya.traininventoryroom.utils.isVisible
 import com.canlioya.core.models.Brand
 import com.canlioya.core.models.Category
 import com.canlioya.core.models.Train
@@ -75,24 +76,11 @@ class TrainTests {
         hiltRule.inject()
     }
 
-    // An Idling Resource that waits for Data Binding to have no pending bindings.
-    private val dataBindingIdlingResource = DataBindingIdlingResource()
-
     @Inject
     lateinit var database: TrainDatabase
 
     @After
     fun closeDb() = database.close()
-
-    @Before
-    fun registerIdlingResource() {
-        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
-    }
-
-    @After
-    fun unregisterIdlingResource() {
-        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
-    }
 
     @Test
     fun clickAddTrain_isLaunchedWithEmptyAndDefaultValues() = runBlocking {
@@ -100,7 +88,6 @@ class TrainTests {
         database.brandDao().insert(sampleBrand1.toBrandEntity())
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click trains from the bottom menu
         onView(withId(R.id.trainListFragment)).perform(click())
@@ -147,7 +134,6 @@ class TrainTests {
         addSampleData(sampleCategory1, sampleBrand1, sampleTrain1)
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click trains from the bottom menu
         onView(withId(R.id.trainListFragment)).perform(click())
@@ -183,7 +169,6 @@ class TrainTests {
         addSampleData(sampleCategory1, sampleBrand1, sampleTrain1)
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click trains from the bottom menu
         onView(withId(R.id.trainListFragment)).perform(click())
@@ -217,7 +202,6 @@ class TrainTests {
         addSampleData(sampleCategory1, sampleBrand1, sampleTrain1)
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click trains from the bottom menu
         onView(withId(R.id.trainListFragment)).perform(click())
@@ -251,7 +235,6 @@ class TrainTests {
         addSampleData(sampleCategory1, sampleBrand1, sampleTrain1)
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Swipe and delete item
         onView(withId(R.id.list))
