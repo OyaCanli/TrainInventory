@@ -7,32 +7,27 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddCategoryBinding
-import com.canli.oya.traininventoryroom.di.ComponentProvider
-import com.canli.oya.traininventoryroom.di.TrainInventoryVMFactory
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.ui.base.setMenuIcon
-import com.canli.oya.traininventoryroom.utils.INTENT_REQUEST_CODE
 import com.canli.oya.traininventoryroom.utils.IS_EDIT
 import com.canli.oya.traininventoryroom.utils.shortToast
+import com.canlioya.core.models.Category
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class AddCategoryFragment : Fragment(R.layout.fragment_add_category) {
 
     private val binding by viewBinding(FragmentAddCategoryBinding::bind)
 
-    private lateinit var viewModel : CategoryViewModel
-
-    @Inject
-    lateinit var viewModelFactory : TrainInventoryVMFactory
+    private val viewModel : CategoryViewModel by viewModels({requireParentFragment()})
 
     private var mCategoryId: Int = 0
     private var isEditCase: Boolean = false
@@ -45,10 +40,6 @@ class AddCategoryFragment : Fragment(R.layout.fragment_add_category) {
 
         binding.addCategoryEditCatName.requestFocus()
         binding.addCategorySaveBtn.setOnClickListener { saveCategory() }
-
-        ComponentProvider.getInstance(requireActivity().application).daggerComponent.inject(this)
-
-        viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(CategoryViewModel::class.java)
 
         if (arguments?.getBoolean(IS_EDIT) == true) { //This is the "edit" case
             isEditCase = true
@@ -77,15 +68,14 @@ class AddCategoryFragment : Fragment(R.layout.fragment_add_category) {
 
         if(categoryList.contains(categoryName)){
             context?.shortToast(getString(R.string.category_already_exists))
-            //TODO : Toasts are not visible enough because of open soft keyboard. Customize toasts or replace with snacks
             return
         }
 
         if(isEditCase){
-            val categoryToUpdate = CategoryEntry(mCategoryId, categoryName)
+            val categoryToUpdate = Category(mCategoryId, categoryName)
             viewModel.updateItem(categoryToUpdate)
         } else {
-            val newCategory = CategoryEntry(categoryName = categoryName)
+            val newCategory = Category(categoryName = categoryName)
             //Insert the category by the intermediance of view model
             viewModel.insertItem(newCategory)
         }

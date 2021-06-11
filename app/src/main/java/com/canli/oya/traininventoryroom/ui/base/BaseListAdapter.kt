@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.canli.oya.traininventoryroom.BR
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.data.CategoryEntry
-import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.ItemConfirmDeleteBinding
 import com.canli.oya.traininventoryroom.ui.common.ISwipeableAdapter
+import com.canlioya.core.models.Brand
+import com.canlioya.core.models.Category
+import com.canlioya.core.models.Train
 
 
 const val VIEW_TYPE_NORMAL = 1
@@ -56,8 +56,8 @@ abstract class BaseListAdapter<T : Any, L>(val context: Context, private val ite
 
     private fun getItemHeightForType(currentItem: T, context: Context): Int {
         val itemHeightRes = when (currentItem) {
-            is CategoryEntry -> R.dimen.category_item_height
-            is BrandEntry -> R.dimen.brand_item_height
+            is Category -> R.dimen.category_item_height
+            is Brand -> R.dimen.brand_item_height
             else -> R.dimen.train_item_height
         }
         return context.resources.getDimension(itemHeightRes).toInt()
@@ -117,14 +117,14 @@ open class BaseDiffCallback<T> : DiffUtil.ItemCallback<T>() {
     }
 
     override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
-        if(oldItem is TrainEntry && newItem is TrainEntry){
-            return oldItem as TrainEntry == newItem as TrainEntry
+        if(oldItem is Train && newItem is Train){
+            return oldItem as Train == newItem as Train
         }
-        if(oldItem is BrandEntry && newItem is BrandEntry){
-            return oldItem as BrandEntry == newItem as BrandEntry
+        if(oldItem is Brand && newItem is Brand){
+            return oldItem as Brand == newItem as Brand
         }
-        if(oldItem is CategoryEntry && newItem is CategoryEntry){
-            return oldItem as CategoryEntry == newItem as CategoryEntry
+        if(oldItem is Category && newItem is Category){
+            return oldItem as Category == newItem as Category
         }
         return false
     }

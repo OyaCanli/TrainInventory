@@ -6,7 +6,7 @@
     <data>
         <variable
             name="item"
-            type="com.canli.oya.traininventoryroom.data.CategoryEntry" />
+            type="com.canlioya.core.models.Category" />
         <variable
             name="position"
             type="int" />

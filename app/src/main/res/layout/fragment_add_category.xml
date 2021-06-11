@@ -5,7 +5,7 @@
     <data>
         <variable
             name="chosenCategory"
-            type="com.canli.oya.traininventoryroom.data.CategoryEntry" />
+            type="com.canlioya.core.models.Category" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

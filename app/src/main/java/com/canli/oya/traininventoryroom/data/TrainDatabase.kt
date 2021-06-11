@@ -9,8 +9,11 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.canli.oya.traininventoryroom.data.dao.BrandDao
 import com.canli.oya.traininventoryroom.data.dao.CategoryDao
 import com.canli.oya.traininventoryroom.data.dao.TrainDao
+import com.canli.oya.traininventoryroom.data.entities.BrandEntity
+import com.canli.oya.traininventoryroom.data.entities.CategoryEntity
+import com.canli.oya.traininventoryroom.data.entities.TrainEntity
 
-@Database(entities = [TrainEntry::class, BrandEntry::class, CategoryEntry::class],
+@Database(entities = [TrainEntity::class, BrandEntity::class, CategoryEntity::class],
         version = 5, exportSchema = false)
 abstract class TrainDatabase : RoomDatabase() {
 

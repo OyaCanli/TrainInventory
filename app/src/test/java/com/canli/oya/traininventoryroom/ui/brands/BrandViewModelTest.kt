@@ -1,18 +1,13 @@
 package com.canli.oya.traininventoryroom.ui.brands
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.datasource.FakeBrandDataSource
+import com.canli.oya.traininventoryroom.datasource.*
 
-import com.canli.oya.traininventoryroom.di.TrainApplication
 import com.canli.oya.traininventoryroom.utils.getOrAwaitValue
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat
@@ -22,7 +17,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
 
 class BrandViewModelTest{
@@ -33,15 +27,10 @@ class BrandViewModelTest{
     // Subject under test
     private lateinit var brandViewModel: BrandViewModel
 
-    val sampleBrand1 = BrandEntry(0, "Markin")
-    val sampleBrand2 = BrandEntry(1, "MDN")
-    val sampleBrand3 = BrandEntry(2, "Legit")
-    val sampleList = mutableListOf(sampleBrand1, sampleBrand2)
-
     @Before
     fun setupViewModel() {
         brandViewModel = BrandViewModel(
-            FakeBrandDataSource(sampleList),
+            provideBrandInteractor(FakeBrandDataSource(sampleBrandList)),
                 Dispatchers.Unconfined)
     }
 

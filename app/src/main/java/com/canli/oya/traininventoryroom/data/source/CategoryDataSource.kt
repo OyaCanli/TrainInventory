@@ -1,42 +1,48 @@
 package com.canli.oya.traininventoryroom.data.source
 
-import com.canli.oya.traininventoryroom.data.CategoryEntry
+
 import com.canli.oya.traininventoryroom.data.TrainDatabase
+import com.canli.oya.traininventoryroom.data.entities.toCategoryEntity
+import com.canli.oya.traininventoryroom.data.entities.toCategoryList
+import com.canlioya.core.data.IBrandCategoryDataSource
+import com.canlioya.core.models.Category
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 
-class CategoryDataSource @Inject constructor(private val database: TrainDatabase) : IBrandCategoryDataSource<CategoryEntry> {
+class CategoryDataSource(private val database: TrainDatabase) :
+    IBrandCategoryDataSource<Category> {
 
-    override fun getAllItems(): Flow<List<CategoryEntry>> {
-        return database.categoryDao().observeAllCategories()
+    override fun getAllItems(): Flow<List<Category>> {
+        return database.categoryDao().observeAllCategories().map { it.toCategoryList() }
     }
 
-    override suspend fun insertItem(item: CategoryEntry) {
-        database.categoryDao().insert(item)
+    override suspend fun insertItem(item: Category) {
+        database.categoryDao().insert(item.toCategoryEntity())
     }
 
-    override suspend fun deleteItem(item: CategoryEntry) {
-        database.categoryDao().delete(item)
+    override suspend fun deleteItem(item: Category) {
+        database.categoryDao().delete(item.toCategoryEntity())
     }
 
-    override suspend fun isThisItemUsed(item: CategoryEntry): Int? {
-        return database.trainDao().isThisCategoryUsed(item.categoryName)
+    override suspend fun isThisItemUsed(item: Category): Boolean {
+        return database.trainDao().isThisCategoryUsed(item.categoryName) != null
     }
 
-    override suspend fun updateItem(item: CategoryEntry) {
-        database.categoryDao().update(item)
+    override suspend fun updateItem(item: Category) {
+        database.categoryDao().update(item.toCategoryEntity())
     }
 
     override suspend fun getItemNames(): List<String> {
         return database.categoryDao().getCategoryNames()
     }
 
-    override suspend fun isThisItemUsedInTrash(item: CategoryEntry): Int? {
-        return database.trainDao().isThisCategoryUsedInTrash(item.categoryName)
+    override suspend fun isThisItemUsedInTrash(item: Category): Boolean {
+        return database.trainDao().isThisCategoryUsedInTrash(item.categoryName) != null
     }
 
-    override suspend fun deleteTrainsInTrashWithThisItem(item: CategoryEntry) {
+    override suspend fun deleteTrainsInTrashWithThisItem(item: Category) {
         database.trainDao().deleteTrainsInTrashWithThisCategory(item.categoryName)
     }
 }

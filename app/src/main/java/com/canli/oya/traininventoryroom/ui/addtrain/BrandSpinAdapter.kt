@@ -8,16 +8,16 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.utils.GlideApp
+import com.canli.oya.traininventoryroom.utils.bindImage
+import com.canlioya.core.models.Brand
 
-class BrandSpinAdapter(private val mContext: Context, var brandList: List<BrandEntry>?) : BaseAdapter() {
+class BrandSpinAdapter(private val mContext: Context, var brandList: List<Brand>?) : BaseAdapter() {
 
     override fun getCount(): Int {
         return brandList?.size?.plus(1) ?: 1
     }
 
-    override fun getItem(position: Int): BrandEntry? {
+    override fun getItem(position: Int): Brand? {
         return if(position == 0) null else brandList?.get(position-1)
     }
 
@@ -51,16 +51,14 @@ class BrandSpinAdapter(private val mContext: Context, var brandList: List<BrandE
                 logoImage.visibility = View.GONE
             } else {
                 logoImage.visibility = View.VISIBLE
-                GlideApp.with(mContext)
-                        .load(imageUri)
-                        .into(logoImage)
+                logoImage.bindImage(imageUri)
             }
         }
 
         return convertView
     }
 
-    fun setBrands(newList : List<BrandEntry>){
+    fun setBrands(newList : List<Brand>){
         brandList = newList
         notifyDataSetChanged()
     }

@@ -6,7 +6,7 @@
     <data>
         <variable
             name="item"
-            type="com.canli.oya.traininventoryroom.data.TrainMinimal"/>
+            type="com.canlioya.core.models.TrainMinimal"/>
         <variable
             name="position"
             type="int" />

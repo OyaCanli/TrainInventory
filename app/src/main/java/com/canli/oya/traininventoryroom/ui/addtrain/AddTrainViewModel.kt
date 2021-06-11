@@ -2,40 +2,41 @@ package com.canli.oya.traininventoryroom.ui.addtrain
 
 
 import androidx.databinding.ObservableField
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.data.CategoryEntry
-import com.canli.oya.traininventoryroom.data.TrainEntry
-import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
-import com.canli.oya.traininventoryroom.data.source.ITrainDataSource
+import com.canli.oya.traininventoryroom.di.IODispatcher
+import com.canli.oya.traininventoryroom.interactors.BrandCategoryInteractors
+import com.canli.oya.traininventoryroom.interactors.TrainInteractors
+import com.canlioya.core.models.Brand
+import com.canlioya.core.models.Category
+import com.canlioya.core.models.Train
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-class AddTrainViewModel(val trainDataSource : ITrainDataSource,
-                        brandDataSource: IBrandCategoryDataSource<BrandEntry>,
-                        categoryDataSource : IBrandCategoryDataSource<CategoryEntry>,
-                        private val chosenTrain: TrainEntry?,
-                        private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO)
+class AddTrainViewModel @ViewModelInject constructor(val trainInteractors: TrainInteractors,
+                                                     brandInteractors: BrandCategoryInteractors<Brand>,
+                                                     categoryInteractors: BrandCategoryInteractors<Category>,
+                                                     @Assisted private val savedStateHandle: SavedStateHandle,
+                                                     @IODispatcher private val ioDispatcher: CoroutineDispatcher)
     : ViewModel() {
 
-    val trainBeingModified = ObservableField<TrainEntry>()
+    private val chosenTrain: Train? = savedStateHandle.get<Train>("chosenTrain")
 
-    val brandList: Flow<List<BrandEntry>> = brandDataSource.getAllItems()
-    val categoryList  = categoryDataSource.getAllItems()
+    val trainBeingModified = ObservableField<Train>()
 
-    var trainList : List<String> = ArrayList()
+    val brandList = brandInteractors.getAllItems()
+    val categoryList  = categoryInteractors.getAllItems()
 
     var isEdit: Boolean
 
     init {
-        trainBeingModified.set(chosenTrain?.copy() ?: TrainEntry())
+        trainBeingModified.set(chosenTrain?.copy() ?: Train())
         isEdit = chosenTrain != null
-        viewModelScope.launch(ioDispatcher) {
-            trainList = trainDataSource.getAllTrainNames()
-        }
     }
 
     fun saveTrain() {
@@ -46,16 +47,18 @@ class AddTrainViewModel(val trainDataSource : ITrainDataSource,
         }
     }
 
-    private fun insertTrain(train: TrainEntry) {
-        viewModelScope.launch(ioDispatcher) { trainDataSource.insertTrain(train) }
+    private fun insertTrain(train: Train) {
+        viewModelScope.launch(ioDispatcher) { trainInteractors.addTrain(train) }
     }
 
-    private fun updateTrain(train: TrainEntry) {
-        viewModelScope.launch(ioDispatcher) { trainDataSource.updateTrain(train) }
+    private fun updateTrain(train: Train) {
+        viewModelScope.launch(ioDispatcher) { trainInteractors.updateTrain(train) }
     }
+
+    suspend fun isThisTrainNameUsed(trainName : String) = trainInteractors.verifyUniquenessOfTrainName(trainName)
 
     var isChanged: Boolean = false
         get() = if (isEdit) trainBeingModified.get() != chosenTrain
-        else trainBeingModified.get() != TrainEntry()
+        else trainBeingModified.get() != Train()
         private set
 }

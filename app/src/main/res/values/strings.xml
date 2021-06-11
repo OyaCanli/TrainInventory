@@ -120,5 +120,6 @@
     <string name="cd_restore_train">Restore train</string>
     <string name="category_used_by_trains_in_trash">This category is used by some trains in your TRASH folder. Deleting this category will cause those trains to be permanently deleted. Do you want to delete it anyway?</string>
     <string name="do_you_want_to_permanently_delete_train">Do you want to permanently delete this train?</string>
+    <string name="please_add_items">You don\'t have any trains in your inventory yet.</string>
 
 </resources>

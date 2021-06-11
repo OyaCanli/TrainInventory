@@ -15,45 +15,42 @@ import android.view.View
 import android.widget.AdapterView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.bumptech.glide.Glide
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.data.TrainEntry
 import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
-import com.canli.oya.traininventoryroom.di.ComponentProvider
 import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
 import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
-import com.canli.oya.traininventoryroom.ui.main.MainActivity
+import com.canli.oya.traininventoryroom.utils.bindImage
 import com.canli.oya.traininventoryroom.utils.clearFocusAndHideKeyboard
 import com.canli.oya.traininventoryroom.utils.shortToast
+import com.canlioya.core.models.Brand
+import com.canlioya.core.models.Train
 import com.github.dhaval2404.imagepicker.ImagePicker
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickListener,
     AdapterView.OnItemSelectedListener {
 
     private val binding by viewBinding(FragmentAddTrainBinding::bind)
 
-    private lateinit var addViewModel: AddTrainViewModel
-
-    @Inject
-    lateinit var viewModelFactory: AddTrainFactory
+    private val addViewModel: AddTrainViewModel by viewModels()
 
     private var isEdit: Boolean = false
 
-    var chosenTrain: TrainEntry? = null
+    var chosenTrain: Train? = null
 
-    private var brandList: List<BrandEntry> = ArrayList()
+    private var brandList: List<Brand> = ArrayList()
     private var categoryList: List<String> = ArrayList()
 
     private lateinit var categoryAdapter: CategorySpinAdapter
@@ -90,27 +87,14 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
         binding.categorySpinner.onItemSelectedListener = this
         binding.brandSpinner.onItemSelectedListener = this
 
-        (activity as? MainActivity)?.supportActionBar?.title =
+        (activity as? AppCompatActivity)?.supportActionBar?.title =
             if (isEdit) getString(R.string.edit_train) else getString(R.string.add_train)
 
-        initDagger()
-
-        addViewModel = ViewModelProvider(this, viewModelFactory).get(AddTrainViewModel::class.java)
         binding.viewModel = addViewModel
 
         setSpinners()
         getAndObserveCategories()
         getAndObserveBrands()
-    }
-
-    private fun initDagger() {
-        val appComponent =
-            ComponentProvider.getInstance(requireActivity().application).daggerComponent
-        DaggerAddTrainComponent.builder()
-            .appComponent(appComponent)
-            .bindChosenTrain(chosenTrain)
-            .build()
-            .inject(this)
     }
 
     private fun setSpinners() {
@@ -177,7 +161,11 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         Timber.d("onOptionsItemSelected")
         when (item.itemId) {
-            R.id.action_save -> saveTrain()
+            R.id.action_save -> {
+                lifecycleScope.launch {
+                    saveTrain()
+                }
+            }
             android.R.id.home -> onBackClicked()
         }
         return true
@@ -211,7 +199,7 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
         }
     }
 
-    private fun saveTrain() {
+    private suspend fun saveTrain() {
 
         // DATA VALIDATION
         if (thereAreMissingValues()) return
@@ -247,8 +235,8 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
         }
     }
 
-    private fun trainNameAlreadyExists(): Boolean {
-        if (addViewModel.trainList.contains(addViewModel.trainBeingModified.get()?.trainName)) {
+    private suspend fun trainNameAlreadyExists(): Boolean {
+        if (addViewModel.isThisTrainNameUsed(addViewModel.trainBeingModified.get()?.trainName!!)) {
             context?.shortToast(R.string.train_name_already_Exists)
             return true
         }
@@ -284,10 +272,10 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
 
             Timber.d("Path:${file?.absolutePath}")
 
-            Glide.with(this)
-                .load(file)
-                .into(binding.productDetailsGalleryImage)
-            addViewModel.trainBeingModified.get()?.imageUri = Uri.fromFile(file).toString()
+            val uri = Uri.fromFile(file).toString()
+            binding.productDetailsGalleryImage.bindImage(uri)
+
+            addViewModel.trainBeingModified.get()?.imageUri = uri
         }
     }
 

@@ -1,44 +1,25 @@
 package com.canli.oya.traininventoryroom.ui.addtrain
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.canli.oya.traininventoryroom.data.*
-import com.canli.oya.traininventoryroom.datasource.FakeBrandDataSource
-import com.canli.oya.traininventoryroom.datasource.FakeCategoryDataSource
-import com.canli.oya.traininventoryroom.datasource.FakeTrainDataSource
+import androidx.lifecycle.SavedStateHandle
+import com.canli.oya.traininventoryroom.datasource.*
+import com.canlioya.core.models.Train
+import com.canlioya.core.usecases.brandcategory.*
+import com.canlioya.core.usecases.trains.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
 
 class AddTrainViewModelTest {
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
-
-    private val sampleTrain = TrainEntry(trainId = 0, trainName = "Red Train", categoryName = "Vagon", brandName = "ModelTrains")
-    val sampleTrain1 = TrainEntry(trainId = 0, trainName = "Red Wagon", categoryName = "Wagon", brandName = "Marklin")
-    val sampleTrain2 = TrainEntry(trainId = 1, trainName = "Blue Loco", categoryName = "Locomotif", brandName = "MDN")
-    val sampleTrain3 = TrainEntry(trainId = 2, trainName = "Gare", categoryName = "Accessoire", brandName = "Marklin")
-    val sampleTrainList = mutableListOf(sampleTrain1, sampleTrain2, sampleTrain3)
-
-    val sampleBrand1 = BrandEntry(0, "Markin")
-    val sampleBrand2 = BrandEntry(1, "MDN")
-    val sampleBrand3 = BrandEntry(2, "Legit")
-    val sampleBrandList = mutableListOf(sampleBrand1, sampleBrand2, sampleBrand3)
-
-    val sampleCategory1 = CategoryEntry(0, "Wagon")
-    val sampleCategory2 = CategoryEntry(1, "Locomotive")
-    val sampleCategory3 = CategoryEntry(2, "Accessoire")
-    val sampleCategoryList = mutableListOf(sampleCategory1, sampleCategory2, sampleCategory3)
-
 
     @Test
     fun isEdit_withNullTrain_returnsFalse() {
@@ -55,13 +36,13 @@ class AddTrainViewModelTest {
     @Test
     fun trainBeingModified_inEditMode_returnsSampleTrain() {
         val addTrainViewModel = getViewModelForEditCase()
-        assertEquals(sampleTrain, addTrainViewModel.trainBeingModified.get())
+        assertEquals(sampleTrain1, addTrainViewModel.trainBeingModified.get())
     }
 
     @Test
     fun trainBeingModified_inAddMode_returnsEmptyTrain() {
         val addTrainViewModel = getViewModelForAddCase()
-        assertEquals(TrainEntry(), addTrainViewModel.trainBeingModified.get())
+        assertEquals(Train(), addTrainViewModel.trainBeingModified.get())
     }
 
     @Test
@@ -79,7 +60,7 @@ class AddTrainViewModelTest {
     @Test
     fun isChanged_whenNameChangedInAddCase_returnsTrue() {
         val addTrainViewModel = getViewModelForAddCase()
-        val changedSampleTrain = sampleTrain.copy(trainName = "Blue Train")
+        val changedSampleTrain = sampleTrain1.copy(trainName = "Blue Train")
         addTrainViewModel.trainBeingModified.set(changedSampleTrain)
         assertThat(addTrainViewModel.isChanged, `is`(true))
     }
@@ -87,7 +68,7 @@ class AddTrainViewModelTest {
     @Test
     fun isChanged_whenCategoryChangedInAddCase_returnsTrue() {
         val addTrainViewModel = getViewModelForAddCase()
-        val changedSampleTrain = sampleTrain.copy(categoryName = "Locomotive")
+        val changedSampleTrain = sampleTrain1.copy(categoryName = "Locomotive")
         addTrainViewModel.trainBeingModified.set(changedSampleTrain)
         assertThat(addTrainViewModel.isChanged, `is`(true))
     }
@@ -95,7 +76,7 @@ class AddTrainViewModelTest {
     @Test
     fun isChanged_whenNameChangedInEditCase_returnsTrue() {
         val addTrainViewModel = getViewModelForEditCase()
-        val changedSampleTrain = TrainEntry(trainName = "New Train")
+        val changedSampleTrain = Train(trainName = "New Train")
         addTrainViewModel.trainBeingModified.set(changedSampleTrain)
         assertThat(addTrainViewModel.isChanged, `is`(true))
     }
@@ -105,10 +86,15 @@ class AddTrainViewModelTest {
     @Test
     fun saveTrain_inAddCase_insertsNewTrain() {
         runBlockingTest {
-            val addTrainViewModel = getViewModelForAddCase()
+            val savedStateHandle = SavedStateHandle()
+            val fakeTrainDataSource = FakeTrainDataSource(sampleTrainList)
+            val initialSize = sampleTrainList.size
+            val addTrainViewModel = AddTrainViewModel(provideTrainInteractor(fakeTrainDataSource),
+                provideBrandInteractor(FakeBrandDataSource(sampleBrandList)), provideCategoryInteractor(FakeCategoryDataSource(sampleCategoryList)),
+                savedStateHandle, Dispatchers.Unconfined)
             addTrainViewModel.saveTrain()
-            val list = (addTrainViewModel.trainDataSource as FakeTrainDataSource).trains
-            assertThat(list.size, `is`(4))
+            val list = fakeTrainDataSource.trains
+            assertThat(list.size, `is`(  initialSize + 1))
         }
     }
     //Save train in edit mode updates the train
@@ -116,15 +102,32 @@ class AddTrainViewModelTest {
     @Test
     fun saveTrain_inEditMode_updatesTheTrain() {
         runBlockingTest {
-            val addTrainViewModel = getViewModelForEditCase()
-            addTrainViewModel.saveTrain()
-            val list = (addTrainViewModel.trainDataSource as FakeTrainDataSource).trains
-            assertThat(list.size, `is`(3))
+            val args = mutableMapOf<String, Any>("chosenTrain" to sampleTrain1)
+            val savedStateHandle = SavedStateHandle(args)
+            val fakeTrainDataSource = FakeTrainDataSource(sampleTrainList)
+            val initialSize = sampleTrainList.size
+            val editViewModel = AddTrainViewModel(provideTrainInteractor(fakeTrainDataSource),
+                provideBrandInteractor(FakeBrandDataSource(sampleBrandList)), provideCategoryInteractor(FakeCategoryDataSource(sampleCategoryList)),
+                savedStateHandle, Dispatchers.Unconfined)
+            editViewModel.saveTrain()
+            val list = fakeTrainDataSource.trains
+            assertThat(list.size, `is`(initialSize))
         }
     }
 
-    private fun getViewModelForAddCase() = AddTrainViewModel(FakeTrainDataSource(sampleTrainList), FakeBrandDataSource(sampleBrandList), FakeCategoryDataSource(sampleCategoryList), null, Dispatchers.Unconfined)
 
-    private fun getViewModelForEditCase() = AddTrainViewModel(FakeTrainDataSource(sampleTrainList), FakeBrandDataSource(sampleBrandList), FakeCategoryDataSource(sampleCategoryList), sampleTrain, Dispatchers.Unconfined)
+    private fun getViewModelForAddCase() : AddTrainViewModel {
+        val savedStateHandle = SavedStateHandle()
+        return AddTrainViewModel(provideTrainInteractor(FakeTrainDataSource(sampleTrainList)),
+            provideBrandInteractor(FakeBrandDataSource(sampleBrandList)), provideCategoryInteractor(FakeCategoryDataSource(sampleCategoryList)),
+            savedStateHandle, Dispatchers.Unconfined)
+    }
 
+    private fun getViewModelForEditCase() : AddTrainViewModel {
+        val args = mutableMapOf<String, Any>("chosenTrain" to sampleTrain1)
+        val savedStateHandle = SavedStateHandle(args)
+        return AddTrainViewModel(provideTrainInteractor(FakeTrainDataSource(sampleTrainList)),
+            provideBrandInteractor(FakeBrandDataSource(sampleBrandList)), provideCategoryInteractor(FakeCategoryDataSource(sampleCategoryList)),
+            savedStateHandle, Dispatchers.Unconfined)
+    }
 }

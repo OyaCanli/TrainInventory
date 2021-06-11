@@ -1,11 +1,10 @@
 package com.canli.oya.traininventoryroom.endtoendtests
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -14,67 +13,78 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.data.TrainDatabase
+import com.canli.oya.traininventoryroom.data.entities.CategoryEntity
+import com.canli.oya.traininventoryroom.data.entities.toBrandEntity
+import com.canli.oya.traininventoryroom.data.entities.toCategoryEntity
+import com.canli.oya.traininventoryroom.data.entities.toTrainEntity
 import com.canli.oya.traininventoryroom.datasource.sampleBrand1
 import com.canli.oya.traininventoryroom.datasource.sampleCategory1
 import com.canli.oya.traininventoryroom.datasource.sampleTrain1
-import com.canli.oya.traininventoryroom.di.ComponentProvider
-import com.canli.oya.traininventoryroom.di.TestAppModule
-import com.canli.oya.traininventoryroom.di.TrainApplication
-import com.canli.oya.traininventoryroom.di.inmemory.DaggerInMemoryTestComponent
-import com.canli.oya.traininventoryroom.di.inmemory.InMemoryTestComponent
+import com.canli.oya.traininventoryroom.di.AppModule
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
-import com.canli.oya.traininventoryroom.utils.*
+import com.canli.oya.traininventoryroom.utils.clickOnChildWithId
+import com.canli.oya.traininventoryroom.utils.isGone
+import com.canli.oya.traininventoryroom.utils.withIconResource
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import javax.inject.Inject
+import javax.inject.Singleton
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @LargeTest
+@UninstallModules(AppModule::class)
+@HiltAndroidTest
 class CategoryTests {
 
-    // An Idling Resource that waits for Data Binding to have no pending bindings.
-    private val dataBindingIdlingResource = DataBindingIdlingResource()
+    @Module
+    @InstallIn(ApplicationComponent::class)
+    class InMemoryDataModule {
+
+        @Singleton
+        @Provides
+        fun provideDatabase() : TrainDatabase = Room.inMemoryDatabaseBuilder(
+            ApplicationProvider.getApplicationContext(),
+            TrainDatabase::class.java
+        ).build()
+    }
+
+    @get:Rule
+    var hiltRule = HiltAndroidRule(this)
 
     @Inject
     lateinit var database: TrainDatabase
 
+    @Before
+    fun init() {
+        hiltRule.inject()
+    }
+
     val sampleCategoryName = "New category"
     val updateCategoryName = "Updated name"
 
-    @Before
-    fun setUp() {
-        val app = ApplicationProvider.getApplicationContext<TrainApplication>()
-        ComponentProvider.getInstance(app).daggerComponent = DaggerInMemoryTestComponent.builder()
-                .testAppModule(TestAppModule(app))
-                .build()
-        (ComponentProvider.getInstance(app).daggerComponent as InMemoryTestComponent).inject(this)
-    }
 
     @After
     fun closeDb() = database.close()
 
-    @Before
-    fun registerIdlingResource() {
-        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
-    }
-
-    @After
-    fun unregisterIdlingResource() {
-        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
-    }
 
     @Test
     fun clickAddCategory_addACategory_isAddedToTheCategoryList() = runBlockingTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click + menu item and verify child frag becomes visible with empty fields
         onView(withId(R.id.categoryListFragment)).perform(click())
@@ -103,11 +113,10 @@ class CategoryTests {
     @Test
     fun editAndUpdateCategory_categoryIsUpdatedOnTheList() = runBlocking {
         //Insert a sample category to the database
-        val sampleCategory = CategoryEntry(categoryName = sampleCategoryName)
+        val sampleCategory = CategoryEntity(categoryName = sampleCategoryName)
         database.categoryDao().insert(sampleCategory)
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click edit on the item and verify AddCategory becomes visible with correct fields
         onView(withId(R.id.categoryListFragment)).perform(click())
@@ -134,12 +143,11 @@ class CategoryTests {
     @Test
     fun clickTrainIconOnACategory_trainsFromThatCategoryShown() = runBlocking {
         //Insert sample data to the database
-        database.categoryDao().insert(sampleCategory1)
-        database.brandDao().insert(sampleBrand1)
-        database.trainDao().insert(sampleTrain1)
+        database.categoryDao().insert(sampleCategory1.toCategoryEntity())
+        database.brandDao().insert(sampleBrand1.toBrandEntity())
+        database.trainDao().insert(sampleTrain1.toTrainEntity())
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Click on train icon on the sample category
         onView(withId(R.id.categoryListFragment)).perform(click())

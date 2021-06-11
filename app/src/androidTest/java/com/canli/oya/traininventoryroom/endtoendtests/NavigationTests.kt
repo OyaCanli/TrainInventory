@@ -1,62 +1,64 @@
 package com.canli.oya.traininventoryroom.endtoendtests
 
+import androidx.room.Room
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.di.ComponentProvider
-import com.canli.oya.traininventoryroom.di.TestAppModule
-import com.canli.oya.traininventoryroom.di.TrainApplication
-import com.canli.oya.traininventoryroom.di.inmemory.DaggerInMemoryTestComponent
-import com.canli.oya.traininventoryroom.di.inmemory.InMemoryTestComponent
+import com.canli.oya.traininventoryroom.data.TrainDatabase
+import com.canli.oya.traininventoryroom.di.AppModule
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
-import com.canli.oya.traininventoryroom.utils.DataBindingIdlingResource
 import com.canli.oya.traininventoryroom.utils.hasSelectedItem
-import com.canli.oya.traininventoryroom.utils.monitorActivity
 import com.canli.oya.traininventoryroom.utils.withIconResource
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
-import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
+@UninstallModules(AppModule::class)
+@HiltAndroidTest
 class NavigationTests {
 
-    // An Idling Resource that waits for Data Binding to have no pending bindings.
-    private val dataBindingIdlingResource = DataBindingIdlingResource()
+    @Module
+    @InstallIn(ApplicationComponent::class)
+    class InMemoryDataModule {
 
-    @Before
-    fun registerIdlingResource() {
-        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
+        @Singleton
+        @Provides
+        fun provideDatabase() : TrainDatabase = Room.inMemoryDatabaseBuilder(
+            ApplicationProvider.getApplicationContext(),
+            TrainDatabase::class.java
+        ).build()
     }
 
-    @After
-    fun unregisterIdlingResource() {
-        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
-    }
+    @get:Rule
+    var hiltRule = HiltAndroidRule(this)
 
     @Before
-    fun setUp() {
-        val app = ApplicationProvider.getApplicationContext<TrainApplication>()
-        ComponentProvider.getInstance(app).daggerComponent = DaggerInMemoryTestComponent.builder()
-                .testAppModule(TestAppModule(app))
-                .build()
-        (ComponentProvider.getInstance(app).daggerComponent as InMemoryTestComponent).inject(this)
+    fun init() {
+        hiltRule.inject()
     }
 
     @Test
     fun bottomNavigation_correctItemsAreSetSelected(){
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //Verify train item is selected by default and train list fragment is on screen
         onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.trainListFragment)))
@@ -86,9 +88,8 @@ class NavigationTests {
     }
     
     @Test
-    fun clickedPlusIcon_BecomesCancelIcon_andStaysThatWay() = runBlocking {
+    fun clickedPlusIcon_BecomesCancelIcon() = runBlocking {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         /*Verify that + icon is shown on the action menu at launch. Then click on plus button.
         Verify that + icon is replaced with x icon*/

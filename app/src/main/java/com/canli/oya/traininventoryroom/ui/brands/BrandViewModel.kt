@@ -1,15 +1,15 @@
 package com.canli.oya.traininventoryroom.ui.brands
 
 
-import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.data.source.IBrandCategoryDataSource
-
-
+import androidx.hilt.lifecycle.ViewModelInject
+import com.canli.oya.traininventoryroom.di.IODispatcher
+import com.canli.oya.traininventoryroom.interactors.BrandCategoryInteractors
 import com.canli.oya.traininventoryroom.ui.base.BCBaseViewModel
+import com.canlioya.core.models.Brand
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 
-class BrandViewModel(dataSource : IBrandCategoryDataSource<BrandEntry>,
-                     ioDispatcher: CoroutineDispatcher = Dispatchers.IO)
-    : BCBaseViewModel<BrandEntry>(dataSource, ioDispatcher)
+class BrandViewModel @ViewModelInject constructor(interactors : BrandCategoryInteractors<Brand>,
+                                                  @IODispatcher private val ioDispatcher: CoroutineDispatcher)
+    : BCBaseViewModel<Brand>(interactors, ioDispatcher)

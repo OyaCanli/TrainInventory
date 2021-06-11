@@ -5,15 +5,19 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.data.TrainEntry
-import com.canli.oya.traininventoryroom.data.TrainMinimal
+import com.canli.oya.traininventoryroom.data.entities.toTrain
+import com.canli.oya.traininventoryroom.data.entities.toTrainEntity
+import com.canlioya.core.data.ITrainDataSource
+import com.canlioya.core.models.Train
+import com.canlioya.core.models.TrainMinimal
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import javax.inject.Inject
 
 const val TRAINS_PAGE_SIZE = 15
 
-class TrainDataSource @Inject constructor(private val database: TrainDatabase) : ITrainDataSource {
+class TrainDataSource (private val database: TrainDatabase) : ITrainDataSource {
 
     override fun getAllTrains() : Flow<PagingData<TrainMinimal>> {
         val pager = Pager(config = PagingConfig(TRAINS_PAGE_SIZE, enablePlaceholders = true)) {
@@ -22,13 +26,15 @@ class TrainDataSource @Inject constructor(private val database: TrainDatabase) :
         return pager.flow
     }
 
-    override fun getChosenTrain(trainId : Int) = database.trainDao().observeChosenTrain(trainId)
+    override fun getChosenTrain(trainId : Int) = database.trainDao().observeChosenTrain(trainId).map { it.toTrain() }
 
-    override suspend fun getAllTrainNames(): List<String> = database.trainDao().getAllTrainNames()
+    override suspend fun isThisTrainNameUsed(trainName: String): Boolean {
+        return database.trainDao().isThisTrainNameUsed(trainName) != null
+    }
 
-    override suspend fun insertTrain(train: TrainEntry) = database.trainDao().insert(train)
+    override suspend fun insertTrain(train: Train) = database.trainDao().insert(train.toTrainEntity())
 
-    override suspend fun updateTrain(train: TrainEntry) = database.trainDao().update(train)
+    override suspend fun updateTrain(train: Train) = database.trainDao().update(train.toTrainEntity())
 
     override suspend fun sendTrainToTrash(trainId: Int, dateOfDeletion : Long) = database.trainDao().sendToThrash(trainId, dateOfDeletion)
 

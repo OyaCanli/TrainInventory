@@ -6,10 +6,11 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.canli.oya.traininventoryroom.data.BrandEntry
-import com.canli.oya.traininventoryroom.data.CategoryEntry
 import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.data.TrainEntry
+import com.canli.oya.traininventoryroom.data.entities.BrandEntity
+import com.canli.oya.traininventoryroom.data.entities.CategoryEntity
+import com.canli.oya.traininventoryroom.data.entities.TrainEntity
+import com.canli.oya.traininventoryroom.data.entities.toTrain
 import com.canli.oya.traininventoryroom.datasource.convertToMinimal
 import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,10 +34,10 @@ class TrainDaoTests {
 
     private lateinit var database: TrainDatabase
 
-    private val firstCategory = CategoryEntry(5, "Wagon")
-    private val secondCategory = CategoryEntry(6, "Locomotif")
-    private val firstBrand = BrandEntry(brandId = 5, brandName = "Marklin", brandLogoUri = "first brand logo uri", webUrl =  "https://www.google.com/")
-    private val secondBrand = BrandEntry(brandId = 6, brandName = "MDN", brandLogoUri = "second brand logo uri", webUrl =  "https://github.com/")
+    private val firstCategory = CategoryEntity(5, "Wagon")
+    private val secondCategory = CategoryEntity(6, "Locomotif")
+    private val firstBrand = BrandEntity(brandId = 5, brandName = "Marklin", brandLogoUri = "first brand logo uri", webUrl =  "https://www.google.com/")
+    private val secondBrand = BrandEntity(brandId = 6, brandName = "MDN", brandLogoUri = "second brand logo uri", webUrl =  "https://github.com/")
 
     @Before
     fun initDb() {
@@ -63,7 +64,7 @@ class TrainDaoTests {
     @Test
     fun insertTrain_verifyInserted() = runBlockingTest {
         //Then insert a train
-        val trainToInsert = TrainEntry(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
+        val trainToInsert = TrainEntity(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
                 description = "train description", imageUri = "image url", scale = "1.3")
         database.trainDao().insert(trainToInsert)
 
@@ -71,7 +72,7 @@ class TrainDaoTests {
         val insertedTrain = database.trainDao().getChosenTrain(trainToInsert.trainId)
 
         //Verify it has expected values
-        assertThat(insertedTrain as? TrainEntry, notNullValue())
+        assertThat(insertedTrain as? TrainEntity, notNullValue())
         assertThat(insertedTrain.trainId, `is`(trainToInsert.trainId))
         assertThat(insertedTrain.trainName, `is`(trainToInsert.trainName))
         assertThat(insertedTrain.categoryName, `is`(trainToInsert.categoryName))
@@ -84,7 +85,7 @@ class TrainDaoTests {
     @Test
     fun updateTrain_verifyUpdated() = runBlockingTest {
         //Insert a train
-        val trainToInsert = TrainEntry(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
+        val trainToInsert = TrainEntity(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
                 description = "train description", imageUri = "image url", scale = "1.3")
         database.trainDao().insert(trainToInsert)
 
@@ -112,9 +113,9 @@ class TrainDaoTests {
     @Test
     fun deleteTrain_verifyDeleted() = runBlockingTest {
         //Insert two trains
-        val firstTrain = TrainEntry(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
+        val firstTrain = TrainEntity(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
                 description = "train description", imageUri = "image url", scale = "1.3")
-        val secondTrain = TrainEntry(trainId = 3, trainName = "Blue train", brandName = secondBrand.brandName, categoryName = secondCategory.categoryName,
+        val secondTrain = TrainEntity(trainId = 3, trainName = "Blue train", brandName = secondBrand.brandName, categoryName = secondCategory.categoryName,
                 description = "second train description", imageUri = "second image url", scale = "3.5")
         database.trainDao().insert(firstTrain)
         database.trainDao().insert(secondTrain)
@@ -134,9 +135,9 @@ class TrainDaoTests {
     @Test
     fun recycleTrain_verifySendToTrash() = runBlockingTest {
         //Insert two trains
-        val firstTrain = TrainEntry(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
+        val firstTrain = TrainEntity(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
             description = "train description", imageUri = "image url", scale = "1.3")
-        val secondTrain = TrainEntry(trainId = 3, trainName = "Blue train", brandName = secondBrand.brandName, categoryName = secondCategory.categoryName,
+        val secondTrain = TrainEntity(trainId = 3, trainName = "Blue train", brandName = secondBrand.brandName, categoryName = secondCategory.categoryName,
             description = "second train description", imageUri = "second image url", scale = "3.5")
         database.trainDao().insert(firstTrain)
         database.trainDao().insert(secondTrain)
@@ -152,13 +153,13 @@ class TrainDaoTests {
 
         //Verify that first train is in trash
         val trashedTrains = database.trainDao().getAllTrainsInTrash()
-        assertTrue(trashedTrains.contains(firstTrain.convertToMinimal()))
+        assertTrue(trashedTrains.contains(firstTrain.toTrain().convertToMinimal()))
     }
 
     @Test
     fun isThisBrandUsed_forABrandUsed_returnsTrue() = runBlockingTest {
         //Insert a train
-        val trainToInsert = TrainEntry(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
+        val trainToInsert = TrainEntity(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
                 description = "train description", imageUri = "image url", scale = "1.3")
         database.trainDao().insert(trainToInsert)
 
@@ -168,7 +169,7 @@ class TrainDaoTests {
     @Test
     fun isThisBrandUsed_forABrandNotUsed_returnsFalse() = runBlockingTest {
         //Insert a train
-        val trainToInsert = TrainEntry(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
+        val trainToInsert = TrainEntity(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
                 description = "train description", imageUri = "image url", scale = "1.3")
         database.trainDao().insert(trainToInsert)
 
@@ -178,7 +179,7 @@ class TrainDaoTests {
     @Test
     fun isThisCategoryUsed_forACategoryUsed_returnsTrue() = runBlockingTest {
         //Insert a train
-        val trainToInsert = TrainEntry(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
+        val trainToInsert = TrainEntity(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
                 description = "train description", imageUri = "image url", scale = "1.3")
         database.trainDao().insert(trainToInsert)
 
@@ -188,7 +189,7 @@ class TrainDaoTests {
     @Test
     fun isThisCategoryUsed_forACategoryNotUsed_returnsFalse() = runBlockingTest {
         //Insert a train
-        val trainToInsert = TrainEntry(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
+        val trainToInsert = TrainEntity(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
                 description = "train description", imageUri = "image url", scale = "1.3")
         database.trainDao().insert(trainToInsert)
         val isThisCategoryUsed = database.trainDao().isThisCategoryUsed(secondCategory.categoryName)
@@ -199,11 +200,11 @@ class TrainDaoTests {
     @Test
     fun getTrainsFromThisBrand_returnsCorrectTrains() = runBlockingTest {
         //Insert three trains
-        val firstTrain = TrainEntry(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
+        val firstTrain = TrainEntity(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
                 description = "train description", imageUri = "image url", scale = "1.3")
-        val secondTrain = TrainEntry(trainId = 3, trainName = "Blue train", brandName = secondBrand.brandName, categoryName = secondCategory.categoryName,
+        val secondTrain = TrainEntity(trainId = 3, trainName = "Blue train", brandName = secondBrand.brandName, categoryName = secondCategory.categoryName,
                 description = "second train description", imageUri = "second image url", scale = "3.5")
-        val thirdTrain = TrainEntry(trainId = 4, trainName = "Orange train", brandName = secondBrand.brandName, categoryName = firstCategory.categoryName,
+        val thirdTrain = TrainEntity(trainId = 4, trainName = "Orange train", brandName = secondBrand.brandName, categoryName = firstCategory.categoryName,
                 description = "third train description", imageUri = "third image url", scale = "5.2")
         database.trainDao().insert(firstTrain)
         database.trainDao().insert(secondTrain)
@@ -219,11 +220,11 @@ class TrainDaoTests {
     @Test
     fun getTrainsFromThisCategory_returnsCorrectTrains() = runBlockingTest {
         //Insert three trains
-        val firstTrain = TrainEntry(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
+        val firstTrain = TrainEntity(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
                 description = "train description", imageUri = "image url", scale = "1.3")
-        val secondTrain = TrainEntry(trainId = 3, trainName = "Blue train", brandName = secondBrand.brandName, categoryName = secondCategory.categoryName,
+        val secondTrain = TrainEntity(trainId = 3, trainName = "Blue train", brandName = secondBrand.brandName, categoryName = secondCategory.categoryName,
                 description = "second train description", imageUri = "second image url", scale = "3.5")
-        val thirdTrain = TrainEntry(trainId = 4, trainName = "Orange train", brandName = secondBrand.brandName, categoryName = firstCategory.categoryName,
+        val thirdTrain = TrainEntity(trainId = 4, trainName = "Orange train", brandName = secondBrand.brandName, categoryName = firstCategory.categoryName,
                 description = "third train description", imageUri = "third image url", scale = "5.2")
         database.trainDao().insert(firstTrain)
         database.trainDao().insert(secondTrain)
@@ -240,11 +241,11 @@ class TrainDaoTests {
     @Test
     fun searchInTrains_returnsCorrectResults() = runBlockingTest {
         //Insert three trains
-        val firstTrain = TrainEntry(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
+        val firstTrain = TrainEntity(trainId = 2, trainName = "Red train", brandName = firstBrand.brandName, categoryName = firstCategory.categoryName,
                 modelReference = "Reference1", description = "train description", imageUri = "image url", scale = "1.3")
-        val secondTrain = TrainEntry(trainId = 3, trainName = "Blue train", brandName = secondBrand.brandName, categoryName = secondCategory.categoryName,
+        val secondTrain = TrainEntity(trainId = 3, trainName = "Blue train", brandName = secondBrand.brandName, categoryName = secondCategory.categoryName,
                 modelReference = "Reference2", description = "second train description", imageUri = "second image url", scale = "3.5")
-        val thirdTrain = TrainEntry(trainId = 4, trainName = "Orange train", brandName = secondBrand.brandName, categoryName = firstCategory.categoryName,
+        val thirdTrain = TrainEntity(trainId = 4, trainName = "Orange train", brandName = secondBrand.brandName, categoryName = firstCategory.categoryName,
                 modelReference = "Reference3", description = "third train description", imageUri = "third image url", scale = "5.2")
         database.trainDao().insert(firstTrain)
         database.trainDao().insert(secondTrain)
@@ -252,12 +253,12 @@ class TrainDaoTests {
 
         //Search number 1
         val firstSearchResult = database.trainDao().searchInTrains(SimpleSQLiteQuery(getSqlStatementForQuery("Blue")))
-        assertTrue(firstSearchResult.contains(secondTrain.convertToMinimal()))
+        assertTrue(firstSearchResult.contains(secondTrain.toTrain().convertToMinimal()))
         assertEquals(firstSearchResult.size, 1)
 
         //Verify search is NOT case sensitive
         val secondSearchResult = database.trainDao().searchInTrains(SimpleSQLiteQuery(getSqlStatementForQuery("ThiRd")))
-        assertTrue(secondSearchResult.contains(thirdTrain.convertToMinimal()))
+        assertTrue(secondSearchResult.contains(thirdTrain.toTrain().convertToMinimal()))
         assertEquals(secondSearchResult.size, 1)
 
     }
