@@ -117,7 +117,7 @@ class TrashFragmentTests {
         }
     }
 
-    @Test
+    /*@Test
     fun clickOnRestore_removesItFromTrash() {
         runBlockingTest {
             //Launch with an item on trash
@@ -131,7 +131,7 @@ class TrashFragmentTests {
 
             onView(withId(R.id.empty_image)).check(matches(isDisplayed()))
         }
-    }
+    }*/
 
 
     @Test
@@ -142,7 +142,7 @@ class TrashFragmentTests {
             dataSource.sendTrainToTrash(sampleTrain1.trainId, date)
             HiltFragmentScenario.launchInContainer(TrashListFragment::class.java, Bundle())
 
-            //Click on restore on item
+            //Click on delete on item
             onView(withId(R.id.list)).perform(
                 actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickOnChildWithId(R.id.trash_item_delete)))
             onView(withText(R.string.do_you_want_to_permanently_delete_train)).check(matches(isDisplayed()))
