@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
@@ -35,8 +36,8 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
 
     private val viewModel : BrandViewModel by viewModels({requireParentFragment()})
 
-    private var mBrandId: Int = 0
-    private var mLogoUri: Uri? = null
+    private var brandId: Int = 0
+    private var logoUri: Uri? = null
     private var isEditCase: Boolean = false
 
     private var brandList : List<String> = ArrayList()
@@ -57,7 +58,7 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
             viewModel.chosenItem.observe(viewLifecycleOwner,  { brandEntry ->
                 brandEntry?.let {
                     binding.chosenBrand = it
-                    mBrandId = it.brandId
+                    brandId = it.brandId
                 }
             })
         }
@@ -94,11 +95,11 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
 
         //If there is a uri for logo image, parse it to string
         var imagePath: String? = null
-        mLogoUri?.let { imagePath = mLogoUri.toString() }
+        logoUri?.let { imagePath = logoUri.toString() }
 
         if (isEditCase) {
             //Construct a new BrandEntry object from this data with ID included
-            val brandToUpdate = Brand(mBrandId, brandName, imagePath, webAddress)
+            val brandToUpdate = Brand(brandId, brandName, imagePath, webAddress)
             viewModel.updateItem(brandToUpdate)
         } else {
             //Construct a new BrandEntry object from this data (without ID)
@@ -146,12 +147,11 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             // File object will not be null for RESULT_OK
-            val file = ImagePicker.getFile(data)
+            val uri: Uri = data?.data!!
 
-            Timber.e("Path:${file?.absolutePath}")
+            Timber.d("Path:${uri}")
 
-            mLogoUri = Uri.fromFile(file)
-            binding.addBrandImage.bindImage(mLogoUri.toString())
+            binding.addBrandImage.bindImage(uri.toString(), ResourcesCompat.getDrawable(resources, R.drawable.ic_gallery_light, null))
         }
     }
 }

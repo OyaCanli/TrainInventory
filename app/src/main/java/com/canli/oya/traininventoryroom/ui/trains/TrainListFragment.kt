@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -113,7 +114,7 @@ class TrainListFragment : Fragment(R.layout.fragment_list), TrainItemClickListen
                     anim?.start()
                 }
                 val action = TrainListFragmentDirections.actionTrainListFragmentToAddTrainFragment(null)
-                binding.root.findNavController().navigate(action)
+                findNavController().navigate(action)
             }
             R.id.export_to_excel -> NavigationUI.onNavDestinationSelected(
                 item, binding.root.findNavController()

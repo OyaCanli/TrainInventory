@@ -80,6 +80,7 @@
                 android:layout_marginTop="@dimen/margin_standard"
                 android:contentDescription="@string/cd_brand_logo_edit"
                 app:imageUrl="@{chosenBrand.brandLogoUri}"
+                app:srcCompat="@drawable/ic_gallery_light"
                 app:layout_constraintStart_toEndOf="@+id/textView9"
                 app:layout_constraintTop_toBottomOf="@+id/addBrandWebsite_layout"
                 app:placeholder="@{@drawable/ic_gallery_light}" />

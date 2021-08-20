@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.utils.bindImage
 import com.canlioya.core.models.Brand

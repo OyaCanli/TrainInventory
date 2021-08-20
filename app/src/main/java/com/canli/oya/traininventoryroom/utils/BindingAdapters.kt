@@ -15,7 +15,7 @@ import com.canli.oya.traininventoryroom.R
 
 
 @BindingAdapter("imageUrl", "placeholder")
-fun ImageView.bindImage(url: String?, placeHolder: Drawable) {
+fun ImageView.bindImage(url: String?, placeHolder: Drawable?) {
     url?.let {
         val imgUri = it
             .toUri()
@@ -23,7 +23,7 @@ fun ImageView.bindImage(url: String?, placeHolder: Drawable) {
             .scheme("https")
             .build()
         this.load(imgUri) {
-            placeholder(placeHolder)
+            fallback(placeHolder)
         }
     }
 }

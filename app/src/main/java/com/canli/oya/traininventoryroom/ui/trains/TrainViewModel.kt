@@ -1,6 +1,5 @@
 package com.canli.oya.traininventoryroom.ui.trains
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
@@ -9,16 +8,17 @@ import androidx.paging.PagingData
 import com.canli.oya.traininventoryroom.di.IODispatcher
 import com.canli.oya.traininventoryroom.interactors.TrainInteractors
 import com.canlioya.core.models.TrainMinimal
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import javax.inject.Inject
 
-
-class TrainViewModel @ViewModelInject constructor(private val interactors: TrainInteractors,
-                                                  @IODispatcher private val ioDispatcher: CoroutineDispatcher) : ViewModel() {
+@HiltViewModel
+class TrainViewModel @Inject constructor(private val interactors: TrainInteractors,
+                                         @IODispatcher private val ioDispatcher: CoroutineDispatcher) : ViewModel() {
 
     var allItems: Flow<PagingData<TrainMinimal>> = interactors.getAllTrains()
 

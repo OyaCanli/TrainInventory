@@ -39,7 +39,7 @@ class TrainApplication: Application() {
             .setConstraints(constraints)
             .build()
 
-        WorkManager.getInstance().enqueueUniquePeriodicWork(
+        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
             CleanTrashWork.WORK_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
             repeatingRequest)

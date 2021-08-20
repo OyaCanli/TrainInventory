@@ -16,6 +16,7 @@ import android.widget.AdapterView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
@@ -146,7 +147,7 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
                     .maxResultSize(
                         500,
                         500
-                    )    //Final image resolution will be less than 1080 x 1080(Optional)
+                    )
                     .start()
             }
         }
@@ -268,14 +269,11 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             // File object will not be null for RESULT_OK
-            val file = ImagePicker.getFile(data)
+            val uri: Uri = data?.data!!
 
-            Timber.d("Path:${file?.absolutePath}")
-
-            val uri = Uri.fromFile(file).toString()
-            binding.productDetailsGalleryImage.bindImage(uri)
-
-            addViewModel.trainBeingModified.get()?.imageUri = uri
+            Timber.d("URI:$uri")
+            addViewModel.trainBeingModified.get()?.imageUri = uri.toString()
+            binding.executePendingBindings()
         }
     }
 
