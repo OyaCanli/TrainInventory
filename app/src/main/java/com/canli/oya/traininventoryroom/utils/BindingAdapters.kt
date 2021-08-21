@@ -12,17 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.canli.oya.traininventoryroom.R
+import java.io.File
 
 
 @BindingAdapter("imageUrl", "placeholder")
 fun ImageView.bindImage(url: String?, placeHolder: Drawable?) {
     url?.let {
-        val imgUri = it
-            .toUri()
-            .buildUpon()
-            .scheme("https")
-            .build()
-        this.load(imgUri) {
+        this.load(File(it)) {
             fallback(placeHolder)
         }
     }

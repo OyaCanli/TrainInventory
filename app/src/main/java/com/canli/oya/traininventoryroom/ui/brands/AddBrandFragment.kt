@@ -7,6 +7,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -34,28 +36,50 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
 
     private val binding by viewBinding(FragmentAddBrandBinding::bind)
 
-    private val viewModel : BrandViewModel by viewModels({requireParentFragment()})
+    private val viewModel: BrandViewModel by viewModels({ requireParentFragment() })
 
     private var brandId: Int = 0
     private var logoUri: Uri? = null
     private var isEditCase: Boolean = false
 
-    private var brandList : List<String> = ArrayList()
+    private var brandList: List<String> = ArrayList()
+
+    private val imagePickerLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val resultCode = result.resultCode
+            val data = result.data
+
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    //Image Uri will not be null for RESULT_OK
+                    val uri: Uri = data?.data!!
+                    Timber.d("Path:${uri}")
+                    binding.addBrandImage.bindImage(
+                        uri.toString(),
+                        ResourcesCompat.getDrawable(resources, R.drawable.ic_gallery_light, null)
+                    )
+                    binding.executePendingBindings()
+
+                }
+                ImagePicker.RESULT_ERROR -> context?.shortToast(ImagePicker.getError(data))
+                else -> context?.shortToast(getString(R.string.task_cancelled))
+            }
+        }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         //Set click listeners
-        binding.addBrandSaveBtn.setOnClickListener{ saveBrand() }
-        binding.addBrandImage.setOnClickListener{ launchImagePicker()}
+        binding.addBrandSaveBtn.setOnClickListener { saveBrand() }
+        binding.addBrandImage.setOnClickListener { launchImagePicker() }
 
         //Request focus on the first edit text
         binding.addBrandEditBrandName.requestFocus()
 
         if (arguments?.getBoolean(IS_EDIT) == true) { //This is the "edit" case
             isEditCase = true
-            viewModel.chosenItem.observe(viewLifecycleOwner,  { brandEntry ->
+            viewModel.chosenItem.observe(viewLifecycleOwner, { brandEntry ->
                 brandEntry?.let {
                     binding.chosenBrand = it
                     brandId = it.brandId
@@ -72,20 +96,22 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
 
     private fun launchImagePicker() {
         ImagePicker.with(this)
-                .compress(512)            //Final image size will be less than 1 MB(Optional)
-                .maxResultSize(200, 200)    //Final image resolution will be less than 1080 x 1080(Optional)
-                .start()
+            .compress(512)            //Final image size will be less than 1 MB(Optional)
+            .maxResultSize(200,200)
+            .createIntent { intent ->
+                imagePickerLauncher.launch(intent)
+            }
     }
 
     private fun saveBrand() {
         //Get brand name from edit text and verify it is not empty
         val brandName = binding.addBrandEditBrandName.text?.toString()?.trim()
-        if(brandName.isNullOrBlank()){
+        if (brandName.isNullOrBlank()) {
             context?.shortToast(getString(com.canli.oya.traininventoryroom.R.string.brand_cannot_be_empty))
             return
         }
 
-        if(!isEditCase && brandList.contains(brandName)){
+        if (!isEditCase && brandList.contains(brandName)) {
             context?.shortToast(getString(R.string.brand_already_exists))
             return
         }
@@ -103,7 +129,8 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
             viewModel.updateItem(brandToUpdate)
         } else {
             //Construct a new BrandEntry object from this data (without ID)
-            val newBrand = Brand(brandName = brandName, brandLogoUri = imagePath, webUrl = webAddress)
+            val newBrand =
+                Brand(brandName = brandName, brandLogoUri = imagePath, webUrl = webAddress)
             //Insert to database in a background thread
             viewModel.insertItem(newBrand)
         }
@@ -112,14 +139,15 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
 
         clearFocusAndHideSoftKeyboard()
 
-        if(isEditCase || parentFragment is AddTrainFragment){
+        if (isEditCase || parentFragment is AddTrainFragment) {
             removeFragment()
         }
     }
 
     private fun removeFragment() {
-        val currentInstance = if(parentFragment is AddTrainFragment) parentFragmentManager.findFragmentById(R.id.childFragContainer)
-        else parentFragmentManager.findFragmentById(R.id.list_addFrag_container)
+        val currentInstance =
+            if (parentFragment is AddTrainFragment) parentFragmentManager.findFragmentById(R.id.childFragContainer)
+            else parentFragmentManager.findFragmentById(R.id.list_addFrag_container)
 
         parentFragmentManager.commit {
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
@@ -128,7 +156,7 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
             }
         }
 
-        if(parentFragment is BrandListFragment) {
+        if (parentFragment is BrandListFragment) {
             (parentFragment as BrandListFragment).addMenuItem?.setMenuIcon(R.drawable.avd_plus_to_cross)
         }
     }
@@ -151,7 +179,10 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
 
             Timber.d("Path:${uri}")
 
-            binding.addBrandImage.bindImage(uri.toString(), ResourcesCompat.getDrawable(resources, R.drawable.ic_gallery_light, null))
+            binding.addBrandImage.bindImage(
+                uri.toString(),
+                ResourcesCompat.getDrawable(resources, R.drawable.ic_gallery_light, null)
+            )
         }
     }
 }
