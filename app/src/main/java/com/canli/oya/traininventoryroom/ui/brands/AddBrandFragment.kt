@@ -21,7 +21,7 @@ import com.canli.oya.traininventoryroom.databinding.FragmentAddBrandBinding
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.ui.base.setMenuIcon
 import com.canli.oya.traininventoryroom.utils.IS_EDIT
-import com.canli.oya.traininventoryroom.utils.bindImage
+import com.canli.oya.traininventoryroom.utils.setImageWithGlide
 import com.canli.oya.traininventoryroom.utils.shortToast
 import com.canlioya.core.models.Brand
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -54,9 +54,10 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
                     //Image Uri will not be null for RESULT_OK
                     val uri: Uri = data?.data!!
                     Timber.d("Path:${uri}")
-                    binding.addBrandImage.bindImage(
+                    logoUri = uri
+                    binding.addBrandImage.setImageWithGlide(
                         uri.toString(),
-                        ResourcesCompat.getDrawable(resources, R.drawable.ic_gallery_light, null)
+                        ResourcesCompat.getDrawable(resources, R.drawable.ic_gallery_light, null)!!
                     )
                     binding.executePendingBindings()
 
@@ -165,24 +166,13 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
         //Clear focus and hide soft keyboard
         binding.addBrandEditBrandName.text = null
         binding.addBrandEditWeb.text = null
+        binding.addBrandImage.setImageWithGlide(
+            null,
+            ResourcesCompat.getDrawable(resources, R.drawable.ic_gallery_light, null)!!
+        )
         val focusedView = activity?.currentFocus
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         focusedView?.clearFocus()
         imm.hideSoftInputFromWindow(focusedView?.windowToken, 0)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            // File object will not be null for RESULT_OK
-            val uri: Uri = data?.data!!
-
-            Timber.d("Path:${uri}")
-
-            binding.addBrandImage.bindImage(
-                uri.toString(),
-                ResourcesCompat.getDrawable(resources, R.drawable.ic_gallery_light, null)
-            )
-        }
     }
 }

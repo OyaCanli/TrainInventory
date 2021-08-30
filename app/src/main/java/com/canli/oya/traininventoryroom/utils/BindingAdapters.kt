@@ -10,27 +10,21 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 import com.canli.oya.traininventoryroom.R
-import java.io.File
 
 
 @BindingAdapter("imageUrl", "placeholder")
-fun ImageView.bindImage(url: String?, placeHolder: Drawable?) {
-    url?.let {
-        this.load(File(it)) {
-            fallback(placeHolder)
-        }
-    }
+fun ImageView.setImageWithGlide(url: String?, placeHolder: Drawable) {
+    GlideApp.with(context)
+        .load(url)
+        .placeholder(placeHolder)
+        .into(this)
 }
 
-fun ImageView.bindImage(url: String?) {
-    url?.let {
-        it.toUri()
-            .buildUpon()
-            .scheme("https")
-            .build()
-    }
+fun ImageView.setImageWithGlide(url: String?) {
+    GlideApp.with(context)
+        .load(url)
+        .into(this)
 }
 
 @BindingAdapter("visible")

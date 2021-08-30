@@ -18,6 +18,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
@@ -29,6 +30,7 @@ import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
 import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
 import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
 import com.canli.oya.traininventoryroom.utils.clearFocusAndHideKeyboard
+import com.canli.oya.traininventoryroom.utils.setImageWithGlide
 import com.canli.oya.traininventoryroom.utils.shortToast
 import com.canlioya.core.models.Brand
 import com.canlioya.core.models.Train
@@ -70,6 +72,10 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
                     val uri: Uri = data?.data!!
                     Timber.e("URI:$uri")
                     addViewModel.trainBeingModified.get()?.imageUri = uri.toString()
+                    binding.productDetailsGalleryImage.setImageWithGlide(
+                            uri.toString(),
+                            ResourcesCompat.getDrawable(resources, R.drawable.ic_gallery_light, null)!!
+                        )
                     binding.executePendingBindings()
                 }
                 ImagePicker.RESULT_ERROR -> context?.shortToast(ImagePicker.getError(data))

@@ -7,9 +7,8 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.utils.bindImage
+import com.canli.oya.traininventoryroom.utils.setImageWithGlide
 import com.canlioya.core.models.Brand
 
 class BrandSpinAdapter(private val mContext: Context, var brandList: List<Brand>?) : BaseAdapter() {
@@ -52,7 +51,7 @@ class BrandSpinAdapter(private val mContext: Context, var brandList: List<Brand>
                 logoImage.visibility = View.GONE
             } else {
                 logoImage.visibility = View.VISIBLE
-                logoImage.bindImage(imageUri)
+                logoImage.setImageWithGlide(imageUri)
             }
         }
 
