@@ -2,8 +2,6 @@ package com.canli.oya.traininventoryroom.ui.addtrain
 
 
 import androidx.databinding.ObservableField
-import androidx.hilt.Assisted
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,16 +11,19 @@ import com.canli.oya.traininventoryroom.interactors.TrainInteractors
 import com.canlioya.core.models.Brand
 import com.canlioya.core.models.Category
 import com.canlioya.core.models.Train
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AddTrainViewModel @ViewModelInject constructor(val trainInteractors: TrainInteractors,
-                                                     brandInteractors: BrandCategoryInteractors<Brand>,
-                                                     categoryInteractors: BrandCategoryInteractors<Category>,
-                                                     @Assisted private val savedStateHandle: SavedStateHandle,
-                                                     @IODispatcher private val ioDispatcher: CoroutineDispatcher)
+@HiltViewModel
+class AddTrainViewModel @Inject constructor(val trainInteractors: TrainInteractors,
+                                            brandInteractors: BrandCategoryInteractors<Brand>,
+                                            categoryInteractors: BrandCategoryInteractors<Category>,
+                                            private val savedStateHandle: SavedStateHandle,
+                                            @IODispatcher private val ioDispatcher: CoroutineDispatcher)
     : ViewModel() {
 
     private val chosenTrain: Train? = savedStateHandle.get<Train>("chosenTrain")

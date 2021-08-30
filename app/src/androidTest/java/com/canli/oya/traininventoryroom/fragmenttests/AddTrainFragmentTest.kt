@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.fragment.app.testing.FragmentScenario
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -12,7 +13,6 @@ import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.canli.oya.traininventoryroom.HiltFragmentScenario
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.data.TrainDatabase
 import com.canli.oya.traininventoryroom.datasource.*
@@ -28,10 +28,12 @@ import com.canlioya.core.models.Category
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import dagger.hilt.components.SingletonComponent
+import it.czerwinski.android.hilt.fragment.testing.HiltFragmentScenario
+import it.czerwinski.android.hilt.fragment.testing.launchFragmentInContainer
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -54,7 +56,7 @@ import javax.inject.Singleton
 class AddTrainFragmentTest {
 
     @Module
-    @InstallIn(ApplicationComponent::class)
+    @InstallIn(SingletonComponent::class)
     object FakeDataModule {
 
         @Provides
@@ -109,7 +111,7 @@ class AddTrainFragmentTest {
         //Launch fragment in add mode
         val args = Bundle()
         args.putParcelable(CHOSEN_TRAIN, sampleTrain1)
-        HiltFragmentScenario.launchInContainer(AddTrainFragment::class.java, args)
+        launchFragmentInContainer<AddTrainFragment>(args)
 
         onView(withText(sampleTrain1.brandName)).check(matches(isDisplayed()))
         onView(withText(sampleTrain1.categoryName)).check(matches(isDisplayed()))

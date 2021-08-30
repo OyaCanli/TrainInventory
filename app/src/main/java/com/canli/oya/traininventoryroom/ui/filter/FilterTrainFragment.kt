@@ -18,8 +18,6 @@ import com.canli.oya.traininventoryroom.ui.base.TrainBaseAdapter
 import com.canli.oya.traininventoryroom.ui.common.TrainItemClickListener
 import com.canli.oya.traininventoryroom.utils.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber

@@ -163,6 +163,7 @@
                 android:contentDescription="@string/cd_details_gallery_icon"
                 app:imageUrl="@{viewModel.trainBeingModified.imageUri}"
                 app:placeholder="@{@drawable/ic_gallery_light}"
+                app:srcCompat="@drawable/ic_gallery_light"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editTrainDescription_layout" />

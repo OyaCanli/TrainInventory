@@ -15,6 +15,8 @@
     <color name="ucrop_color_toolbar">@color/colorPrimary</color>
     <color name="ucrop_color_statusbar">@color/colorPrimaryDark</color>
     <color name="ucrop_color_widget_active">@color/colorAccent</color>
+    <color name="dialog_choose_icon_color">@color/colorPrimaryDark</color>
+    <color name="dialog_choose_text_color">@color/colorPrimaryDark</color>
 
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/textColorLight</color>
 

@@ -14,8 +14,11 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
@@ -26,8 +29,8 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.FragmentAddTrainBinding
 import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
 import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
-import com.canli.oya.traininventoryroom.utils.bindImage
 import com.canli.oya.traininventoryroom.utils.clearFocusAndHideKeyboard
+import com.canli.oya.traininventoryroom.utils.setImageWithGlide
 import com.canli.oya.traininventoryroom.utils.shortToast
 import com.canlioya.core.models.Brand
 import com.canlioya.core.models.Train
@@ -57,6 +60,28 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
     private lateinit var brandAdapter: BrandSpinAdapter
 
     private var saveMenuItem: MenuItem? = null
+
+    private val imagePickerLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val resultCode = result.resultCode
+            val data = result.data
+
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    //Image Uri will not be null for RESULT_OK
+                    val uri: Uri = data?.data!!
+                    Timber.e("URI:$uri")
+                    addViewModel.trainBeingModified.get()?.imageUri = uri.toString()
+                    binding.productDetailsGalleryImage.setImageWithGlide(
+                            uri.toString(),
+                            ResourcesCompat.getDrawable(resources, R.drawable.ic_gallery_light, null)!!
+                        )
+                    binding.executePendingBindings()
+                }
+                ImagePicker.RESULT_ERROR -> context?.shortToast(ImagePicker.getError(data))
+                else -> context?.shortToast(getString(R.string.task_cancelled))
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,7 +139,6 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
                     val index = categoryList.indexOf(chosenTrain?.categoryName)
                     binding.categorySpinner.setSelection(index)
                 }
-
             }
         }
     }
@@ -146,8 +170,10 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
                     .maxResultSize(
                         500,
                         500
-                    )    //Final image resolution will be less than 1080 x 1080(Optional)
-                    .start()
+                    )
+                    .createIntent { intent ->
+                        imagePickerLauncher.launch(intent)
+                    }
             }
         }
     }
@@ -262,21 +288,6 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
             }
         }
         return false
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            // File object will not be null for RESULT_OK
-            val file = ImagePicker.getFile(data)
-
-            Timber.d("Path:${file?.absolutePath}")
-
-            val uri = Uri.fromFile(file).toString()
-            binding.productDetailsGalleryImage.bindImage(uri)
-
-            addViewModel.trainBeingModified.get()?.imageUri = uri
-        }
     }
 
     private fun showUnsavedChangesDialog() {
