@@ -1,10 +1,10 @@
 package com.canli.oya.traininventoryroom.ui.trains
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.canli.oya.traininventoryroom.datasource.FakeTrainDataSource
-import com.canli.oya.traininventoryroom.datasource.provideTrainInteractor
-import com.canli.oya.traininventoryroom.datasource.sampleTrain1
-import com.canli.oya.traininventoryroom.datasource.sampleTrainList
+import com.canlioya.testresources.datasource.FakeTrainDataSource
+import com.canli.oya.traininventoryroom.provideTrainInteractor
+import com.canlioya.testresources.datasource.sampleTrain1
+import com.canlioya.testresources.datasource.sampleTrainList
 import com.canli.oya.traininventoryroom.utils.getOrAwaitValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

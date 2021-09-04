@@ -1,11 +1,10 @@
-package com.canli.oya.traininventoryroom.daotests
+package com.canlioya.local.daotests
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.canlioya.local.TrainDatabase
 import com.canlioya.local.entities.CategoryEntity
 import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
@@ -44,14 +43,14 @@ class CategoryDaoTest {
     @Test
     fun insertCategory_verifyCategoryIsInserted() = runBlockingTest {
         //Insert a category
-        val insertedCategory = com.canlioya.local.entities.CategoryEntity(5, "Wagon")
+        val insertedCategory = CategoryEntity(5, "Wagon")
         database.categoryDao().insert(insertedCategory)
 
         //Get back the category
         val loadedCategory = database.categoryDao().getChosenCategory(insertedCategory.categoryId)
 
         //Verify it has expected values
-        assertThat(loadedCategory as? com.canlioya.local.entities.CategoryEntity, notNullValue())
+        assertThat(loadedCategory as? CategoryEntity, notNullValue())
         assertThat(loadedCategory.categoryId, `is`(insertedCategory.categoryId))
         assertThat(loadedCategory.categoryName, `is`(insertedCategory.categoryName))
     }
@@ -59,7 +58,7 @@ class CategoryDaoTest {
     @Test
     fun updateCategory_verifyUpdated() = runBlockingTest {
         //Insert a category
-        val insertedCategory = com.canlioya.local.entities.CategoryEntity(5, "Wagon")
+        val insertedCategory = CategoryEntity(5, "Wagon")
         database.categoryDao().insert(insertedCategory)
 
         //Update the brand
@@ -70,7 +69,7 @@ class CategoryDaoTest {
         val loadedCategory = database.categoryDao().getChosenCategory(insertedCategory.categoryId)
 
         //Verify it has expected values
-        assertThat(loadedCategory as? com.canlioya.local.entities.CategoryEntity, notNullValue())
+        assertThat(loadedCategory as? CategoryEntity, notNullValue())
         assertThat(loadedCategory.categoryId, `is`(insertedCategory.categoryId))
         assertThat(loadedCategory.categoryName, `is`(insertedCategory.categoryName))
     }
@@ -78,8 +77,8 @@ class CategoryDaoTest {
     @Test
     fun deleteCategory_verifyDeleted() = runBlockingTest {
         //Insert two categories
-        val firstCategory = com.canlioya.local.entities.CategoryEntity(5, "Wagon")
-        val secondCategory = com.canlioya.local.entities.CategoryEntity(6, "Locomotif")
+        val firstCategory = CategoryEntity(5, "Wagon")
+        val secondCategory = CategoryEntity(6, "Locomotif")
         database.categoryDao().insert(firstCategory)
         database.categoryDao().insert(secondCategory)
 

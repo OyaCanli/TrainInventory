@@ -15,7 +15,7 @@ class CleanTrashWork(appContext: Context, params: WorkerParameters) : CoroutineW
         val dateLimit = today.minus(30)
 
         return try {
-            com.canlioya.local.TrainDatabase.getInstance(applicationContext).trainDao().cleanOldItemsInTrash(dateLimit)
+            TrainDatabase.getInstance(applicationContext).trainDao().cleanOldItemsInTrash(dateLimit)
             Result.success()
         } catch (e: SQLException) {
             Result.failure()

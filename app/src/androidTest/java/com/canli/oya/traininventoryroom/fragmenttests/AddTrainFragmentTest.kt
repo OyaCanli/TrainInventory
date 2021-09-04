@@ -13,8 +13,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
-import com.canlioya.local.TrainDatabase
-import com.canli.oya.traininventoryroom.datasource.*
+import com.canlioya.testresources.datasource.*
 import com.canli.oya.traininventoryroom.di.DataSourceModule
 import com.canli.oya.traininventoryroom.di.IODispatcher
 import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
@@ -24,6 +23,7 @@ import com.canlioya.core.data.IBrandCategoryDataSource
 import com.canlioya.core.data.ITrainDataSource
 import com.canlioya.core.models.Brand
 import com.canlioya.core.models.Category
+import com.canlioya.local.TrainDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -72,7 +72,7 @@ class AddTrainFragmentTest {
 
         @Provides
         @Singleton
-        fun provideDatabase() : com.canlioya.local.TrainDatabase = Mockito.mock(com.canlioya.local.TrainDatabase::class.java)
+        fun provideDatabase() : TrainDatabase = Mockito.mock(TrainDatabase::class.java)
 
         @IODispatcher
         @Provides

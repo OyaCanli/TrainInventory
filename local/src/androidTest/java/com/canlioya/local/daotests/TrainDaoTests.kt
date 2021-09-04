@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.daotests
+package com.canlioya.local.daotests
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
@@ -11,6 +11,7 @@ import com.canlioya.local.entities.BrandEntity
 import com.canlioya.local.entities.CategoryEntity
 import com.canlioya.local.entities.TrainEntity
 import com.canlioya.local.entities.toTrain
+import com.canlioya.testresources.datasource.convertToMinimal
 import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -31,17 +32,17 @@ class TrainDaoTests {
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var database: com.canlioya.local.TrainDatabase
+    private lateinit var database: TrainDatabase
 
-    private val firstCategory = com.canlioya.local.entities.CategoryEntity(5, "Wagon")
-    private val secondCategory = com.canlioya.local.entities.CategoryEntity(6, "Locomotif")
-    private val firstBrand = com.canlioya.local.entities.BrandEntity(
+    private val firstCategory = CategoryEntity(5, "Wagon")
+    private val secondCategory = CategoryEntity(6, "Locomotif")
+    private val firstBrand = BrandEntity(
         brandId = 5,
         brandName = "Marklin",
         brandLogoUri = "first brand logo uri",
         webUrl = "https://www.google.com/"
     )
-    private val secondBrand = com.canlioya.local.entities.BrandEntity(
+    private val secondBrand = BrandEntity(
         brandId = 6,
         brandName = "MDN",
         brandLogoUri = "second brand logo uri",
@@ -54,7 +55,7 @@ class TrainDaoTests {
         // process is killed.
         database = Room.inMemoryDatabaseBuilder(
                 ApplicationProvider.getApplicationContext(),
-                com.canlioya.local.TrainDatabase::class.java
+               TrainDatabase::class.java
         ).build()
 
         //Insert a few brands and categories
@@ -101,7 +102,7 @@ class TrainDaoTests {
     @Test
     fun updateTrain_verifyUpdated() = runBlockingTest {
         //Insert a train
-        val trainToInsert = com.canlioya.local.entities.TrainEntity(
+        val trainToInsert = TrainEntity(
             trainId = 2,
             trainName = "Red train",
             brandName = firstBrand.brandName,
@@ -136,7 +137,7 @@ class TrainDaoTests {
     @Test
     fun deleteTrain_verifyDeleted() = runBlockingTest {
         //Insert two trains
-        val firstTrain = com.canlioya.local.entities.TrainEntity(
+        val firstTrain = TrainEntity(
             trainId = 2,
             trainName = "Red train",
             brandName = firstBrand.brandName,
@@ -145,7 +146,7 @@ class TrainDaoTests {
             imageUri = "image url",
             scale = "1.3"
         )
-        val secondTrain = com.canlioya.local.entities.TrainEntity(
+        val secondTrain = TrainEntity(
             trainId = 3,
             trainName = "Blue train",
             brandName = secondBrand.brandName,
@@ -172,7 +173,7 @@ class TrainDaoTests {
     @Test
     fun recycleTrain_verifySendToTrash() = runBlockingTest {
         //Insert two trains
-        val firstTrain = com.canlioya.local.entities.TrainEntity(
+        val firstTrain = TrainEntity(
             trainId = 2,
             trainName = "Red train",
             brandName = firstBrand.brandName,
@@ -181,7 +182,7 @@ class TrainDaoTests {
             imageUri = "image url",
             scale = "1.3"
         )
-        val secondTrain = com.canlioya.local.entities.TrainEntity(
+        val secondTrain = TrainEntity(
             trainId = 3,
             trainName = "Blue train",
             brandName = secondBrand.brandName,
@@ -210,7 +211,7 @@ class TrainDaoTests {
     @Test
     fun isThisBrandUsed_forABrandUsed_returnsTrue() = runBlockingTest {
         //Insert a train
-        val trainToInsert = com.canlioya.local.entities.TrainEntity(
+        val trainToInsert = TrainEntity(
             trainId = 2,
             trainName = "Red train",
             brandName = firstBrand.brandName,
@@ -227,7 +228,7 @@ class TrainDaoTests {
     @Test
     fun isThisBrandUsed_forABrandNotUsed_returnsFalse() = runBlockingTest {
         //Insert a train
-        val trainToInsert = com.canlioya.local.entities.TrainEntity(
+        val trainToInsert = TrainEntity(
             trainId = 2,
             trainName = "Red train",
             brandName = firstBrand.brandName,
@@ -244,7 +245,7 @@ class TrainDaoTests {
     @Test
     fun isThisCategoryUsed_forACategoryUsed_returnsTrue() = runBlockingTest {
         //Insert a train
-        val trainToInsert = com.canlioya.local.entities.TrainEntity(
+        val trainToInsert = TrainEntity(
             trainId = 2,
             trainName = "Red train",
             brandName = firstBrand.brandName,
@@ -261,7 +262,7 @@ class TrainDaoTests {
     @Test
     fun isThisCategoryUsed_forACategoryNotUsed_returnsFalse() = runBlockingTest {
         //Insert a train
-        val trainToInsert = com.canlioya.local.entities.TrainEntity(
+        val trainToInsert = TrainEntity(
             trainId = 2,
             trainName = "Red train",
             brandName = firstBrand.brandName,
@@ -279,7 +280,7 @@ class TrainDaoTests {
     @Test
     fun getTrainsFromThisBrand_returnsCorrectTrains() = runBlockingTest {
         //Insert three trains
-        val firstTrain = com.canlioya.local.entities.TrainEntity(
+        val firstTrain = TrainEntity(
             trainId = 2,
             trainName = "Red train",
             brandName = firstBrand.brandName,
@@ -288,7 +289,7 @@ class TrainDaoTests {
             imageUri = "image url",
             scale = "1.3"
         )
-        val secondTrain = com.canlioya.local.entities.TrainEntity(
+        val secondTrain = TrainEntity(
             trainId = 3,
             trainName = "Blue train",
             brandName = secondBrand.brandName,
@@ -297,7 +298,7 @@ class TrainDaoTests {
             imageUri = "second image url",
             scale = "3.5"
         )
-        val thirdTrain = com.canlioya.local.entities.TrainEntity(
+        val thirdTrain = TrainEntity(
             trainId = 4,
             trainName = "Orange train",
             brandName = secondBrand.brandName,
@@ -320,7 +321,7 @@ class TrainDaoTests {
     @Test
     fun getTrainsFromThisCategory_returnsCorrectTrains() = runBlockingTest {
         //Insert three trains
-        val firstTrain = com.canlioya.local.entities.TrainEntity(
+        val firstTrain = TrainEntity(
             trainId = 2,
             trainName = "Red train",
             brandName = firstBrand.brandName,
@@ -329,7 +330,7 @@ class TrainDaoTests {
             imageUri = "image url",
             scale = "1.3"
         )
-        val secondTrain = com.canlioya.local.entities.TrainEntity(
+        val secondTrain = TrainEntity(
             trainId = 3,
             trainName = "Blue train",
             brandName = secondBrand.brandName,
@@ -338,7 +339,7 @@ class TrainDaoTests {
             imageUri = "second image url",
             scale = "3.5"
         )
-        val thirdTrain = com.canlioya.local.entities.TrainEntity(
+        val thirdTrain = TrainEntity(
             trainId = 4,
             trainName = "Orange train",
             brandName = secondBrand.brandName,
@@ -362,7 +363,7 @@ class TrainDaoTests {
     @Test
     fun searchInTrains_returnsCorrectResults() = runBlockingTest {
         //Insert three trains
-        val firstTrain = com.canlioya.local.entities.TrainEntity(
+        val firstTrain = TrainEntity(
             trainId = 2,
             trainName = "Red train",
             brandName = firstBrand.brandName,
@@ -372,7 +373,7 @@ class TrainDaoTests {
             imageUri = "image url",
             scale = "1.3"
         )
-        val secondTrain = com.canlioya.local.entities.TrainEntity(
+        val secondTrain = TrainEntity(
             trainId = 3,
             trainName = "Blue train",
             brandName = secondBrand.brandName,
@@ -382,7 +383,7 @@ class TrainDaoTests {
             imageUri = "second image url",
             scale = "3.5"
         )
-        val thirdTrain = com.canlioya.local.entities.TrainEntity(
+        val thirdTrain = TrainEntity(
             trainId = 4,
             trainName = "Orange train",
             brandName = secondBrand.brandName,

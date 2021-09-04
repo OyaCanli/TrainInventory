@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.datasource
+package com.canli.oya.traininventoryroom
 
 import com.canli.oya.traininventoryroom.interactors.BrandCategoryInteractors
 import com.canli.oya.traininventoryroom.interactors.TrainInteractors

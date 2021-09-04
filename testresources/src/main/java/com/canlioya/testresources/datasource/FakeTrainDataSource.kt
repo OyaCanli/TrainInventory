@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.datasource
+package com.canlioya.testresources.datasource
 
 import androidx.paging.PagingData
 import com.canlioya.core.data.ITrainDataSource
@@ -7,6 +7,8 @@ import com.canlioya.core.models.TrainMinimal
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.time.LocalDate
+import java.util.*
+import kotlin.collections.ArrayList
 
 class FakeTrainDataSource(var trains: MutableList<Train> = sampleTrainList) :
     ITrainDataSource {
@@ -41,7 +43,7 @@ class FakeTrainDataSource(var trains: MutableList<Train> = sampleTrainList) :
 
     override suspend fun sendTrainToTrash(trainId: Int, dateOfDeletion: Long) {
         val index = trains.indexOfFirst { it.trainId == trainId }
-        trains[index].dateOfDeletion = LocalDate.now().toEpochDay()
+        trains[index].dateOfDeletion = Date().time
     }
 
     override suspend fun deleteTrainPermanently(trainId: Int) {

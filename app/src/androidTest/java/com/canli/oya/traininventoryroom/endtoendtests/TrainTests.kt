@@ -15,13 +15,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.canli.oya.traininventoryroom.R
-import com.canlioya.local.TrainDatabase
 import com.canlioya.local.entities.toBrandEntity
 import com.canlioya.local.entities.toCategoryEntity
 import com.canlioya.local.entities.toTrainEntity
-import com.canli.oya.traininventoryroom.datasource.sampleBrand1
-import com.canli.oya.traininventoryroom.datasource.sampleCategory1
-import com.canli.oya.traininventoryroom.datasource.sampleTrain1
+import com.canlioya.testresources.datasource.sampleBrand1
+import com.canlioya.testresources.datasource.sampleCategory1
+import com.canlioya.testresources.datasource.sampleTrain1
 import com.canli.oya.traininventoryroom.di.AppModule
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
 import com.canli.oya.traininventoryroom.utils.clickOnChildWithId

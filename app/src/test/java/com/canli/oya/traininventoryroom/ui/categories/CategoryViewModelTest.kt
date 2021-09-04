@@ -1,7 +1,8 @@
 package com.canli.oya.traininventoryroom.ui.categories
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.canli.oya.traininventoryroom.datasource.*
+import com.canli.oya.traininventoryroom.provideCategoryInteractor
+import com.canlioya.testresources.datasource.*
 import com.canli.oya.traininventoryroom.utils.getOrAwaitValue
 import com.canlioya.core.models.Category
 import junit.framework.Assert.assertFalse

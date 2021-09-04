@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.datasource
+package com.canlioya.testresources.datasource
 
 import com.canlioya.core.models.Brand
 import com.canlioya.core.models.Category
