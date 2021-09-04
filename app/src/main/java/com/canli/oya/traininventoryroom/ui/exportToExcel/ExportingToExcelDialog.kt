@@ -19,14 +19,12 @@ import androidx.navigation.findNavController
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ExportToExcelBinding
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
-import com.canli.oya.traininventoryroom.utils.EXCEL_FILE_URI
 import com.canli.oya.traininventoryroom.utils.shortToast
+import com.canlioya.databasetoexcel.DbToExcel
 import timber.log.Timber
-
 
 // Request code for creating an excel document.
 const val CREATE_FILE_REQUEST = 492
-
 
 class ExportingToExcelDialog : DialogFragment() {
 
@@ -66,11 +64,12 @@ class ExportingToExcelDialog : DialogFragment() {
     }
 
     private fun exportToExcelFile(uri : Uri) {
-        val dbToExcel = DbToExcel(requireContext(), "train_inventory", uri)
+        val dbToExcel =
+            DbToExcel(requireContext(), "train_inventory", uri)
         val listOfTables = listOf("brands", "categories", "trains")
         dbToExcel.exportSpecificTables(
             listOfTables,
-            object : DbToExcel.ExportListener {
+            object : com.canlioya.databasetoexcel.DbToExcel.ExportListener {
                 override fun onStart() {}
 
                 override fun onCompleted() {

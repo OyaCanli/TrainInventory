@@ -80,6 +80,7 @@ gradle.projectsEvaluated {
 dependencies {
     implementation project(':core')
     implementation project(':local')
+    implementation project(':databasetoexcel')
     testImplementation project(':testresources')
     androidTestImplementation project(':testresources')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -147,9 +148,6 @@ dependencies {
 
     //Fresco
     implementation 'com.facebook.fresco:fresco:2.0.0'
-
-    //For exporting database to excel
-    implementation 'org.apache.poi:poi:3.16'
 
     //Lottie Animations
     implementation "com.airbnb.android:lottie:$lottieVersion"

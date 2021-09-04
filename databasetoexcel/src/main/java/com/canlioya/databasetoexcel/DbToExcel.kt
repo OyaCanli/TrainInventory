@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.ui.exportToExcel
+package com.canlioya.databasetoexcel
 
 import android.content.Context
 import android.database.Cursor
