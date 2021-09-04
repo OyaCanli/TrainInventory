@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.data.dao
+package com.canlioya.local.dao
 
 import androidx.room.Delete
 import androidx.room.Insert

@@ -13,11 +13,11 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.data.entities.BrandEntity
-import com.canli.oya.traininventoryroom.data.entities.toBrandEntity
-import com.canli.oya.traininventoryroom.data.entities.toCategoryEntity
-import com.canli.oya.traininventoryroom.data.entities.toTrainEntity
+import com.canlioya.local.TrainDatabase
+import com.canlioya.local.entities.BrandEntity
+import com.canlioya.local.entities.toBrandEntity
+import com.canlioya.local.entities.toCategoryEntity
+import com.canlioya.local.entities.toTrainEntity
 import com.canli.oya.traininventoryroom.datasource.sampleBrand1
 import com.canli.oya.traininventoryroom.datasource.sampleCategory1
 import com.canli.oya.traininventoryroom.datasource.sampleTrain1
@@ -55,9 +55,9 @@ class BrandTests {
 
         @Singleton
         @Provides
-        fun provideDatabase() : TrainDatabase = Room.inMemoryDatabaseBuilder(
+        fun provideDatabase() : com.canlioya.local.TrainDatabase = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
-            TrainDatabase::class.java
+            com.canlioya.local.TrainDatabase::class.java
         ).build()
     }
 
@@ -70,7 +70,7 @@ class BrandTests {
     }
 
     @Inject
-    lateinit var database: TrainDatabase
+    lateinit var database: com.canlioya.local.TrainDatabase
 
     val sampleBrandName = "New brand"
     val sampleWebAddress = "https://www.google.com/"
@@ -112,7 +112,10 @@ class BrandTests {
     @Test
     fun editAndUpdateBrand_brandIsUpdatedOnTheList() = runBlocking {
         //Insert a sample category to the database
-        val sampleBrand = BrandEntity(brandName = sampleBrandName, webUrl = sampleWebAddress)
+        val sampleBrand = com.canlioya.local.entities.BrandEntity(
+            brandName = sampleBrandName,
+            webUrl = sampleWebAddress
+        )
         database.brandDao().insert(sampleBrand)
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)

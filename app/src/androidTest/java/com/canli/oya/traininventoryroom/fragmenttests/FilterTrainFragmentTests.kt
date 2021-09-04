@@ -11,7 +11,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.TrainDatabase
+import com.canlioya.local.TrainDatabase
 import com.canli.oya.traininventoryroom.datasource.*
 import com.canli.oya.traininventoryroom.di.DataSourceModule
 import com.canli.oya.traininventoryroom.di.IODispatcher
@@ -62,7 +62,7 @@ class FilterTrainFragmentTests {
         fun provideBrandDataSource() : IBrandCategoryDataSource<Brand> = FakeBrandDataSource()
 
         @Provides
-        fun provideDatabase() : TrainDatabase = Mockito.mock(TrainDatabase::class.java)
+        fun provideDatabase() : com.canlioya.local.TrainDatabase = Mockito.mock(com.canlioya.local.TrainDatabase::class.java)
 
         @IODispatcher
         @Provides

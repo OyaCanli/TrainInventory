@@ -4,7 +4,7 @@ import android.content.Context
 import android.database.SQLException
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.canli.oya.traininventoryroom.data.TrainDatabase
+import com.canlioya.local.TrainDatabase
 import java.time.LocalDate
 
 
@@ -15,7 +15,7 @@ class CleanTrashWork(appContext: Context, params: WorkerParameters) : CoroutineW
         val dateLimit = today.minus(30)
 
         return try {
-            TrainDatabase.getInstance(applicationContext).trainDao().cleanOldItemsInTrash(dateLimit)
+            com.canlioya.local.TrainDatabase.getInstance(applicationContext).trainDao().cleanOldItemsInTrash(dateLimit)
             Result.success()
         } catch (e: SQLException) {
             Result.failure()

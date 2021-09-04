@@ -1,14 +1,13 @@
-package com.canli.oya.traininventoryroom.data.source
+package com.canlioya.local.source
 
 
-import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.data.entities.toCategoryEntity
-import com.canli.oya.traininventoryroom.data.entities.toCategoryList
+import com.canlioya.local.TrainDatabase
 import com.canlioya.core.data.IBrandCategoryDataSource
 import com.canlioya.core.models.Category
+import com.canlioya.local.entities.toCategoryEntity
+import com.canlioya.local.entities.toCategoryList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 
 class CategoryDataSource(private val database: TrainDatabase) :

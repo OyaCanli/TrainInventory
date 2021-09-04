@@ -11,7 +11,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.TrainDatabase
+import com.canlioya.local.TrainDatabase
 import com.canli.oya.traininventoryroom.di.AppModule
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
 import com.canli.oya.traininventoryroom.utils.hasSelectedItem
@@ -42,9 +42,9 @@ class NavigationTests {
 
         @Singleton
         @Provides
-        fun provideDatabase() : TrainDatabase = Room.inMemoryDatabaseBuilder(
+        fun provideDatabase() : com.canlioya.local.TrainDatabase = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
-            TrainDatabase::class.java
+            com.canlioya.local.TrainDatabase::class.java
         ).build()
     }
 

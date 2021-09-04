@@ -15,10 +15,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.data.entities.toBrandEntity
-import com.canli.oya.traininventoryroom.data.entities.toCategoryEntity
-import com.canli.oya.traininventoryroom.data.entities.toTrainEntity
+import com.canlioya.local.TrainDatabase
+import com.canlioya.local.entities.toBrandEntity
+import com.canlioya.local.entities.toCategoryEntity
+import com.canlioya.local.entities.toTrainEntity
 import com.canli.oya.traininventoryroom.datasource.sampleBrand1
 import com.canli.oya.traininventoryroom.datasource.sampleCategory1
 import com.canli.oya.traininventoryroom.datasource.sampleTrain1
@@ -62,9 +62,9 @@ class TrainTests {
 
         @Singleton
         @Provides
-        fun provideDatabase() : TrainDatabase = Room.inMemoryDatabaseBuilder(
+        fun provideDatabase() : com.canlioya.local.TrainDatabase = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
-            TrainDatabase::class.java
+            com.canlioya.local.TrainDatabase::class.java
         ).build()
     }
 
@@ -77,7 +77,7 @@ class TrainTests {
     }
 
     @Inject
-    lateinit var database: TrainDatabase
+    lateinit var database: com.canlioya.local.TrainDatabase
 
     @After
     fun closeDb() = database.close()

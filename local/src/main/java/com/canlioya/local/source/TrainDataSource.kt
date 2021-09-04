@@ -1,19 +1,18 @@
-package com.canli.oya.traininventoryroom.data.source
+package com.canlioya.local.source
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.sqlite.db.SimpleSQLiteQuery
-import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.data.entities.toTrain
-import com.canli.oya.traininventoryroom.data.entities.toTrainEntity
+import com.canlioya.local.TrainDatabase
 import com.canlioya.core.data.ITrainDataSource
 import com.canlioya.core.models.Train
 import com.canlioya.core.models.TrainMinimal
+import com.canlioya.local.entities.toTrain
+import com.canlioya.local.entities.toTrainEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
-import javax.inject.Inject
 
 const val TRAINS_PAGE_SIZE = 15
 

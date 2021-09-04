@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.testing.FragmentScenario
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -14,7 +13,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.TrainDatabase
+import com.canlioya.local.TrainDatabase
 import com.canli.oya.traininventoryroom.datasource.*
 import com.canli.oya.traininventoryroom.di.DataSourceModule
 import com.canli.oya.traininventoryroom.di.IODispatcher
@@ -73,7 +72,7 @@ class AddTrainFragmentTest {
 
         @Provides
         @Singleton
-        fun provideDatabase() : TrainDatabase = Mockito.mock(TrainDatabase::class.java)
+        fun provideDatabase() : com.canlioya.local.TrainDatabase = Mockito.mock(com.canlioya.local.TrainDatabase::class.java)
 
         @IODispatcher
         @Provides

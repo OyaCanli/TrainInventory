@@ -1,16 +1,16 @@
-package com.canli.oya.traininventoryroom.data.dao
+package com.canlioya.local.dao
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import com.canli.oya.traininventoryroom.data.entities.TrainEntity
+import com.canlioya.local.entities.TrainEntity
 import com.canlioya.core.models.TrainMinimal
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface TrainDao : BaseDao<TrainEntity>{
+interface TrainDao : BaseDao<TrainEntity> {
 
     @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE dateOfDeletion IS NULL ORDER BY trainName")
     fun observeAllTrains(): PagingSource<Int, TrainMinimal>

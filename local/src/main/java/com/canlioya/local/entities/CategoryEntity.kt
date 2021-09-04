@@ -1,4 +1,4 @@
-package com.canli.oya.traininventoryroom.data.entities
+package com.canlioya.local.entities
 
 import androidx.room.Entity
 import androidx.room.Index

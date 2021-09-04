@@ -4,10 +4,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.data.entities.toBrandEntity
-import com.canli.oya.traininventoryroom.data.entities.toCategoryEntity
-import com.canli.oya.traininventoryroom.data.entities.toTrainEntity
+import com.canlioya.local.TrainDatabase
+import com.canlioya.local.entities.toBrandEntity
+import com.canlioya.local.entities.toCategoryEntity
+import com.canlioya.local.entities.toTrainEntity
 import com.canli.oya.traininventoryroom.datasource.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -24,7 +24,7 @@ class TrainDataSourceTest {
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var database: TrainDatabase
+    private lateinit var database: com.canlioya.local.TrainDatabase
 
     @Before
     fun initDb() {
@@ -32,7 +32,7 @@ class TrainDataSourceTest {
         // process is killed.
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
-            TrainDatabase::class.java
+            com.canlioya.local.TrainDatabase::class.java
         ).build()
     }
 
@@ -45,7 +45,7 @@ class TrainDataSourceTest {
     fun searchByBrand_whenThereIs_givesCorrectResult() = runBlockingTest {
         addSampleDataToDB()
 
-        val trainDataSource = TrainDataSource(database)
+        val trainDataSource = com.canlioya.local.source.TrainDataSource(database)
         val resultList = trainDataSource.searchInTrains(null, null, sampleBrand1.brandName)
         assert(resultList.size == 1)
         assert(resultList[0].trainName == sampleTrain1.trainName)
@@ -55,7 +55,7 @@ class TrainDataSourceTest {
     fun searchByBrand_whenThereIsNot_givesNoResult() = runBlockingTest {
         addSampleDataToDB()
 
-        val trainDataSource = TrainDataSource(database)
+        val trainDataSource = com.canlioya.local.source.TrainDataSource(database)
         val resultList = trainDataSource.searchInTrains(null, null, sampleBrand3.brandName)
         assert(resultList.isEmpty())
     }
@@ -64,7 +64,7 @@ class TrainDataSourceTest {
     fun searchByCategory_whenThereIs_givesCorrectResult() = runBlockingTest {
         addSampleDataToDB()
 
-        val trainDataSource = TrainDataSource(database)
+        val trainDataSource = com.canlioya.local.source.TrainDataSource(database)
         val resultList = trainDataSource.searchInTrains(null, sampleCategory2.categoryName, null)
         assert(resultList.size == 1)
         assert(resultList[0].trainName == sampleTrain2.trainName)
@@ -74,7 +74,7 @@ class TrainDataSourceTest {
     fun searchByCategory_whenThereIsNot_givesNoResult() = runBlockingTest {
         addSampleDataToDB()
 
-        val trainDataSource = TrainDataSource(database)
+        val trainDataSource = com.canlioya.local.source.TrainDataSource(database)
         val resultList = trainDataSource.searchInTrains(null, sampleCategory3.categoryName, null)
         assert(resultList.isEmpty())
     }
@@ -83,7 +83,7 @@ class TrainDataSourceTest {
     fun searchBySingleKeyword_whenThereIs_givesCorrectResult() = runBlockingTest {
         addSampleDataToDB()
 
-        val trainDataSource = TrainDataSource(database)
+        val trainDataSource = com.canlioya.local.source.TrainDataSource(database)
         val resultList = trainDataSource.searchInTrains("blue", null, null)
         assert(resultList.size == 1)
         assert(resultList[0].trainName == sampleTrain2.trainName)
@@ -93,7 +93,7 @@ class TrainDataSourceTest {
     fun searchByMultipleKeywords_whenThereIs_givesCorrectResult() = runBlockingTest {
         addSampleDataToDB()
 
-        val trainDataSource = TrainDataSource(database)
+        val trainDataSource = com.canlioya.local.source.TrainDataSource(database)
         val resultList = trainDataSource.searchInTrains("red mn", null, null)
         assert(resultList.size == 1)
         assert(resultList[0].trainName == sampleTrain1.trainName)
@@ -103,7 +103,7 @@ class TrainDataSourceTest {
     fun searchByMultipleKeywords_whenOnlyOneExists_givesNoResult() = runBlockingTest {
         addSampleDataToDB()
 
-        val trainDataSource = TrainDataSource(database)
+        val trainDataSource = com.canlioya.local.source.TrainDataSource(database)
         val resultList = trainDataSource.searchInTrains("red other", null, null)
         assert(resultList.isEmpty())
     }
@@ -112,7 +112,7 @@ class TrainDataSourceTest {
     fun searchByMultipleKeywords_existOnDifferentItems_givesNoResult() = runBlockingTest {
         addSampleDataToDB()
 
-        val trainDataSource = TrainDataSource(database)
+        val trainDataSource = com.canlioya.local.source.TrainDataSource(database)
         val resultList = trainDataSource.searchInTrains("red blue", null, null)
         assert(resultList.isEmpty())
     }
@@ -121,7 +121,7 @@ class TrainDataSourceTest {
     fun searchByBrandAndCategory_whenThereIs_givesCorrectResult() = runBlockingTest {
         addSampleDataToDB()
 
-        val trainDataSource = TrainDataSource(database)
+        val trainDataSource = com.canlioya.local.source.TrainDataSource(database)
         val resultList = trainDataSource.searchInTrains(null, sampleCategory1.categoryName, sampleBrand1.brandName)
         assert(resultList.size == 1)
         assert(resultList[0].trainName == sampleTrain1.trainName)
@@ -131,7 +131,7 @@ class TrainDataSourceTest {
     fun searchByBrandAndCategory_whenThereIsNot_givesNoResult() = runBlockingTest {
         addSampleDataToDB()
 
-        val trainDataSource = TrainDataSource(database)
+        val trainDataSource = com.canlioya.local.source.TrainDataSource(database)
         val resultList = trainDataSource.searchInTrains(null, sampleCategory1.categoryName, sampleBrand2.brandName)
         assert(resultList.isEmpty())
     }
@@ -140,7 +140,7 @@ class TrainDataSourceTest {
     fun searchByBrandAndKeyword_whenThereIs_givesCorrectResult() = runBlockingTest {
         addSampleDataToDB()
 
-        val trainDataSource = TrainDataSource(database)
+        val trainDataSource = com.canlioya.local.source.TrainDataSource(database)
         val resultList = trainDataSource.searchInTrains("mn", null, sampleBrand1.brandName)
         assert(resultList.size == 1)
         assert(resultList[0].trainName == sampleTrain1.trainName)
@@ -150,7 +150,7 @@ class TrainDataSourceTest {
     fun searchByBrandAndKeyword_whenThereIsNot_givesNoResult() = runBlockingTest {
         addSampleDataToDB()
 
-        val trainDataSource = TrainDataSource(database)
+        val trainDataSource = com.canlioya.local.source.TrainDataSource(database)
         val resultList = trainDataSource.searchInTrains("blue", null, sampleBrand1.brandName)
         assert(resultList.isEmpty())
     }
@@ -159,7 +159,7 @@ class TrainDataSourceTest {
     fun searchByCategoryAndKeyword_whenThereIs_givesCorrectResult() = runBlockingTest {
         addSampleDataToDB()
 
-        val trainDataSource = TrainDataSource(database)
+        val trainDataSource = com.canlioya.local.source.TrainDataSource(database)
         val resultList = trainDataSource.searchInTrains("blue", sampleCategory2.categoryName, null)
         assert(resultList.size == 1)
         assert(resultList[0].trainName == sampleTrain2.trainName)
@@ -169,7 +169,7 @@ class TrainDataSourceTest {
     fun searchByCategoryAndKeyword_whenThereIsNot_givesNoResult() = runBlockingTest {
         addSampleDataToDB()
 
-        val trainDataSource = TrainDataSource(database)
+        val trainDataSource = com.canlioya.local.source.TrainDataSource(database)
         val resultList = trainDataSource.searchInTrains("blue", sampleCategory1.categoryName, null)
         assert(resultList.isEmpty())
     }

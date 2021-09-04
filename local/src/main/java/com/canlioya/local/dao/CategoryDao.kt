@@ -1,8 +1,8 @@
-package com.canli.oya.traininventoryroom.data.dao
+package com.canlioya.local.dao
 
 import androidx.room.Dao
 import androidx.room.Query
-import com.canli.oya.traininventoryroom.data.entities.CategoryEntity
+import com.canlioya.local.entities.CategoryEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

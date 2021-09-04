@@ -5,8 +5,8 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.data.entities.BrandEntity
+import com.canlioya.local.TrainDatabase
+import com.canlioya.local.entities.BrandEntity
 import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,7 +26,7 @@ class BrandDaoTest {
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var database: TrainDatabase
+    private lateinit var database: com.canlioya.local.TrainDatabase
 
     @Before
     fun initDb() {
@@ -34,7 +34,7 @@ class BrandDaoTest {
         // process is killed.
         database = Room.inMemoryDatabaseBuilder(
                 getApplicationContext(),
-                TrainDatabase::class.java
+                com.canlioya.local.TrainDatabase::class.java
         ).build()
     }
 
@@ -44,14 +44,19 @@ class BrandDaoTest {
     @Test
     fun insertBrand_verifyBrandIsInserted() = runBlockingTest {
         //Insert a brand
-        val insertedBrand = BrandEntity(brandId = 5, brandName = "Marklin", brandLogoUri = "brand logo uri", webUrl =  "https://www.google.com/")
+        val insertedBrand = com.canlioya.local.entities.BrandEntity(
+            brandId = 5,
+            brandName = "Marklin",
+            brandLogoUri = "brand logo uri",
+            webUrl = "https://www.google.com/"
+        )
         database.brandDao().insert(insertedBrand)
 
         //Get back the brand
         val loadedBrand = database.brandDao().getChosenBrand(insertedBrand.brandId)
 
         //Verify it has expected values
-        assertThat(loadedBrand as? BrandEntity, notNullValue())
+        assertThat(loadedBrand as? com.canlioya.local.entities.BrandEntity, notNullValue())
         assertThat(loadedBrand.brandId, `is`(insertedBrand.brandId))
         assertThat(loadedBrand.brandName, `is`(insertedBrand.brandName))
         assertThat(loadedBrand.brandLogoUri, `is`(insertedBrand.brandLogoUri))
@@ -61,7 +66,12 @@ class BrandDaoTest {
     @Test
     fun updateBrand_verifyUpdated() = runBlockingTest {
         //Insert a brand
-        val insertedBrand = BrandEntity(brandId = 5, brandName = "Marklin", brandLogoUri = "brand logo uri", webUrl =  "https://www.google.com/")
+        val insertedBrand = com.canlioya.local.entities.BrandEntity(
+            brandId = 5,
+            brandName = "Marklin",
+            brandLogoUri = "brand logo uri",
+            webUrl = "https://www.google.com/"
+        )
         database.brandDao().insert(insertedBrand)
 
         //Update the brand
@@ -74,7 +84,7 @@ class BrandDaoTest {
         val loadedBrand = database.brandDao().getChosenBrand(insertedBrand.brandId)
 
         //Verify it has updated values
-        assertThat(loadedBrand as? BrandEntity, notNullValue())
+        assertThat(loadedBrand as? com.canlioya.local.entities.BrandEntity, notNullValue())
         assertThat(loadedBrand.brandId, `is`(insertedBrand.brandId))
         assertThat(loadedBrand.brandName, `is`(insertedBrand.brandName))
         assertThat(loadedBrand.brandLogoUri, `is`(insertedBrand.brandLogoUri))
@@ -84,8 +94,18 @@ class BrandDaoTest {
     @Test
     fun deleteBrand_verifyDeleted() = runBlockingTest {
         //Insert two brands
-        val firstBrand = BrandEntity(brandId = 5, brandName = "Marklin", brandLogoUri = "first brand logo uri", webUrl =  "https://www.google.com/")
-        val secondBrand = BrandEntity(brandId = 6, brandName = "MDN", brandLogoUri = "second brand logo uri", webUrl =  "https://github.com/")
+        val firstBrand = com.canlioya.local.entities.BrandEntity(
+            brandId = 5,
+            brandName = "Marklin",
+            brandLogoUri = "first brand logo uri",
+            webUrl = "https://www.google.com/"
+        )
+        val secondBrand = com.canlioya.local.entities.BrandEntity(
+            brandId = 6,
+            brandName = "MDN",
+            brandLogoUri = "second brand logo uri",
+            webUrl = "https://github.com/"
+        )
         database.brandDao().insert(firstBrand)
         database.brandDao().insert(secondBrand)
 

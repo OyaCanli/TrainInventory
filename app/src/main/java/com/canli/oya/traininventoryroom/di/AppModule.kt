@@ -1,7 +1,7 @@
 package com.canli.oya.traininventoryroom.di
 
 import android.content.Context
-import com.canli.oya.traininventoryroom.data.TrainDatabase
+import com.canlioya.local.TrainDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,5 +15,5 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideDatabase(@ApplicationContext context: Context) = TrainDatabase.getInstance(context)
+    fun provideDatabase(@ApplicationContext context: Context) = com.canlioya.local.TrainDatabase.getInstance(context)
 }

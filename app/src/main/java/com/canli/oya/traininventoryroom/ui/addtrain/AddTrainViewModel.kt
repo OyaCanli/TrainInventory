@@ -22,7 +22,7 @@ import javax.inject.Inject
 class AddTrainViewModel @Inject constructor(val trainInteractors: TrainInteractors,
                                             brandInteractors: BrandCategoryInteractors<Brand>,
                                             categoryInteractors: BrandCategoryInteractors<Category>,
-                                            private val savedStateHandle: SavedStateHandle,
+                                            savedStateHandle: SavedStateHandle,
                                             @IODispatcher private val ioDispatcher: CoroutineDispatcher)
     : ViewModel() {
 
