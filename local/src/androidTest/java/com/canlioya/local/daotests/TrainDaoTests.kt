@@ -24,6 +24,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.time.LocalDate
+import java.util.*
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -195,7 +196,7 @@ class TrainDaoTests {
         database.trainDao().insert(secondTrain)
 
         //Delete first train
-        val date = LocalDate.now().toEpochDay()
+        val date = Date().time
         database.trainDao().sendToThrash(firstTrain.trainId, date)
 
         //Verify first train is not in the trains list anymore and the second train is still there
