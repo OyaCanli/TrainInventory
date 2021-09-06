@@ -63,4 +63,4 @@ jobs:
         with:
           api-level: ${{ matrix.api-level }}
           disable-animations: true
-          script: ./gradlew connectedDebugAndroidTest --stacktrace
+          script: ./gradlew connectedCheck --stacktrace
