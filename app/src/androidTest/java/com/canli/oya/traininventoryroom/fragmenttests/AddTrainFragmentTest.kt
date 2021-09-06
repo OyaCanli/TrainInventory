@@ -108,7 +108,7 @@ class AddTrainFragmentTest {
     fun inEditMode_widgetsShowCorrectValues() = runBlockingTest {
         // Launch fragment in add mode
         val args = Bundle()
-        args.putParcelable(CHOSEN_TRAIN, sampleTrain1)
+        args.putSerializable(CHOSEN_TRAIN, sampleTrain1)
         launchFragmentInContainer<AddTrainFragment>(args)
 
         onView(withText(sampleTrain1.brandName)).check(matches(isDisplayed()))
@@ -204,7 +204,7 @@ class AddTrainFragmentTest {
         // Launch fragment in add mode
         val args = Bundle()
         args.putBoolean(IS_EDIT, true)
-        args.putParcelable(CHOSEN_TRAIN, sampleTrain1)
+        args.putSerializable(CHOSEN_TRAIN, sampleTrain1)
         val fragmentScenario = HiltFragmentScenario.launchInContainer(AddTrainFragment::class.java, args)
 
         // Type something in a field
