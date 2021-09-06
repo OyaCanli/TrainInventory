@@ -9,12 +9,11 @@
     <dimen name="small_padding">4dp</dimen>
 
     <!-- Image dimensions -->
-    <dimen name="train_details_image_height">140dp</dimen>
-    <dimen name="train_details_image_width">120dp</dimen>
+
+
     <dimen name="details_image_dropdown">200dp</dimen>
     <dimen name="add_brand_logo_dim">80dp</dimen>
     <dimen name="product_item_image_dim">100dp</dimen>
-    <dimen name="brand_item_logo_dim">60dp</dimen>
     <dimen name="brand_item_icon_dim">50dp</dimen>
     <dimen name="edit_train_image_height">100dp</dimen>
     <dimen name="spinner_brand_logo_dim">40dp</dimen>
@@ -25,16 +24,12 @@
     <!-- Text sizes -->
     <dimen name="normalTextSize">16sp</dimen>
     <dimen name="largeTextSize">20sp</dimen>
-    <dimen name="dashTextSize">40sp</dimen>
 
     <!-- Item heights -->
     <dimen name="divider_height">1dp</dimen>
     <dimen name="category_item_height">80dp</dimen>
     <dimen name="brand_item_height">120dp</dimen>
     <dimen name="train_item_height">130dp</dimen>
-    <dimen name="bottom_navigation_height">60dp</dimen>
-
-    <dimen name="elevation">5dp</dimen>
 
     <dimen name="design_bottom_navigation_item_max_width" tools:override="true">600dp</dimen>
     <dimen name="design_bottom_navigation_active_item_max_width" tools:override="true">600dp</dimen>
@@ -42,7 +37,6 @@
     <dimen name="edittext_box_width">1dp</dimen>
     <dimen name="empty_image_dim">150dp</dimen>
     <dimen name="search_btn_corner_radius">10dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
     <dimen name="restore_btn_size">60dp</dimen>
 
 

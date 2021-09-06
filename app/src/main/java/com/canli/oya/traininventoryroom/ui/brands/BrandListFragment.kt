@@ -6,7 +6,6 @@ import android.text.TextUtils
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.ui.base.BCBaseViewModel
@@ -22,7 +21,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class BrandListFragment : BrandCategoryBaseFrag<Brand>(), BrandItemClickListener, SwipeDeleteListener<Brand> {
 
-    private val brandViewModel : BrandViewModel by viewModels()
+    private val brandViewModel: BrandViewModel by viewModels()
 
     override fun getListAdapter(): BaseListAdapter<Brand, BrandItemClickListener> = BrandAdapter(requireContext(), this, this)
 
@@ -36,9 +35,10 @@ class BrandListFragment : BrandCategoryBaseFrag<Brand>(), BrandItemClickListener
         }
     }
 
-    private fun launchTrainListWithBrand(brandName: String){
+    private fun launchTrainListWithBrand(brandName: String) {
         val action = BrandListFragmentDirections.actionBrandListFragmentToFilterTrainFragment(
-            TRAINS_OF_BRAND, brandName = brandName)
+            TRAINS_OF_BRAND, brandName = brandName
+        )
         binding.root.findNavController().navigate(action)
     }
 
@@ -64,9 +64,7 @@ class BrandListFragment : BrandCategoryBaseFrag<Brand>(), BrandItemClickListener
 
     override fun getChildFragment(): Fragment = AddBrandFragment()
 
-    override fun getTitle(): String  = getString(R.string.all_brands)
+    override fun getTitle(): String = getString(R.string.all_brands)
 
     override fun getEmptyMessage(): Int = R.string.no_brands_found
-
 }
-

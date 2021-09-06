@@ -22,7 +22,6 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.TypeSafeMatcher
 import timber.log.Timber
 
-
 fun isVisible(): ViewAssertion {
     return ViewAssertion { view, noView -> assertThat(view, VisibilityMatcher(View.VISIBLE)) }
 }
@@ -64,7 +63,6 @@ class ToastMatcher : TypeSafeMatcher<Root?>() {
         }
         return false
     }
-
 }
 
 fun clickOnChildWithId(viewId: Int) = object : ViewAction {
@@ -72,10 +70,10 @@ fun clickOnChildWithId(viewId: Int) = object : ViewAction {
 
     override fun getDescription() = "Click on a child view with specified id."
 
-    override fun perform(uiController: UiController, view: View) = click().perform(uiController, view.findViewById<View>(viewId))
+    override fun perform(uiController: UiController, view: View) = click().perform(uiController, view.findViewById(viewId))
 }
 
-fun hasSelectedItem(id: Int): Matcher<View?>? {
+fun hasSelectedItem(id: Int): Matcher<View?> {
     return object : BoundedMatcher<View?, BottomNavigationView>(BottomNavigationView::class.java) {
         var checkedIds: MutableSet<Int> = HashSet()
         var itemFound = false
@@ -112,7 +110,7 @@ fun hasSelectedItem(id: Int): Matcher<View?>? {
     }
 }
 
-fun withIconResource(@DrawableRes resourceId: Int): Matcher<View?>? {
+fun withIconResource(@DrawableRes resourceId: Int): Matcher<View?> {
     return object : BoundedMatcher<View?, ActionMenuItemView>(ActionMenuItemView::class.java) {
         override fun describeTo(description: Description) {
             description.appendText("should have image drawable ${getTitleForResource(resourceId)}")

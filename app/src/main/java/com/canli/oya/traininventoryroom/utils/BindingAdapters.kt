@@ -5,13 +5,11 @@ import android.graphics.drawable.ShapeDrawable
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.canli.oya.traininventoryroom.R
-
 
 @BindingAdapter("imageUrl", "placeholder")
 fun ImageView.setImageWithGlide(url: String?, placeHolder: Drawable) {
@@ -33,16 +31,18 @@ fun View.setVisible(visible: Boolean) {
 }
 
 @BindingAdapter("itemDivider")
-fun RecyclerView.addItemDivider(hasItemDivider : Boolean) {
+fun RecyclerView.addItemDivider(hasItemDivider: Boolean) {
     val divider = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
-    divider.setDrawable(ShapeDrawable().apply {
-        intrinsicHeight = context.resources.getDimensionPixelOffset(R.dimen.divider_height)
-        paint.color = context.resources.getColor(R.color.divider_color)
-    })
+    divider.setDrawable(
+        ShapeDrawable().apply {
+            intrinsicHeight = context.resources.getDimensionPixelOffset(R.dimen.divider_height)
+            paint.color = context.resources.getColor(R.color.divider_color)
+        }
+    )
     addItemDecoration(divider)
 }
 
 @BindingAdapter("numerator")
-fun TextView.numerate(position : Int){
+fun TextView.numerate(position: Int) {
     text = "${position + 1}."
 }

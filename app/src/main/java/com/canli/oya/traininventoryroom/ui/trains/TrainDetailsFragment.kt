@@ -16,7 +16,6 @@ import com.canli.oya.traininventoryroom.ui.main.MainActivity
 import com.canlioya.core.models.Train
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class TrainDetailsFragment : Fragment(R.layout.fragment_train_details) {
 
@@ -27,7 +26,6 @@ class TrainDetailsFragment : Fragment(R.layout.fragment_train_details) {
     private val viewModel: TrainViewModel by activityViewModels()
 
     private var trainId = 0
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,5 +79,4 @@ class TrainDetailsFragment : Fragment(R.layout.fragment_train_details) {
         viewModel.sendTrainToTrash(mChosenTrain.trainId)
         binding.root.findNavController().popBackStack()
     }
-
 }

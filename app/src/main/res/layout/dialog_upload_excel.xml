@@ -43,6 +43,7 @@
             android:src="@drawable/ic_browse"
             android:scaleType="centerInside"
             android:background="@android:color/transparent"
+            android:contentDescription="@string/cd_browse_Excel"
             app:layout_constraintBottom_toBottomOf="@+id/success_message_tv"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/success_message_tv" />
@@ -71,6 +72,7 @@
             android:background="@android:color/transparent"
             android:src="@drawable/ic_share"
             android:scaleType="centerInside"
+            android:contentDescription="@string/cd_share_excel"
             app:layout_constraintBottom_toBottomOf="@id/textView11"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textView11" />

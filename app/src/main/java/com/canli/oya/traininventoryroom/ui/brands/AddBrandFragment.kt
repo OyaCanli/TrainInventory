@@ -2,7 +2,6 @@ package com.canli.oya.traininventoryroom.ui.brands
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -30,7 +29,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-
 @AndroidEntryPoint
 class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
 
@@ -51,34 +49,32 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
 
             when (resultCode) {
                 Activity.RESULT_OK -> {
-                    //Image Uri will not be null for RESULT_OK
+                    // Image Uri will not be null for RESULT_OK
                     val uri: Uri = data?.data!!
-                    Timber.d("Path:${uri}")
+                    Timber.d("Path:$uri")
                     logoUri = uri
                     binding.addBrandImage.setImageWithGlide(
                         uri.toString(),
                         ResourcesCompat.getDrawable(resources, R.drawable.ic_gallery_light, null)!!
                     )
                     binding.executePendingBindings()
-
                 }
                 ImagePicker.RESULT_ERROR -> context?.shortToast(ImagePicker.getError(data))
                 else -> context?.shortToast(getString(R.string.task_cancelled))
             }
         }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //Set click listeners
+        // Set click listeners
         binding.addBrandSaveBtn.setOnClickListener { saveBrand() }
         binding.addBrandImage.setOnClickListener { launchImagePicker() }
 
-        //Request focus on the first edit text
+        // Request focus on the first edit text
         binding.addBrandEditBrandName.requestFocus()
 
-        if (arguments?.getBoolean(IS_EDIT) == true) { //This is the "edit" case
+        if (arguments?.getBoolean(IS_EDIT) == true) { // This is the "edit" case
             isEditCase = true
             viewModel.chosenItem.observe(viewLifecycleOwner, { brandEntry ->
                 brandEntry?.let {
@@ -97,18 +93,18 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
 
     private fun launchImagePicker() {
         ImagePicker.with(this)
-            .compress(512)            //Final image size will be less than 1 MB(Optional)
-            .maxResultSize(200,200)
+            .compress(512) // Final image size will be less than 1 MB(Optional)
+            .maxResultSize(200, 200)
             .createIntent { intent ->
                 imagePickerLauncher.launch(intent)
             }
     }
 
     private fun saveBrand() {
-        //Get brand name from edit text and verify it is not empty
+        // Get brand name from edit text and verify it is not empty
         val brandName = binding.addBrandEditBrandName.text?.toString()?.trim()
         if (brandName.isNullOrBlank()) {
-            context?.shortToast(getString(com.canli.oya.traininventoryroom.R.string.brand_cannot_be_empty))
+            context?.shortToast(getString(R.string.brand_cannot_be_empty))
             return
         }
 
@@ -117,22 +113,22 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
             return
         }
 
-        //Get web address from edit text
+        // Get web address from edit text
         val webAddress = binding.addBrandEditWeb.text?.toString()?.trim()
 
-        //If there is a uri for logo image, parse it to string
+        // If there is a uri for logo image, parse it to string
         var imagePath: String? = null
         logoUri?.let { imagePath = logoUri.toString() }
 
         if (isEditCase) {
-            //Construct a new BrandEntry object from this data with ID included
+            // Construct a new BrandEntry object from this data with ID included
             val brandToUpdate = Brand(brandId, brandName, imagePath, webAddress)
             viewModel.updateItem(brandToUpdate)
         } else {
-            //Construct a new BrandEntry object from this data (without ID)
+            // Construct a new BrandEntry object from this data (without ID)
             val newBrand =
                 Brand(brandName = brandName, brandLogoUri = imagePath, webUrl = webAddress)
-            //Insert to database in a background thread
+            // Insert to database in a background thread
             viewModel.insertItem(newBrand)
         }
 
@@ -163,7 +159,7 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
     }
 
     private fun clearFocusAndHideSoftKeyboard() {
-        //Clear focus and hide soft keyboard
+        // Clear focus and hide soft keyboard
         binding.addBrandEditBrandName.text = null
         binding.addBrandEditWeb.text = null
         binding.addBrandImage.setImageWithGlide(

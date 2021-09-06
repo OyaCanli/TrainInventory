@@ -10,7 +10,7 @@ class CategorySpinAdapter(context : Context,
                           val categoryList : ArrayList<String> = arrayListOf() )
     : ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, categoryList) {
 
-    private val selectText : String = context.getString(R.string.select_category) ?: "--Select category--"
+    private val selectText : String = context.getString(R.string.select_category)
 
     init {
         setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

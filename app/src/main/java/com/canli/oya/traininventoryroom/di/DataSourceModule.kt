@@ -1,10 +1,10 @@
 package com.canli.oya.traininventoryroom.di
 
 
-import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.data.source.BrandDataSource
-import com.canli.oya.traininventoryroom.data.source.CategoryDataSource
-import com.canli.oya.traininventoryroom.data.source.TrainDataSource
+import com.canlioya.local.TrainDatabase
+import com.canlioya.local.source.BrandDataSource
+import com.canlioya.local.source.CategoryDataSource
+import com.canlioya.local.source.TrainDataSource
 import com.canlioya.core.data.IBrandCategoryDataSource
 import com.canlioya.core.data.ITrainDataSource
 import com.canlioya.core.models.Brand
@@ -24,15 +24,18 @@ class DataSourceModule {
 
     @Singleton
     @Provides
-    fun provideTrainDataSource(database: TrainDatabase) : ITrainDataSource = TrainDataSource(database)
+    fun provideTrainDataSource(database: TrainDatabase) : ITrainDataSource =
+        TrainDataSource(database)
 
     @Singleton
     @Provides
-    fun provideCategoryDataSource(database: TrainDatabase) : IBrandCategoryDataSource<Category> = CategoryDataSource(database)
+    fun provideCategoryDataSource(database: TrainDatabase) : IBrandCategoryDataSource<Category> =
+        CategoryDataSource(database)
 
     @Singleton
     @Provides
-    fun provideBrandDataSource(database: TrainDatabase) : IBrandCategoryDataSource<Brand> = BrandDataSource(database)
+    fun provideBrandDataSource(database: TrainDatabase) : IBrandCategoryDataSource<Brand> =
+        BrandDataSource(database)
 
     @IODispatcher
     @Provides

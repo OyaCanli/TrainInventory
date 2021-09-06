@@ -1,6 +1,5 @@
 package com.canli.oya.traininventoryroom.ui.exportToExcel
 
-
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
@@ -19,22 +18,21 @@ import androidx.navigation.findNavController
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.databinding.ExportToExcelBinding
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
-import com.canli.oya.traininventoryroom.utils.EXCEL_FILE_URI
 import com.canli.oya.traininventoryroom.utils.shortToast
+import com.canlioya.databasetoexcel.DbToExcel
 import timber.log.Timber
-
 
 // Request code for creating an excel document.
 const val CREATE_FILE_REQUEST = 492
 
-
 class ExportingToExcelDialog : DialogFragment() {
 
-    private lateinit var binding : ExportToExcelBinding
+    private lateinit var binding: ExportToExcelBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
-                inflater, R.layout.dialog_exporting_to_excel, container, false)
+            inflater, R.layout.dialog_exporting_to_excel, container, false
+        )
 
         when (Build.VERSION.SDK_INT) {
             29, 30 -> launchCreateFileIntent()
@@ -65,8 +63,9 @@ class ExportingToExcelDialog : DialogFragment() {
         }
     }
 
-    private fun exportToExcelFile(uri : Uri) {
-        val dbToExcel = DbToExcel(requireContext(), "train_inventory", uri)
+    private fun exportToExcelFile(uri: Uri) {
+        val dbToExcel =
+            DbToExcel(requireContext(), "train_inventory", uri)
         val listOfTables = listOf("brands", "categories", "trains")
         dbToExcel.exportSpecificTables(
             listOfTables,
@@ -87,7 +86,8 @@ class ExportingToExcelDialog : DialogFragment() {
                     binding.lottieExportingAnim.cancelAnimation()
                     dismiss()
                 }
-            })
+            }
+        )
     }
 
     private fun checkWritePermission() {
@@ -102,7 +102,7 @@ class ExportingToExcelDialog : DialogFragment() {
         }
     }
 
-    //Check whether permission is already given or not
+    // Check whether permission is already given or not
     private fun needsPermission() = ContextCompat.checkSelfPermission(
         requireContext(),
         Manifest.permission.WRITE_EXTERNAL_STORAGE

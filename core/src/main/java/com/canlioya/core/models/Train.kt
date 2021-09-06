@@ -15,4 +15,5 @@ data class Train(
     var description: String? = null,
     var location: String? = null,
     var scale: String? = null,
-    var dateOfDeletion: Long? = null) : Parcelable
+    var dateOfDeletion: Long? = null
+) : Parcelable

@@ -1,6 +1,5 @@
 package com.canli.oya.traininventoryroom.ui.filter
 
-
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,24 +17,26 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class FilterTrainViewModel @Inject constructor(private val trainInteractors: TrainInteractors,
-                                               private val brandInteractors: BrandCategoryInteractors<Brand>,
-                                               private val categoryInteractors : BrandCategoryInteractors<Category>,
-                                               @IODispatcher private val ioDispatcher: CoroutineDispatcher) : ViewModel() {
+class FilterTrainViewModel @Inject constructor(
+    private val trainInteractors: TrainInteractors,
+    private val brandInteractors: BrandCategoryInteractors<Brand>,
+    private val categoryInteractors: BrandCategoryInteractors<Category>,
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher
+) : ViewModel() {
 
-    private val _brandNames : MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
+    private val _brandNames: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
     val brandNames: StateFlow<List<String>>
         get() = _brandNames
 
-    private val _categoryNames : MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
+    private val _categoryNames: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
     val categoryNames: StateFlow<List<String>>
         get() = _categoryNames
 
-    var selectedBrand : MutableLiveData<String?> = MutableLiveData(null)
+    var selectedBrand: MutableLiveData<String?> = MutableLiveData(null)
 
-    var selectedCategory : MutableLiveData<String?> = MutableLiveData(null)
+    var selectedCategory: MutableLiveData<String?> = MutableLiveData(null)
 
-    var keyword : String? = null
+    var keyword: String? = null
 
     init {
         viewModelScope.launch(ioDispatcher) {
@@ -44,7 +45,7 @@ class FilterTrainViewModel @Inject constructor(private val trainInteractors: Tra
         }
     }
 
-    suspend fun filterTrains() : ArrayList<TrainMinimal> {
+    suspend fun filterTrains(): ArrayList<TrainMinimal> {
         val filteredList = ArrayList<TrainMinimal>()
         filteredList.addAll(trainInteractors.searchInTrains(keyword, selectedCategory.value, selectedBrand.value))
         return filteredList

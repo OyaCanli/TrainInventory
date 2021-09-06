@@ -3,7 +3,6 @@ package com.canli.oya.traininventoryroom.ui.categories
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.ui.base.BCBaseViewModel
@@ -17,7 +16,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class CategoryListFragment : BrandCategoryBaseFrag<Category>(), CategoryItemClickListener {
 
-    private val categoryViewModel : CategoryViewModel by viewModels()
+    private val categoryViewModel: CategoryViewModel by viewModels()
 
     override fun getListAdapter(): BaseListAdapter<Category, out Any> = CategoryAdapter(requireContext(), this, this)
 
@@ -25,13 +24,13 @@ class CategoryListFragment : BrandCategoryBaseFrag<Category>(), CategoryItemClic
 
     override fun onCategoryItemClicked(view: View, category: Category) {
         Timber.d("Category item clicked")
-        when(view.id){
+        when (view.id) {
             R.id.category_item_train_icon -> launchTrainListWithCategory(category.categoryName)
             R.id.category_item_edit_icon -> editItem(category)
         }
     }
 
-    private fun launchTrainListWithCategory(categoryName : String){
+    private fun launchTrainListWithCategory(categoryName: String) {
         val action = CategoryListFragmentDirections.actionCategoryListFragmentToFilterTrainFragment(TRAINS_OF_CATEGORY, categoryName = categoryName)
         binding.root.findNavController().navigate(action)
     }

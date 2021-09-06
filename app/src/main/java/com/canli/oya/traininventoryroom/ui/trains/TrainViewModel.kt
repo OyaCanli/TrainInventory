@@ -17,14 +17,16 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class TrainViewModel @Inject constructor(private val interactors: TrainInteractors,
-                                         @IODispatcher private val ioDispatcher: CoroutineDispatcher) : ViewModel() {
+class TrainViewModel @Inject constructor(
+    private val interactors: TrainInteractors,
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher
+) : ViewModel() {
 
     var allItems: Flow<PagingData<TrainMinimal>> = interactors.getAllTrains()
 
     fun getChosenTrain(trainId: Int) = liveData(ioDispatcher) {
         interactors.getChosenTrain(trainId).collectLatest {
-            it?.let {emit(it) }
+            it?.let { emit(it) }
         }
     }
 
@@ -33,18 +35,17 @@ class TrainViewModel @Inject constructor(private val interactors: TrainInteracto
         viewModelScope.launch(ioDispatcher) { interactors.sendTrainToTrash(trainId, date) }
     }
 
-    fun deleteTrainPermanently(trainId: Int){
+    fun deleteTrainPermanently(trainId: Int) {
         viewModelScope.launch(ioDispatcher) {
             interactors.deleteTrainPermanently(trainId)
         }
     }
 
-    fun getTrainsInTrash() : LiveData<List<TrainMinimal>> = liveData {
+    fun getTrainsInTrash(): LiveData<List<TrainMinimal>> = liveData {
         interactors.getAllTrainsInTrash().collectLatest {
             emit(it)
         }
     }
 
     suspend fun restoreTrain(trainId: Int) = interactors.restoreTrainFromTrash(trainId)
-
 }

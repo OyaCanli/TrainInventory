@@ -15,6 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="@dimen/margin_standard"
+            android:importantForAccessibility="no"
             app:layout_constraintEnd_toStartOf="@+id/lottie_exporting_anim"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -47,6 +48,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/lottie_exporting_anim"
             app:layout_constraintTop_toTopOf="parent"
+            android:importantForAccessibility="no"
             app:srcCompat="@drawable/ic_excel" />
 
         <TextView
