@@ -12,10 +12,10 @@ interface CategoryDao : BaseDao<CategoryEntity> {
     fun observeAllCategories(): Flow<List<CategoryEntity>>
 
     @Query("SELECT * FROM categories ORDER BY categoryName")
-    suspend fun getCategoryList() : List<CategoryEntity>
+    suspend fun getCategoryList(): List<CategoryEntity>
 
     @Query("SELECT categoryName FROM categories ORDER BY categoryName")
-    suspend fun getCategoryNames() : List<String>
+    suspend fun getCategoryNames(): List<String>
 
     @Query("SELECT * FROM categories WHERE categoryId = :id")
     suspend fun getChosenCategory(id: Int): CategoryEntity

@@ -10,10 +10,6 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
-import com.canlioya.testresources.datasource.FakeBrandDataSource
-import com.canlioya.testresources.datasource.FakeCategoryDataSource
-import com.canlioya.testresources.datasource.FakeTrainDataSource
-import com.canlioya.testresources.datasource.sampleTrain1
 import com.canli.oya.traininventoryroom.di.DataSourceModule
 import com.canli.oya.traininventoryroom.di.IODispatcher
 import com.canli.oya.traininventoryroom.ui.trash.TrashListFragment
@@ -24,6 +20,10 @@ import com.canlioya.core.data.IBrandCategoryDataSource
 import com.canlioya.core.data.ITrainDataSource
 import com.canlioya.core.models.Brand
 import com.canlioya.core.models.Category
+import com.canlioya.testresources.datasource.FakeBrandDataSource
+import com.canlioya.testresources.datasource.FakeCategoryDataSource
+import com.canlioya.testresources.datasource.FakeTrainDataSource
+import com.canlioya.testresources.datasource.sampleTrain1
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -57,16 +57,16 @@ class TrashFragmentTests {
     object FakeDataModule {
 
         @Provides
-        fun provideTrainDataSource() : ITrainDataSource = FakeTrainDataSource()
+        fun provideTrainDataSource(): ITrainDataSource = FakeTrainDataSource()
 
         @Provides
-        fun provideCategoryDataSource() : IBrandCategoryDataSource<Category> = FakeCategoryDataSource()
+        fun provideCategoryDataSource(): IBrandCategoryDataSource<Category> = FakeCategoryDataSource()
 
         @Provides
-        fun provideBrandDataSource() : IBrandCategoryDataSource<Brand> = FakeBrandDataSource()
+        fun provideBrandDataSource(): IBrandCategoryDataSource<Brand> = FakeBrandDataSource()
 
         @Provides
-        fun provideDatabase() : com.canlioya.local.TrainDatabase = Mockito.mock(com.canlioya.local.TrainDatabase::class.java)
+        fun provideDatabase(): com.canlioya.local.TrainDatabase = Mockito.mock(com.canlioya.local.TrainDatabase::class.java)
 
         @IODispatcher
         @Provides
@@ -76,11 +76,11 @@ class TrashFragmentTests {
     var hiltRule = HiltAndroidRule(this)
 
     @get:Rule
-    var rule = RuleChain.outerRule(hiltRule).
-    around(InstantTaskExecutorRule())
+    var rule = RuleChain.outerRule(hiltRule)
+        .around(InstantTaskExecutorRule())
 
     @Inject
-    lateinit var dataSource : ITrainDataSource
+    lateinit var dataSource: ITrainDataSource
 
     @Before
     fun setUp() {
@@ -90,10 +90,10 @@ class TrashFragmentTests {
     @Test
     fun whenNoTrash_showsEmptyMessage() {
         runBlockingTest {
-            //Launch trash fragment with no trash
+            // Launch trash fragment with no trash
             HiltFragmentScenario.launchInContainer(TrashListFragment::class.java, Bundle())
 
-            //Verify that empty layout is displayed and that the list is not displayed
+            // Verify that empty layout is displayed and that the list is not displayed
             onView(withId(R.id.empty_text)).check(isVisible())
             onView(withId(R.id.list)).check(isGone())
             onView(withText(R.string.no_trains_in_trash)).check(isVisible())
@@ -103,12 +103,12 @@ class TrashFragmentTests {
     @Test
     fun whenThereIsTrash_showsIt() {
         runBlockingTest {
-            //Launch with an item on trash
+            // Launch with an item on trash
             val date = LocalDate.now().toEpochDay()
             dataSource.sendTrainToTrash(sampleTrain1.trainId, date)
             HiltFragmentScenario.launchInContainer(TrashListFragment::class.java, Bundle())
 
-            //Verify that empty layout is displayed and that the list is not displayed
+            // Verify that empty layout is displayed and that the list is not displayed
             onView(withId(R.id.empty_text)).check(isGone())
             onView(withId(R.id.empty_image)).check(isGone())
             onView(withId(R.id.list)).check(isVisible())
@@ -132,18 +132,18 @@ class TrashFragmentTests {
         }
     }*/
 
-
     @Test
     fun clickOnDeleteForever_showsWarningDialog() {
         runBlockingTest {
-            //Launch with an item on trash
+            // Launch with an item on trash
             val date = LocalDate.now().toEpochDay()
             dataSource.sendTrainToTrash(sampleTrain1.trainId, date)
             HiltFragmentScenario.launchInContainer(TrashListFragment::class.java, Bundle())
 
-            //Click on delete on item
+            // Click on delete on item
             onView(withId(R.id.list)).perform(
-                actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickOnChildWithId(R.id.trash_item_delete)))
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickOnChildWithId(R.id.trash_item_delete))
+            )
             onView(withText(R.string.do_you_want_to_permanently_delete_train)).check(matches(isDisplayed()))
         }
     }

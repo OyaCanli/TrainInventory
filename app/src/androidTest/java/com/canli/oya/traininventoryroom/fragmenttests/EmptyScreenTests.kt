@@ -7,9 +7,6 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
-import com.canlioya.testresources.datasource.FakeBrandDataSource
-import com.canlioya.testresources.datasource.FakeCategoryDataSource
-import com.canlioya.testresources.datasource.FakeTrainDataSource
 import com.canli.oya.traininventoryroom.di.DataSourceModule
 import com.canli.oya.traininventoryroom.di.IODispatcher
 import com.canli.oya.traininventoryroom.ui.brands.BrandListFragment
@@ -23,6 +20,9 @@ import com.canlioya.core.data.IBrandCategoryDataSource
 import com.canlioya.core.data.ITrainDataSource
 import com.canlioya.core.models.Brand
 import com.canlioya.core.models.Category
+import com.canlioya.testresources.datasource.FakeBrandDataSource
+import com.canlioya.testresources.datasource.FakeCategoryDataSource
+import com.canlioya.testresources.datasource.FakeTrainDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -54,16 +54,16 @@ class EmptyScreenTests {
     object FakeDataModule {
 
         @Provides
-        fun provideTrainDataSource() : ITrainDataSource = FakeTrainDataSource(mutableListOf())
+        fun provideTrainDataSource(): ITrainDataSource = FakeTrainDataSource(mutableListOf())
 
         @Provides
-        fun provideCategoryDataSource() : IBrandCategoryDataSource<Category> = FakeCategoryDataSource(mutableListOf())
+        fun provideCategoryDataSource(): IBrandCategoryDataSource<Category> = FakeCategoryDataSource(mutableListOf())
 
         @Provides
-        fun provideBrandDataSource() : IBrandCategoryDataSource<Brand> = FakeBrandDataSource(mutableListOf())
+        fun provideBrandDataSource(): IBrandCategoryDataSource<Brand> = FakeBrandDataSource(mutableListOf())
 
         @Provides
-        fun provideDatabase() : com.canlioya.local.TrainDatabase = Mockito.mock(com.canlioya.local.TrainDatabase::class.java)
+        fun provideDatabase(): com.canlioya.local.TrainDatabase = Mockito.mock(com.canlioya.local.TrainDatabase::class.java)
 
         @IODispatcher
         @Provides
@@ -73,15 +73,15 @@ class EmptyScreenTests {
     var hiltRule = HiltAndroidRule(this)
 
     @get:Rule
-    var rule = RuleChain.outerRule(hiltRule).
-    around(InstantTaskExecutorRule())
+    var rule = RuleChain.outerRule(hiltRule)
+        .around(InstantTaskExecutorRule())
 
     @Before
     fun setUp() {
         hiltRule.inject()
     }
 
-    //Launch with an empty list. Verify that empty text and image are shown and verify that the list is not shown
+    // Launch with an empty list. Verify that empty text and image are shown and verify that the list is not shown
     @Test
     fun brandList_withEmptyList_emptyScreenIsShown() {
         runBlockingTest {
@@ -93,7 +93,7 @@ class EmptyScreenTests {
         }
     }
 
-    //Launch with an empty list. Verify that empty text and image are shown and verify that the list is not shown
+    // Launch with an empty list. Verify that empty text and image are shown and verify that the list is not shown
     @Test
     fun categoryList_withEmptyList_emptyScreenIsShown() {
         runBlockingTest {
@@ -105,16 +105,16 @@ class EmptyScreenTests {
         }
     }
 
-    //Launch with an empty list. Verify that empty text and image are shown and verify that the list is not shown
+    // Launch with an empty list. Verify that empty text and image are shown and verify that the list is not shown
     @Test
     fun allTrains_withEmptyList_emptyScreenIsShown() {
         runBlockingTest {
-            //Launch the fragment in All Trains mode
+            // Launch the fragment in All Trains mode
             val args = Bundle()
             args.putString(INTENT_REQUEST_CODE, ALL_TRAIN)
             HiltFragmentScenario.launchInContainer(TrainListFragment::class.java, Bundle())
 
-            //Check if empty layout is displayed
+            // Check if empty layout is displayed
             onView(ViewMatchers.withId(R.id.empty_text)).check(isVisible())
             onView(ViewMatchers.withId(R.id.empty_image)).check(isVisible())
         }

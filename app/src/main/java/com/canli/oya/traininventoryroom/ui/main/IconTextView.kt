@@ -4,7 +4,7 @@ import android.content.Context
 import android.text.Spannable
 import android.text.SpannableString
 import android.util.AttributeSet
-import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import com.canli.oya.traininventoryroom.R
 import com.facebook.widget.text.span.BetterImageSpan
 
@@ -12,7 +12,7 @@ import com.facebook.widget.text.span.BetterImageSpan
 class IconTextView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null)
-    : TextView(context, attrs) {
+    : androidx.appcompat.widget.AppCompatTextView(context, attrs) {
 
     override fun setText(text: CharSequence?, type: BufferType?) {
         if(text.isNullOrBlank()){
@@ -24,9 +24,9 @@ class IconTextView @JvmOverloads constructor(
             } else {
                 val endIndex = startIndex + 4
                 val spannable = SpannableString(text)
-                val plusIcon = context.resources.getDrawable(R.drawable.ic_plus_with_circle)
-                plusIcon.mutate()
-                plusIcon.setBounds(0, 0, 100, 100)
+                val plusIcon = ResourcesCompat.getDrawable(resources, R.drawable.ic_plus_with_circle, null)
+                plusIcon?.mutate()
+                plusIcon?.setBounds(0, 0, 100, 100)
                 spannable.setSpan(BetterImageSpan(plusIcon, BetterImageSpan.ALIGN_CENTER), startIndex, endIndex, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                 super.setText(spannable, type)
             }

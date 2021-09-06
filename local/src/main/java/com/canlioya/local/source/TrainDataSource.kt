@@ -4,10 +4,10 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.sqlite.db.SimpleSQLiteQuery
-import com.canlioya.local.TrainDatabase
 import com.canlioya.core.data.ITrainDataSource
 import com.canlioya.core.models.Train
 import com.canlioya.core.models.TrainMinimal
+import com.canlioya.local.TrainDatabase
 import com.canlioya.local.entities.toTrain
 import com.canlioya.local.entities.toTrainEntity
 import kotlinx.coroutines.flow.Flow
@@ -16,16 +16,16 @@ import timber.log.Timber
 
 const val TRAINS_PAGE_SIZE = 15
 
-class TrainDataSource (private val database: TrainDatabase) : ITrainDataSource {
+class TrainDataSource(private val database: TrainDatabase) : ITrainDataSource {
 
-    override fun getAllTrains() : Flow<PagingData<TrainMinimal>> {
+    override fun getAllTrains(): Flow<PagingData<TrainMinimal>> {
         val pager = Pager(config = PagingConfig(TRAINS_PAGE_SIZE, enablePlaceholders = true)) {
             database.trainDao().observeAllTrains()
         }
         return pager.flow
     }
 
-    override fun getChosenTrain(trainId : Int) = database.trainDao().observeChosenTrain(trainId).map { it.toTrain() }
+    override fun getChosenTrain(trainId: Int) = database.trainDao().observeChosenTrain(trainId).map { it.toTrain() }
 
     override suspend fun isThisTrainNameUsed(trainName: String): Boolean {
         return database.trainDao().isThisTrainNameUsed(trainName) != null
@@ -35,7 +35,7 @@ class TrainDataSource (private val database: TrainDatabase) : ITrainDataSource {
 
     override suspend fun updateTrain(train: Train) = database.trainDao().update(train.toTrainEntity())
 
-    override suspend fun sendTrainToTrash(trainId: Int, dateOfDeletion : Long) = database.trainDao().sendToThrash(trainId, dateOfDeletion)
+    override suspend fun sendTrainToTrash(trainId: Int, dateOfDeletion: Long) = database.trainDao().sendToThrash(trainId, dateOfDeletion)
 
     override suspend fun deleteTrainPermanently(trainId: Int) {
         database.trainDao().deletePermanently(trainId)
@@ -53,13 +53,13 @@ class TrainDataSource (private val database: TrainDatabase) : ITrainDataSource {
 
         val filteredList = ArrayList<TrainMinimal>()
 
-        if(!keyword.isNullOrBlank()) {
+        if (!keyword.isNullOrBlank()) {
             val sb = StringBuilder("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE ")
             val keywords = keyword.split(" ")
             val wordCount = keywords.size
             keywords.forEachIndexed { index, keyword ->
                 sb.append("(trainName LIKE '%$keyword%' OR modelReference LIKE '%$keyword%' OR description LIKE '%$keyword%') ")
-                if(index < wordCount - 1){
+                if (index < wordCount - 1) {
                     sb.append("AND ")
                 }
             }
@@ -72,7 +72,7 @@ class TrainDataSource (private val database: TrainDatabase) : ITrainDataSource {
                 sb.append("AND brandName = '$brand' ")
             }
 
-            //TODO: add an option to search in trash or not
+            // TODO: add an option to search in trash or not
             sb.append("AND dateOfDeletion IS NULL ORDER BY trainName;")
 
             val query = SimpleSQLiteQuery(sb.toString())
@@ -84,7 +84,7 @@ class TrainDataSource (private val database: TrainDatabase) : ITrainDataSource {
             }
 
             brand?.let { brand ->
-                if(filteredList.isNotEmpty()){
+                if (filteredList.isNotEmpty()) {
                     val filtered = filteredList.filter { train ->
                         train.brandName == brand
                     }
@@ -102,6 +102,5 @@ class TrainDataSource (private val database: TrainDatabase) : ITrainDataSource {
 
     override suspend fun getAllTrainsInTrash() = database.trainDao().observeAllTrainsInTrash()
 
-    override suspend fun restoreTrainFromTrash(trainId : Int) = database.trainDao().restoreFromThrash(trainId)
+    override suspend fun restoreTrainFromTrash(trainId: Int) = database.trainDao().restoreFromThrash(trainId)
 }
-

@@ -1,6 +1,5 @@
 package com.canli.oya.traininventoryroom.ui.exportToExcel
 
-
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
@@ -28,11 +27,12 @@ const val CREATE_FILE_REQUEST = 492
 
 class ExportingToExcelDialog : DialogFragment() {
 
-    private lateinit var binding : ExportToExcelBinding
+    private lateinit var binding: ExportToExcelBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
-                inflater, R.layout.dialog_exporting_to_excel, container, false)
+            inflater, R.layout.dialog_exporting_to_excel, container, false
+        )
 
         when (Build.VERSION.SDK_INT) {
             29, 30 -> launchCreateFileIntent()
@@ -63,13 +63,13 @@ class ExportingToExcelDialog : DialogFragment() {
         }
     }
 
-    private fun exportToExcelFile(uri : Uri) {
+    private fun exportToExcelFile(uri: Uri) {
         val dbToExcel =
             DbToExcel(requireContext(), "train_inventory", uri)
         val listOfTables = listOf("brands", "categories", "trains")
         dbToExcel.exportSpecificTables(
             listOfTables,
-            object : com.canlioya.databasetoexcel.DbToExcel.ExportListener {
+            object : DbToExcel.ExportListener {
                 override fun onStart() {}
 
                 override fun onCompleted() {
@@ -86,7 +86,8 @@ class ExportingToExcelDialog : DialogFragment() {
                     binding.lottieExportingAnim.cancelAnimation()
                     dismiss()
                 }
-            })
+            }
+        )
     }
 
     private fun checkWritePermission() {
@@ -101,7 +102,7 @@ class ExportingToExcelDialog : DialogFragment() {
         }
     }
 
-    //Check whether permission is already given or not
+    // Check whether permission is already given or not
     private fun needsPermission() = ContextCompat.checkSelfPermission(
         requireContext(),
         Manifest.permission.WRITE_EXTERNAL_STORAGE

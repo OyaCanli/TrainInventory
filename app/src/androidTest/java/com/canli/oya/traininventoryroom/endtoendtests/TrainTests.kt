@@ -15,12 +15,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.canli.oya.traininventoryroom.R
-import com.canlioya.local.entities.toBrandEntity
-import com.canlioya.local.entities.toCategoryEntity
-import com.canlioya.local.entities.toTrainEntity
-import com.canlioya.testresources.datasource.sampleBrand1
-import com.canlioya.testresources.datasource.sampleCategory1
-import com.canlioya.testresources.datasource.sampleTrain1
 import com.canli.oya.traininventoryroom.di.AppModule
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
 import com.canli.oya.traininventoryroom.utils.clickOnChildWithId
@@ -29,6 +23,12 @@ import com.canli.oya.traininventoryroom.utils.isVisible
 import com.canlioya.core.models.Brand
 import com.canlioya.core.models.Category
 import com.canlioya.core.models.Train
+import com.canlioya.local.entities.toBrandEntity
+import com.canlioya.local.entities.toCategoryEntity
+import com.canlioya.local.entities.toTrainEntity
+import com.canlioya.testresources.datasource.sampleBrand1
+import com.canlioya.testresources.datasource.sampleCategory1
+import com.canlioya.testresources.datasource.sampleTrain1
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -47,7 +47,6 @@ import org.junit.runner.RunWith
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @LargeTest
@@ -61,7 +60,7 @@ class TrainTests {
 
         @Singleton
         @Provides
-        fun provideDatabase() : com.canlioya.local.TrainDatabase = Room.inMemoryDatabaseBuilder(
+        fun provideDatabase(): com.canlioya.local.TrainDatabase = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             com.canlioya.local.TrainDatabase::class.java
         ).build()
@@ -88,13 +87,13 @@ class TrainTests {
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
 
-        //Click trains from the bottom menu
+        // Click trains from the bottom menu
         onView(withId(R.id.trainListFragment)).perform(click())
 
-        //Click add button from action menu
+        // Click add button from action menu
         onView(withId(R.id.action_add)).perform(click())
 
-        //Verify AddTrainFragment is launched with empty or default fields
+        // Verify AddTrainFragment is launched with empty or default fields
         onView(withText(R.string.add_train)).check(matches(withParent(withId(R.id.toolbar))))
         onView(withText(R.string.select_category)).check(matches(isDisplayed()))
         onView(withText(R.string.select_brand)).check(matches(isDisplayed()))
@@ -103,10 +102,10 @@ class TrainTests {
         onView(withId(R.id.editScale)).check(matches(withText("")))
         onView(withId(R.id.editLocation)).check(matches(withText("")))
         onView(withId(R.id.editTrainDescription)).check(matches(withText("")))
-        //Verify bottom navigation is gone
+        // Verify bottom navigation is gone
         onView(withId(R.id.navigation)).check(isGone())
 
-        //Fill in the widgets
+        // Fill in the widgets
         onView(withId(R.id.categorySpinner)).perform(click())
         onData(allOf(`is`(instanceOf(String::class.java)), `is`(sampleCategory1.categoryName))).perform(click())
         onView(withId(R.id.brandSpinner)).perform(click())
@@ -118,7 +117,7 @@ class TrainTests {
         onView(withId(R.id.editLocation)).perform(scrollTo(), typeText(sampleTrain1.location), ViewActions.closeSoftKeyboard())
         onView(withId(R.id.editTrainDescription)).perform(scrollTo(), typeText(sampleTrain1.description), ViewActions.closeSoftKeyboard())
 
-        //Click save button from action menu
+        // Click save button from action menu
         onView(withId(R.id.action_save)).perform(click())
 
         onView(withText(R.string.all_trains)).check(matches(withParent(withId(R.id.toolbar))))
@@ -134,14 +133,14 @@ class TrainTests {
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
 
-        //Click trains from the bottom menu
+        // Click trains from the bottom menu
         onView(withId(R.id.trainListFragment)).perform(click())
 
-        //Click on the train item
+        // Click on the train item
         onView(withId(R.id.list))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+            .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
 
-        //Verify details frag is launched and show correct data
+        // Verify details frag is launched and show correct data
         onView(withText(sampleTrain1.trainName)).check(matches(withParent(withId(R.id.toolbar))))
         onView(withId(R.id.details_brand)).check(matches(withText(sampleTrain1.brandName)))
         onView(withId(R.id.details_category)).check(matches(withText(sampleTrain1.categoryName)))
@@ -150,13 +149,13 @@ class TrainTests {
         onView(withId(R.id.details_description)).check(matches(withText(sampleTrain1.description)))
         onView(withId(R.id.details_location)).check(matches(withText(sampleTrain1.location)))
 
-        //Click delete
+        // Click delete
         onView(withId(R.id.action_delete)).perform(click())
-        //Verify a warning dialog is shown
+        // Verify a warning dialog is shown
         onView(withText(R.string.do_you_want_to_delete)).check(matches(isDisplayed()))
-        //Confirm delete
+        // Confirm delete
         onView(withText(R.string.yes_delete)).perform(click())
-        //Verify we are back at TrainListFragment and the train is deleted
+        // Verify we are back at TrainListFragment and the train is deleted
         onView(withText(R.string.all_trains)).check(matches(withParent(withId(R.id.toolbar))))
         onView(withId(R.id.empty_image)).check(matches(isDisplayed()))
 
@@ -169,23 +168,23 @@ class TrainTests {
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
 
-        //Click trains from the bottom menu
+        // Click trains from the bottom menu
         onView(withId(R.id.trainListFragment)).perform(click())
 
-        //Click on the train item
+        // Click on the train item
         onView(withId(R.id.list)).perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
-        //Click edit button
+        // Click edit button
         onView(withId(R.id.action_edit)).perform(click())
-        //Verify we are on AddTrainFragment, in edit mode, with correct data set on edittexts
+        // Verify we are on AddTrainFragment, in edit mode, with correct data set on edittexts
         onView(withText(R.string.edit_train)).check(matches(withParent(withId(R.id.toolbar))))
         onView(withId(R.id.editTrainName)).check(matches(withText(sampleTrain1.trainName)))
         onView(withText(sampleTrain1.categoryName)).check(matches(isDisplayed()))
         onView(withText(sampleTrain1.brandName)).check(matches(isDisplayed()))
 
         Espresso.pressBack()
-        //Verify we are back at details screen without a warning
+        // Verify we are back at details screen without a warning
         onView(withText(sampleTrain1.trainName)).check(matches(withParent(withId(R.id.toolbar))))
-        //Click edit button again
+        // Click edit button again
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.editTrainName)).perform(replaceText("modified train name"))
 
@@ -193,7 +192,6 @@ class TrainTests {
         onView(withText(R.string.unsaved_changes_warning)).check(matches(isDisplayed()))
 
         activityScenario.close()
-
     }
 
     @Test
@@ -202,24 +200,24 @@ class TrainTests {
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
 
-        //Click trains from the bottom menu
+        // Click trains from the bottom menu
         onView(withId(R.id.trainListFragment)).perform(click())
 
-        //Click on the train item
+        // Click on the train item
         onView(withId(R.id.list)).perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
-        //Click edit button
+        // Click edit button
         onView(withId(R.id.action_edit)).perform(click())
-        //Verify we are on AddTrainFragment, in edit mode, with correct data set on edittexts
+        // Verify we are on AddTrainFragment, in edit mode, with correct data set on edittexts
         onView(withText(R.string.edit_train)).check(matches(withParent(withId(R.id.toolbar))))
         onView(withId(R.id.editTrainName)).check(matches(withText(sampleTrain1.trainName)))
         onView(withText(sampleTrain1.categoryName)).check(matches(isDisplayed()))
         onView(withText(sampleTrain1.brandName)).check(matches(isDisplayed()))
 
-        //Click up
+        // Click up
         onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
-        //Verify we are back at details screen without a warning
+        // Verify we are back at details screen without a warning
         onView(withText(sampleTrain1.trainName)).check(matches(withParent(withId(R.id.toolbar))))
-        //Click edit button again
+        // Click edit button again
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.editTrainName)).perform(replaceText("modified train name"))
 
@@ -230,36 +228,38 @@ class TrainTests {
     }
 
     @Test
-    fun deleteATrain_findItOnTrashAndRestoreIt()= runBlocking {
+    fun deleteATrain_findItOnTrashAndRestoreIt() = runBlocking {
         addSampleData(sampleCategory1, sampleBrand1, sampleTrain1)
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
 
-        //Swipe and delete item
+        // Swipe and delete item
         onView(withId(R.id.list))
             .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, swipeLeft()))
         onView(withId(R.id.list)).perform(
-            actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickOnChildWithId(R.id.confirm_delete_btn)))
+            actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickOnChildWithId(R.id.confirm_delete_btn))
+        )
 
-        //Navigate to trash
+        // Navigate to trash
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         onView(withText(R.string.trash)).perform(click())
 
-        //Verify that deleted item is seen in the trash
+        // Verify that deleted item is seen in the trash
         onView(withText(R.string.trash)).check(matches(isDisplayed()))
         onView(withText(sampleTrain1.trainName)).check(matches(isDisplayed()))
 
-        //Click on restore
+        // Click on restore
         onView(withId(R.id.list)).perform(
-            actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickOnChildWithId(R.id.trash_item_restore)))
+            actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickOnChildWithId(R.id.trash_item_restore))
+        )
 
-        //Verify it disappears from trash
+        // Verify it disappears from trash
         onView(withId(R.id.empty_image)).check(matches(isDisplayed()))
 
-        //Navigate up
+        // Navigate up
         onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
 
-        //Check that the train is added back in train list
+        // Check that the train is added back in train list
         onView(withText(R.string.all_trains)).check(matches(isDisplayed()))
         onView(withText(sampleTrain1.trainName)).check(matches(isDisplayed()))
 

@@ -10,7 +10,8 @@ data class BrandEntity(
     @PrimaryKey(autoGenerate = true) var brandId: Int = 0,
     var brandName: String,
     var brandLogoUri: String? = null,
-    var webUrl: String? = null)
+    var webUrl: String? = null
+)
 
 fun BrandEntity.toBrand() =
     Brand(this.brandId, this.brandName, this.brandLogoUri, this.webUrl)

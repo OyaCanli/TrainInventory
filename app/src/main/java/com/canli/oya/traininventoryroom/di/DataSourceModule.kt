@@ -24,18 +24,18 @@ class DataSourceModule {
 
     @Singleton
     @Provides
-    fun provideTrainDataSource(database: com.canlioya.local.TrainDatabase) : ITrainDataSource =
-        com.canlioya.local.source.TrainDataSource(database)
+    fun provideTrainDataSource(database: TrainDatabase) : ITrainDataSource =
+        TrainDataSource(database)
 
     @Singleton
     @Provides
-    fun provideCategoryDataSource(database: com.canlioya.local.TrainDatabase) : IBrandCategoryDataSource<Category> =
-        com.canlioya.local.source.CategoryDataSource(database)
+    fun provideCategoryDataSource(database: TrainDatabase) : IBrandCategoryDataSource<Category> =
+        CategoryDataSource(database)
 
     @Singleton
     @Provides
-    fun provideBrandDataSource(database: com.canlioya.local.TrainDatabase) : IBrandCategoryDataSource<Brand> =
-        com.canlioya.local.source.BrandDataSource(database)
+    fun provideBrandDataSource(database: TrainDatabase) : IBrandCategoryDataSource<Brand> =
+        BrandDataSource(database)
 
     @IODispatcher
     @Provides

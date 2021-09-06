@@ -1,17 +1,16 @@
 package com.canlioya.testresources.datasource
 
-
 import com.canlioya.core.data.IBrandCategoryDataSource
 import com.canlioya.core.models.Brand
 import com.canlioya.core.models.Train
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-
-class FakeBrandDataSource(private var brands : MutableList<Brand> = sampleBrandList,
-                          private val trains: MutableList<Train> = mutableListOf()
-)
-    : IBrandCategoryDataSource<Brand> {
+class FakeBrandDataSource(
+    private var brands: MutableList<Brand> = sampleBrandList,
+    private val trains: MutableList<Train> = mutableListOf()
+) :
+    IBrandCategoryDataSource<Brand> {
 
     override suspend fun insertItem(item: Brand) {
         brands.add(item)
@@ -30,8 +29,8 @@ class FakeBrandDataSource(private var brands : MutableList<Brand> = sampleBrandL
         emit(brands)
     }
 
-    fun setData(newBrandList : MutableList<Brand>){
-        if(brands == newBrandList) return
+    fun setData(newBrandList: MutableList<Brand>) {
+        if (brands == newBrandList) return
         brands = newBrandList
     }
 
@@ -48,7 +47,7 @@ class FakeBrandDataSource(private var brands : MutableList<Brand> = sampleBrandL
         val trainsInTrash = trains.filter {
             it.dateOfDeletion != null
         }
-        //Search brand in trash folder
+        // Search brand in trash folder
         val index = trainsInTrash.indexOfFirst { it.brandName == item.brandName }
         return index != -1
     }

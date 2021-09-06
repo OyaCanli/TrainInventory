@@ -6,8 +6,8 @@ import com.canlioya.core.models.Train
 import com.canlioya.core.models.TrainMinimal
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.time.LocalDate
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import kotlin.collections.ArrayList
 
 class FakeTrainDataSource(var trains: MutableList<Train> = sampleTrainList) :
@@ -73,18 +73,17 @@ class FakeTrainDataSource(var trains: MutableList<Train> = sampleTrainList) :
         val filteredList = ArrayList<Train>()
         filteredList.addAll(trains)
         if (!keyword.isNullOrBlank()) {
-            val keywords = keyword.toLowerCase().split(" ")
+            val keywords = keyword.lowercase(Locale.getDefault()).split(" ")
             keywords.forEach { query ->
                 filteredList.retainAll { train ->
-                    train.trainName?.toLowerCase()?.contains(query) == true
-                            || train.modelReference?.toLowerCase()?.contains(query) == true
-                            || train.description?.toLowerCase()?.contains(query) == true
+                    train.trainName?.lowercase()?.contains(query) == true ||
+                        train.modelReference?.lowercase()?.contains(query) == true || train.description?.lowercase()?.contains(query) == true
                 }
             }
         }
         filteredList.retainAll {
             it.dateOfDeletion == null
-            //TODO : might add a checkbox to search including trash
+            // TODO : might add a checkbox to search including trash
         }
         category?.let { category ->
             filteredList.retainAll { train ->
@@ -119,7 +118,6 @@ class FakeTrainDataSource(var trains: MutableList<Train> = sampleTrainList) :
             .map { it.convertToMinimal() }
     }
 
-
     private fun convertTrainsToMinimalTrains(trainsToConvert: List<Train>): List<TrainMinimal> {
         return trainsToConvert.map { it.convertToMinimal() }
     }
@@ -132,4 +130,3 @@ class FakeTrainDataSource(var trains: MutableList<Train> = sampleTrainList) :
 
 fun Train.convertToMinimal() =
     TrainMinimal(trainId, trainName, modelReference, brandName, categoryName, imageUri)
-

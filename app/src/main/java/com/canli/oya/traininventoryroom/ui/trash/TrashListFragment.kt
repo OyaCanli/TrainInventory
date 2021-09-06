@@ -51,7 +51,7 @@ class TrashListFragment : Fragment(R.layout.fragment_list), TrainItemClickListen
     }
 
     override fun onListItemClick(view: View, trainId: Int) {
-        when(view.id) {
+        when (view.id) {
             R.id.trash_item_delete -> onDeleteClicked(trainId)
             R.id.trash_item_restore -> onRestoreClicked(trainId)
         }

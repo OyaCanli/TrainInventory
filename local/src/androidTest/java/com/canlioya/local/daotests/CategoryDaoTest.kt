@@ -32,8 +32,8 @@ class CategoryDaoTest {
         // Using an in-memory database so that the information stored here disappears when the
         // process is killed.
         database = Room.inMemoryDatabaseBuilder(
-                ApplicationProvider.getApplicationContext(),
-                com.canlioya.local.TrainDatabase::class.java
+            ApplicationProvider.getApplicationContext(),
+            com.canlioya.local.TrainDatabase::class.java
         ).build()
     }
 
@@ -42,14 +42,14 @@ class CategoryDaoTest {
 
     @Test
     fun insertCategory_verifyCategoryIsInserted() = runBlockingTest {
-        //Insert a category
+        // Insert a category
         val insertedCategory = CategoryEntity(5, "Wagon")
         database.categoryDao().insert(insertedCategory)
 
-        //Get back the category
+        // Get back the category
         val loadedCategory = database.categoryDao().getChosenCategory(insertedCategory.categoryId)
 
-        //Verify it has expected values
+        // Verify it has expected values
         assertThat(loadedCategory as? CategoryEntity, notNullValue())
         assertThat(loadedCategory.categoryId, `is`(insertedCategory.categoryId))
         assertThat(loadedCategory.categoryName, `is`(insertedCategory.categoryName))
@@ -57,18 +57,18 @@ class CategoryDaoTest {
 
     @Test
     fun updateCategory_verifyUpdated() = runBlockingTest {
-        //Insert a category
+        // Insert a category
         val insertedCategory = CategoryEntity(5, "Wagon")
         database.categoryDao().insert(insertedCategory)
 
-        //Update the brand
+        // Update the brand
         insertedCategory.categoryName = "updated name"
         database.categoryDao().update(insertedCategory)
 
-        //Get back the category
+        // Get back the category
         val loadedCategory = database.categoryDao().getChosenCategory(insertedCategory.categoryId)
 
-        //Verify it has expected values
+        // Verify it has expected values
         assertThat(loadedCategory as? CategoryEntity, notNullValue())
         assertThat(loadedCategory.categoryId, `is`(insertedCategory.categoryId))
         assertThat(loadedCategory.categoryName, `is`(insertedCategory.categoryName))
@@ -76,16 +76,16 @@ class CategoryDaoTest {
 
     @Test
     fun deleteCategory_verifyDeleted() = runBlockingTest {
-        //Insert two categories
+        // Insert two categories
         val firstCategory = CategoryEntity(5, "Wagon")
         val secondCategory = CategoryEntity(6, "Locomotif")
         database.categoryDao().insert(firstCategory)
         database.categoryDao().insert(secondCategory)
 
-        //Delete first category
+        // Delete first category
         database.categoryDao().delete(firstCategory)
 
-        //Verify that first category is deleted and second category is still on database
+        // Verify that first category is deleted and second category is still on database
         val allCategories = database.categoryDao().getCategoryList()
         assertFalse(allCategories.contains(firstCategory))
         assertTrue(allCategories.contains(secondCategory))

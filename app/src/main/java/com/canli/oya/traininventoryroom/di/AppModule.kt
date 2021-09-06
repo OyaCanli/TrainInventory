@@ -15,5 +15,5 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideDatabase(@ApplicationContext context: Context) = com.canlioya.local.TrainDatabase.getInstance(context)
+    fun provideDatabase(@ApplicationContext context: Context) = TrainDatabase.getInstance(context)
 }

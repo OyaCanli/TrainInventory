@@ -11,7 +11,6 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
-import com.canlioya.testresources.datasource.*
 import com.canli.oya.traininventoryroom.di.DataSourceModule
 import com.canli.oya.traininventoryroom.di.IODispatcher
 import com.canli.oya.traininventoryroom.ui.filter.FilterTrainFragment
@@ -20,6 +19,7 @@ import com.canlioya.core.data.IBrandCategoryDataSource
 import com.canlioya.core.data.ITrainDataSource
 import com.canlioya.core.models.Brand
 import com.canlioya.core.models.Category
+import com.canlioya.testresources.datasource.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -52,16 +52,16 @@ class FilterTrainFragmentTests {
     object FakeDataModule {
 
         @Provides
-        fun provideTrainDataSource() : ITrainDataSource = FakeTrainDataSource()
+        fun provideTrainDataSource(): ITrainDataSource = FakeTrainDataSource()
 
         @Provides
-        fun provideCategoryDataSource() : IBrandCategoryDataSource<Category> = FakeCategoryDataSource()
+        fun provideCategoryDataSource(): IBrandCategoryDataSource<Category> = FakeCategoryDataSource()
 
         @Provides
-        fun provideBrandDataSource() : IBrandCategoryDataSource<Brand> = FakeBrandDataSource()
+        fun provideBrandDataSource(): IBrandCategoryDataSource<Brand> = FakeBrandDataSource()
 
         @Provides
-        fun provideDatabase() : com.canlioya.local.TrainDatabase = Mockito.mock(com.canlioya.local.TrainDatabase::class.java)
+        fun provideDatabase(): com.canlioya.local.TrainDatabase = Mockito.mock(com.canlioya.local.TrainDatabase::class.java)
 
         @IODispatcher
         @Provides
@@ -71,8 +71,8 @@ class FilterTrainFragmentTests {
     var hiltRule = HiltAndroidRule(this)
 
     @get:Rule
-    var rule = RuleChain.outerRule(hiltRule).
-    around(InstantTaskExecutorRule())
+    var rule = RuleChain.outerRule(hiltRule)
+        .around(InstantTaskExecutorRule())
 
     @Before
     fun setUp() {
@@ -81,20 +81,20 @@ class FilterTrainFragmentTests {
 
     @Test
     fun trainsOfBrand_withNoResult_showsEmptyScreen() = runBlockingTest {
-        //Launches the fragment in TRAINS_OF_BRAND mode
+        // Launches the fragment in TRAINS_OF_BRAND mode
         val args = Bundle()
         args.putString(INTENT_REQUEST_CODE, TRAINS_OF_BRAND)
         args.putString(BRAND_NAME, sampleBrand3.brandName)
         HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, args)
 
-        //Check if empty layout is displayed
+        // Check if empty layout is displayed
         onView(withId(R.id.empty_text)).check(isVisible())
         onView(withId(R.id.list)).check(isGone())
     }
 
     @Test
     fun trainsOfBrand_withAResult_showsCorrectResult() = runBlockingTest {
-        //Launches the fragment in TRAINS_OF_BRAND mode
+        // Launches the fragment in TRAINS_OF_BRAND mode
         val sampleBrandName = sampleTrain1.brandName
         val args = Bundle()
         args.putString(INTENT_REQUEST_CODE, TRAINS_OF_BRAND)
@@ -107,27 +107,25 @@ class FilterTrainFragmentTests {
         onView(withText(sampleTrain1.trainName)).check(isVisible())
     }
 
-
     @Test
     fun trainsOfCategory_withNoResult_showsEmptyScreen() = runBlockingTest {
-        //Launch the fragment in TRAINS_OF_CATEGORY mode
+        // Launch the fragment in TRAINS_OF_CATEGORY mode
         val args = Bundle()
         args.putString(INTENT_REQUEST_CODE, TRAINS_OF_CATEGORY)
         args.putString(CATEGORY_NAME, sampleCategory3.categoryName)
         HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, args)
 
-        //Check category passed is shown as selected on the spinner
+        // Check category passed is shown as selected on the spinner
         onView(withText(sampleCategory3.categoryName)).check(matches(isDisplayed()))
 
-        //Check if empty layout is displayed
+        // Check if empty layout is displayed
         onView(withId(R.id.empty_text)).check(isVisible())
         onView(withId(R.id.list)).check(isGone())
     }
 
-
     @Test
     fun trainsOfCategory_withAResult_showsCorrectResult() = runBlockingTest {
-        //Launch the fragment in TRAINS_OF_CATEGORY mode
+        // Launch the fragment in TRAINS_OF_CATEGORY mode
         val sampleCategoryName = sampleTrain2.categoryName
         val args = Bundle()
         args.putString(INTENT_REQUEST_CODE, TRAINS_OF_CATEGORY)
@@ -140,10 +138,9 @@ class FilterTrainFragmentTests {
         onView(withText(sampleTrain2.trainName)).check(isVisible())
     }
 
-
     @Test
     fun launchedWithNoArgs_showsDefaults() = runBlockingTest {
-        //Launch the fragment without args
+        // Launch the fragment without args
         HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, Bundle())
 
         onView(withId(R.id.empty_text)).check(isGone())
@@ -154,131 +151,124 @@ class FilterTrainFragmentTests {
         onView(withHint(R.string.hint_search_keywords)).check(matches(isDisplayed()))
     }
 
-
     @Test
     fun launchedWithNoArgs_enterKeyword_showCorrectResults() = runBlockingTest {
-        //Launch the fragment without args
+        // Launch the fragment without args
         HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, Bundle())
 
-        //Type a keyword
+        // Type a keyword
         onView(withId(R.id.search_keywords)).perform(typeText("red"), closeSoftKeyboard())
         onView(withId(R.id.search_btn)).perform(click())
 
-        //Check correct results are shown
+        // Check correct results are shown
         onView(withText(sampleTrain1.trainName)).check(matches(isDisplayed()))
 
-        //Check non-corresponding items are not shown
+        // Check non-corresponding items are not shown
         onView(withText(sampleTrain2.trainName)).check(doesNotExist())
     }
 
-
     @Test
     fun launchedWithNoArgs_enterKeyword_showsNoResults() = runBlockingTest {
-        //Launch the fragment without args
+        // Launch the fragment without args
         HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, Bundle())
 
-        //Type a keyword
+        // Type a keyword
         onView(withId(R.id.search_keywords)).perform(typeText("NotTHere"), closeSoftKeyboard())
         onView(withId(R.id.search_btn)).perform(click())
 
-        //Check correct results are shown
+        // Check correct results are shown
         onView(withText(R.string.no_results_for_search)).check(matches(isDisplayed()))
     }
-
 
     @Test
     fun chooseCategoryAndEnterKeyword_showsNoResults() = runBlockingTest {
-        //Launch the fragment without args
+        // Launch the fragment without args
         HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, Bundle())
 
-        //Choose a category
+        // Choose a category
         onView(withId(R.id.search_categorySpinner)).perform(click())
         onData(`is`(sampleTrain1.categoryName)).perform(click())
 
-        //Type a keyword
+        // Type a keyword
         onView(withId(R.id.search_keywords)).perform(typeText("Blue"), closeSoftKeyboard())
         onView(withId(R.id.search_btn)).perform(click())
 
-        //Check correct results are shown
+        // Check correct results are shown
         onView(withText(R.string.no_results_for_search)).check(matches(isDisplayed()))
     }
 
-
     @Test
     fun chooseBrandAndEnterKeyword_showsNoResults() = runBlockingTest {
-        //Launch the fragment without args
+        // Launch the fragment without args
         HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, Bundle())
 
-        //Choose a brand
+        // Choose a brand
         onView(withId(R.id.search_brandSpinner)).perform(click())
         onData(`is`(sampleTrain1.brandName)).perform(click())
 
-        //Type a keyword
+        // Type a keyword
         onView(withId(R.id.search_keywords)).perform(typeText("BM"), closeSoftKeyboard())
         onView(withId(R.id.search_btn)).perform(click())
 
-        //Check correct results are shown
+        // Check correct results are shown
         onView(withText(R.string.no_results_for_search)).check(matches(isDisplayed()))
-
     }
 
     @Test
     fun chooseCategoryAndEnterKeyword_showsResults() = runBlockingTest {
-        //Launch the fragment without args
+        // Launch the fragment without args
         HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, Bundle())
 
-        //Choose a category
+        // Choose a category
         onView(withId(R.id.search_categorySpinner)).perform(click())
         onData(`is`(sampleTrain1.categoryName)).perform(click())
 
-        //Type a keyword
+        // Type a keyword
         onView(withId(R.id.search_keywords)).perform(typeText("rEd"), closeSoftKeyboard())
         onView(withId(R.id.search_btn)).perform(click())
 
-        //Check correct results are shown
+        // Check correct results are shown
         onView(withText(sampleTrain1.trainName)).check(matches(isDisplayed()))
         onView(withText(sampleTrain2.trainName)).check(doesNotExist())
-
     }
 
     @Test
     fun chooseBrandAndEnterKeyword_showsResults() = runBlockingTest {
-        //Launch the fragment without args
+        // Launch the fragment without args
         HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, Bundle())
 
-        //Choose a brand
+        // Choose a brand
         onView(withId(R.id.search_brandSpinner)).perform(click())
         onData(`is`(sampleTrain2.brandName)).perform(click())
 
-        //Type a keyword
+        // Type a keyword
         onView(withId(R.id.search_keywords)).perform(typeText("blue"), closeSoftKeyboard())
         onView(withId(R.id.search_btn)).perform(click())
 
-        //Check correct results are shown
+        // Check correct results are shown
         onView(withText(sampleTrain2.trainName)).check(matches(isDisplayed()))
         onView(withText(sampleTrain1.trainName)).check(doesNotExist())
-
     }
 
     @Test
     fun chooseCategoryBrandAndEnterKeyword_showsResults() =
         runBlockingTest {
-            //Launch the fragment without args
+            // Launch the fragment without args
             HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, Bundle())
 
-            //Choose a category
+            // Choose a category
             onView(withId(R.id.search_categorySpinner)).perform(click())
             onData(`is`(sampleTrain1.categoryName)).perform(click())
 
-            //Choose a brand
+            // Choose a brand
             onView(withId(R.id.search_brandSpinner)).perform(click())
             onData(`is`(sampleTrain1.brandName)).perform(click())
 
-            //Type a keyword
+            // Type a keyword
             onView(withId(R.id.search_keywords)).perform(typeText("red"), closeSoftKeyboard())
             onView(withId(R.id.search_btn)).perform(click())
 
-            //Check correct results are shown
+            // Check correct results are shown
             onView(withText(sampleTrain1.trainName)).check(matches(isDisplayed()))
             onView(withText(sampleTrain2.trainName)).check(doesNotExist())
         }
@@ -286,23 +276,22 @@ class FilterTrainFragmentTests {
     @Test
     fun chooseCategoryBrandAndEnterKeyword_showsNoResults() =
         runBlockingTest {
-            //Launch the fragment without args
+            // Launch the fragment without args
             HiltFragmentScenario.launchInContainer(FilterTrainFragment::class.java, Bundle())
 
-            //Choose a category
+            // Choose a category
             onView(withId(R.id.search_categorySpinner)).perform(click())
             onData(`is`(sampleTrain1.categoryName)).perform(click())
 
-            //Choose a brand
+            // Choose a brand
             onView(withId(R.id.search_brandSpinner)).perform(click())
             onData(`is`(sampleTrain2.brandName)).perform(click())
 
-            //Type a keyword
+            // Type a keyword
             onView(withId(R.id.search_keywords)).perform(typeText("red"), closeSoftKeyboard())
             onView(withId(R.id.search_btn)).perform(click())
 
-            //Check correct results are shown
+            // Check correct results are shown
             onView(withText(R.string.no_results_for_search)).check(matches(isDisplayed()))
         }
-
 }

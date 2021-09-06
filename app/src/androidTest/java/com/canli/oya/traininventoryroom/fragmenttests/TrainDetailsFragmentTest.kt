@@ -1,6 +1,5 @@
 package com.canli.oya.traininventoryroom.fragmenttests
 
-
 import android.os.Bundle
 import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -10,10 +9,6 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
-import com.canlioya.testresources.datasource.FakeBrandDataSource
-import com.canlioya.testresources.datasource.FakeCategoryDataSource
-import com.canlioya.testresources.datasource.FakeTrainDataSource
-import com.canlioya.testresources.datasource.sampleTrain1
 import com.canli.oya.traininventoryroom.di.DataSourceModule
 import com.canli.oya.traininventoryroom.di.IODispatcher
 import com.canli.oya.traininventoryroom.ui.trains.TrainDetailsFragment
@@ -22,6 +17,10 @@ import com.canlioya.core.data.IBrandCategoryDataSource
 import com.canlioya.core.data.ITrainDataSource
 import com.canlioya.core.models.Brand
 import com.canlioya.core.models.Category
+import com.canlioya.testresources.datasource.FakeBrandDataSource
+import com.canlioya.testresources.datasource.FakeCategoryDataSource
+import com.canlioya.testresources.datasource.FakeTrainDataSource
+import com.canlioya.testresources.datasource.sampleTrain1
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -52,16 +51,16 @@ class TrainDetailsFragmentTest {
     object FakeDataModule {
 
         @Provides
-        fun provideTrainDataSource() : ITrainDataSource = FakeTrainDataSource()
+        fun provideTrainDataSource(): ITrainDataSource = FakeTrainDataSource()
 
         @Provides
-        fun provideCategoryDataSource() : IBrandCategoryDataSource<Category> = FakeCategoryDataSource()
+        fun provideCategoryDataSource(): IBrandCategoryDataSource<Category> = FakeCategoryDataSource()
 
         @Provides
-        fun provideBrandDataSource() : IBrandCategoryDataSource<Brand> = FakeBrandDataSource()
+        fun provideBrandDataSource(): IBrandCategoryDataSource<Brand> = FakeBrandDataSource()
 
         @Provides
-        fun provideDatabase() : com.canlioya.local.TrainDatabase = Mockito.mock(com.canlioya.local.TrainDatabase::class.java)
+        fun provideDatabase(): com.canlioya.local.TrainDatabase = Mockito.mock(com.canlioya.local.TrainDatabase::class.java)
 
         @IODispatcher
         @Provides
@@ -71,11 +70,10 @@ class TrainDetailsFragmentTest {
     var hiltRule = HiltAndroidRule(this)
 
     @get:Rule
-    var rule = RuleChain.outerRule(hiltRule).
-    around(InstantTaskExecutorRule())
+    var rule = RuleChain.outerRule(hiltRule)
+        .around(InstantTaskExecutorRule())
 
     private lateinit var scenario: HiltFragmentScenario<TrainDetailsFragment, HiltFragmentScenario.EmptyFragmentActivity>
-
 
     @Before
     fun setUp() {
@@ -86,7 +84,7 @@ class TrainDetailsFragmentTest {
         scenario = HiltFragmentScenario.launchInContainer(TrainDetailsFragment::class.java, args)
     }
 
-    //Verify chosen train is displayed
+    // Verify chosen train is displayed
     @Test
     fun verifyWidgetsArePopulatedWithChosenTrain() {
         onView(withId(R.id.details_reference)).check(matches(withText(sampleTrain1.modelReference)))
@@ -98,12 +96,12 @@ class TrainDetailsFragmentTest {
         onView(withId(R.id.details_location)).check(matches(withText(sampleTrain1.location)))
     }
 
-    //Click on delete menu item and verify that a dialog shows up
+    // Click on delete menu item and verify that a dialog shows up
     @Test
     fun clickDeleteMenuItem_launchesAWarningDialog() {
-        //Click on delete menu item
+        // Click on delete menu item
         val deleteMenuItem = ActionMenuItem(null, 0, R.id.action_delete, 0, 0, null)
-        //Click on the edit menu item
+        // Click on the edit menu item
         scenario.onFragment { fragment ->
             fragment.onOptionsItemSelected(deleteMenuItem)
         }

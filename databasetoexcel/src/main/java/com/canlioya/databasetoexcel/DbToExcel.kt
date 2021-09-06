@@ -8,14 +8,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.apache.poi.hssf.usermodel.*
+import org.apache.poi.hssf.usermodel.HSSFWorkbook
+import org.apache.poi.hssf.usermodel.HSSFSheet
+import org.apache.poi.hssf.usermodel.HSSFRichTextString
+
 import java.io.FileOutputStream
 import java.util.*
 
 /** Credits : Used a large chunk of code from the library https://github.com/androidmads/SQLite2XL.
 I couldn't directly use the library because it was not updated for changes in the Android file system */
 
-class DbToExcel(context: Context, dbName: String, uri : Uri) {
+class DbToExcel(context: Context, dbName: String, uri: Uri) {
 
     private var database: SQLiteDatabase? = null
 
@@ -58,7 +61,7 @@ class DbToExcel(context: Context, dbName: String, uri : Uri) {
     }
 
     @Throws(Exception::class)
-    private fun exportTables(tables: List<String>){
+    private fun exportTables(tables: List<String>) {
         val workbook = HSSFWorkbook()
         for (i in tables.indices) {
             if (tables[i] != "android_metadata") {
@@ -88,14 +91,14 @@ class DbToExcel(context: Context, dbName: String, uri : Uri) {
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 exportTables(tables)
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     listener?.onCompleted()
                 }
             } catch (e: Exception) {
                 if (database?.isOpen == true) {
                     database?.close()
                 }
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     listener?.onError(e)
                 }
             }
@@ -149,5 +152,4 @@ class DbToExcel(context: Context, dbName: String, uri : Uri) {
         fun onCompleted()
         fun onError(e: Exception?)
     }
-
 }

@@ -8,8 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.canli.oya.traininventoryroom.R
 import timber.log.Timber
 
-
-class SwipeToDeleteCallback(val context : Context, private val adapter : ISwipeableAdapter) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+class SwipeToDeleteCallback(val context: Context, private val adapter: ISwipeableAdapter) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
 
     val background = ColorDrawable(context.resources.getColor(R.color.colorAccent))
 

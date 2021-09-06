@@ -23,7 +23,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.time.LocalDate
 import java.util.*
 
 @ExperimentalCoroutinesApi
@@ -75,7 +74,7 @@ class TrainDaoTests {
     @Test
     fun insertTrain_verifyInserted() = runBlockingTest {
         //Then insert a train
-        val trainToInsert = com.canlioya.local.entities.TrainEntity(
+        val trainToInsert = TrainEntity(
             trainId = 2,
             trainName = "Red train",
             brandName = firstBrand.brandName,
@@ -90,7 +89,7 @@ class TrainDaoTests {
         val insertedTrain = database.trainDao().getChosenTrain(trainToInsert.trainId)
 
         //Verify it has expected values
-        assertThat(insertedTrain as? com.canlioya.local.entities.TrainEntity, notNullValue())
+        assertThat(insertedTrain as? TrainEntity, notNullValue())
         assertThat(insertedTrain.trainId, `is`(trainToInsert.trainId))
         assertThat(insertedTrain.trainName, `is`(trainToInsert.trainName))
         assertThat(insertedTrain.categoryName, `is`(trainToInsert.categoryName))

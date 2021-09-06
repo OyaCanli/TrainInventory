@@ -21,19 +21,17 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-
 @AndroidEntryPoint
 class AddCategoryFragment : Fragment(R.layout.fragment_add_category) {
 
     private val binding by viewBinding(FragmentAddCategoryBinding::bind)
 
-    private val viewModel : CategoryViewModel by viewModels({requireParentFragment()})
+    private val viewModel: CategoryViewModel by viewModels({ requireParentFragment() })
 
     private var mCategoryId: Int = 0
     private var isEditCase: Boolean = false
 
-    private var categoryList : List<String?> = ArrayList()
-
+    private var categoryList: List<String?> = ArrayList()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,7 +39,7 @@ class AddCategoryFragment : Fragment(R.layout.fragment_add_category) {
         binding.addCategoryEditCatName.requestFocus()
         binding.addCategorySaveBtn.setOnClickListener { saveCategory() }
 
-        if (arguments?.getBoolean(IS_EDIT) == true) { //This is the "edit" case
+        if (arguments?.getBoolean(IS_EDIT) == true) { // This is the "edit" case
             isEditCase = true
             viewModel.chosenItem.observe(viewLifecycleOwner, { categoryEntry ->
                 categoryEntry?.let {
@@ -59,36 +57,36 @@ class AddCategoryFragment : Fragment(R.layout.fragment_add_category) {
     }
 
     private fun saveCategory() {
-        //Validate category name
+        // Validate category name
         val categoryName = binding.addCategoryEditCatName.text.toString().trim()
         if (categoryName.isBlank()) {
             context?.shortToast(getString(R.string.category_cannot_be_empty))
             return
         }
 
-        if(categoryList.contains(categoryName)){
+        if (categoryList.contains(categoryName)) {
             context?.shortToast(getString(R.string.category_already_exists))
             return
         }
 
-        if(isEditCase){
+        if (isEditCase) {
             val categoryToUpdate = Category(mCategoryId, categoryName)
             viewModel.updateItem(categoryToUpdate)
         } else {
             val newCategory = Category(categoryName = categoryName)
-            //Insert the category by the intermediance of view model
+            // Insert the category by the intermediance of view model
             viewModel.insertItem(newCategory)
         }
 
         clearFocusAndHideSoftKeyboard()
 
-        if(isEditCase || parentFragment is AddTrainFragment){
+        if (isEditCase || parentFragment is AddTrainFragment) {
             removeFragment()
         }
     }
 
     private fun clearFocusAndHideSoftKeyboard() {
-        //Clear focus and hide soft keyboard
+        // Clear focus and hide soft keyboard
         binding.addCategoryEditCatName.text = null
         val focusedView = activity?.currentFocus
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -97,8 +95,8 @@ class AddCategoryFragment : Fragment(R.layout.fragment_add_category) {
     }
 
     private fun removeFragment() {
-        val currentInstance = if(parentFragment is AddTrainFragment) parentFragmentManager.findFragmentById(R.id.childFragContainer)
-                            else parentFragmentManager.findFragmentById(R.id.list_addFrag_container)
+        val currentInstance = if (parentFragment is AddTrainFragment) parentFragmentManager.findFragmentById(R.id.childFragContainer)
+        else parentFragmentManager.findFragmentById(R.id.list_addFrag_container)
 
         parentFragmentManager.commit {
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
@@ -107,7 +105,7 @@ class AddCategoryFragment : Fragment(R.layout.fragment_add_category) {
             }
         }
 
-        if(parentFragment is CategoryListFragment) {
+        if (parentFragment is CategoryListFragment) {
             (parentFragment as CategoryListFragment).addMenuItem?.setMenuIcon(R.drawable.avd_plus_to_cross)
         }
     }

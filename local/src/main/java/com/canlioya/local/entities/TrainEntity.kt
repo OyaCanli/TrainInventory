@@ -7,15 +7,19 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.canlioya.core.models.Train
 
-
-@Entity(tableName = "trains",
-    foreignKeys = [ForeignKey(entity = BrandEntity::class,
-        parentColumns = ["brandName"], childColumns = ["brandName"],
-        onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.RESTRICT
-    ),
-        ForeignKey(entity = CategoryEntity::class,
+@Entity(
+    tableName = "trains",
+    foreignKeys = [
+        ForeignKey(
+            entity = BrandEntity::class,
+            parentColumns = ["brandName"], childColumns = ["brandName"],
+            onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.RESTRICT
+        ),
+        ForeignKey(
+            entity = CategoryEntity::class,
             parentColumns = ["categoryName"], childColumns = ["categoryName"], onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.RESTRICT
-        )],
+        )
+    ],
     indices = [Index(value = ["brandName"]), Index(value = ["categoryName"])]
 )
 @Keep
@@ -30,7 +34,8 @@ data class TrainEntity(
     var description: String? = null,
     var location: String? = null,
     var scale: String? = null,
-    var dateOfDeletion: Long? = null)
+    var dateOfDeletion: Long? = null
+)
 
 fun TrainEntity.toTrain() = Train(
     this.trainId,
@@ -46,7 +51,8 @@ fun TrainEntity.toTrain() = Train(
     this.dateOfDeletion
 )
 
-fun Train.toTrainEntity() = TrainEntity(this.trainId,
+fun Train.toTrainEntity() = TrainEntity(
+    this.trainId,
     this.trainName,
     this.modelReference,
     this.brandName,
@@ -56,4 +62,5 @@ fun Train.toTrainEntity() = TrainEntity(this.trainId,
     this.description,
     this.location,
     this.scale,
-    this.dateOfDeletion)
+    this.dateOfDeletion
+)

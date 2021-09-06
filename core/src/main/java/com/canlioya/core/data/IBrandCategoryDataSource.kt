@@ -4,9 +4,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface IBrandCategoryDataSource<T : Any> {
 
-    fun getAllItems() : Flow<List<T>>
+    fun getAllItems(): Flow<List<T>>
 
-    suspend fun getItemNames() : List<String>
+    suspend fun getItemNames(): List<String>
 
     suspend fun insertItem(item: T)
 

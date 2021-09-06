@@ -1,15 +1,14 @@
 package com.canlioya.local.source
 
-import com.canlioya.local.TrainDatabase
 import com.canlioya.core.data.IBrandCategoryDataSource
 import com.canlioya.core.models.Brand
+import com.canlioya.local.TrainDatabase
 import com.canlioya.local.entities.toBrandEntity
 import com.canlioya.local.entities.toBrandList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-
-class BrandDataSource (private val database: TrainDatabase) :
+class BrandDataSource(private val database: TrainDatabase) :
     IBrandCategoryDataSource<Brand> {
 
     override fun getAllItems(): Flow<List<Brand>> {

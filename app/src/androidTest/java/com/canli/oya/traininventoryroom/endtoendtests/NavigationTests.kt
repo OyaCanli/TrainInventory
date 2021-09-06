@@ -11,11 +11,11 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.canli.oya.traininventoryroom.R
-import com.canlioya.local.TrainDatabase
 import com.canli.oya.traininventoryroom.di.AppModule
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
 import com.canli.oya.traininventoryroom.utils.hasSelectedItem
 import com.canli.oya.traininventoryroom.utils.withIconResource
+import com.canlioya.local.TrainDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,9 +42,9 @@ class NavigationTests {
 
         @Singleton
         @Provides
-        fun provideDatabase() : com.canlioya.local.TrainDatabase = Room.inMemoryDatabaseBuilder(
+        fun provideDatabase(): TrainDatabase = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
-            com.canlioya.local.TrainDatabase::class.java
+            TrainDatabase::class.java
         ).build()
     }
 
@@ -57,36 +57,36 @@ class NavigationTests {
     }
 
     @Test
-    fun bottomNavigation_correctItemsAreSetSelected(){
+    fun bottomNavigation_correctItemsAreSetSelected() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
 
-        //Verify train item is selected by default and train list fragment is on screen
+        // Verify train item is selected by default and train list fragment is on screen
         onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.trainListFragment)))
         onView(withText(R.string.all_trains)).check(matches(withParent(withId(R.id.toolbar))))
 
-        //Click on search menu item and verify that filter frag is shown and search menu item seems selected
+        // Click on search menu item and verify that filter frag is shown and search menu item seems selected
         onView(withId(R.id.filterTrainFragment)).perform(click())
         onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.filterTrainFragment)))
         onView(withText(R.string.search_trains)).check(matches(withParent(withId(R.id.toolbar))))
 
-        //Click on brands menu item and verify that brands frag is shown and brand menu item seems selected
+        // Click on brands menu item and verify that brands frag is shown and brand menu item seems selected
         onView(withId(R.id.brandListFragment)).perform(click())
         onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.brandListFragment)))
         onView(withText(R.string.all_brands)).check(matches(withParent(withId(R.id.toolbar))))
 
-        //Click on categories menu item and verify that trains frag is shown and train menu item seems selected
+        // Click on categories menu item and verify that trains frag is shown and train menu item seems selected
         onView(withId(R.id.categoryListFragment)).perform(click())
         onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.categoryListFragment)))
         onView(withText(R.string.all_categories)).check(matches(withParent(withId(R.id.toolbar))))
 
-        //Press back and verify that we are in home screen and train menu item is selected
+        // Press back and verify that we are in home screen and train menu item is selected
         Espresso.pressBack()
         onView(withId(R.id.navigation)).check(matches(hasSelectedItem(R.id.trainListFragment)))
         onView(withText(R.string.all_trains)).check(matches(withParent(withId(R.id.toolbar))))
 
         activityScenario.close()
     }
-    
+
     @Test
     fun clickedPlusIcon_BecomesCancelIcon() = runBlocking {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
@@ -98,11 +98,11 @@ class NavigationTests {
         onView(withId(R.id.action_add)).perform(click())
         onView(withId(R.id.action_add)).check(matches(withIconResource(R.drawable.avd_cross_to_plus)))
 
-        //Then switch to brands frag and verify that + icon is shown on the action menu
+        // Then switch to brands frag and verify that + icon is shown on the action menu
         onView(withId(R.id.brandListFragment)).perform(click())
         onView(withId(R.id.action_add)).check(matches(withIconResource(R.drawable.avd_plus_to_cross)))
 
-        //Click on plus item and verify it becomes x. Then click back and verify that it return back to plus
+        // Click on plus item and verify it becomes x. Then click back and verify that it return back to plus
         onView(withId(R.id.action_add)).perform(click())
         onView(withId(R.id.action_add)).check(matches(withIconResource(R.drawable.avd_cross_to_plus)))
         onView(withId(R.id.action_add)).perform(click())

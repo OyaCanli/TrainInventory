@@ -32,7 +32,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-abstract class BrandCategoryBaseFrag<T : Any> : Fragment(R.layout.fragment_list), SwipeDeleteListener<T> {
+abstract class BrandCategoryBaseFrag<T : Any> : Fragment(R.layout.fragment_list),
+    SwipeDeleteListener<T> {
 
     protected lateinit var viewModel: BCBaseViewModel<T>
 
@@ -63,7 +64,7 @@ abstract class BrandCategoryBaseFrag<T : Any> : Fragment(R.layout.fragment_list)
 
         lifecycleScope.launch {
             viewModel.allItems.collectLatest { entries ->
-                if(entries.isEmpty()){
+                if (entries.isEmpty()) {
                     Timber.d("No items FOUND")
                     binding.showEmpty(getEmptyMessage())
                     if (!viewModel.isChildFragVisible) {
@@ -88,7 +89,7 @@ abstract class BrandCategoryBaseFrag<T : Any> : Fragment(R.layout.fragment_list)
 
     abstract fun getTitle(): String
 
-    abstract fun getEmptyMessage() : Int
+    abstract fun getEmptyMessage(): Int
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -205,35 +206,41 @@ abstract class BrandCategoryBaseFrag<T : Any> : Fragment(R.layout.fragment_list)
         Timber.d("delete is confirmed")
         lifecycleScope.launch {
             //First check whether this item is used by trains table
-            val isActivelyUsed = withContext(Dispatchers.IO) { viewModel.isThisItemUsed(itemToDelete) }
-            val isUsedInTrashedItems = withContext(Dispatchers.IO) { viewModel.isThisItemUsedInTrash(itemToDelete) }
-            if (isActivelyUsed) {
-                // If it is used, show a warning and don't let user delete this
-                context?.shortToast(R.string.cannot_erase_category)
-                adapter.cancelDelete(position)
-            } else if(isUsedInTrashedItems) {
-                val builder = AlertDialog.Builder(requireActivity(), R.style.alert_dialog_style)
-                with(builder) {
-                    setMessage(getString(R.string.category_used_by_trains_in_trash))
-                    setPositiveButton(R.string.yes_delete) { _, _ ->
-                        GlobalScope.launch {
-                            withContext(Dispatchers.IO) {
-                                viewModel.deleteTrainsInTrashWithThisItem(itemToDelete)
-                                viewModel.deleteItem(itemToDelete)
-                            }
-                            adapter.itemDeleted(position)
-                        }
-                    }
-                    setNegativeButton(R.string.cancel) { _, _ ->
-                        adapter.cancelDelete(position)
-                    }
-                    create()
-                    show()
+            val isActivelyUsed =
+                withContext(Dispatchers.IO) { viewModel.isThisItemUsed(itemToDelete) }
+            val isUsedInTrashedItems =
+                withContext(Dispatchers.IO) { viewModel.isThisItemUsedInTrash(itemToDelete) }
+            when {
+                isActivelyUsed -> {
+                    // If it is used, show a warning and don't let user delete this
+                    context?.shortToast(R.string.cannot_erase_category)
+                    adapter.cancelDelete(position)
                 }
-            } else {
-                //If it is not used, erase the item
-                viewModel.deleteItem(itemToDelete)
-                adapter.itemDeleted(position)
+                isUsedInTrashedItems -> {
+                    val builder = AlertDialog.Builder(requireActivity(), R.style.alert_dialog_style)
+                    with(builder) {
+                        setMessage(getString(R.string.category_used_by_trains_in_trash))
+                        setPositiveButton(R.string.yes_delete) { _, _ ->
+                            GlobalScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    viewModel.deleteTrainsInTrashWithThisItem(itemToDelete)
+                                    viewModel.deleteItem(itemToDelete)
+                                }
+                                adapter.itemDeleted(position)
+                            }
+                        }
+                        setNegativeButton(R.string.cancel) { _, _ ->
+                            adapter.cancelDelete(position)
+                        }
+                        create()
+                        show()
+                    }
+                }
+                else -> {
+                    //If it is not used, erase the item
+                    viewModel.deleteItem(itemToDelete)
+                    adapter.itemDeleted(position)
+                }
             }
         }
     }

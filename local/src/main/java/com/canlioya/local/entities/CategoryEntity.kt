@@ -7,8 +7,9 @@ import com.canlioya.core.models.Category
 
 @Entity(tableName = "categories", indices = [Index(value = ["categoryName"], unique = true)])
 data class CategoryEntity(
-    @field:PrimaryKey(autoGenerate = true) var categoryId : Int = 0,
-    var categoryName: String)
+    @field:PrimaryKey(autoGenerate = true) var categoryId: Int = 0,
+    var categoryName: String
+)
 
 fun CategoryEntity.toCategory() =
     Category(this.categoryId, this.categoryName)

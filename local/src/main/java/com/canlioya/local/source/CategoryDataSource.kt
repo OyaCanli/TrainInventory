@@ -1,14 +1,12 @@
 package com.canlioya.local.source
 
-
-import com.canlioya.local.TrainDatabase
 import com.canlioya.core.data.IBrandCategoryDataSource
 import com.canlioya.core.models.Category
+import com.canlioya.local.TrainDatabase
 import com.canlioya.local.entities.toCategoryEntity
 import com.canlioya.local.entities.toCategoryList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-
 
 class CategoryDataSource(private val database: TrainDatabase) :
     IBrandCategoryDataSource<Category> {

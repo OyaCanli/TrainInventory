@@ -13,9 +13,6 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.canli.oya.traininventoryroom.R
-import com.canlioya.testresources.datasource.sampleBrand1
-import com.canlioya.testresources.datasource.sampleCategory1
-import com.canlioya.testresources.datasource.sampleTrain1
 import com.canli.oya.traininventoryroom.di.AppModule
 import com.canli.oya.traininventoryroom.ui.main.MainActivity
 import com.canli.oya.traininventoryroom.utils.clickOnChildWithId
@@ -24,6 +21,9 @@ import com.canli.oya.traininventoryroom.utils.withIconResource
 import com.canlioya.local.entities.toBrandEntity
 import com.canlioya.local.entities.toCategoryEntity
 import com.canlioya.local.entities.toTrainEntity
+import com.canlioya.testresources.datasource.sampleBrand1
+import com.canlioya.testresources.datasource.sampleCategory1
+import com.canlioya.testresources.datasource.sampleTrain1
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -55,7 +55,7 @@ class CategoryTests {
 
         @Singleton
         @Provides
-        fun provideDatabase() : com.canlioya.local.TrainDatabase = Room.inMemoryDatabaseBuilder(
+        fun provideDatabase(): com.canlioya.local.TrainDatabase = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             com.canlioya.local.TrainDatabase::class.java
         ).build()
@@ -75,33 +75,31 @@ class CategoryTests {
     val sampleCategoryName = "New category"
     val updateCategoryName = "Updated name"
 
-
     @After
     fun closeDb() = database.close()
-
 
     @Test
     fun clickAddCategory_addACategory_isAddedToTheCategoryList() = runBlockingTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
 
-        //Click + menu item and verify child frag becomes visible with empty fields
+        // Click + menu item and verify child frag becomes visible with empty fields
         onView(withId(R.id.categoryListFragment)).perform(click())
         onView(withId(R.id.action_add)).perform(click())
         onView(withId(R.id.addCategory_editCatName)).check(matches(isDisplayed()))
         onView(withId(R.id.addCategory_editCatName)).check(matches(withText("")))
         onView(withId(R.id.addCategory_saveBtn)).check(matches(isDisplayed()))
-        //Verify + menu icon turned to a cancel icon
+        // Verify + menu icon turned to a cancel icon
         onView(withId(R.id.action_add)).check(matches(withIconResource(R.drawable.avd_cross_to_plus)))
 
         /*Add a category, click save and verify that edittext is cleared
         and new category is added to the list*/
         onView(withId(R.id.addCategory_editCatName)).perform(typeText(sampleCategoryName))
         onView(withId(R.id.addCategory_saveBtn)).perform(click())
-        //Verify edittext is cleared after category is saved
+        // Verify edittext is cleared after category is saved
         onView(withId(R.id.addCategory_editCatName)).check(matches(withText("")))
         onView(withText(sampleCategoryName)).check(matches(isDisplayed()))
 
-        //Click cancel button and verify add category frag is removed
+        // Click cancel button and verify add category frag is removed
         onView(withId(R.id.action_add)).perform(click())
         onView(withId(R.id.addCategory_editCatName)).check(doesNotExist())
 
@@ -110,27 +108,27 @@ class CategoryTests {
 
     @Test
     fun editAndUpdateCategory_categoryIsUpdatedOnTheList() = runBlocking {
-        //Insert a sample category to the database
+        // Insert a sample category to the database
         val sampleCategory =
             com.canlioya.local.entities.CategoryEntity(categoryName = sampleCategoryName)
         database.categoryDao().insert(sampleCategory)
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
 
-        //Click edit on the item and verify AddCategory becomes visible with correct fields
+        // Click edit on the item and verify AddCategory becomes visible with correct fields
         onView(withId(R.id.categoryListFragment)).perform(click())
         onView(withId(R.id.list))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickOnChildWithId(R.id.category_item_edit_icon)))
+            .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickOnChildWithId(R.id.category_item_edit_icon)))
         onView(withId(R.id.addCategory_editCatName)).check(matches(isDisplayed()))
         onView(withId(R.id.addCategory_editCatName)).check(matches(withText(sampleCategoryName)))
-        //Verify + menu icon turned to a cancel icon
+        // Verify + menu icon turned to a cancel icon
         onView(withId(R.id.action_add)).check(matches(withIconResource(R.drawable.avd_cross_to_plus)))
 
-        //Edit the item
+        // Edit the item
         onView(withId(R.id.addCategory_editCatName)).perform(replaceText(updateCategoryName))
         onView(withId(R.id.addCategory_saveBtn)).perform(click())
         onView(withId(R.id.action_add)).perform(click())
-        //Verify the category name on the list is updated
+        // Verify the category name on the list is updated
         onView(withText(sampleCategoryName)).check(doesNotExist())
         onView(withText(updateCategoryName)).check(matches(isDisplayed()))
 
@@ -141,17 +139,17 @@ class CategoryTests {
     verify that trains frag is launched and correct results are shown*/
     @Test
     fun clickTrainIconOnACategory_trainsFromThatCategoryShown() = runBlocking {
-        //Insert sample data to the database
+        // Insert sample data to the database
         database.categoryDao().insert(sampleCategory1.toCategoryEntity())
         database.brandDao().insert(sampleBrand1.toBrandEntity())
         database.trainDao().insert(sampleTrain1.toTrainEntity())
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
 
-        //Click on train icon on the sample category
+        // Click on train icon on the sample category
         onView(withId(R.id.categoryListFragment)).perform(click())
         onView(withId(R.id.list))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickOnChildWithId(R.id.category_item_train_icon)))
+            .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickOnChildWithId(R.id.category_item_train_icon)))
 
         onView(withText(R.string.search_trains)).check(matches(withParent(withId(R.id.toolbar))))
         onView(withText(sampleTrain1.categoryName)).check(matches(isDisplayed()))

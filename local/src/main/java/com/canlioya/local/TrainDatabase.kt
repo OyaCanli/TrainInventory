@@ -13,8 +13,10 @@ import com.canlioya.local.entities.BrandEntity
 import com.canlioya.local.entities.CategoryEntity
 import com.canlioya.local.entities.TrainEntity
 
-@Database(entities = [TrainEntity::class, BrandEntity::class, CategoryEntity::class],
-        version = 5, exportSchema = false)
+@Database(
+    entities = [TrainEntity::class, BrandEntity::class, CategoryEntity::class],
+    version = 5, exportSchema = false
+)
 abstract class TrainDatabase : RoomDatabase() {
 
     abstract fun trainDao(): TrainDao
@@ -36,13 +38,14 @@ abstract class TrainDatabase : RoomDatabase() {
 
         fun getInstance(context: Context): TrainDatabase {
             return sInstance ?: synchronized(this) {
-                    sInstance ?: Room.databaseBuilder(context.applicationContext,
-                            TrainDatabase::class.java, DATABASE_NAME
-                    )
-                            .addMigrations(MIGRATION_4_5)
-                            .build()
-                            .also { sInstance = it }
-                }
+                sInstance ?: Room.databaseBuilder(
+                    context.applicationContext,
+                    TrainDatabase::class.java, DATABASE_NAME
+                )
+                    .addMigrations(MIGRATION_4_5)
+                    .build()
+                    .also { sInstance = it }
+            }
         }
     }
 }

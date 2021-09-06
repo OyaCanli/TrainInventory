@@ -12,12 +12,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-abstract class BCBaseViewModel<T : Any>(private val interactors: BrandCategoryInteractors<T>,
-                                        private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
+abstract class BCBaseViewModel<T : Any>(
+    private val interactors: BrandCategoryInteractors<T>,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+) : ViewModel() {
 
     var allItems: Flow<List<T>> = interactors.getAllItems()
-
-    //todo: val emptyMessage = if(dataSource is BrandDataSource) R.string.no_brands_found else R.string.no_categories_found
 
     var isChildFragVisible: Boolean = false
 
@@ -34,14 +34,14 @@ abstract class BCBaseViewModel<T : Any>(private val interactors: BrandCategoryIn
         viewModelScope.launch(ioDispatcher) {
             try {
                 interactors.addItem(item)
-            } catch (e : SQLiteConstraintException){
+            } catch (e: SQLiteConstraintException) {
                 Timber.e("Same category exists")
             }
         }
     }
 
     suspend fun deleteItem(item: T) {
-        viewModelScope.launch(ioDispatcher){
+        viewModelScope.launch(ioDispatcher) {
             interactors.deleteItem(item)
         }
     }
@@ -58,8 +58,7 @@ abstract class BCBaseViewModel<T : Any>(private val interactors: BrandCategoryIn
         return interactors.isThisItemUsedInTrash(item)
     }
 
-    suspend fun deleteTrainsInTrashWithThisItem(item: T){
+    suspend fun deleteTrainsInTrashWithThisItem(item: T) {
         interactors.deleteTrainsInTrashWithThisItem(item)
     }
-
 }

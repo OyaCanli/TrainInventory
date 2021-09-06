@@ -47,7 +47,7 @@ class TrainViewModelTest{
     fun getChosenTrain_returnCorrectTrain() {
         runBlockingTest {
             val chosenTrain = trainViewModel.getChosenTrain(sampleTrain1.trainId).getOrAwaitValue()
-            assertThat(chosenTrain?.trainName, `is`(sampleTrain1.trainName))
+            assertThat(chosenTrain.trainName, `is`(sampleTrain1.trainName))
         }
     }
 

@@ -7,8 +7,8 @@ import com.canli.oya.traininventoryroom.ui.base.BaseListAdapter
 import com.canli.oya.traininventoryroom.ui.base.SwipeDeleteListener
 import com.canlioya.core.models.Category
 
-class CategoryAdapter (context: Context, clickListener: CategoryItemClickListener, swipeListener: SwipeDeleteListener<Category>)
-    : BaseListAdapter<Category, CategoryItemClickListener>(context, clickListener, swipeListener){
+class CategoryAdapter(context: Context, clickListener: CategoryItemClickListener, swipeListener: SwipeDeleteListener<Category>) :
+    BaseListAdapter<Category, CategoryItemClickListener>(context, clickListener, swipeListener) {
 
     override fun getLayoutId(): Int = R.layout.item_category
 }

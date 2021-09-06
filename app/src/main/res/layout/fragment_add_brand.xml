@@ -88,6 +88,7 @@
             <ImageButton
                 android:id="@+id/addBrand_saveBtn"
                 style="@style/buttonStyle"
+                android:contentDescription="@string/cd_save_brand"
                 android:layout_margin="@dimen/margin_standard"
                 android:layout_marginBottom="@dimen/half_margin"
                 app:layout_constraintBottom_toBottomOf="parent"

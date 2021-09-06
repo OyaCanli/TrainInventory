@@ -5,8 +5,8 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import com.canlioya.local.entities.TrainEntity
 import com.canlioya.core.models.TrainMinimal
+import com.canlioya.local.entities.TrainEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -16,7 +16,7 @@ interface TrainDao : BaseDao<TrainEntity> {
     fun observeAllTrains(): PagingSource<Int, TrainMinimal>
 
     @Query("SELECT * FROM trains WHERE dateOfDeletion IS NULL ORDER BY trainName")
-    suspend fun getAllTrains() : List<TrainEntity>
+    suspend fun getAllTrains(): List<TrainEntity>
 
     @Query("SELECT trainId FROM trains WHERE dateOfDeletion IS NULL AND trainName = :trainName LIMIT 1")
     suspend fun isThisTrainNameUsed(trainName: String): Int?
@@ -55,13 +55,13 @@ interface TrainDao : BaseDao<TrainEntity> {
     suspend fun searchInTrains(query: SupportSQLiteQuery): List<TrainMinimal>
 
     @Query("DELETE FROM trains WHERE trainId = :trainId")
-    suspend fun deletePermanently(trainId : Int)
+    suspend fun deletePermanently(trainId: Int)
 
     @Query("UPDATE trains SET dateOfDeletion = :dateOfDeletion WHERE trainId = :trainId")
     suspend fun sendToThrash(trainId: Int, dateOfDeletion: Long)
 
     @Query("UPDATE trains SET dateOfDeletion = NULL WHERE trainId = :trainId")
-    suspend fun restoreFromThrash(trainId : Int)
+    suspend fun restoreFromThrash(trainId: Int)
 
     @Query("SELECT trainId, trainName, modelReference, brandName, categoryName, imageUri FROM trains WHERE dateOfDeletion IS NOT NULL")
     fun observeAllTrainsInTrash(): Flow<List<TrainMinimal>>
