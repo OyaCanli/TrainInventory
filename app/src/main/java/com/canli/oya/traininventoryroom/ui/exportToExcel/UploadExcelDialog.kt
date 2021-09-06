@@ -13,14 +13,14 @@ import com.canli.oya.traininventoryroom.databinding.UploadExcelBinding
 import com.canli.oya.traininventoryroom.utils.EXCEL_FILE_URI
 import com.canli.oya.traininventoryroom.utils.shortToast
 
-
 class UploadExcelDialog : DialogFragment() {
 
     private lateinit var binding: UploadExcelBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
-                inflater, R.layout.dialog_upload_excel, container, false)
+            inflater, R.layout.dialog_upload_excel, container, false
+        )
 
         val uriString = arguments?.getString(EXCEL_FILE_URI)
 

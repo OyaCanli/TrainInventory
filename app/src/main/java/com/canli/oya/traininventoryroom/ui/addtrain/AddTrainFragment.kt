@@ -2,7 +2,6 @@ package com.canli.oya.traininventoryroom.ui.addtrain
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.net.Uri
 import android.os.Build

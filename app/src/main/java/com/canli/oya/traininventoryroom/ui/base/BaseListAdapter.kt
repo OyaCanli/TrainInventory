@@ -16,12 +16,11 @@ import com.canlioya.core.models.Brand
 import com.canlioya.core.models.Category
 import com.canlioya.core.models.Train
 
-
 const val VIEW_TYPE_NORMAL = 1
 const val VIEW_TYPE_DELETE = 2
 
-abstract class BaseListAdapter<T : Any, L>(val context: Context, private val itemClickListener: L?, private val swipeListener: SwipeDeleteListener<T>)
-    : ListAdapter<T, RecyclerView.ViewHolder>(BaseDiffCallback<T>()), ISwipeableAdapter {
+abstract class BaseListAdapter<T : Any, L>(val context: Context, private val itemClickListener: L?, private val swipeListener: SwipeDeleteListener<T>) :
+    ListAdapter<T, RecyclerView.ViewHolder>(BaseDiffCallback<T>()), ISwipeableAdapter {
 
     private val swipedItems = mutableListOf<Int>()
     private var itemHeight = 0
@@ -30,11 +29,13 @@ abstract class BaseListAdapter<T : Any, L>(val context: Context, private val ite
         val layoutInflater = LayoutInflater.from(parent.context)
         return if (viewType == VIEW_TYPE_NORMAL) {
             val binding = DataBindingUtil.inflate<ViewDataBinding>(
-                    layoutInflater, getLayoutId(), parent, false)
+                layoutInflater, getLayoutId(), parent, false
+            )
             ItemViewHolder<T, L>(binding)
         } else {
             val binding = DataBindingUtil.inflate<ItemConfirmDeleteBinding>(
-                    layoutInflater, R.layout.item_confirm_delete, parent, false)
+                layoutInflater, R.layout.item_confirm_delete, parent, false
+            )
             DeleteItemViewHolder<T>(binding)
         }
     }
@@ -44,7 +45,7 @@ abstract class BaseListAdapter<T : Any, L>(val context: Context, private val ite
         if (getItemViewType(position) == VIEW_TYPE_NORMAL) {
             (holder as ItemViewHolder<T, L>).bind(currentItem, itemClickListener, position)
         } else {
-            if(itemHeight == 0) itemHeight = getItemHeightForType(currentItem, context)
+            if (itemHeight == 0) itemHeight = getItemHeightForType(currentItem, context)
             (holder as DeleteItemViewHolder<T>).bind(currentItem, swipeListener, position, itemHeight)
         }
     }
@@ -80,7 +81,6 @@ abstract class BaseListAdapter<T : Any, L>(val context: Context, private val ite
     }
 
     abstract fun getLayoutId(): Int
-
 }
 
 class ItemViewHolder<T, L>(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -108,7 +108,6 @@ class DeleteItemViewHolder<T>(val binding: ItemConfirmDeleteBinding) : RecyclerV
         }
         binding.executePendingBindings()
     }
-
 }
 
 open class BaseDiffCallback<T> : DiffUtil.ItemCallback<T>() {
@@ -117,13 +116,13 @@ open class BaseDiffCallback<T> : DiffUtil.ItemCallback<T>() {
     }
 
     override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
-        if(oldItem is Train && newItem is Train){
+        if (oldItem is Train && newItem is Train) {
             return oldItem as Train == newItem as Train
         }
-        if(oldItem is Brand && newItem is Brand){
+        if (oldItem is Brand && newItem is Brand) {
             return oldItem as Brand == newItem as Brand
         }
-        if(oldItem is Category && newItem is Category){
+        if (oldItem is Category && newItem is Category) {
             return oldItem as Category == newItem as Category
         }
         return false
@@ -134,4 +133,3 @@ interface SwipeDeleteListener<T> {
     fun onDeleteConfirmed(itemToDelete: T, position: Int)
     fun onDeleteCanceled(position: Int)
 }
-

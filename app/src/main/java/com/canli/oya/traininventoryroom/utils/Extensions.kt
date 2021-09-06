@@ -16,7 +16,7 @@ import com.canli.oya.traininventoryroom.R
 import com.canli.oya.traininventoryroom.ui.base.setMenuIcon
 import timber.log.Timber
 
-private var toast : Toast? = null
+private var toast: Toast? = null
 
 fun Context.shortToast(message: String) {
     toast?.cancel()
@@ -51,7 +51,7 @@ fun Context.longToast(@StringRes message: Int) {
 }
 
 fun Activity.clearFocusAndHideKeyboard() {
-    //This is for closing soft keyboard if user navigates to another fragment while keyboard was open
+    // This is for closing soft keyboard if user navigates to another fragment while keyboard was open
     val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     val focusedView = currentFocus
     focusedView?.run {

@@ -20,6 +20,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity android:name="com.canli.oya.traininventoryroom.ui.main.MainActivity"
+            android:exported="true"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,16 +31,6 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
-        <provider
-            android:name=".ui.exportToExcel.TrainInventoryFileProvider"
-            android:authorities="com.canli.oya.traininventoryroom.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
-        </provider>
     </application>
 
 </manifest>

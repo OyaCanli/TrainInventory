@@ -5,7 +5,6 @@ import androidx.annotation.StringRes
 import com.canli.oya.traininventoryroom.databinding.FragmentFilterTrainBinding
 import com.canli.oya.traininventoryroom.databinding.FragmentListBinding
 
-
 fun FragmentListBinding.showLoading() {
     loadingIndicator.visibility = View.VISIBLE
     emptyImage.visibility = View.GONE
@@ -49,4 +48,3 @@ fun FragmentFilterTrainBinding.showList() {
     emptyImage.visibility = View.GONE
     emptyText.visibility = View.GONE
 }
-

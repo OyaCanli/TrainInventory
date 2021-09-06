@@ -12,8 +12,7 @@ import com.canli.oya.traininventoryroom.BR
 import com.canli.oya.traininventoryroom.ui.common.TrainItemClickListener
 import com.canlioya.core.models.TrainMinimal
 
-
-abstract class TrainBaseAdapter(private val clickListener : TrainItemClickListener) : ListAdapter<TrainMinimal, TrainBaseAdapter.ViewHolder>(
+abstract class TrainBaseAdapter(private val clickListener: TrainItemClickListener) : ListAdapter<TrainMinimal, TrainBaseAdapter.ViewHolder>(
     TrainDiffCallback()
 ) {
 
@@ -25,9 +24,9 @@ abstract class TrainBaseAdapter(private val clickListener : TrainItemClickListen
         holder.bind(currentGrapheme, clickListener, position)
     }
 
-    class ViewHolder private constructor(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root){
+    class ViewHolder private constructor(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(currentTrain: TrainMinimal, listener: TrainItemClickListener?, position: Int){
+        fun bind(currentTrain: TrainMinimal, listener: TrainItemClickListener?, position: Int) {
             binding.setVariable(BR.item, currentTrain)
             binding.setVariable(BR.itemClick, listener)
             binding.setVariable(BR.position, position)
@@ -35,10 +34,11 @@ abstract class TrainBaseAdapter(private val clickListener : TrainItemClickListen
         }
 
         companion object {
-            fun from(parent: ViewGroup, @IdRes layoutId : Int): ViewHolder {
+            fun from(parent: ViewGroup, @IdRes layoutId: Int): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = DataBindingUtil.inflate<ViewDataBinding>(
-                    layoutInflater, layoutId, parent, false)
+                    layoutInflater, layoutId, parent, false
+                )
                 return ViewHolder(binding)
             }
         }

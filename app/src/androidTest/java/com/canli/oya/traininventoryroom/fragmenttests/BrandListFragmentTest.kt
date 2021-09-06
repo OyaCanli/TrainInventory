@@ -14,10 +14,6 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.canli.oya.traininventoryroom.R
-import com.canli.oya.traininventoryroom.data.TrainDatabase
-import com.canli.oya.traininventoryroom.datasource.FakeBrandDataSource
-import com.canli.oya.traininventoryroom.datasource.FakeCategoryDataSource
-import com.canli.oya.traininventoryroom.datasource.FakeTrainDataSource
 import com.canli.oya.traininventoryroom.di.DataSourceModule
 import com.canli.oya.traininventoryroom.di.IODispatcher
 import com.canli.oya.traininventoryroom.di.TrainApplication
@@ -29,6 +25,10 @@ import com.canlioya.core.data.IBrandCategoryDataSource
 import com.canlioya.core.data.ITrainDataSource
 import com.canlioya.core.models.Brand
 import com.canlioya.core.models.Category
+import com.canlioya.local.TrainDatabase
+import com.canlioya.testresources.datasource.FakeBrandDataSource
+import com.canlioya.testresources.datasource.FakeCategoryDataSource
+import com.canlioya.testresources.datasource.FakeTrainDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -49,7 +49,6 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito
 import javax.inject.Inject
 
-
 @MediumTest
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
@@ -62,16 +61,16 @@ class BrandListFragmentTest {
     object FakeDataModule {
 
         @Provides
-        fun provideTrainDataSource() : ITrainDataSource = FakeTrainDataSource()
+        fun provideTrainDataSource(): ITrainDataSource = FakeTrainDataSource()
 
         @Provides
-        fun provideCategoryDataSource() : IBrandCategoryDataSource<Category> = FakeCategoryDataSource()
+        fun provideCategoryDataSource(): IBrandCategoryDataSource<Category> = FakeCategoryDataSource()
 
         @Provides
-        fun provideBrandDataSource() : IBrandCategoryDataSource<Brand> = FakeBrandDataSource()
+        fun provideBrandDataSource(): IBrandCategoryDataSource<Brand> = FakeBrandDataSource()
 
         @Provides
-        fun provideDatabase() : TrainDatabase = Mockito.mock(TrainDatabase::class.java)
+        fun provideDatabase(): TrainDatabase = Mockito.mock(TrainDatabase::class.java)
 
         @IODispatcher
         @Provides
@@ -81,8 +80,8 @@ class BrandListFragmentTest {
     var hiltRule = HiltAndroidRule(this)
 
     @get:Rule
-    var rule = RuleChain.outerRule(hiltRule).
-    around(InstantTaskExecutorRule())
+    var rule = RuleChain.outerRule(hiltRule)
+        .around(InstantTaskExecutorRule())
 
     @Inject
     lateinit var dataSource: IBrandCategoryDataSource<Brand>
@@ -92,7 +91,7 @@ class BrandListFragmentTest {
         hiltRule.inject()
     }
 
-    //Launch with a sample list. Verify that empty layout is not shown and the list is shown with correct items
+    // Launch with a sample list. Verify that empty layout is not shown and the list is shown with correct items
     @Test
     fun withSampleList_emptyScreenIsNotShown() {
         runBlockingTest {
@@ -111,12 +110,12 @@ class BrandListFragmentTest {
 
             val context: Context = ApplicationProvider.getApplicationContext<TrainApplication>()
             val addMenuItem = ActionMenuItem(context, 0, R.id.action_add, 0, 0, null)
-            //Click on the add menu item
+            // Click on the add menu item
             scenario.onFragment { fragment ->
                 fragment.onOptionsItemSelected(addMenuItem)
             }
 
-            //Check whether add category screen becomes visible
+            // Check whether add category screen becomes visible
             onView(withId(R.id.addBrand_editBrandName)).check(matches(isDisplayed()))
             onView(withId(R.id.addBrand_editBrandName)).check(matches(withText("")))
             onView(withId(R.id.addBrand_image)).check(matches(isDisplayed()))
@@ -124,16 +123,16 @@ class BrandListFragmentTest {
         }
     }
 
-    //Click edit on a category and verify that add child frag becomes visible with the category name inside edittext
+    // Click edit on a category and verify that add child frag becomes visible with the category name inside edittext
     @Test
     fun clickEditOnItem_opensAddFragmentFilled() {
         runBlockingTest {
             HiltFragmentScenario.launchInContainer(BrandListFragment::class.java, Bundle())
 
             onView(withId(R.id.list))
-                    .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(1, clickOnChildWithId(R.id.brand_item_edit_icon)))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(1, clickOnChildWithId(R.id.brand_item_edit_icon)))
 
-            //Check whether add category screen becomes visible
+            // Check whether add category screen becomes visible
             onView(withId(R.id.addBrand_editBrandName)).check(matches(isDisplayed()))
             onView(withId(R.id.addBrand_editBrandName)).check(matches(withText("MDN")))
             onView(withId(R.id.addBrand_image)).check(matches(isDisplayed()))
@@ -146,11 +145,11 @@ class BrandListFragmentTest {
         runBlockingTest {
             HiltFragmentScenario.launchInContainer(BrandListFragment::class.java, Bundle())
 
-            //Swipe an item
+            // Swipe an item
             onView(withId(R.id.list))
-                    .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(1, swipeLeft()))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(1, swipeLeft()))
 
-            //Verify that delete confirmation layout is displayed
+            // Verify that delete confirmation layout is displayed
             onView(withId(R.id.confirm_delete_btn)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
             onView(withId(R.id.cancel_btn)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
             onView(withText(R.string.do_you_want_to_delete)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))

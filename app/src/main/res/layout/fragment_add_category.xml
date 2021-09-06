@@ -37,6 +37,7 @@
         <ImageButton
             android:id="@+id/addCategory_saveBtn"
             style="@style/buttonStyle"
+            android:contentDescription="@string/cd_save_category"
             android:layout_marginTop="@dimen/margin_standard"
             android:layout_marginStart="@dimen/half_margin"
             android:layout_marginBottom="@dimen/margin_standard"

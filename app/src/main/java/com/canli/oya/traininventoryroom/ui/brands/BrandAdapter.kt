@@ -7,8 +7,8 @@ import com.canli.oya.traininventoryroom.ui.base.BaseListAdapter
 import com.canli.oya.traininventoryroom.ui.base.SwipeDeleteListener
 import com.canlioya.core.models.Brand
 
-class BrandAdapter(context: Context, clickListener: BrandItemClickListener, swipeListener: SwipeDeleteListener<Brand>)
-    : BaseListAdapter<Brand, BrandItemClickListener>(context, clickListener, swipeListener) {
+class BrandAdapter(context: Context, clickListener: BrandItemClickListener, swipeListener: SwipeDeleteListener<Brand>) :
+    BaseListAdapter<Brand, BrandItemClickListener>(context, clickListener, swipeListener) {
 
     override fun getLayoutId(): Int = R.layout.item_brand
 }

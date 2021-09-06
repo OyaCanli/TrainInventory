@@ -23,7 +23,9 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemClickListener,
+class FilterTrainFragment :
+    Fragment(R.layout.fragment_filter_train),
+    TrainItemClickListener,
     AdapterView.OnItemSelectedListener {
 
     private val binding by viewBinding(FragmentFilterTrainBinding::bind)
@@ -37,7 +39,6 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
     private var brandName: String? = null
 
     private var categoryName: String? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,8 +103,8 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
         }
     }
 
-    private fun setCategorySpinner(categories : List<String>) {
-        if(categories.isNotEmpty()){
+    private fun setCategorySpinner(categories: List<String>) {
+        if (categories.isNotEmpty()) {
             binding.searchCategorySpinner.adapter = FilterBySpinnerAdapter(
                 requireContext(),
                 categories,
@@ -123,8 +124,8 @@ class FilterTrainFragment : Fragment(R.layout.fragment_filter_train), TrainItemC
         }
     }
 
-    private fun setBrandSpinner(brands : List<String>){
-        if(brands.isNotEmpty()){
+    private fun setBrandSpinner(brands: List<String>) {
+        if (brands.isNotEmpty()) {
             binding.searchBrandSpinner.adapter = FilterBySpinnerAdapter(
                 requireContext(),
                 brands,

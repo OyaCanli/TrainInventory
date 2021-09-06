@@ -1,7 +1,7 @@
 package com.canli.oya.traininventoryroom.di
 
 import android.content.Context
-import com.canli.oya.traininventoryroom.data.TrainDatabase
+import com.canlioya.local.TrainDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

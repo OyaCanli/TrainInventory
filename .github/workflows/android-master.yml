@@ -4,14 +4,11 @@ on:
   pull_request:
     branches:
       - 'master'
-  push:
-    branches: 
-     - 'master'
 
 jobs:
   build:
 
-    runs-on: macOS-latest
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -25,7 +22,7 @@ jobs:
       
   unit_tests:
     name: Run Unit Tests
-    runs-on: macOS-latest
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -38,7 +35,7 @@ jobs:
         run: bash ./gradlew test --stacktrace     
 
   ui-tests:
-    runs-on: macOS-latest
+    runs-on: macos-latest
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -51,10 +48,16 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '11'
-      - name: Build project
-        run: ./gradlew assemble --stacktrace
+      - name: Gradle cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.kt') }}
       - name: Run instumentation tests
-        uses: reactivecircus/android-emulator-runner@v2.15.0
+        uses: reactivecircus/android-emulator-runner@v2.20.0
         with:
           api-level: ${{ matrix.api-level }}
+          disable-animations: true
           script: ./gradlew connectedCheck --stacktrace

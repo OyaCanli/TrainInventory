@@ -7,14 +7,11 @@
     <string name="all_brands">All Brands</string>
     <string name="add_train">Add Train</string>
     <string name="all_categories">All Categories</string>
-    <string name="trains_of_the_brand">Trains of the brand %1$s</string>
-    <string name="all_from_this_Category">All %1$ss</string>
 
     <!-- Details and Add Train screen -->
     <string name="category">Category:</string>
     <string name="brand">Brand:</string>
     <string name="reference">Reference:</string>
-    <string name="name">Name:</string>
     <string name="quantity">Quantity:</string>
     <string name="add_image">Add image:</string>
     <string name="description">Description:</string>
@@ -22,10 +19,8 @@
     <string name="all_trains">All Trains</string>
     <string name="brand_name">Brand name:</string>
     <string name="add_logo">Add logo:</string>
-    <string name="website">Website:</string>
     <string name="scale">Scale:</string>
     <string name="category_name">Add category</string>
-    <string name="add_image_from">Add image from:</string>
     <string name="select_category">--Select category--</string>
     <string name="select_brand">--Select brand--</string>
 
@@ -34,11 +29,8 @@
     <string name="add">Add</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
-    <string name="undo">UNDO</string>
     <string name="search">Search</string>
     <string name="edit_train">Edit Train</string>
-    <string name="ok">OK</string>
-    <string name="select_picture">Select Picture</string>
 
     <!-- Empty screen messages -->
     <string name="no_items_found">No items found. Click on the plus button above to add a new item</string>
@@ -58,7 +50,6 @@
     <string name="quantity_should_be_positive">Quantity should be a positive integer</string>
     <string name="cannot_erase_category">This category is used by some trains. You cannot erase this category</string>
     <string name="cannot_erase_brand">This brand is used by some trains. You cannot erase this brand</string>
-    <string name="scale_cant_be_empty">Scale cannot be empty</string>
     <string name="brand_name_empty">Brand name cannot be empty</string>
     <string name="category_name_empty">Category name cannot be empty</string>
     <string name="train_name_empty">Train name cannot be empty</string>
@@ -71,7 +62,6 @@
     <string name="discard_changes">Discard changes</string>
     <string name="keep_editing">Keep editing</string>
     <string name="permission_denied">Permission denied</string>
-    <string name="are_you_sure_you_want_to_delete_this_category">Are you sure you want to delete this category?</string>
     <string name="no_website_warning">You haven\'t provided a web site for this brand. Click edit icon to add one.</string>
 
     <!-- Content descriptions -->
@@ -98,15 +88,12 @@
     <string name="hint_train_scale">Scale of the train</string>
     <string name="export_to_excel">Export to Excel</string>
 
-    <string name="successfully_exported">Successfully exported to excel</string>
     <string name="exporting_to_excel">Exporting to Excel. Please wait..</string>
     <string name="uopload_file_to">Upload file to:</string>
     <string name="open_file_with">Open file with:</string>
     <string name="category_already_exists">This category already exists.</string>
     <string name="brand_already_exists">This brand is already added</string>
     <string name="train_name_already_Exists">This train name is already used</string>
-    <string name="browse">Browse</string>
-    <string name="send">SEND</string>
     <string name="upload_file">Would you like to upload the excel file to cloud or share with someone?</string>
     <string name="successfully_exported_browse">Successfully exported to Excel. Would you like to browse the file?</string>
     <string name="website_of_the_brand">Website of the brand</string>
@@ -121,6 +108,13 @@
     <string name="category_used_by_trains_in_trash">This category is used by some trains in your TRASH folder. Deleting this category will cause those trains to be permanently deleted. Do you want to delete it anyway?</string>
     <string name="do_you_want_to_permanently_delete_train">Do you want to permanently delete this train?</string>
     <string name="please_add_items">You don\'t have any trains in your inventory yet.</string>
-    <string name="task_cancelled">Task Cancelled</string>
+    <string name="task_cancelled">Task cancelled</string>
+    <string name="cd_browse_Excel">Browse contents of excel file</string>
+    <string name="cd_share_excel">Share or upload the file</string>
+    <string name="cd_save_brand">Save button</string>
+    <string name="cd_save_category">Save category</string>
+    <string name="cd_cancel_deleting">Cancel deleting</string>
+    <string name="cd_confirm_deleting">Confirm deleting</string>
+    <string name="cd_delete_permanently">Delete train permanently</string>
 
 </resources>

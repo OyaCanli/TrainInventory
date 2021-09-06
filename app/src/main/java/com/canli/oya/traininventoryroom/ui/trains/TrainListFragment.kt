@@ -33,7 +33,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-
 @AndroidEntryPoint
 class TrainListFragment : Fragment(R.layout.fragment_list), TrainItemClickListener, SwipeDeleteListener<TrainMinimal> {
 
@@ -41,12 +40,11 @@ class TrainListFragment : Fragment(R.layout.fragment_list), TrainItemClickListen
 
     private val binding by viewBinding(FragmentListBinding::bind)
 
-    private lateinit var adapter : TrainPagingAdapter
+    private lateinit var adapter: TrainPagingAdapter
 
     private var mTrainList: PagingData<TrainMinimal>? = null
 
     private var addMenuItem: MenuItem? = null
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

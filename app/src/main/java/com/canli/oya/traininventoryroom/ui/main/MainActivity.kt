@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        //Set toolbar
+        // Set toolbar
         setSupportActionBar(binding.toolbar)
 
         val navHostFragment = supportFragmentManager
@@ -46,8 +46,9 @@ class MainActivity : AppCompatActivity() {
         binding.navigation.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            if(destination.id == R.id.addTrainFragment || destination.id == R.id.trainDetailsFragment
-                || destination.id == R.id.trashFragment) {
+            if (destination.id == R.id.addTrainFragment || destination.id == R.id.trainDetailsFragment ||
+                destination.id == R.id.trashFragment
+            ) {
                 binding.navigation.visibility = View.GONE
             } else {
                 binding.navigation.visibility = View.VISIBLE
@@ -70,7 +71,7 @@ class MainActivity : AppCompatActivity() {
             REQUEST_STORAGE_PERMISSION -> {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // If you get permission, go ahead
-                    //navigator.launchExportToExcelFragment()
+                    // navigator.launchExportToExcelFragment()
                 } else {
                     // If you do not get permission, show a Toast
                     shortToast(R.string.permission_denied)

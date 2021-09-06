@@ -2,10 +2,11 @@ package com.canli.oya.traininventoryroom.ui.addtrain
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
-import com.canli.oya.traininventoryroom.datasource.*
+import com.canli.oya.traininventoryroom.provideBrandInteractor
+import com.canli.oya.traininventoryroom.provideCategoryInteractor
+import com.canli.oya.traininventoryroom.provideTrainInteractor
+import com.canlioya.testresources.datasource.*
 import com.canlioya.core.models.Train
-import com.canlioya.core.usecases.brandcategory.*
-import com.canlioya.core.usecases.trains.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -89,7 +90,8 @@ class AddTrainViewModelTest {
             val savedStateHandle = SavedStateHandle()
             val fakeTrainDataSource = FakeTrainDataSource(sampleTrainList)
             val initialSize = sampleTrainList.size
-            val addTrainViewModel = AddTrainViewModel(provideTrainInteractor(fakeTrainDataSource),
+            val addTrainViewModel = AddTrainViewModel(
+                provideTrainInteractor(fakeTrainDataSource),
                 provideBrandInteractor(FakeBrandDataSource(sampleBrandList)), provideCategoryInteractor(FakeCategoryDataSource(sampleCategoryList)),
                 savedStateHandle, Dispatchers.Unconfined)
             addTrainViewModel.saveTrain()
@@ -106,7 +108,8 @@ class AddTrainViewModelTest {
             val savedStateHandle = SavedStateHandle(args)
             val fakeTrainDataSource = FakeTrainDataSource(sampleTrainList)
             val initialSize = sampleTrainList.size
-            val editViewModel = AddTrainViewModel(provideTrainInteractor(fakeTrainDataSource),
+            val editViewModel = AddTrainViewModel(
+                provideTrainInteractor(fakeTrainDataSource),
                 provideBrandInteractor(FakeBrandDataSource(sampleBrandList)), provideCategoryInteractor(FakeCategoryDataSource(sampleCategoryList)),
                 savedStateHandle, Dispatchers.Unconfined)
             editViewModel.saveTrain()
@@ -118,7 +121,8 @@ class AddTrainViewModelTest {
 
     private fun getViewModelForAddCase() : AddTrainViewModel {
         val savedStateHandle = SavedStateHandle()
-        return AddTrainViewModel(provideTrainInteractor(FakeTrainDataSource(sampleTrainList)),
+        return AddTrainViewModel(
+            provideTrainInteractor(FakeTrainDataSource(sampleTrainList)),
             provideBrandInteractor(FakeBrandDataSource(sampleBrandList)), provideCategoryInteractor(FakeCategoryDataSource(sampleCategoryList)),
             savedStateHandle, Dispatchers.Unconfined)
     }
@@ -126,7 +130,8 @@ class AddTrainViewModelTest {
     private fun getViewModelForEditCase() : AddTrainViewModel {
         val args = mutableMapOf<String, Any>("chosenTrain" to sampleTrain1)
         val savedStateHandle = SavedStateHandle(args)
-        return AddTrainViewModel(provideTrainInteractor(FakeTrainDataSource(sampleTrainList)),
+        return AddTrainViewModel(
+            provideTrainInteractor(FakeTrainDataSource(sampleTrainList)),
             provideBrandInteractor(FakeBrandDataSource(sampleBrandList)), provideCategoryInteractor(FakeCategoryDataSource(sampleCategoryList)),
             savedStateHandle, Dispatchers.Unconfined)
     }

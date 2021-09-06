@@ -1,7 +1,8 @@
 package com.canli.oya.traininventoryroom.ui.brands
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.canli.oya.traininventoryroom.datasource.*
+import com.canli.oya.traininventoryroom.provideBrandInteractor
+import com.canlioya.testresources.datasource.*
 
 import com.canli.oya.traininventoryroom.utils.getOrAwaitValue
 
