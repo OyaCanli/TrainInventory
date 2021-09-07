@@ -77,6 +77,10 @@
     <string name="do_you_want_to_permanently_delete_train">Voulez-vous effacer définitivement cette pièce?</string>
     <string name="please_add_items">Vous n\'avez pas encore des pièces dans votre inventaire</string>
     <string name="task_cancelled">Tache annulé</string>
+    <string name="hint_price">Prix</string>
+    <string name="hint_color">Couleur</string>
+    <string name="price">Prix:</string>
+    <string name="color">Couleur:</string>
 
     <string name="cd_add_category_button">Bouton pour ajouter une catégorie</string>
     <string name="cd_brand_item_logo">Logo de la marque</string>

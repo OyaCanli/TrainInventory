@@ -34,7 +34,9 @@ data class TrainEntity(
     var description: String? = null,
     var location: String? = null,
     var scale: String? = null,
-    var dateOfDeletion: Long? = null
+    var dateOfDeletion: Long? = null,
+    var price: Float? = null,
+    var color: String? = null
 )
 
 fun TrainEntity.toTrain() = Train(
@@ -48,7 +50,9 @@ fun TrainEntity.toTrain() = Train(
     this.description,
     this.location,
     this.scale,
-    this.dateOfDeletion
+    this.dateOfDeletion,
+    this.price ?: 0f,
+    this.color
 )
 
 fun Train.toTrainEntity() = TrainEntity(
@@ -62,5 +66,7 @@ fun Train.toTrainEntity() = TrainEntity(
     this.description,
     this.location,
     this.scale,
-    this.dateOfDeletion
+    this.dateOfDeletion,
+    this.price,
+    this.color
 )

@@ -15,7 +15,7 @@ import com.canlioya.local.entities.TrainEntity
 
 @Database(
     entities = [TrainEntity::class, BrandEntity::class, CategoryEntity::class],
-    version = 5, exportSchema = false
+    version = 6, exportSchema = false
 )
 abstract class TrainDatabase : RoomDatabase() {
 
@@ -36,13 +36,20 @@ abstract class TrainDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE trains ADD COLUMN price REAL")
+                database.execSQL("ALTER TABLE trains ADD COLUMN color TEXT")
+            }
+        }
+
         fun getInstance(context: Context): TrainDatabase {
             return sInstance ?: synchronized(this) {
                 sInstance ?: Room.databaseBuilder(
                     context.applicationContext,
                     TrainDatabase::class.java, DATABASE_NAME
                 )
-                    .addMigrations(MIGRATION_4_5)
+                    .addMigrations(MIGRATION_4_5, MIGRATION_5_6)
                     .build()
                     .also { sInstance = it }
             }

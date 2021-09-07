@@ -179,6 +179,51 @@
                 app:constraint_referenced_ids="textView15,textView14,textView17,textView19,textView16,textView13,textView18"
                 tools:layout_editor_absoluteX="411dp" />
 
+            <TextView
+                android:id="@+id/details_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                tools:text="21,50"
+                android:text="@{String.valueOf(chosenTrain.price)}"
+                style="@style/details_plain_text"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/barrier2"
+                app:layout_constraintTop_toBottomOf="@+id/details_location" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/price"
+                style="@style/yellow_descriptive_text"
+                android:layout_marginStart="@dimen/margin_standard"
+                app:layout_constraintBaseline_toBaselineOf="@+id/details_price"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/details_color"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                tools:text="Red"
+                android:text="@{chosenTrain.color}"
+                style="@style/details_plain_text"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/barrier2"
+                app:layout_constraintTop_toBottomOf="@+id/details_price" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/color"
+                style="@style/yellow_descriptive_text"
+                android:layout_marginStart="@dimen/margin_standard"
+                app:layout_constraintBaseline_toBaselineOf="@+id/details_color"
+                app:layout_constraintStart_toStartOf="parent" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>

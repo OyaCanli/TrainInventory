@@ -13,5 +13,7 @@ data class Train(
     var description: String? = null,
     var location: String? = null,
     var scale: String? = null,
-    var dateOfDeletion: Long? = null
+    var dateOfDeletion: Long? = null,
+    var price: Float = 0f,
+    var color: String? = null
 ) : Serializable

@@ -39,9 +39,10 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-
 @AndroidEntryPoint
-class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickListener,
+class AddTrainFragment :
+    Fragment(R.layout.fragment_add_train),
+    View.OnClickListener,
     AdapterView.OnItemSelectedListener {
 
     private val binding by viewBinding(FragmentAddTrainBinding::bind)
@@ -67,14 +68,14 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
 
             when (resultCode) {
                 Activity.RESULT_OK -> {
-                    //Image Uri will not be null for RESULT_OK
+                    // Image Uri will not be null for RESULT_OK
                     val uri: Uri = data?.data!!
                     Timber.e("URI:$uri")
                     addViewModel.trainBeingModified.get()?.imageUri = uri.toString()
                     binding.productDetailsGalleryImage.setImageWithGlide(
-                            uri.toString(),
-                            ResourcesCompat.getDrawable(resources, R.drawable.ic_gallery_light, null)!!
-                        )
+                        uri.toString(),
+                        ResourcesCompat.getDrawable(resources, R.drawable.ic_gallery_light, null)!!
+                    )
                     binding.executePendingBindings()
                 }
                 ImagePicker.RESULT_ERROR -> context?.shortToast(ImagePicker.getError(data))
@@ -103,7 +104,7 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
-        //Set click listener on buttons
+        // Set click listener on buttons
         binding.addTrainAddBrandBtn.setOnClickListener(this)
         binding.addTrainAddCategoryBtn.setOnClickListener(this)
         binding.productDetailsGalleryImage.setOnClickListener(this)
@@ -134,7 +135,7 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
                 categoryAdapter.setCategories(categoryEntries)
                 categoryList = categoryAdapter.categoryList
 
-                if (isEdit) { //In edit mode, show the existing categoryName as selected
+                if (isEdit) { // In edit mode, show the existing categoryName as selected
                     val index = categoryList.indexOf(chosenTrain?.categoryName)
                     binding.categorySpinner.setSelection(index)
                 }
@@ -149,7 +150,7 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
                     brandAdapter.setBrands(brandEntries)
                     brandList = brandEntries
 
-                    if (isEdit) { //In edit mode, show the existing brandName as selected
+                    if (isEdit) { // In edit mode, show the existing brandName as selected
                         val index =
                             brandEntries.indexOfFirst { it.brandName == chosenTrain?.brandName }.plus(1)
                         binding.brandSpinner.setSelection(index)
@@ -165,7 +166,7 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
             R.id.addTrain_addCategoryBtn -> insertAddCategoryFragment()
             R.id.product_details_gallery_image -> {
                 ImagePicker.with(this)
-                    .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                    .compress(1024) // Final image size will be less than 1 MB(Optional)
                     .maxResultSize(
                         500,
                         500
@@ -229,15 +230,16 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
         // DATA VALIDATION
         if (thereAreMissingValues()) return
         if (quantityIsNotValid()) return
+        if (priceIsNotValid()) return
         if (!isEdit && trainNameAlreadyExists()) return
 
         // SAVE
         addViewModel.saveTrain()
 
-        //Close softkeyboard
+        // Close softkeyboard
         activity?.clearFocusAndHideKeyboard()
 
-        //After adding the train, go back to where user come from.
+        // After adding the train, go back to where user come from.
         findNavController().popBackStack()
     }
 
@@ -270,7 +272,7 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
 
     private fun quantityIsNotValid(): Boolean {
         val quantityToParse = binding.editQuantity.text.toString().trim()
-        //Quantity can be null. But if it is not null it should be a non-negative integer
+        // Quantity can be null. But if it is not null it should be a non-negative integer
         val quantity: Int
         if (!TextUtils.isEmpty(quantityToParse)) {
             try {
@@ -289,13 +291,34 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
         return false
     }
 
+    private fun priceIsNotValid(): Boolean {
+        val priceToParse = binding.editPrice.text.toString().trim()
+        // Quantity can be null. But if it is not null it should be a non-negative integer
+        val price: Float
+        if (!TextUtils.isEmpty(priceToParse)) {
+            try {
+                price = priceToParse.toFloat()
+                if (price < 0) {
+                    context?.shortToast(R.string.enter_valid_price)
+                    return true
+                } else {
+                    addViewModel.trainBeingModified.get()?.price = price
+                }
+            } catch (nfe: NumberFormatException) {
+                context?.shortToast(R.string.enter_valid_price)
+                return true
+            }
+        }
+        return false
+    }
+
     private fun showUnsavedChangesDialog() {
-        //If user clicks back when there are unsaved changes in AddTrainFragment, warn user with a dialog.
+        // If user clicks back when there are unsaved changes in AddTrainFragment, warn user with a dialog.
         val builder = AlertDialog.Builder(requireContext(), R.style.alert_dialog_style)
         with(builder) {
             setMessage(R.string.unsaved_changes_warning)
             setPositiveButton(getString(R.string.discard_changes)) { dialog, _ ->
-                //Changes will be discarded
+                // Changes will be discarded
                 findNavController().popBackStack()
                 dialog?.dismiss()
             }
@@ -313,8 +336,8 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
     }
 
     override fun onItemSelected(spinner: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        //the listener is attached to both spinners.
-        //when statement differentiate which spinners is selected
+        // the listener is attached to both spinners.
+        // when statement differentiate which spinners is selected
         when (spinner?.id) {
             R.id.brandSpinner -> {
                 addViewModel.trainBeingModified.get()?.brandName =
@@ -327,5 +350,3 @@ class AddTrainFragment : Fragment(R.layout.fragment_add_train), View.OnClickList
         }
     }
 }
-
-

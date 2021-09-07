@@ -112,5 +112,10 @@
     <string name="cd_cancel_deleting">Cancel deleting</string>
     <string name="cd_confirm_deleting">Confirm deleting</string>
     <string name="cd_delete_permanently">Delete item permanently</string>
+    <string name="hint_price">Price</string>
+    <string name="hint_color">Color</string>
+    <string name="price">Price:</string>
+    <string name="color">Color:</string>
+    <string name="enter_valid_price">Please enter a valid price</string>
 
 </resources>
