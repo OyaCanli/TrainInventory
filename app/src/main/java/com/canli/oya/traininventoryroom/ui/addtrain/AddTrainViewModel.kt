@@ -1,6 +1,5 @@
 package com.canli.oya.traininventoryroom.ui.addtrain
 
-
 import androidx.databinding.ObservableField
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -17,19 +16,21 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AddTrainViewModel @Inject constructor(val trainInteractors: TrainInteractors,
-                                            brandInteractors: BrandCategoryInteractors<Brand>,
-                                            categoryInteractors: BrandCategoryInteractors<Category>,
-                                            savedStateHandle: SavedStateHandle,
-                                            @IODispatcher private val ioDispatcher: CoroutineDispatcher)
-    : ViewModel() {
+class AddTrainViewModel @Inject constructor(
+    val trainInteractors: TrainInteractors,
+    brandInteractors: BrandCategoryInteractors<Brand>,
+    categoryInteractors: BrandCategoryInteractors<Category>,
+    savedStateHandle: SavedStateHandle,
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher
+) :
+    ViewModel() {
 
     private val chosenTrain: Train? = savedStateHandle.get<Train>("chosenTrain")
 
     val trainBeingModified = ObservableField<Train>()
 
     val brandList = brandInteractors.getAllItems()
-    val categoryList  = categoryInteractors.getAllItems()
+    val categoryList = categoryInteractors.getAllItems()
 
     var isEdit: Boolean
 
@@ -54,7 +55,7 @@ class AddTrainViewModel @Inject constructor(val trainInteractors: TrainInteracto
         viewModelScope.launch(ioDispatcher) { trainInteractors.updateTrain(train) }
     }
 
-    suspend fun isThisTrainNameUsed(trainName : String) = trainInteractors.verifyUniquenessOfTrainName(trainName)
+    suspend fun isThisTrainNameUsed(trainName: String) = trainInteractors.verifyUniquenessOfTrainName(trainName)
 
     var isChanged: Boolean = false
         get() = if (isEdit) trainBeingModified.get() != chosenTrain

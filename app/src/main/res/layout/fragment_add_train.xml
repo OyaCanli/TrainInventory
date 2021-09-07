@@ -114,6 +114,44 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editPrice_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/half_margin"
+                android:hint="@string/hint_price"
+                style="@style/Widget.TrainInventory.TextInputLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editQuantity_layout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editPrice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:text="@{String.valueOf(viewModel.trainBeingModified.price)}"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editColor_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/half_margin"
+                android:hint="@string/hint_color"
+                style="@style/Widget.TrainInventory.TextInputLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editPrice_layout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editColor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:text="@={viewModel.trainBeingModified.color}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/editLocation_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -122,7 +160,7 @@
                 style="@style/Widget.TrainInventory.TextInputLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editQuantity_layout">
+                app:layout_constraintTop_toBottomOf="@+id/editColor_layout">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editLocation"

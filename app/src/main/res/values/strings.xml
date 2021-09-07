@@ -5,7 +5,7 @@
     <string name="brands">Brands</string>
     <string name="categories">Categories</string>
     <string name="all_brands">All Brands</string>
-    <string name="add_train">Add Train</string>
+    <string name="add_train">Add Item</string>
     <string name="all_categories">All Categories</string>
 
     <!-- Details and Add Train screen -->
@@ -16,7 +16,7 @@
     <string name="add_image">Add image:</string>
     <string name="description">Description:</string>
     <string name="location">Location:</string>
-    <string name="all_trains">All Trains</string>
+    <string name="all_trains">All Items</string>
     <string name="brand_name">Brand name:</string>
     <string name="add_logo">Add logo:</string>
     <string name="scale">Scale:</string>
@@ -30,29 +30,25 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="search">Search</string>
-    <string name="edit_train">Edit Train</string>
+    <string name="edit_train">Edit Item</string>
 
     <!-- Empty screen messages -->
     <string name="no_items_found">No items found. Click on the plus button above to add a new item</string>
-    <string name="no_trains_found">No trains found. Click on the plus button above to add a new train.</string>
     <string name="no_brands_found">No brands found. Click on the plus button above to add a new brand.</string>
     <string name="no_categories_found">No categories found. Click on the plus button above to add a new category.</string>
     <string name="no_train_for_this_brand">No trains found for this brand</string>
     <string name="no_train_for_this_category">No items found for this category</string>
-    <string name="plus_icon_unicode">&#xf055;</string>
 
     <!-- Feedback -->
     <string name="brand_Saved">Brand is saved</string>
-    <string name="brand_deleted">Brand deleted</string>
-    <string name="category_deleted">Category deleted</string>
 
     <!-- Warnings -->
     <string name="quantity_should_be_positive">Quantity should be a positive integer</string>
-    <string name="cannot_erase_category">This category is used by some trains. You cannot erase this category</string>
-    <string name="cannot_erase_brand">This brand is used by some trains. You cannot erase this brand</string>
+    <string name="cannot_erase_category">This category is used by some items. You cannot erase this category</string>
+    <string name="cannot_erase_brand">This brand is used by some items. You cannot erase this brand</string>
     <string name="brand_name_empty">Brand name cannot be empty</string>
     <string name="category_name_empty">Category name cannot be empty</string>
-    <string name="train_name_empty">Train name cannot be empty</string>
+    <string name="train_name_empty">Item name cannot be empty</string>
     <string name="category_cannot_be_empty">Category name cannot be empty</string>
     <string name="brand_cannot_be_empty">Brand name cannot be empty</string>
     <string name="do_you_want_to_delete">Do you want to delete this item?</string>
@@ -65,27 +61,27 @@
     <string name="no_website_warning">You haven\'t provided a web site for this brand. Click edit icon to add one.</string>
 
     <!-- Content descriptions -->
-    <string name="cd_product_image">image of the train</string>
+    <string name="cd_product_image">image of the item</string>
     <string name="cd_edit_icon">Edit icon</string>
-    <string name="cd_train_icon_for_brands">Train icon which shows the trains from this brand</string>
+    <string name="cd_train_icon_for_brands">Train icon which shows the items from this brand</string>
     <string name="cd_web_icon_fror_brands">Web icon for opening the website of the brand</string>
     <string name="cd_brand_logo">Logo of the brand</string>
-    <string name="cd_empty_icon">Train icon is shown when the list is empty</string>
-    <string name="cd_chosen_train_image">An image of the chosen train</string>
-    <string name="cd_details_gallery_icon">Train image if available, click for changing the image</string>
+    <string name="cd_empty_icon">The list is empty</string>
+    <string name="cd_chosen_train_image">An image of the chosen item</string>
+    <string name="cd_details_gallery_icon">Item image if available, click for changing the image</string>
     <string name="cd_add_category_button">Button for adding a category</string>
     <string name="cd_add_brand_button">Button for adding a brand</string>
     <string name="cd_brand_logo_edit">Brand logo. You can click for changing it.</string>
     <string name="cd_brand_item_logo">Brand logo</string>
-    <string name="cd_category_item_train_btn">Train icon. Click here to see trains from this category.</string>
+    <string name="cd_category_item_train_btn">Train icon. Click here to see items from this category.</string>
 
     <!-- Hints for edittexts -->
-    <string name="hint_train_name">Train name</string>
+    <string name="hint_train_name">Item name</string>
     <string name="hint_quantity">Quantity</string>
     <string name="hint_reference">Model Reference</string>
-    <string name="hint_train_description">Train description</string>
-    <string name="hint_location">Location of the train</string>
-    <string name="hint_train_scale">Scale of the train</string>
+    <string name="hint_train_description">Item description</string>
+    <string name="hint_location">Location of the item</string>
+    <string name="hint_train_scale">Scale of the item</string>
     <string name="export_to_excel">Export to Excel</string>
 
     <string name="exporting_to_excel">Exporting to Excel. Please wait..</string>
@@ -93,21 +89,21 @@
     <string name="open_file_with">Open file with:</string>
     <string name="category_already_exists">This category already exists.</string>
     <string name="brand_already_exists">This brand is already added</string>
-    <string name="train_name_already_Exists">This train name is already used</string>
+    <string name="train_name_already_Exists">This item name is already used</string>
     <string name="upload_file">Would you like to upload the excel file to cloud or share with someone?</string>
     <string name="successfully_exported_browse">Successfully exported to Excel. Would you like to browse the file?</string>
     <string name="website_of_the_brand">Website of the brand</string>
     <string name="filter_by_category">Filter by category</string>
     <string name="filter_by_brand">Filter by brand</string>
     <string name="hint_search_keywords">Search by keyword(s)</string>
-    <string name="search_trains">Search Trains</string>
-    <string name="no_results_for_search">No trains found with these criteria.</string>
+    <string name="search_trains">Search items</string>
+    <string name="no_results_for_search">No items found with these criteria.</string>
     <string name="trash">Trash</string>
-    <string name="no_trains_in_trash">No trains in the trash</string>
-    <string name="cd_restore_train">Restore train</string>
-    <string name="category_used_by_trains_in_trash">This category is used by some trains in your TRASH folder. Deleting this category will cause those trains to be permanently deleted. Do you want to delete it anyway?</string>
+    <string name="no_trains_in_trash">No items in the trash</string>
+    <string name="cd_restore_train">Restore the item</string>
+    <string name="category_used_by_trains_in_trash">This category is used by some items in your TRASH folder. Deleting this category will cause those items to be permanently deleted. Do you want to delete it anyway?</string>
     <string name="do_you_want_to_permanently_delete_train">Do you want to permanently delete this train?</string>
-    <string name="please_add_items">You don\'t have any trains in your inventory yet.</string>
+    <string name="please_add_items">You don\'t have any items in your inventory yet.</string>
     <string name="task_cancelled">Task cancelled</string>
     <string name="cd_browse_Excel">Browse contents of excel file</string>
     <string name="cd_share_excel">Share or upload the file</string>
@@ -115,6 +111,11 @@
     <string name="cd_save_category">Save category</string>
     <string name="cd_cancel_deleting">Cancel deleting</string>
     <string name="cd_confirm_deleting">Confirm deleting</string>
-    <string name="cd_delete_permanently">Delete train permanently</string>
+    <string name="cd_delete_permanently">Delete item permanently</string>
+    <string name="hint_price">Price</string>
+    <string name="hint_color">Color</string>
+    <string name="price">Price:</string>
+    <string name="color">Color:</string>
+    <string name="enter_valid_price">Please enter a valid price</string>
 
 </resources>
