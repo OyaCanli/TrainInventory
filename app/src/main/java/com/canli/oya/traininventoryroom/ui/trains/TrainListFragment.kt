@@ -59,7 +59,7 @@ class TrainListFragment : Fragment(R.layout.fragment_list), TrainItemClickListen
             binding.list
         )
 
-        observeUIState(R.string.no_trains_found)
+        observeUIState(R.string.no_items_found)
 
         lifecycleScope.launch {
             viewModel.allItems.collectLatest { trainEntries ->
