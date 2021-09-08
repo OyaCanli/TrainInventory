@@ -61,40 +61,44 @@
                     android:text="@{chosenBrand.webUrl}" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/textView9"
-                style="@style/yellow_descriptive_text"
+            <Button
+                android:id="@+id/addBrandLogoBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/margin_standard"
-                android:text="@string/add_logo"
+                android:layout_margin="@dimen/margin_standard"
+                android:text="@{chosenBrand.brandLogoUri == null ? @string/add_logo : @string/change_logo}"
                 android:textColor="@color/colorAccent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/addBrand_image"
                 app:layout_constraintTop_toTopOf="@+id/addBrand_image" />
 
             <ImageView
                 android:id="@+id/addBrand_image"
                 android:layout_width="@dimen/add_brand_logo_dim"
                 android:layout_height="@dimen/add_brand_logo_dim"
-                android:layout_marginStart="@dimen/margin_standard"
-                android:layout_marginTop="@dimen/margin_standard"
+                android:layout_margin="@dimen/margin_standard"
                 android:contentDescription="@string/cd_brand_logo_edit"
                 app:imageUrl="@{chosenBrand.brandLogoUri}"
-                app:srcCompat="@drawable/ic_gallery_light"
-                app:layout_constraintStart_toEndOf="@+id/textView9"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/addBrandLogoBtn"
                 app:layout_constraintTop_toBottomOf="@+id/addBrandWebsite_layout"
-                app:placeholder="@{@drawable/ic_gallery_light}" />
+                app:placeholder="@{@drawable/ic_gallery_light}"
+                app:srcCompat="@drawable/ic_gallery_light"
+                app:visible="@{chosenBrand.brandLogoUri != null}" />
 
-            <ImageButton
+            <Button
                 android:id="@+id/addBrand_saveBtn"
-                style="@style/buttonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/cd_save_brand"
-                android:layout_margin="@dimen/margin_standard"
+                android:layout_marginTop="@dimen/margin_standard"
                 android:layout_marginBottom="@dimen/half_margin"
+                android:text="@string/save"
+                android:textColor="@color/colorAccent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addBrand_image" />
+                app:layout_constraintTop_toBottomOf="@+id/addBrandLogoBtn" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

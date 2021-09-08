@@ -30,6 +30,7 @@ import com.canli.oya.traininventoryroom.ui.brands.AddBrandFragment
 import com.canli.oya.traininventoryroom.ui.categories.AddCategoryFragment
 import com.canli.oya.traininventoryroom.utils.clearFocusAndHideKeyboard
 import com.canli.oya.traininventoryroom.utils.setImageWithGlide
+import com.canli.oya.traininventoryroom.utils.setVisible
 import com.canli.oya.traininventoryroom.utils.shortToast
 import com.canlioya.core.models.Brand
 import com.canlioya.core.models.Train
@@ -72,10 +73,11 @@ class AddTrainFragment :
                     val uri: Uri = data?.data!!
                     Timber.e("URI:$uri")
                     addViewModel.trainBeingModified.get()?.imageUri = uri.toString()
-                    binding.productDetailsGalleryImage.setImageWithGlide(
+                    binding.addTrainImage.setImageWithGlide(
                         uri.toString(),
                         ResourcesCompat.getDrawable(resources, R.drawable.ic_gallery_light, null)!!
                     )
+                    binding.addTrainImage.setVisible(true)
                     binding.executePendingBindings()
                 }
                 ImagePicker.RESULT_ERROR -> context?.shortToast(ImagePicker.getError(data))
@@ -107,7 +109,7 @@ class AddTrainFragment :
         // Set click listener on buttons
         binding.addTrainAddBrandBtn.setOnClickListener(this)
         binding.addTrainAddCategoryBtn.setOnClickListener(this)
-        binding.productDetailsGalleryImage.setOnClickListener(this)
+        binding.addTrainLogoBtn.setOnClickListener(this)
 
         binding.categorySpinner.onItemSelectedListener = this
         binding.brandSpinner.onItemSelectedListener = this
@@ -164,7 +166,7 @@ class AddTrainFragment :
         when (v.id) {
             R.id.addTrain_addBrandBtn -> insertAddBrandFragment()
             R.id.addTrain_addCategoryBtn -> insertAddCategoryFragment()
-            R.id.product_details_gallery_image -> {
+            R.id.addTrainLogoBtn -> {
                 ImagePicker.with(this)
                     .compress(1024) // Final image size will be less than 1 MB(Optional)
                     .maxResultSize(

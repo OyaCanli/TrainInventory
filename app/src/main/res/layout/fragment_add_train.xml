@@ -191,30 +191,31 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <ImageView
-                android:id="@+id/product_details_gallery_image"
+                android:id="@+id/add_train_image"
                 android:layout_width="@dimen/edit_train_image_height"
                 android:layout_height="@dimen/edit_train_image_height"
-                android:layout_marginStart="@dimen/half_margin"
-                android:layout_marginTop="@dimen/margin_standard"
-                android:layout_marginEnd="@dimen/half_margin"
+                android:layout_margin="@dimen/half_margin"
                 android:contentDescription="@string/cd_details_gallery_icon"
                 app:imageUrl="@{viewModel.trainBeingModified.imageUri}"
                 app:placeholder="@{@drawable/ic_gallery_light}"
                 app:srcCompat="@drawable/ic_gallery_light"
+                app:visible="@{viewModel.trainBeingModified.imageUri != null}"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTrainDescription_layout" />
+                app:layout_constraintStart_toEndOf="@id/addTrainLogoBtn"
+                app:layout_constraintTop_toBottomOf="@+id/editTrainDescription_layout"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <TextView
-                android:id="@+id/textView"
+            <Button
+                android:id="@+id/addTrainLogoBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_standard"
-                android:layout_marginTop="@dimen/margin_standard"
-                style="@style/yellow_descriptive_text"
-                android:text="@string/add_image"
+                android:layout_margin="@dimen/margin_standard"
+                android:text="@{viewModel.trainBeingModified.imageUri == null ? @string/add_logo : @string/change_logo}"
+                android:textColor="@color/colorAccent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTrainDescription_layout" />
+                app:layout_constraintEnd_toStartOf="@id/add_train_image"
+                app:layout_constraintTop_toBottomOf="@+id/editTrainDescription_layout"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <ImageButton
                 android:id="@+id/addTrain_addCategoryBtn"
