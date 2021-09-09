@@ -5,6 +5,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'dagger.hilt.android.plugin'
 
+
 android {
     compileSdkVersion 31
 
@@ -12,8 +13,8 @@ android {
         applicationId "com.canli.oya.traininventoryroom"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.2"
         testInstrumentationRunner "com.canli.oya.traininventoryroom.utils.CustomTestRunner"
         vectorDrawables.useSupportLibrary = true
 
