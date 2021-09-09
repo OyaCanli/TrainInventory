@@ -21,6 +21,7 @@ import com.canli.oya.traininventoryroom.ui.addtrain.AddTrainFragment
 import com.canli.oya.traininventoryroom.ui.base.setMenuIcon
 import com.canli.oya.traininventoryroom.utils.IS_EDIT
 import com.canli.oya.traininventoryroom.utils.setImageWithGlide
+import com.canli.oya.traininventoryroom.utils.setVisible
 import com.canli.oya.traininventoryroom.utils.shortToast
 import com.canlioya.core.models.Brand
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -57,6 +58,7 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
                         uri.toString(),
                         ResourcesCompat.getDrawable(resources, R.drawable.ic_gallery_light, null)!!
                     )
+                    binding.addBrandImage.setVisible(true)
                     binding.executePendingBindings()
                 }
                 ImagePicker.RESULT_ERROR -> context?.shortToast(ImagePicker.getError(data))
@@ -69,7 +71,7 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
 
         // Set click listeners
         binding.addBrandSaveBtn.setOnClickListener { saveBrand() }
-        binding.addBrandImage.setOnClickListener { launchImagePicker() }
+        binding.addBrandLogoBtn.setOnClickListener { launchImagePicker() }
 
         // Request focus on the first edit text
         binding.addBrandEditBrandName.requestFocus()
@@ -166,6 +168,7 @@ class AddBrandFragment : Fragment(R.layout.fragment_add_brand) {
             null,
             ResourcesCompat.getDrawable(resources, R.drawable.ic_gallery_light, null)!!
         )
+        binding.addBrandImage.setVisible(false)
         val focusedView = activity?.currentFocus
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         focusedView?.clearFocus()

@@ -20,7 +20,7 @@ class InteractorsModule {
 
     @Provides
     @Singleton
-    fun provideTrainInteractor(dataSource : ITrainDataSource) = TrainInteractors(
+    fun provideTrainInteractor(dataSource: ITrainDataSource) = TrainInteractors(
         AddTrain(dataSource), UpdateTrain(dataSource), SendTrainToTrash(dataSource),
         GetAllTrains(dataSource), GetChosenTrain(dataSource), DeleteTrainPermanently(dataSource),
         GetAllTrainsInTrash(dataSource), RestoreTrainFromTrash(dataSource),
@@ -29,7 +29,7 @@ class InteractorsModule {
 
     @Provides
     @Singleton
-    fun provideBrandInteractor(dataSource : IBrandCategoryDataSource<Brand>) : BrandCategoryInteractors<Brand> = BrandCategoryInteractors(
+    fun provideBrandInteractor(dataSource: IBrandCategoryDataSource<Brand>): BrandCategoryInteractors<Brand> = BrandCategoryInteractors(
         AddItem(dataSource), UpdateItem(dataSource), DeleteItem(dataSource), GetAllItems(dataSource),
         IsThisItemUsed(dataSource), IsThisItemUsedInTrash(dataSource), DeleteTrainsInTrashWithThisItem(dataSource),
         GetItemNames(dataSource)
@@ -37,10 +37,9 @@ class InteractorsModule {
 
     @Provides
     @Singleton
-    fun provideCategoryInteractor(dataSource : IBrandCategoryDataSource<Category>) : BrandCategoryInteractors<Category> = BrandCategoryInteractors(
+    fun provideCategoryInteractor(dataSource: IBrandCategoryDataSource<Category>): BrandCategoryInteractors<Category> = BrandCategoryInteractors(
         AddItem(dataSource), UpdateItem(dataSource), DeleteItem(dataSource), GetAllItems(dataSource),
         IsThisItemUsed(dataSource), IsThisItemUsedInTrash(dataSource), DeleteTrainsInTrashWithThisItem(dataSource),
         GetItemNames(dataSource)
     )
-
 }

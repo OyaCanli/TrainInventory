@@ -1,7 +1,9 @@
 package com.canlioya.core.models
 
+import androidx.annotation.Keep
 import java.io.Serializable
 
+@Keep
 data class Train(
     var trainId: Int = 0,
     var trainName: String? = null,

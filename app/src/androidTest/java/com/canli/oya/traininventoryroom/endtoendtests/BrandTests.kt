@@ -88,8 +88,8 @@ class BrandTests {
         onView(withId(R.id.addBrand_editBrandName)).check(matches(isDisplayed()))
         onView(withId(R.id.addBrand_editBrandName)).check(matches(withText("")))
         onView(withId(R.id.addBrand_editWeb)).check(matches(withText("")))
-        onView(withId(R.id.addBrand_saveBtn)).check(matches(isDisplayed()))
-        onView(withId(R.id.addBrand_image)).check(matches(isDisplayed()))
+        onView(withId(R.id.addBrand_editWeb)).check(matches(withText("")))
+        onView(withId(R.id.addBrandLogoBtn)).check(matches(withText(R.string.add_logo)))
         // Verify + menu icon turned to a cancel icon
         onView(withId(R.id.action_add)).check(matches(withIconResource(R.drawable.avd_cross_to_plus)))
 

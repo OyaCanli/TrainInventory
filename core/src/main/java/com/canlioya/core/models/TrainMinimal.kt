@@ -1,5 +1,8 @@
 package com.canlioya.core.models
 
+import androidx.annotation.Keep
+
+@Keep
 data class TrainMinimal(
     var trainId: Int = 0,
     var trainName: String? = null,

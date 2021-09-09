@@ -18,7 +18,8 @@
     <string name="location">Location:</string>
     <string name="all_trains">All Items</string>
     <string name="brand_name">Brand name:</string>
-    <string name="add_logo">Add logo:</string>
+    <string name="add_logo">Add logo</string>
+    <string name="change_logo">Change logo</string>
     <string name="scale">Scale:</string>
     <string name="category_name">Add category</string>
     <string name="select_category">--Select category--</string>

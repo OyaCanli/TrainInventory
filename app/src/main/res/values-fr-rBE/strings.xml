@@ -3,7 +3,8 @@
     <string name="app_name">Inventaire des Trains</string>
     <string name="add">Ajouter</string>
     <string name="add_image">Ajouter image:</string>
-    <string name="add_logo">Ajouter logo:</string>
+    <string name="add_logo">Ajouter logo</string>
+    <string name="change_logo">Changer logo</string>
     <string name="add_train">Ajouter pièce</string>
     <string name="all_brands">Toutes les marques</string>
     <string name="all_categories">Toutes les catégories</string>

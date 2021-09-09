@@ -118,7 +118,7 @@ class BrandListFragmentTest {
             // Check whether add category screen becomes visible
             onView(withId(R.id.addBrand_editBrandName)).check(matches(isDisplayed()))
             onView(withId(R.id.addBrand_editBrandName)).check(matches(withText("")))
-            onView(withId(R.id.addBrand_image)).check(matches(isDisplayed()))
+            onView(withId(R.id.addBrandLogoBtn)).check(matches(withText(R.string.add_logo)))
             onView(withId(R.id.addBrand_saveBtn)).check(matches(isDisplayed()))
         }
     }
@@ -135,7 +135,7 @@ class BrandListFragmentTest {
             // Check whether add category screen becomes visible
             onView(withId(R.id.addBrand_editBrandName)).check(matches(isDisplayed()))
             onView(withId(R.id.addBrand_editBrandName)).check(matches(withText("MDN")))
-            onView(withId(R.id.addBrand_image)).check(matches(isDisplayed()))
+            onView(withId(R.id.addBrandLogoBtn)).check(matches(withText(R.string.add_logo)))
             onView(withId(R.id.addBrand_saveBtn)).check(matches(isDisplayed()))
         }
     }
