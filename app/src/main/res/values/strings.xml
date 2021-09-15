@@ -13,7 +13,8 @@
     <string name="brand">Brand:</string>
     <string name="reference">Reference:</string>
     <string name="quantity">Quantity:</string>
-    <string name="add_image">Add image:</string>
+    <string name="add_image">Add image</string>
+    <string name="change_image">Change image</string>
     <string name="description">Description:</string>
     <string name="location">Location:</string>
     <string name="all_trains">All Items</string>

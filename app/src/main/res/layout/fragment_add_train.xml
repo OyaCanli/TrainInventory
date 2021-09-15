@@ -210,7 +210,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_standard"
-                android:text="@{viewModel.trainBeingModified.imageUri == null ? @string/add_logo : @string/change_logo}"
+                android:text="@{viewModel.trainBeingModified.imageUri == null ? @string/add_image : @string/change_image}"
                 android:textColor="@color/colorAccent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/add_train_image"

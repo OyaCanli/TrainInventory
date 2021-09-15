@@ -2,7 +2,8 @@
 <resources>
     <string name="app_name">Inventaire des Trains</string>
     <string name="add">Ajouter</string>
-    <string name="add_image">Ajouter image:</string>
+    <string name="add_image">Ajouter image</string>
+    <string name="change_image">Changer l\'image</string>
     <string name="add_logo">Ajouter logo</string>
     <string name="change_logo">Changer logo</string>
     <string name="add_train">Ajouter pièce</string>
