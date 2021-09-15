@@ -67,8 +67,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/brand_item_brandName"
             app:srcCompat="@drawable/ic_link"
-            android:background="@drawable/button_state_selector"
-            android:foreground="?android:attr/selectableItemBackgroundBorderless"/>
+            android:background="@drawable/button_state_selector" />
 
         <ImageView
             android:id="@+id/brand_item_train_icon"
