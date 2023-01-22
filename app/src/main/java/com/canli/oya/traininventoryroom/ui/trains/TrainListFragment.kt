@@ -92,6 +92,7 @@ class TrainListFragment : Fragment(R.layout.fragment_list), TrainItemClickListen
                             Timber.d("list is not empty")
                         }
                     }
+                    else -> {}
                 }
             }
         }
