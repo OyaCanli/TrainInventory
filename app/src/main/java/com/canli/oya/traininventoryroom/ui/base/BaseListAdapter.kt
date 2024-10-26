@@ -111,11 +111,14 @@ class DeleteItemViewHolder<T>(val binding: ItemConfirmDeleteBinding) : RecyclerV
 }
 
 open class BaseDiffCallback<T> : DiffUtil.ItemCallback<T>() {
-    override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
+    override fun areItemsTheSame(oldItem: T & Any, newItem: T & Any): Boolean {
         return oldItem === newItem
     }
 
-    override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
+    override fun areContentsTheSame(
+        oldItem: T & Any,
+        newItem: T & Any
+    ): Boolean {
         if (oldItem is Train && newItem is Train) {
             return oldItem as Train == newItem as Train
         }

@@ -34,10 +34,10 @@ class ExportingToExcelDialog : DialogFragment() {
             inflater, R.layout.dialog_exporting_to_excel, container, false
         )
 
-        when (Build.VERSION.SDK_INT) {
-            29, 30 -> launchCreateFileIntent()
-            in 23..28 -> checkWritePermission()
-            in 21..23 -> launchCreateFileIntent()
+        when  {
+            Build.VERSION.SDK_INT >= 29-> launchCreateFileIntent()
+            Build.VERSION.SDK_INT in 23..28 -> checkWritePermission()
+            Build.VERSION.SDK_INT in 21..23 -> launchCreateFileIntent()
         }
 
         return binding.root
