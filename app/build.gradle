@@ -13,8 +13,8 @@ android {
         applicationId "com.canli.oya.traininventoryroom"
         minSdkVersion 21
         targetSdkVersion 34
-        versionCode 4
-        versionName "1.3"
+        versionCode 5
+        versionName "1.4"
         testInstrumentationRunner "com.canli.oya.traininventoryroom.utils.CustomTestRunner"
         vectorDrawables.useSupportLibrary = true
     }
